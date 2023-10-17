@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningsAsErrors>
+      CS8600;CS8601;CS8602;CS8604;CS8613;CS8614;CS8619;CS8620;CS8622;CS8625;CS8629;CS8633;CS8524;CS8509;CS8524;CS8767
+    </WarningsAsErrors>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <_WebGpuSharp_IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</_WebGpuSharp_IsWindows>
+    <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_WebGpuSharp_NativeRuntime>
+    <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-x64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Condition="'$(_WebGpuSharp_NativeRuntime)' != ''"
+      Include="runtimes/$(_WebGpuSharp_NativeRuntime)/native/$(_WebGpuSharp_NativeLibName)">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </Content>
+  </ItemGroup>
+</Project>

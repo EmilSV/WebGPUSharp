@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WebGpuSharp": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
