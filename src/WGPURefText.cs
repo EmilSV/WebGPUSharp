@@ -11,7 +11,7 @@ public readonly ref struct WGPURefText
     private const int SIGNED_BIT = 1 << 31;
     private const int SIGNED_BIT_MASK = ~SIGNED_BIT;
 
-    private readonly ref readonly byte _reference;
+    internal readonly ref readonly byte _reference;
     private readonly int _lengthInfo;
 
     public int Length

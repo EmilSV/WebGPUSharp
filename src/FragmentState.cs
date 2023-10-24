@@ -1,6 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.WebGPU.Unsafe;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -17,9 +17,9 @@ public partial struct FragmentState :
         WebGpuAllocatorHandle allocator,
         ref FragmentStateFFI dest)
     {
-        Marshal(input.Module, out dest.Module);
-        Marshal(input.EntryPoint, allocator, out dest.EntryPoint);
-        Marshal(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
-        Marshal(input.Targets, out dest.Targets, out dest.TargetCount);
+        ToFFI(input.Module, out dest.Module);
+        ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
+        ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
+        ToFFI(input.Targets, out dest.Targets, out dest.TargetCount);
     }
 }
