@@ -2,8 +2,11 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct ShaderModuleHandle : IDisposable, IWebGpuHandle<ShaderModuleHandle>
+public readonly partial struct ShaderModuleHandle :
+    IDisposable,
+    IWebGpuHandle<ShaderModuleHandle>
 {
+
     public static ref nuint AsPointer(ref ShaderModuleHandle handle)
     {
         return ref Unsafe.AsRef(handle._ptr);
@@ -17,6 +20,16 @@ public readonly partial struct ShaderModuleHandle : IDisposable, IWebGpuHandle<S
     public static bool IsNull(ShaderModuleHandle handle)
     {
         return handle == Null;
+    }
+
+    public static void Release(ShaderModuleHandle handle)
+    {
+        WebGPU_FFI.ShaderModuleRelease(handle);
+    }
+
+    public static void Reference(ShaderModuleHandle handle)
+    {
+        WebGPU_FFI.ShaderModuleReference(handle);
     }
 
     public static ShaderModuleHandle UnsafeFromPointer(nuint pointer)

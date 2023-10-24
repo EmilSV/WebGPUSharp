@@ -2,12 +2,14 @@ using System.Collections;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
+using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
 public unsafe sealed class ColorTargetStateList :
     IList<ColorTargetState>,
-    IReadOnlyList<ColorTargetState>
+    IReadOnlyList<ColorTargetState>,
+    IUnsafeMarshalCollection<ColorTargetStateFFI>
 {
     private const int DefaultCapacity = 4;
     private ColorTargetStateFFI[] _itemsColorTargetState;
@@ -382,6 +384,33 @@ public unsafe sealed class ColorTargetStateList :
     IEnumerator<ColorTargetState> IEnumerable<ColorTargetState>.GetEnumerator()
     {
         return new Enumerator(this);
+    }
+
+    void IUnsafeMarshalCollection<ColorTargetStateFFI>.GetPointerToFFIItems(
+        out ColorTargetStateFFI* dest, out nuint outCount)
+    {
+        dest = GetPointerToPinedArray();
+        outCount = (nuint)_size;
+    }
+
+    void IUnsafeMarshalCollection<ColorTargetStateFFI>.GetPointerToFFIItems(
+         out ColorTargetStateFFI* dest, out uint outCount)
+    {
+        dest = GetPointerToPinedArray();
+        outCount = (uint)_size;
+    }
+
+    void IUnsafeMarshalCollectionAlloc<ColorTargetStateFFI>.GetPointerToFFIItems(
+        WebGpuAllocatorHandle allocator, out ColorTargetStateFFI* dest, out nuint outCount)
+    {
+        dest = GetPointerToPinedArray();
+        outCount = (nuint)_size;
+    }
+
+    void IUnsafeMarshalCollectionAlloc<ColorTargetStateFFI>.GetPointerToFFIItems(WebGpuAllocatorHandle allocator, out ColorTargetStateFFI* dest, out uint outCount)
+    {
+        dest = GetPointerToPinedArray();
+        outCount = (uint)_size;
     }
 
     public struct Enumerator : IEnumerator<ColorTargetState>, IEnumerator

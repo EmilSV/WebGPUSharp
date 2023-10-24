@@ -1,4 +1,4 @@
-namespace WebGpuSharp;
+namespace WebGpuSharp.FFI;
 
 public interface IWebGpuHandle<T>
     where T : unmanaged, IWebGpuHandle<T>
@@ -7,4 +7,6 @@ public interface IWebGpuHandle<T>
     public static abstract T GetNullHandle();
     public static abstract bool IsNull(T handle);
     public static abstract T UnsafeFromPointer(UIntPtr pointer);
+    public static abstract void Reference(T handle);
+    public static abstract void Release(T handle);
 }

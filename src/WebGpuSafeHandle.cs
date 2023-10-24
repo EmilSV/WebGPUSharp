@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 

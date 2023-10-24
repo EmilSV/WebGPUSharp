@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
 [DebuggerDisplay("Count = {Count}")]
 public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
     IList<TManaged>,
-    IReadOnlyList<TManaged>
+    IReadOnlyList<TManaged>,
+    IUnsafeMarshalCollectionAlloc<TFFI>
     where TMarshal : IWebGPUMarshal<TManaged, TFFI, TCache>
     where TFFI : unmanaged
     where TCache : struct
@@ -534,6 +536,20 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
         TFFI* outPointer = allocator.Alloc<TFFI>((nuint)size);
         TMarshal.MarshalTemporaryTo(_managedItems.AsSpan(0, size), new Span<TFFI>(outPointer, size), allocator);
         return outPointer;
+    }
+
+    unsafe void IUnsafeMarshalCollectionAlloc<TFFI>.GetPointerToFFIItems(
+        WebGpuAllocatorHandle allocator, out TFFI* dest, out nuint outCount)
+    {
+        dest = GetPointerToFFIItems(allocator);
+        outCount = (nuint)_size;
+    }
+
+    unsafe void IUnsafeMarshalCollectionAlloc<TFFI>.GetPointerToFFIItems(
+        WebGpuAllocatorHandle allocator, out TFFI* dest, out uint outCount)
+    {
+        dest = GetPointerToFFIItems(allocator);
+        outCount = (uint)_size;
     }
 
     public struct Enumerator : IEnumerator<TManaged>, IEnumerator
