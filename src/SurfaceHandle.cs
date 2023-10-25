@@ -2,7 +2,8 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct SurfaceHandle : IDisposable, IWebGpuHandle<SurfaceHandle>
+public readonly partial struct SurfaceHandle : 
+    IDisposable, IWebGpuHandle<SurfaceHandle>
 {
     public TextureFormat GetPreferredFormat(AdapterHandle adapter) => TextureFormat.BGRA8Unorm;
     public void Dispose()
@@ -31,5 +32,15 @@ public readonly partial struct SurfaceHandle : IDisposable, IWebGpuHandle<Surfac
     public static SurfaceHandle UnsafeFromPointer(nuint pointer)
     {
         return new SurfaceHandle(pointer);
+    }
+
+    public static void Reference(SurfaceHandle handle)
+    {
+        WebGPU_FFI.SurfaceReference(handle);
+    }
+
+    public static void Release(SurfaceHandle handle)
+    {
+        WebGPU_FFI.SurfaceRelease(handle);
     }
 }

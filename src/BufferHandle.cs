@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct BufferHandle : IDisposable, IWebGpuHandle<BufferHandle>
+public readonly partial struct BufferHandle : 
+    IDisposable, IWebGpuHandle<BufferHandle>
 {
     public void MapAsync(
         MapMode mode,
@@ -102,6 +103,16 @@ public readonly partial struct BufferHandle : IDisposable, IWebGpuHandle<BufferH
     {
         return new BufferHandle(pointer);
     }
+
+    public static void Reference(BufferHandle handle)
+    {
+        WebGPU_FFI.BufferReference(handle);
+    }
+
+    public static void Release(BufferHandle handle)
+    {
+        WebGPU_FFI.BufferRelease(handle);
+    }
 }
 
 file static class BufferHandelCallbacks
@@ -110,7 +121,7 @@ file static class BufferHandelCallbacks
     public unsafe static void OnBufferMapCallback_Action(BufferMapAsyncStatus status, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        Action<BufferMapAsyncStatus>? callback = null;
+        Action<BufferMapAsyncStatus>? callback;
 
         try
         {
@@ -135,7 +146,7 @@ file static class BufferHandelCallbacks
         BufferMapAsyncStatus status, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        TaskCompletionSource<BufferMapAsyncStatus>? taskCompletionSource = null;
+        TaskCompletionSource<BufferMapAsyncStatus>? taskCompletionSource;
 
         try
         {

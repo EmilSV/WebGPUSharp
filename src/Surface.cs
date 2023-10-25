@@ -4,12 +4,12 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public sealed class Surface : WebGpuSafeHandle<SurfaceHandle>
+public sealed class Surface : BaseWebGpuSafeHandle<SurfaceHandle>
 {
     private class CacheFactory :
         WebGpuSafeHandleCache<SurfaceHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<SurfaceHandle> Create(SurfaceHandle handle)
+        public static BaseWebGpuSafeHandle<SurfaceHandle> Create(SurfaceHandle handle)
         {
             return new Surface(handle);
         }

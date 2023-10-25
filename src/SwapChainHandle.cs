@@ -1,6 +1,3 @@
-
-using WebGpuSharp.FFI;
-
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct SwapChainHandle : IDisposable

@@ -9,6 +9,7 @@ public unsafe class VertexBufferLayoutMarshal :
 {
     public struct Cache { };
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarshalTo(in VertexBufferLayout item, ref VertexBufferLayoutFFI ffiItem)
     {
         nuint attributeCount = 0;
@@ -27,6 +28,7 @@ public unsafe class VertexBufferLayoutMarshal :
         );
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarshalTo(ReadOnlySpan<VertexBufferLayout> items, Span<VertexBufferLayoutFFI> ffiItems)
     {
         Debug.Assert(items.Length == ffiItems.Length);
@@ -40,6 +42,7 @@ public unsafe class VertexBufferLayoutMarshal :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool NeedsCache() => false;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarshalTemporaryTo(
         in VertexBufferLayout item,
         ref VertexBufferLayoutFFI ffiItem, WebGpuAllocatorHandle _)
@@ -47,6 +50,7 @@ public unsafe class VertexBufferLayoutMarshal :
         MarshalTo(item, ref ffiItem);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarshalTemporaryTo(
         ReadOnlySpan<VertexBufferLayout> items,
         Span<VertexBufferLayoutFFI> ffiItems, WebGpuAllocatorHandle allocator)
@@ -56,18 +60,17 @@ public unsafe class VertexBufferLayoutMarshal :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarkDirty(ref VertexBufferLayout newItem, in VertexBufferLayout oldItem) { }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void MarkDirty(ref VertexBufferLayout newItem, in VertexBufferLayout oldItem, ref Cache _) { }
 
-    public static void MarkDirty(ref VertexBufferLayout newItem, in VertexBufferLayout oldItem, ref Cache cache)
-    {
-        MarkDirty(ref newItem, oldItem);
-    }
-
-    public static void MarshalTo(in VertexBufferLayout item, ref VertexBufferLayoutFFI ffiItem, ref Cache cache)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void MarshalTo(in VertexBufferLayout item, ref VertexBufferLayoutFFI ffiItem, ref Cache _)
     {
         MarshalTo(item, ref ffiItem);
     }
 
-    public static void MarshalTo(ReadOnlySpan<VertexBufferLayout> items, Span<VertexBufferLayoutFFI> ffiItems, Span<Cache> caches)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void MarshalTo(ReadOnlySpan<VertexBufferLayout> items, Span<VertexBufferLayoutFFI> ffiItems, Span<Cache> _)
     {
         MarshalTo(items, ffiItems);
     }

@@ -3,12 +3,12 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class BindGroupLayout : WebGpuSafeHandle<BindGroupLayoutHandle>
+public sealed class BindGroupLayout : BaseWebGpuSafeHandle<BindGroupLayoutHandle>
 {
     private sealed class CacheFactory :
         WebGpuSafeHandleCache<BindGroupLayoutHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<BindGroupLayoutHandle> Create(BindGroupLayoutHandle handle)
+        public static BaseWebGpuSafeHandle<BindGroupLayoutHandle> Create(BindGroupLayoutHandle handle)
         {
             return new BindGroupLayout(handle);
         }

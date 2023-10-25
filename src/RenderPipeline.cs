@@ -4,12 +4,12 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public sealed class RenderPipeline : WebGpuSafeHandle<RenderPipelineHandle>
+public sealed class RenderPipeline : BaseWebGpuSafeHandle<RenderPipelineHandle>
 {
     private sealed class CacheFactory :
         WebGpuSafeHandleCache<RenderPipelineHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<RenderPipelineHandle> Create(RenderPipelineHandle handle)
+        public static BaseWebGpuSafeHandle<RenderPipelineHandle> Create(RenderPipelineHandle handle)
         {
             return new RenderPipeline(handle);
         }

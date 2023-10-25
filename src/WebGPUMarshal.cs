@@ -139,7 +139,7 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<T>(WebGpuSafeHandle<T> safeHandle, out T handle)
+    public static void ToFFI<T>(BaseWebGpuSafeHandle<T> safeHandle, out T handle)
          where T : unmanaged, IWebGpuHandle<T>
     {
         handle = safeHandle.GetHandle();
@@ -147,7 +147,7 @@ public unsafe static partial class WebGPUMarshal
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ToFFI<T>(
-        WebGpuSafeHandle<T> safeHandle,
+        BaseWebGpuSafeHandle<T> safeHandle,
         WebGpuAllocatorHandle _allocator, out T handle)
      where T : unmanaged, IWebGpuHandle<T>
     {
@@ -161,14 +161,14 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetBorrowHandle<T>(WebGpuSafeHandle<T> safeHandle)
+    public static T GetBorrowHandle<T>(BaseWebGpuSafeHandle<T> safeHandle)
        where T : unmanaged, IWebGpuHandle<T>
     {
         return safeHandle.GetHandle();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetOwnedHandle<T>(WebGpuSafeHandle<T> safeHandle)
+    public static T GetOwnedHandle<T>(BaseWebGpuSafeHandle<T> safeHandle)
         where T : unmanaged, IWebGpuHandle<T>
     {
         var handle = safeHandle.GetHandle();

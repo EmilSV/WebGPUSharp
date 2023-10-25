@@ -3,40 +3,17 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class TextureView : WebGpuSafeHandle<TextureViewHandle>
+public sealed class TextureView :
+    BaseWebGpuSafeHandle<TextureViewHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<TextureViewHandle>.ISafeHandleFactory
-    {
-        public static WebGpuSafeHandle<TextureViewHandle> Create(TextureViewHandle handle)
-        {
-            return new TextureView(handle);
-        }
-    }
-
-
     private TextureView(TextureViewHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static TextureView? FromHandle(TextureViewHandle handle, bool incrementReferenceCount)
     {
-        WebGPU_FFI.TextureViewReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.TextureViewRelease(_handle);
-    }
-
-
-    internal static TextureView? FromHandle(TextureViewHandle handle, bool incrementReferenceCount = true)
-    {
-        var newTextureView = WebGpuSafeHandleCache<TextureViewHandle>.GetOrCreate<CacheFactory>(handle) as TextureView;
-        if (incrementReferenceCount && newTextureView != null)
-        {
-            newTextureView.AddReference(false);
-        }
+        var newTextureView = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new TextureView(handle));
+        newTextureView?.AddReference(incrementReferenceCount);
         return newTextureView;
     }
 }

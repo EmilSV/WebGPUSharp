@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class ShaderModule : WebGpuSafeHandle<ShaderModuleHandle>
+public sealed class ShaderModule : BaseWebGpuSafeHandle<ShaderModuleHandle>
 {
     private ShaderModule(ShaderModuleHandle handle) : base(handle)
     {
@@ -12,7 +12,7 @@ public sealed class ShaderModule : WebGpuSafeHandle<ShaderModuleHandle>
     private class CacheFactory :
         WebGpuSafeHandleCache<ShaderModuleHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<ShaderModuleHandle> Create(ShaderModuleHandle handle)
+        public static BaseWebGpuSafeHandle<ShaderModuleHandle> Create(ShaderModuleHandle handle)
         {
             return new ShaderModule(handle);
         }

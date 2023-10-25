@@ -3,7 +3,8 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
 
-public readonly unsafe partial struct TextureHandle : IDisposable, IWebGpuHandle<TextureHandle>
+public readonly unsafe partial struct TextureHandle : 
+    IDisposable, IWebGpuHandle<TextureHandle>
 {
     public void Dispose()
     {
@@ -53,5 +54,15 @@ public readonly unsafe partial struct TextureHandle : IDisposable, IWebGpuHandle
     public static TextureHandle UnsafeFromPointer(nuint pointer)
     {
         return new TextureHandle(pointer);
+    }
+
+    public static void Reference(TextureHandle handle)
+    {
+       WebGPU_FFI.TextureReference(handle);
+    }
+
+    public static void Release(TextureHandle handle)
+    {
+        WebGPU_FFI.TextureRelease(handle);
     }
 }

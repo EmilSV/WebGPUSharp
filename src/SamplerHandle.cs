@@ -20,6 +20,16 @@ public readonly partial struct SamplerHandle :
         return handle == Null;
     }
 
+    public static void Reference(SamplerHandle handle)
+    {
+        WebGPU_FFI.SamplerReference(handle);
+    }
+
+    public static void Release(SamplerHandle handle)
+    {
+        WebGPU_FFI.SamplerRelease(handle);
+    }
+
     public static SamplerHandle UnsafeFromPointer(nuint pointer)
     {
         return new SamplerHandle(pointer);

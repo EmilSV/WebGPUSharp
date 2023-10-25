@@ -3,33 +3,31 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
-public abstract class WebGpuSafeHandle<T>
-    where T : unmanaged, IWebGpuHandle<T>
+public abstract class BaseWebGpuSafeHandle<THandle>
+    where THandle : unmanaged, IWebGpuHandle<THandle>
 {
-    protected T _handle;
+    protected THandle _handle;
     private int _referenceCount = 0;
 
-    internal WebGpuSafeHandle(T handle)
+    internal BaseWebGpuSafeHandle(THandle handle)
     {
         _handle = handle;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void AddReference(bool incrementWebGpu)
     {
         Interlocked.Increment(ref _referenceCount);
         if (incrementWebGpu)
         {
-            WebGpuReference();
+            THandle.Reference(_handle);
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal T GetHandle() => _handle;
+    internal THandle GetHandle() => _handle;
 
-    protected abstract void WebGpuReference();
-    protected abstract void WebGpuRelease();
-
-    ~WebGpuSafeHandle()
+    ~BaseWebGpuSafeHandle()
     {
         int localReferenceCount = Interlocked.Exchange(ref _referenceCount, _referenceCount);
         if (localReferenceCount == 0)
@@ -39,9 +37,9 @@ public abstract class WebGpuSafeHandle<T>
 
         while (Interlocked.Decrement(ref _referenceCount) > 0)
         {
-            WebGpuRelease();
+            THandle.Release(_handle);
         }
 
-        WebGpuSafeHandleCache<T>.RemoveHandle(_handle);
+        WebGpuSafeHandleCache<THandle>.RemoveHandle(_handle);
     }
 }

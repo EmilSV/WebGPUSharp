@@ -149,4 +149,14 @@ public readonly partial struct RenderPassEncoderHandle :
     {
         return new RenderPassEncoderHandle(pointer);
     }
+
+    public static void Reference(RenderPassEncoderHandle handle)
+    {
+        WebGPU_FFI.RenderPassEncoderReference(handle);
+    }
+
+    public static void Release(RenderPassEncoderHandle handle)
+    {
+        WebGPU_FFI.RenderPassEncoderRelease(handle);
+    }
 }

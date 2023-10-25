@@ -3,12 +3,12 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class PipelineLayout : WebGpuSafeHandle<PipelineLayoutHandle>
+public sealed class PipelineLayout : BaseWebGpuSafeHandle<PipelineLayoutHandle>
 {
     private class CacheFactory :
         WebGpuSafeHandleCache<PipelineLayoutHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<PipelineLayoutHandle> Create(PipelineLayoutHandle handle)
+        public static BaseWebGpuSafeHandle<PipelineLayoutHandle> Create(PipelineLayoutHandle handle)
         {
             return new PipelineLayout(handle);
         }

@@ -4,12 +4,12 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public sealed class Buffer : WebGpuSafeHandle<BufferHandle>
+public sealed class Buffer : BaseWebGpuSafeHandle<BufferHandle>
 {
     private class CacheFactory :
         WebGpuSafeHandleCache<BufferHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<BufferHandle> Create(BufferHandle handle)
+        public static BaseWebGpuSafeHandle<BufferHandle> Create(BufferHandle handle)
         {
             return new Buffer(handle);
         }

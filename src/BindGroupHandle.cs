@@ -32,4 +32,14 @@ public readonly unsafe partial struct BindGroupHandle :
     {
         return new BindGroupHandle(pointer);
     }
+
+    public static void Reference(BindGroupHandle handle)
+    {
+        WebGPU_FFI.BindGroupReference(handle);
+    }
+
+    public static void Release(BindGroupHandle handle)
+    {
+        WebGPU_FFI.BindGroupRelease(handle);
+    }
 }

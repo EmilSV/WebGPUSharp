@@ -3,12 +3,12 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class CommandEncoder : WebGpuSafeHandle<CommandEncoderHandle>
+public sealed class CommandEncoder : BaseWebGpuSafeHandle<CommandEncoderHandle>
 {
     private class CacheFactory :
         WebGpuSafeHandleCache<CommandEncoderHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<CommandEncoderHandle> Create(CommandEncoderHandle handle)
+        public static BaseWebGpuSafeHandle<CommandEncoderHandle> Create(CommandEncoderHandle handle)
         {
             return new CommandEncoder(handle);
         }

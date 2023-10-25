@@ -20,6 +20,16 @@ public readonly partial struct RenderPipelineHandle :
         return handle == Null;
     }
 
+    public static void Reference(RenderPipelineHandle handle)
+    {
+        WebGPU_FFI.RenderPipelineReference(handle);
+    }
+
+    public static void Release(RenderPipelineHandle handle)
+    {
+        WebGPU_FFI.RenderPipelineRelease(handle);
+    }
+
     public static RenderPipelineHandle UnsafeFromPointer(nuint pointer)
     {
         return new RenderPipelineHandle(pointer);

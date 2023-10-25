@@ -5,7 +5,8 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
 
-public unsafe readonly partial struct AdapterHandle : IDisposable, IWebGpuHandle<AdapterHandle>
+public unsafe readonly partial struct AdapterHandle : 
+    IDisposable, IWebGpuHandle<AdapterHandle>
 {
     public readonly nuint GetEnumerateFeaturesCount()
     {
@@ -209,5 +210,15 @@ public unsafe readonly partial struct AdapterHandle : IDisposable, IWebGpuHandle
     public static AdapterHandle UnsafeFromPointer(nuint pointer)
     {
         return new AdapterHandle(pointer);
+    }
+
+    public static void Reference(AdapterHandle handle)
+    {
+        WebGPU_FFI.AdapterReference(handle);
+    }
+
+    public static void Release(AdapterHandle handle)
+    {
+        WebGPU_FFI.AdapterRelease(handle);
     }
 }

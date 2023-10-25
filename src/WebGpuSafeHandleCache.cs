@@ -1,38 +1,45 @@
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
-internal static class WebGpuSafeHandleCache<T>
-    where T : unmanaged, IWebGpuHandle<T>
+internal static class WebGpuSafeHandleCache
 {
-    internal interface ISafeHandleFactory
+    private static class Cache<THandle>
+        where THandle : unmanaged
     {
-        static abstract WebGpuSafeHandle<T> Create(T handle);
+        public static readonly ConcurrentDictionary<THandle, GCHandle> _cache = new();
     }
 
-    private static readonly ConcurrentDictionary<T, GCHandle> _cache = new();
-
-    public static WebGpuSafeHandle<T>? GetOrCreate<TFactory>(T handle)
-        where TFactory : ISafeHandleFactory
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe static TSafeHandle? GetOrCreate<THandle, TSafeHandle>(
+        THandle handle, Func<THandle, TSafeHandle> createFunc)
+        where TSafeHandle : class
+        where THandle : unmanaged, IWebGpuHandle<THandle>
     {
-        if (T.IsNull(handle))
+        if (THandle.IsNull(handle))
         {
             return null;
         }
 
-        var gcHandle = _cache.GetOrAdd(
+        var gcHandle = Cache<THandle>._cache.GetOrAdd(
              handle,
-             static (handle) => GCHandle.Alloc(TFactory.Create(handle), GCHandleType.Weak)
+           static (THandle handle, Func<THandle, TSafeHandle> createFunc) =>
+                {
+                    return GCHandle.Alloc(createFunc(handle), GCHandleType.Weak);
+                },
+            createFunc
          );
 
         if (gcHandle.IsAllocated)
         {
-            var safeHandle = (WebGpuSafeHandle<T>)gcHandle.Target!;
+            var safeHandle = (TSafeHandle)gcHandle.Target!;
             if (safeHandle == null)
             {
                 RemoveHandle(handle);
-                return GetOrCreate<TFactory>(handle);
+                return GetOrCreate(handle, createFunc);
             }
 
             return safeHandle;
@@ -41,14 +48,16 @@ internal static class WebGpuSafeHandleCache<T>
         return null;
     }
 
-    public static void RemoveHandle(T handle)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void RemoveHandle<THandle>(THandle handle)
+      where THandle : unmanaged, IWebGpuHandle<THandle>
     {
-        if (T.IsNull(handle))
+        if (THandle.IsNull(handle))
         {
             return;
         }
 
-        if (_cache.TryRemove(handle, out GCHandle gcHandle))
+        if (Cache<THandle>._cache.TryRemove(handle, out GCHandle gcHandle))
         {
             gcHandle.Free();
         }

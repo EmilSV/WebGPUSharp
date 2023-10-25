@@ -3,12 +3,12 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Instance : WebGpuSafeHandle<InstanceHandle>
+public sealed class Instance : BaseWebGpuSafeHandle<InstanceHandle>
 {
     private class CacheFactory :
         WebGpuSafeHandleCache<InstanceHandle>.ISafeHandleFactory
     {
-        public static WebGpuSafeHandle<InstanceHandle> Create(InstanceHandle handle)
+        public static BaseWebGpuSafeHandle<InstanceHandle> Create(InstanceHandle handle)
         {
             return new Instance(handle);
         }

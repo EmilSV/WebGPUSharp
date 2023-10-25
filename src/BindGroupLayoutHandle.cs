@@ -20,6 +20,16 @@ public readonly partial struct BindGroupLayoutHandle :
         return handle == Null;
     }
 
+    public static void Reference(BindGroupLayoutHandle handle)
+    {
+        WebGPU_FFI.BindGroupLayoutReference(handle);
+    }
+
+    public static void Release(BindGroupLayoutHandle handle)
+    {
+        WebGPU_FFI.BindGroupLayoutRelease(handle);
+    }
+
     public static BindGroupLayoutHandle UnsafeFromPointer(nuint pointer)
     {
         return new BindGroupLayoutHandle(pointer);
