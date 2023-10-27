@@ -3,7 +3,8 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
 
-public readonly unsafe partial struct CommandEncoderHandle : IDisposable, IWebGpuHandle<CommandEncoderHandle>
+public readonly unsafe partial struct CommandEncoderHandle :
+    IDisposable, IWebGpuHandle<CommandEncoderHandle, CommandEncoder>
 {
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptor descriptor)
     {
@@ -95,5 +96,20 @@ public readonly unsafe partial struct CommandEncoderHandle : IDisposable, IWebGp
     public static CommandEncoderHandle UnsafeFromPointer(nuint pointer)
     {
         return new CommandEncoderHandle(pointer);
+    }
+
+    public CommandEncoder? ToSafeHandle(bool incrementReferenceCount)
+    {
+        return CommandEncoder.FromHandle(this, incrementReferenceCount);
+    }
+
+    public static void Reference(CommandEncoderHandle handle)
+    {
+        WebGPU_FFI.CommandEncoderReference(handle);
+    }
+
+    public static void Release(CommandEncoderHandle handle)
+    {
+        WebGPU_FFI.CommandEncoderRelease(handle);
     }
 }

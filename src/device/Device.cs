@@ -7,7 +7,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
 
-public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<DeviceHandle>
+public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<DeviceHandle, Device>
 {
     private static readonly ConcurrentBag<object> deviceLostCallbacks = new();
     private static volatile uint deviceLostCallbackSetup = 0;
@@ -30,10 +30,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     public QueueHandle GetQueue()
     {
-        unsafe
-        {
-            return WebGPU_FFI.DeviceGetQueue(this);
-        }
+        return WebGPU_FFI.DeviceGetQueue(this);
     }
 
     public CommandEncoderHandle CreateCommandEncoder(in CommandEncoderDescriptor descriptor)
@@ -300,5 +297,20 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public static DeviceHandle UnsafeFromPointer(nuint pointer)
     {
         return new DeviceHandle(pointer);
+    }
+
+    public Device? ToSafeHandle(bool incrementReferenceCount)
+    {
+        return Device.FromHandle(this, incrementReferenceCount);
+    }
+
+    public static void Reference(DeviceHandle handle)
+    {
+        WebGPU_FFI.DeviceReference(handle);
+    }
+
+    public static void Release(DeviceHandle handle)
+    {
+        WebGPU_FFI.DeviceRelease(handle);
     }
 }

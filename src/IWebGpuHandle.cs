@@ -1,12 +1,18 @@
 namespace WebGpuSharp.FFI;
 
-public interface IWebGpuHandle<T>
-    where T : unmanaged, IWebGpuHandle<T>
+public interface IWebGpuHandle<TSelf>
+    where TSelf : unmanaged, IWebGpuHandle<TSelf>
 {
-    public static abstract ref UIntPtr AsPointer(ref T handle);
-    public static abstract T GetNullHandle();
-    public static abstract bool IsNull(T handle);
-    public static abstract T UnsafeFromPointer(UIntPtr pointer);
-    public static abstract void Reference(T handle);
-    public static abstract void Release(T handle);
+    public static abstract ref UIntPtr AsPointer(ref TSelf handle);
+    public static abstract TSelf GetNullHandle();
+    public static abstract bool IsNull(TSelf handle);
+    public static abstract TSelf UnsafeFromPointer(UIntPtr pointer);
+    public static abstract void Reference(TSelf handle);
+    public static abstract void Release(TSelf handle);
+}
+
+public interface IWebGpuHandle<TSelf, TSafeHandle> : IWebGpuHandle<TSelf>
+    where TSelf : unmanaged, IWebGpuHandle<TSelf>
+{
+    public TSafeHandle? ToSafeHandle(bool incrementReferenceCount);
 }

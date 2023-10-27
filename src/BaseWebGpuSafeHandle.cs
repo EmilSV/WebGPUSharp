@@ -40,6 +40,6 @@ public abstract class BaseWebGpuSafeHandle<THandle>
             THandle.Release(_handle);
         }
 
-        WebGpuSafeHandleCache<THandle>.RemoveHandle(_handle);
+        WebGpuSafeHandleCache.RemoveHandle(_handle);
     }
 }

@@ -6,29 +6,9 @@ namespace WebGpuSharp;
 
 public sealed class Buffer : BaseWebGpuSafeHandle<BufferHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<BufferHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<BufferHandle> Create(BufferHandle handle)
-        {
-            return new Buffer(handle);
-        }
-    }
-
     private Buffer(BufferHandle handle) : base(handle)
     {
     }
-
-    protected override void WebGpuReference()
-    {
-        WebGPU_FFI.BufferReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.BufferRelease(_handle);
-    }
-
     public void MapAsync(
         MapMode mode,
         nuint offset,
@@ -46,8 +26,10 @@ public sealed class Buffer : BaseWebGpuSafeHandle<BufferHandle>
         return _handle.MapAsync(mode, offset, size);
     }
 
-    internal static Buffer? FromHandle(BufferHandle handle)
+    internal static Buffer? FromHandle(BufferHandle handle, bool incrementReferenceCount)
     {
-        return WebGpuSafeHandleCache<BufferHandle>.GetOrCreate<CacheFactory>(handle) as Buffer;
+        var newBuffer = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Buffer(handle));
+        newBuffer?.AddReference(incrementReferenceCount);
+        return newBuffer;
     }
 }

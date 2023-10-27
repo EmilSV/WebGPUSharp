@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly unsafe partial struct BindGroupHandle :
-    IDisposable, IWebGpuHandle<BindGroupHandle>
+    IDisposable, IWebGpuHandle<BindGroupHandle, BindGroup>
 {
     public readonly void Dispose()
     {
@@ -41,5 +41,10 @@ public readonly unsafe partial struct BindGroupHandle :
     public static void Release(BindGroupHandle handle)
     {
         WebGPU_FFI.BindGroupRelease(handle);
+    }
+
+    public BindGroup ToSafeHandle(bool incrementReferenceCount)
+    {
+        return BindGroup.FromHandle(this, incrementReferenceCount)!;
     }
 }

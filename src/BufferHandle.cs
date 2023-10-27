@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct BufferHandle : 
-    IDisposable, IWebGpuHandle<BufferHandle>
+public readonly partial struct BufferHandle :
+    IDisposable, IWebGpuHandle<BufferHandle, Buffer>
 {
     public void MapAsync(
         MapMode mode,
@@ -112,6 +112,11 @@ public readonly partial struct BufferHandle :
     public static void Release(BufferHandle handle)
     {
         WebGPU_FFI.BufferRelease(handle);
+    }
+
+    public Buffer? ToSafeHandle(bool incrementReferenceCount)
+    {
+        return Buffer.FromHandle(this, incrementReferenceCount);
     }
 }
 

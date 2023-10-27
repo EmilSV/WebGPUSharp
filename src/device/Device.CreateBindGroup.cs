@@ -1,72 +1,28 @@
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI
 {
     public readonly unsafe partial struct DeviceHandle
     {
-        public BindGroupHandle CreateBindGroup(
-            WGPURefText label, BindGroupLayoutHandle layout,
-            BindGroupEntryList entries)
+        public BindGroupHandle CreateBindGroup(BindGroupDescriptorFFI* descriptor)
         {
-
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
-            fixed (byte* labelPtr = label)
-            {
-                BindGroupDescriptorFFI nativeDescriptor = new()
-                {
-                    Label = utf8Factory.Create(
-                        text: labelPtr,
-                        length: label.Length,
-                        is16BitSize: label.Is16BitSize,
-                        allowPassthrough: true
-                    ),
-                    Layout = layout,
-                    EntryCount = (uint)entries.Count,
-                    Entries = entries.GetPointerToFFIItems(allocator),
-                };
-
-                return WebGPU_FFI.DeviceCreateBindGroup(this, &nativeDescriptor);
-            }
+            return WebGPU_FFI.DeviceCreateBindGroup(this, descriptor);
         }
 
-        public BindGroupHandle CreateBindGroup(
-            WGPURefText label, BindGroupLayoutHandle layout,
-            ReadOnlySpan<BindGroupEntryFFI> entries)
+        public BindGroup? CreateBindGroup(in BindGroupDescriptor descriptor)
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
-            fixed (byte* labelPtr = label)
-            fixed (BindGroupEntryFFI* entriesPtr = entries)
+            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+            fixed (BindGroupEntryFFI* entriesPtr = descriptor.Entries)
             {
-                BindGroupDescriptorFFI nativeDescriptor = new()
-                {
-                    Label = utf8Factory.Create(
-                        text: labelPtr,
-                        length: label.Length,
-                        is16BitSize: label.Is16BitSize,
-                        allowPassthrough: true
-                    ),
-                    Layout = layout,
-                    EntryCount = (uint)entries.Length,
-                    Entries = entriesPtr,
-                };
-
-                return WebGPU_FFI.DeviceCreateBindGroup(this, &nativeDescriptor);
+                BindGroupDescriptorFFI descriptorFFI = default;
+                descriptorFFI.Label = labelPtr;
+                ToFFI(descriptor.Layout, out descriptorFFI.Layout);
+                descriptorFFI.EntryCount = (uint)descriptor.Entries.Length;
+                descriptorFFI.Entries = entriesPtr;
+                return CreateBindGroup(&descriptorFFI).ToSafeHandle(true);
             }
-        }
-    }
-}
-
-namespace WebGpuSharp
-{
-    public partial class Device
-    {
-        public BindGroup? CreateBindGroup(WGPURefText label, BindGroupLayout layout, BindGroupEntryList entries)
-        {
-            return BindGroup.FromHandle(_handle.CreateBindGroup(label, layout.GetHandle(), entries));
         }
     }
 }

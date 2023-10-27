@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<QueueHandle>
+public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
     public readonly void Submit(ReadOnlySpan<CommandBufferHandle> commands)
     {
@@ -96,5 +96,20 @@ public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<Q
     public static QueueHandle UnsafeFromPointer(nuint pointer)
     {
         return new QueueHandle(pointer);
+    }
+
+    public Queue? ToSafeHandle(bool incrementReferenceCount)
+    {
+        return Queue.FromHandle(this, incrementReferenceCount);
+    }
+
+    public static void Reference(QueueHandle handle)
+    {
+        WebGPU_FFI.QueueReference(handle);
+    }
+
+    public static void Release(QueueHandle handle)
+    {
+        WebGPU_FFI.QueueRelease(handle);
     }
 }
