@@ -5,7 +5,7 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-public partial struct AdapterProperties
+public unsafe partial struct AdapterProperties
 {
     internal AdapterPropertiesFFI _unmanagedDescriptor;
 
@@ -40,35 +40,15 @@ public partial struct AdapterProperties
     }
 
 
-    public readonly ReadOnlySpan<byte> GetVendorName()
-    {
-        unsafe
-        {
-            return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.VendorName);
-        }
-    }
+    public readonly ReadOnlySpan<byte> GetVendorName() =>
+        MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.VendorName);
 
-    public readonly ReadOnlySpan<byte> GetArchitecture()
-    {
-        unsafe
-        {
-            return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.Architecture);
-        }
-    }
+    public readonly ReadOnlySpan<byte> GetArchitecture() =>
+        MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.Architecture);
 
-    public readonly ReadOnlySpan<byte> GetName()
-    {
-        unsafe
-        {
-            return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.Name);
-        }
-    }
+    public readonly ReadOnlySpan<byte> GetName() =>
+        MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.Name);
 
-    public readonly ReadOnlySpan<byte> GetDriverDescription()
-    {
-        unsafe
-        {
-            return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.DriverDescription);
-        }
-    }
+    public readonly ReadOnlySpan<byte> GetDriverDescription() =>
+        MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.DriverDescription);
 }

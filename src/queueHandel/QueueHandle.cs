@@ -5,6 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(ReadOnlySpan<CommandBufferHandle> commands)
     {
         fixed (CommandBufferHandle* commandBuffersPtr = commands)
@@ -13,6 +14,7 @@ public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<Q
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(CommandBufferHandle commands)
     {
         WebGPU_FFI.QueueSubmit(this, 1, &commands);
@@ -98,9 +100,9 @@ public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<Q
         return new QueueHandle(pointer);
     }
 
-    public Queue? ToSafeHandle(bool incrementReferenceCount)
+    public Queue? ToSafeHandle(bool isOwnedHandle)
     {
-        return Queue.FromHandle(this, incrementReferenceCount);
+        return Queue.FromHandle(this, isOwnedHandle);
     }
 
     public static void Reference(QueueHandle handle)

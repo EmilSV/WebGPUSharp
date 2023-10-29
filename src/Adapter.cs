@@ -12,8 +12,8 @@ public sealed class Adapter : BaseWebGpuSafeHandle<AdapterHandle>
     internal static Adapter? FromHandle(AdapterHandle handle, bool isOwnedHandle)
     {
         var newAdapter = WebGpuSafeHandleCache.GetOrCreate(
-            handle,
-            static (handle) => new Adapter(handle)
+            handle: handle,
+            createFunc: static (handle) => new Adapter(handle)
         );
 
         if (isOwnedHandle)
@@ -25,18 +25,16 @@ public sealed class Adapter : BaseWebGpuSafeHandle<AdapterHandle>
 
     public nuint GetEnumerateFeaturesCount() => _handle.GetEnumerateFeaturesCount();
     public nuint EnumerateFeatures(Span<FeatureName> output) => _handle.EnumerateFeatures(output);
-    
-    public bool AdapterGetLimits(out SupportedLimits limits) => _handle.AdapterGetLimits(out limits);
-    public SupportedLimits? AdapterGetLimits() => _handle.AdapterGetLimits();
-    
-    public void AdapterGetProperties(out AdapterProperties properties) => _handle.AdapterGetProperties(out properties);
-    public AdapterProperties AdapterGetProperties() => _handle.AdapterGetProperties();
-    
-    public bool AdapterHasFeature(FeatureName feature) => _handle.AdapterHasFeature(feature);
-    
-    public Task<Device?> RequestDeviceAsync(in DeviceDescriptor descriptor) => 
+    public FeatureName[] GetFeatures() => _handle.GetFeatures();
+
+    public bool GetLimits(out SupportedLimits limits) => _handle.GetLimits(out limits);
+    public SupportedLimits? AdapterGetLimits() => _handle.GetLimits();
+
+    public void GetProperties(out AdapterProperties properties) => _handle.GetProperties(out properties);
+    public AdapterProperties GetProperties() => _handle.GetProperties();
+
+    public bool HasFeature(FeatureName feature) => _handle.HasFeature(feature);
+
+    public Task<Device?> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
         _handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(true));
-    
-    public SupportedLimits GetLimits() => _handle.GetLimits();
-    public void GetLimits(ref SupportedLimits limits) => _handle.GetLimits(ref limits);
 }

@@ -48,6 +48,26 @@ public unsafe static partial class WebGPUMarshal
     }
 
 
+    public static void ToFFI<TSafeHandle, THandle>(
+        ReadOnlySpan<TSafeHandle> handles,
+        WebGpuAllocatorHandle allocator,
+        out THandle* outHandles,
+        out nuint outCount
+    )
+         where TSafeHandle : BaseWebGpuSafeHandle<THandle>
+         where THandle : unmanaged, IWebGpuHandle<THandle>
+    {
+        int length = handles.Length;
+        outHandles = allocator.Alloc<THandle>((nuint)length);
+        for (int i = 0; i < length; i++)
+        {
+            outHandles[i] = handles[i].GetHandle();
+        }
+
+        outCount = (nuint)handles.Length;
+    }
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ToFFI<TSelf, TFFI>(in TSelf input, ref TFFI dest)
         where TSelf : IUnsafeMarshal<TSelf, TFFI>

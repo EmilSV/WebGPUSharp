@@ -70,6 +70,8 @@ public readonly partial struct BufferHandle :
                 return Task.FromResult(BufferMapAsyncStatus.Unknown);
             }
 
+            WebGPU_FFI.
+
             return taskCompletionSource.Task;
         }
     }

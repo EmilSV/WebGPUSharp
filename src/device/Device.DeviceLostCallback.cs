@@ -8,35 +8,35 @@ namespace WebGpuSharp.FFI
 {
     public unsafe readonly partial struct DeviceHandle
     {
-        public readonly void AddUncapturedErrorCallback(UncapturedErrorDelegate callback)
+        public readonly void AddDeviceLostCallback(DeviceLostCallbackDelegate callback)
         {
-            bool addSuccess = UncapturedErrorCallbackHandler.uncapturedErrorCallbacks.TryAdd(callback, 0);
+            bool addSuccess = DeviceLostCallbackHandler.deviceLostCallbacks.TryAdd(callback, 0);
             if (!addSuccess)
             {
                 return;
             }
 
-            if (Interlocked.Increment(ref UncapturedErrorCallbackHandler.uncapturedErrorCallbackSetupCount) == 1)
+            if (Interlocked.Increment(ref DeviceLostCallbackHandler.deviceLostCallbackSetupCount) == 1)
             {
-                WebGPU_FFI.DeviceSetUncapturedErrorCallback(
+                WebGPU_FFI.DeviceSetDeviceLostCallback(
                     device: this,
-                    callback: &UncapturedErrorCallbackHandler.OnUncapturedErrorCallback,
+                    callback: &DeviceLostCallbackHandler.OnDeviceLostCallback,
                     userdata: null
                 );
             }
         }
 
-        public readonly void RemoveUncapturedErrorCallback(UncapturedErrorDelegate callback)
+        public readonly void RemoveDeviceLostCallback(DeviceLostCallbackDelegate callback)
         {
-            bool removeSuccess = UncapturedErrorCallbackHandler.uncapturedErrorCallbacks.TryRemove(callback, out _);
+            bool removeSuccess = DeviceLostCallbackHandler.deviceLostCallbacks.TryRemove(callback, out _);
             if (!removeSuccess)
             {
                 return;
             }
 
-            if (Interlocked.Decrement(ref UncapturedErrorCallbackHandler.uncapturedErrorCallbackSetupCount) == 0)
+            if (Interlocked.Decrement(ref DeviceLostCallbackHandler.deviceLostCallbackSetupCount) == 0)
             {
-                WebGPU_FFI.DeviceSetUncapturedErrorCallback(
+                WebGPU_FFI.DeviceSetDeviceLostCallback(
                     device: this,
                     callback: null,
                     userdata: null
@@ -48,16 +48,17 @@ namespace WebGpuSharp.FFI
 
 namespace WebGpuSharp
 {
-    public delegate void UncapturedErrorDelegate(ErrorType type, ReadOnlySpan<byte> message);
+    public delegate void DeviceLostCallbackDelegate(DeviceLostReason lostReason, ReadOnlySpan<byte> message);
 }
 
-file static class UncapturedErrorCallbackHandler
+
+file static class DeviceLostCallbackHandler
 {
-    public static readonly ConcurrentDictionary<object, byte> uncapturedErrorCallbacks = new();
-    public static volatile uint uncapturedErrorCallbackSetupCount = 0;
+    public static readonly ConcurrentDictionary<object, byte> deviceLostCallbacks = new();
+    public static volatile uint deviceLostCallbackSetupCount = 0;
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static unsafe void OnUncapturedErrorCallback(ErrorType type, byte* message, void* _)
+    public static unsafe void OnDeviceLostCallback(DeviceLostReason lostReason, byte* message, void* _)
     {
         ReadOnlySpan<byte> messageSpan;
         if (message != null)
@@ -72,10 +73,10 @@ file static class UncapturedErrorCallbackHandler
 
         try
         {
-            int count = uncapturedErrorCallbacks.Count;
+            int count = deviceLostCallbacks.Count;
             array = ArrayPool<object>.Shared.Rent(count);
             int nextIndex = 0;
-            foreach (var item in uncapturedErrorCallbacks)
+            foreach (var item in deviceLostCallbacks)
             {
                 if (nextIndex < array.Length)
                 {
@@ -90,7 +91,7 @@ file static class UncapturedErrorCallbackHandler
 
             foreach (var item in array.AsSpan(0, nextIndex))
             {
-                Unsafe.As<UncapturedErrorDelegate>(item).Invoke(type, messageSpan);
+                Unsafe.As<DeviceLostCallbackDelegate>(item).Invoke(lostReason, messageSpan);
             }
         }
         finally

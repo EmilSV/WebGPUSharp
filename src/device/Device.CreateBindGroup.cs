@@ -10,7 +10,7 @@ namespace WebGpuSharp.FFI
             return WebGPU_FFI.DeviceCreateBindGroup(this, descriptor);
         }
 
-        public BindGroup? CreateBindGroup(in BindGroupDescriptor descriptor)
+        public BindGroupHandle CreateBindGroup(in BindGroupDescriptor descriptor)
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
             fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
@@ -21,7 +21,7 @@ namespace WebGpuSharp.FFI
                 ToFFI(descriptor.Layout, out descriptorFFI.Layout);
                 descriptorFFI.EntryCount = (uint)descriptor.Entries.Length;
                 descriptorFFI.Entries = entriesPtr;
-                return CreateBindGroup(&descriptorFFI).ToSafeHandle(true);
+                return CreateBindGroup(&descriptorFFI);
             }
         }
     }

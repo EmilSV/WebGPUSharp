@@ -1,6 +1,6 @@
 namespace WebGpuSharp;
 
-public unsafe partial struct BindGroupEntry
+public struct BindGroupEntry
 {
     public uint Binding;
     public Buffer? Buffer;

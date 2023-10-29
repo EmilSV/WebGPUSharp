@@ -2,10 +2,11 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
-public unsafe readonly partial struct AdapterHandle : 
+public unsafe readonly partial struct AdapterHandle :
     IDisposable, IWebGpuHandle<AdapterHandle>
 {
     public readonly nuint GetEnumerateFeaturesCount()
@@ -23,16 +24,23 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly bool AdapterGetLimits(out SupportedLimits limits)
+    public readonly FeatureName[] GetFeatures()
     {
-        limits = default;
+        nuint count = GetEnumerateFeaturesCount();
+        FeatureName[] features = new FeatureName[count];
+        EnumerateFeatures(features);
+        return features;
+    }
+
+    public readonly bool GetLimits(out SupportedLimits limits)
+    {
         fixed (SupportedLimits* limitsPtr = &limits)
         {
             return WebGPU_FFI.AdapterGetLimits(this, limitsPtr);
         }
     }
 
-    public readonly SupportedLimits? AdapterGetLimits()
+    public readonly SupportedLimits? GetLimits()
     {
         SupportedLimits limits;
         if (WebGPU_FFI.AdapterGetLimits(this, &limits))
@@ -45,7 +53,7 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly void AdapterGetProperties(out AdapterProperties properties)
+    public readonly void GetProperties(out AdapterProperties properties)
     {
         fixed (AdapterPropertiesFFI* propertiesPtr = &properties._unmanagedDescriptor)
         {
@@ -53,14 +61,14 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly AdapterProperties AdapterGetProperties()
+    public readonly AdapterProperties GetProperties()
     {
         AdapterProperties properties;
         WebGPU_FFI.AdapterGetProperties(this, &properties._unmanagedDescriptor);
         return properties;
     }
 
-    public readonly bool AdapterHasFeature(FeatureName feature)
+    public readonly bool HasFeature(FeatureName feature)
     {
         return WebGPU_FFI.AdapterHasFeature(this, feature);
     }
@@ -99,36 +107,22 @@ public unsafe readonly partial struct AdapterHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        fixed (byte* DeviceDescriptorLabelPtr = descriptor.Label)
-        fixed (byte* QueueLabelPtr = descriptor.DefaultQueue.Label)
+        fixed (byte* deviceDescriptorLabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* queueLabelPtr = ToRefCstrUtf8(descriptor.DefaultQueue.Label, allocator))
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
-        fixed (RequiredLimits* requiredLimitsPtr = &descriptor.RequiredLimits)
+        fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
         {
-            UFT8CStrFactory uft8Factory = new(allocator);
-
-            DeviceDescriptorFFI deviceDescriptor = new()
-            {
-                Label = uft8Factory.Create(
-                    text: DeviceDescriptorLabelPtr,
-                    is16BitSize: descriptor.Label.Is16BitSize,
-                    length: descriptor.Label.Length,
-                    allowPassthrough: true
+            DeviceDescriptorFFI deviceDescriptor = new(
+                label: deviceDescriptorLabelPtr,
+                requiredFeatures: requiredFeaturesPtr,
+                requiredFeaturesCount: (uint)descriptor.RequiredFeatures.Length,
+                requiredLimits: requiredLimitsPtr,
+                defaultQueue: new(
+                    label: queueLabelPtr
                 ),
-                RequiredFeatures = requiredFeaturesPtr,
-                RequiredFeaturesCount = (uint)descriptor.RequiredFeatures.Length,
-                RequiredLimits = requiredLimitsPtr,
-                DefaultQueue = new()
-                {
-                    Label = uft8Factory.Create(
-                        text: QueueLabelPtr,
-                        is16BitSize: descriptor.DefaultQueue.Label.Is16BitSize,
-                        length: descriptor.DefaultQueue.Label.Length,
-                        allowPassthrough: true
-                    )
-                },
-                DeviceLostCallback = &DeviceHandle.OnDeviceLostCallback,
-                DeviceLostUserdata = null
-            };
+                deviceLostCallback: null,
+                deviceLostUserdata: null
+            );
             return RequestDeviceAsync(&deviceDescriptor);
         }
     }
@@ -169,21 +163,6 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly SupportedLimits GetLimits()
-    {
-        SupportedLimits limits = default;
-        GetLimits(ref limits);
-        return limits;
-    }
-
-    public readonly void GetLimits(ref SupportedLimits limits)
-    {
-        fixed (SupportedLimits* limitsPtr = &limits)
-        {
-            WebGPU_FFI.AdapterGetLimits(this, limitsPtr);
-        }
-    }
-
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)
@@ -210,6 +189,11 @@ public unsafe readonly partial struct AdapterHandle :
     public static AdapterHandle UnsafeFromPointer(nuint pointer)
     {
         return new AdapterHandle(pointer);
+    }
+
+    public Adapter? ToSafeHandle(bool isOwnedHandle)
+    {
+        return Adapter.FromHandle(this, isOwnedHandle);
     }
 
     public static void Reference(AdapterHandle handle)

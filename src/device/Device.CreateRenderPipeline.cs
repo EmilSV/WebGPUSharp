@@ -15,14 +15,8 @@ namespace WebGpuSharp.FFI
                 return WebGPU_FFI.DeviceCreateRenderPipeline(this, descriptorPtr);
             }
         }
-    }
-}
 
-namespace WebGpuSharp
-{
-    public unsafe partial class Device
-    {
-        public RenderPipeline? CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
+        public RenderPipelineHandle CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
             fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
@@ -36,8 +30,8 @@ namespace WebGpuSharp
                 descriptorFFI.DepthStencil = depthStencilPtr;
                 descriptorFFI.Multisample = descriptor.Multisample;
                 ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
-                
-                return RenderPipeline.FromHandle(_handle.CreateRenderPipeline(descriptorFFI));
+
+                return CreateRenderPipeline(descriptorFFI);
             }
         }
     }

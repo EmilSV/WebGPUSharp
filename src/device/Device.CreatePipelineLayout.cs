@@ -1,96 +1,37 @@
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI
 {
     public unsafe readonly partial struct DeviceHandle
     {
-
         public readonly PipelineLayoutHandle CreatePipelineLayout(
-            ReadOnlySpan<BindGroupLayoutHandle> bindGroupLayouts
+            in PipelineLayoutDescriptorFFI descriptor
         )
         {
-            return CreatePipelineLayout(default, bindGroupLayouts);
-        }
-
-        public readonly PipelineLayoutHandle CreatePipelineLayout(
-            WGPURefText label,
-            ReadOnlySpan<BindGroupLayoutHandle> bindGroupLayouts
-        )
-        {
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
-            fixed (byte* labelPtr = label)
-            fixed (BindGroupLayoutHandle* BindGroupLayoutsPtr = bindGroupLayouts)
+            fixed (PipelineLayoutDescriptorFFI* descriptorPtr = &descriptor)
             {
-                PipelineLayoutDescriptorFFI pipelineLayoutDescriptor = new()
-                {
-                    Label = utf8Factory.Create(
-                        text: labelPtr,
-                        length: label.Length,
-                        is16BitSize: label.Is16BitSize,
-                        allowPassthrough: true
-                    ),
-                    BindGroupLayoutCount = (uint)bindGroupLayouts.Length,
-                    BindGroupLayouts = BindGroupLayoutsPtr,
-                };
-
-                return WebGPU_FFI.DeviceCreatePipelineLayout(this, &pipelineLayoutDescriptor);
+                return WebGPU_FFI.DeviceCreatePipelineLayout(this, descriptorPtr);
             }
         }
 
         public readonly PipelineLayoutHandle CreatePipelineLayout(
-            BindGroupLayoutList bindGroupLayouts
-        )
-        {
-            return CreatePipelineLayout(default, bindGroupLayouts);
-        }
-
-        public readonly PipelineLayoutHandle CreatePipelineLayout(
-            WGPURefText label,
-            BindGroupLayoutList bindGroupLayouts
-        )
+            in PipelineLayoutDescriptor descriptor)
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
-            fixed (byte* labelPtr = label)
+            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
             {
-                PipelineLayoutDescriptorFFI pipelineLayoutDescriptor = new()
-                {
-                    Label = utf8Factory.Create(
-                        text: labelPtr,
-                        length: label.Length,
-                        is16BitSize: label.Is16BitSize,
-                        allowPassthrough: true
-                    ),
-                    BindGroupLayoutCount = (uint)bindGroupLayouts.Count,
-                    BindGroupLayouts = bindGroupLayouts.GetPointerToFFIItems(allocator)
-                };
+                PipelineLayoutDescriptorFFI descriptorFFI = default;
+                descriptorFFI.Label = labelPtr;
+                ToFFI(
+                    descriptor.BindGroupLayouts,
+                    allocator,
+                    out descriptorFFI.BindGroupLayouts,
+                    out descriptorFFI.BindGroupLayoutCount
+                );
 
-                return WebGPU_FFI.DeviceCreatePipelineLayout(this, &pipelineLayoutDescriptor);
+                return CreatePipelineLayout(descriptorFFI);
             }
-        }
-    }
-}
-
-namespace WebGpuSharp
-{
-    public partial class Device
-    {
-        public PipelineLayout? CreatePipelineLayout(
-            BindGroupLayoutList bindGroupLayouts
-        )
-        {
-            return CreatePipelineLayout(default, bindGroupLayouts);
-        }
-
-        public PipelineLayout? CreatePipelineLayout(
-            WGPURefText label,
-            BindGroupLayoutList bindGroupLayouts
-        )
-        {
-            return PipelineLayout.FromHandle(_handle.CreatePipelineLayout(label, bindGroupLayouts));
         }
     }
 }

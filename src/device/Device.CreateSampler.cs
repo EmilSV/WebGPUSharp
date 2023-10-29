@@ -1,95 +1,32 @@
+using System.Runtime.CompilerServices;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI
 {
     public readonly unsafe partial struct DeviceHandle
     {
-        public readonly SamplerHandle CreateSampler(in SamplerDescriptor descriptor)
+        public readonly SamplerHandle CreateSampler(ref SamplerDescriptor descriptor)
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
+            SamplerDescriptorFFI descriptorFFI = descriptor._unsafeDescriptor;
 
-            fixed (SamplerDescriptorFFI* descriptorPtr = &descriptor._unsafeDescriptor)
-            fixed (byte* labelPtr = descriptor.Label)
+            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
             {
-                descriptorPtr->Label = utf8Factory.Create(
-                    text: labelPtr,
-                    length: descriptor.Label.Length,
-                    is16BitSize: descriptor.Label.Is16BitSize,
-                    allowPassthrough: true
-                );
-
-                return WebGPU_FFI.DeviceCreateSampler(this, descriptorPtr);
+                descriptorFFI.Label = labelPtr;
+                return WebGPU_FFI.DeviceCreateSampler(this, &descriptorFFI);
             }
         }
 
-        public readonly SamplerHandle CreateSampler(
-            WGPURefText label = default,
-            AddressMode addressModeU = default,
-            AddressMode addressModeV = default,
-            AddressMode addressModeW = default,
-            FilterMode magFilter = default,
-            FilterMode minFilter = default,
-            MipmapFilterMode mipmapFilter = default,
-            float lodMinClamp = default,
-            float lodMaxClamp = default,
-            CompareFunction compare = default,
-            ushort maxAnisotropy = default
-        )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly SamplerHandle CreateSampler(SamplerDescriptor descriptor)
         {
-            return CreateSampler(new SamplerDescriptor(
-                label: label,
-                addressModeU: addressModeU,
-                addressModeV: addressModeV,
-                addressModeW: addressModeW,
-                magFilter: magFilter,
-                minFilter: minFilter,
-                mipmapFilter: mipmapFilter,
-                lodMinClamp: lodMinClamp,
-                lodMaxClamp: lodMaxClamp,
-                compare: compare,
-                maxAnisotropy: maxAnisotropy
-            ));
-        }
-    }
-}
-
-namespace WebGpuSharp
-{
-    public partial class Device
-    {
-        public Sampler? CreateSampler(in SamplerDescriptor descriptor)
-        {
-            return Sampler.FromHandle(_handle.CreateSampler(descriptor));
-        }
-
-        public Sampler? CreateSampler(
-            WGPURefText label = default,
-            AddressMode addressModeU = default,
-            AddressMode addressModeV = default,
-            AddressMode addressModeW = default,
-            FilterMode magFilter = default,
-            FilterMode minFilter = default,
-            MipmapFilterMode mipmapFilter = default,
-            float lodMinClamp = default,
-            float lodMaxClamp = default,
-            CompareFunction compare = default,
-            ushort maxAnisotropy = default
-        )
-        {
-            return Sampler.FromHandle(_handle.CreateSampler(
-                label,
-                addressModeU,
-                addressModeV,
-                addressModeW,
-                magFilter,
-                minFilter,
-                mipmapFilter,
-                lodMinClamp,
-                lodMaxClamp,
-                compare,
-                maxAnisotropy
-            ));
+            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+            {
+                descriptor._unsafeDescriptor.Label = labelPtr;
+                return WebGPU_FFI.DeviceCreateSampler(this, &descriptor._unsafeDescriptor);
+            }
         }
     }
 }

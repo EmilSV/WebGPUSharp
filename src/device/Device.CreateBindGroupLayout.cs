@@ -1,55 +1,32 @@
 
-using System.Runtime.InteropServices;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI
 {
     public unsafe readonly partial struct DeviceHandle
     {
-        public BindGroupLayoutHandle CreateBindGroupLayout(WGPURefText label, List<BindGroupLayoutEntry> entries)
+        public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptorFFI descriptor)
         {
-            return CreateBindGroupLayout(label, CollectionsMarshal.AsSpan(entries));
-        }
-
-
-        public BindGroupLayoutHandle CreateBindGroupLayout(WGPURefText label, ReadOnlySpan<BindGroupLayoutEntry> entries)
-        {
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
-            fixed (byte* labelPtr = label)
-            fixed (BindGroupLayoutEntry* entriesPtr = entries)
+            fixed (BindGroupLayoutDescriptorFFI* descriptorPtr = &descriptor)
             {
-                BindGroupLayoutDescriptorFFI bindGroupLayoutDescriptor = new()
-                {
-                    Label = utf8Factory.Create(
-                        text: labelPtr,
-                        length: label.Length,
-                        is16BitSize: label.Is16BitSize,
-                        allowPassthrough: true
-                    ),
-                    EntryCount = (uint)entries.Length,
-                    Entries = entriesPtr,
-                };
-
-                return WebGPU_FFI.DeviceCreateBindGroupLayout(this, &bindGroupLayoutDescriptor);
+                return WebGPU_FFI.DeviceCreateBindGroupLayout(this, descriptorPtr);
             }
         }
-    }
-}
 
-namespace WebGpuSharp
-{
-    public partial class Device
-    {
-        public BindGroupLayout? CreateBindGroupLayout(WGPURefText label, List<BindGroupLayoutEntry> entries)
+        public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
         {
-            return BindGroupLayout.FromHandle(_handle.CreateBindGroupLayout(label, entries));
-        }
+            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        public BindGroupLayout? CreateBindGroupLayout(WGPURefText label, ReadOnlySpan<BindGroupLayoutEntry> entries)
-        {
-            return BindGroupLayout.FromHandle(_handle.CreateBindGroupLayout(label, entries));
+            fixed (BindGroupLayoutEntry* entriesPtr = descriptor.Entries)
+            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+            {
+                return CreateBindGroupLayout(new BindGroupLayoutDescriptorFFI(
+                    label: labelPtr,
+                    entries: entriesPtr,
+                    entryCount: (nuint)descriptor.Entries.Length
+                ));
+            }
         }
     }
 }
