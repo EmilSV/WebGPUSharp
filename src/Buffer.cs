@@ -4,7 +4,7 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public sealed class Buffer : BaseWebGpuSafeHandle<BufferHandle>
+public sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
 {
     private Buffer(BufferHandle handle) : base(handle)
     {
@@ -26,10 +26,13 @@ public sealed class Buffer : BaseWebGpuSafeHandle<BufferHandle>
         return _handle.MapAsync(mode, offset, size);
     }
 
-    internal static Buffer? FromHandle(BufferHandle handle, bool incrementReferenceCount)
+    internal static Buffer? FromHandle(BufferHandle handle, bool isOwnedHandle)
     {
         var newBuffer = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Buffer(handle));
-        newBuffer?.AddReference(incrementReferenceCount);
+        if (isOwnedHandle)
+        {
+            newBuffer?.AddReference(false);
+        }
         return newBuffer;
     }
 }

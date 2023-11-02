@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class BindGroup : BaseWebGpuSafeHandle<BindGroupHandle>
+public sealed class BindGroup : BaseWebGpuSafeHandle<BindGroup, BindGroupHandle>
 {
     private BindGroup(BindGroupHandle handle) : base(handle)
     {

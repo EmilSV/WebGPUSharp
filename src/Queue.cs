@@ -5,7 +5,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Queue : BaseWebGpuSafeHandle<QueueHandle>
+public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
 {
     private Queue(QueueHandle handle) : base(handle)
     {

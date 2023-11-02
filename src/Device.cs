@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed unsafe partial class Device : BaseWebGpuSafeHandle<DeviceHandle>
+public sealed unsafe partial class Device : BaseWebGpuSafeHandle<Device, DeviceHandle>
 {
     private Device(DeviceHandle handle) : base(handle)
     {
@@ -46,7 +46,7 @@ public sealed unsafe partial class Device : BaseWebGpuSafeHandle<DeviceHandle>
         _handle.CreateSwapChain(surface.GetHandle(), descriptor).ToSafeHandle(true);
 
     public ShaderModule? CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
-        ShaderModule.FromHandle(_handle.CreateShaderModule(descriptor));
+        _handle.CreateShaderModule(descriptor).ToSafeHandle(true);
 
     public SupportedLimits GetLimits() => _handle.GetLimits();
     public void GetLimits(ref SupportedLimits supportedLimits) => _handle.GetLimits(ref supportedLimits);

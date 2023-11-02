@@ -3,37 +3,18 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class PipelineLayout : BaseWebGpuSafeHandle<PipelineLayoutHandle>
+public sealed class PipelineLayout : BaseWebGpuSafeHandle<PipelineLayout, PipelineLayoutHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<PipelineLayoutHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<PipelineLayoutHandle> Create(PipelineLayoutHandle handle)
-        {
-            return new PipelineLayout(handle);
-        }
-    }
-
     private PipelineLayout(PipelineLayoutHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static PipelineLayout? FromHandle(PipelineLayoutHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.PipelineLayoutReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.PipelineLayoutRelease(_handle);
-    }
-
-    internal static PipelineLayout? FromHandle(PipelineLayoutHandle handle, bool incrementReferenceCount = true)
-    {
-        var newPipelineLayout = WebGpuSafeHandleCache<PipelineLayoutHandle>.GetOrCreate<CacheFactory>(handle) as PipelineLayout;
-        if (incrementReferenceCount && newPipelineLayout != null)
+        var newPipelineLayout = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new PipelineLayout(handle));
+        if (isOwnedHandle)
         {
-            newPipelineLayout.AddReference(false);
+            newPipelineLayout?.AddReference(false);
         }
         return newPipelineLayout;
     }

@@ -1,6 +1,10 @@
+using WebGpuSharp.FFI;
+using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
+
 namespace WebGpuSharp;
 
-public struct BindGroupEntry
+public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEntryFFI>
 {
     public uint Binding;
     public Buffer? Buffer;
@@ -30,6 +34,25 @@ public struct BindGroupEntry
         Size = size;
         Sampler = sampler;
         TextureView = textureView;
+    }
+
+    static void IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>.UnsafeConvertToFFI(
+        in BindGroupEntry input, WebGpuAllocatorHandle allocator, out BindGroupEntryFFI dest)
+    {
+        ToFFI(input, out dest);
+    }
+
+    static void IWebGpuFFIConvertible<BindGroupEntry, BindGroupEntryFFI>.UnsafeConvertToFFI(
+        in BindGroupEntry input, out BindGroupEntryFFI dest)
+    {
+        dest = new(
+            binding: input.Binding,
+            buffer: ToFFI<Buffer, BufferHandle>(input.Buffer),
+            offset: input.Offset,
+            size: input.Size,
+            sampler: ToFFI<Sampler, SamplerHandle>(input.Sampler),
+            textureView: ToFFI<TextureView, TextureViewHandle>(input.TextureView)
+        );
     }
 }
 

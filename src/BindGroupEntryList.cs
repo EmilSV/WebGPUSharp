@@ -4,8 +4,8 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 public sealed class BindGroupEntryList : BaseFFIList<
-    BindGroupEntryMarshal, BindGroupEntry,
-    BindGroupEntryFFI, BindGroupEntryMarshal.Cache>
+    BindGroupEntryCollectionMarshal, BindGroupEntry,
+    BindGroupEntryFFI, BindGroupEntryCollectionMarshal.Cache>
 {
 
 }

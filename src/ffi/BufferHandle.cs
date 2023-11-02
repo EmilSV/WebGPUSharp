@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
 
@@ -69,9 +70,6 @@ public readonly partial struct BufferHandle :
                 }
                 return Task.FromResult(BufferMapAsyncStatus.Unknown);
             }
-
-            WebGPU_FFI.
-
             return taskCompletionSource.Task;
         }
     }
@@ -116,9 +114,9 @@ public readonly partial struct BufferHandle :
         WebGPU_FFI.BufferRelease(handle);
     }
 
-    public Buffer? ToSafeHandle(bool incrementReferenceCount)
+    public Buffer? ToSafeHandle(bool isOwnedHandle)
     {
-        return Buffer.FromHandle(this, incrementReferenceCount);
+        return Buffer.FromHandle(this, isOwnedHandle);
     }
 }
 

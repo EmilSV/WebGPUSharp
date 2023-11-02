@@ -44,4 +44,9 @@ public readonly partial struct ShaderModuleHandle :
             WebGPU_FFI.ShaderModuleRelease(this);
         }
     }
+
+    public ShaderModule? ToSafeHandle(bool isOwnedHandle)
+    {
+        return ShaderModule.FromHandle(this, isOwnedHandle);
+    }
 }

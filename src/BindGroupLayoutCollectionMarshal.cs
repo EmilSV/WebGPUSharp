@@ -4,8 +4,8 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
-public class BindGroupLayoutMarshal :
-    IWebGPUMarshal<BindGroupLayout, BindGroupLayoutHandle, BindGroupLayoutMarshal.Cache>
+public class BindGroupLayoutCollectionMarshal :
+    IWebGPUCollectionMarshal<BindGroupLayout, BindGroupLayoutHandle, BindGroupLayoutCollectionMarshal.Cache>
 {
     public struct Cache { }
 

@@ -6,8 +6,8 @@ namespace WebGpuSharp;
 
 
 public unsafe sealed class ConstantEntryList : BaseFFIList<
-    ConstantEntryMarshal, ConstantEntry,
-    ConstantEntryFFI, ConstantEntryMarshal.Cache
+    ConstantEntryCollectionMarshal, ConstantEntry,
+    ConstantEntryFFI, ConstantEntryCollectionMarshal.Cache
 >
 {
 

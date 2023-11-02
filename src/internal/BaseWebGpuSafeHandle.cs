@@ -3,6 +3,27 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
+public abstract class BaseWebGpuSafeHandle<TSelf, THandle> :
+    BaseWebGpuSafeHandle<THandle>,
+    IWebGpuFFIConvertible<TSelf, THandle>
+    where TSelf : BaseWebGpuSafeHandle<TSelf, THandle>
+    where THandle : unmanaged, IWebGpuHandle<THandle>
+{
+    internal BaseWebGpuSafeHandle(THandle handle) : base(handle)
+    {
+    }
+
+    static void IWebGpuFFIConvertible<TSelf, THandle>.UnsafeConvertToFFI(in TSelf input, out THandle dest)
+    {
+        dest = input.GetHandle();
+    }
+
+    static void IWebGpuFFIConvertibleAlloc<TSelf, THandle>.UnsafeConvertToFFI(in TSelf input, WebGpuAllocatorHandle allocator, out THandle dest)
+    {
+        dest = input.GetHandle();
+    }
+}
+
 public abstract class BaseWebGpuSafeHandle<THandle>
     where THandle : unmanaged, IWebGpuHandle<THandle>
 {

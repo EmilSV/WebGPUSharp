@@ -5,8 +5,8 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
-public unsafe class ConstantEntryMarshal :
-    IWebGPUMarshal<ConstantEntry, ConstantEntryFFI, ConstantEntryMarshal.Cache>
+public unsafe class ConstantEntryCollectionMarshal :
+    IWebGPUCollectionMarshal<ConstantEntry, ConstantEntryFFI, ConstantEntryCollectionMarshal.Cache>
 {
     public struct Cache
     {

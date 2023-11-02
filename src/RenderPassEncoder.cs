@@ -5,35 +5,16 @@ namespace WebGpuSharp;
 
 public sealed class RenderPassEncoder : BaseWebGpuSafeHandle<RenderPassEncoderHandle>
 {
-    private sealed class CacheFactory :
-        WebGpuSafeHandleCache<RenderPassEncoderHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<RenderPassEncoderHandle> Create(RenderPassEncoderHandle handle)
-        {
-            return new RenderPassEncoder(handle);
-        }
-    }
-
     private RenderPassEncoder(RenderPassEncoderHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static RenderPassEncoder? FromHandle(RenderPassEncoderHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.RenderPassEncoderReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.RenderPassEncoderRelease(_handle);
-    }
-
-    internal static RenderPassEncoder? FromHandle(RenderPassEncoderHandle handle, bool incrementReferenceCount = true)
-    {
-        var newRenderPassEncoder = WebGpuSafeHandleCache<RenderPassEncoderHandle>.GetOrCreate<CacheFactory>(handle) as RenderPassEncoder;
-        if (incrementReferenceCount && newRenderPassEncoder != null)
+        var newRenderPassEncoder = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new RenderPassEncoder(handle));
+        if (isOwnedHandle)
         {
-            newRenderPassEncoder.AddReference(false);
+            newRenderPassEncoder?.AddReference(false);
         }
         return newRenderPassEncoder;
     }

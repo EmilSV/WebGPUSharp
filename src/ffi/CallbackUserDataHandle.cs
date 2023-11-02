@@ -2,9 +2,9 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace WebGpuSharp;
+namespace WebGpuSharp.Internal;
 
-public struct CallbackUserDataHandle :
+internal struct CallbackUserDataHandle :
     IDisposable
 {
     private readonly static ConcurrentDictionary<nuint, object> _handlesToObject = new();
@@ -28,7 +28,7 @@ public struct CallbackUserDataHandle :
                 var value = (nuint)Interlocked.Increment(ref Unsafe.As<nuint, uint>(ref _nextId));
                 if (value == 0)
                 {
-                    value = (nuint)Interlocked.Increment(ref Unsafe.As<nuint, uint>(ref _nextId));
+                    value = Interlocked.Increment(ref Unsafe.As<nuint, uint>(ref _nextId));
                 }
 
                 return value;

@@ -5,7 +5,7 @@ using WebGpuSharp.FFI;
 namespace WebGpuSharp.Internal;
 
 public unsafe class VertexBufferLayoutMarshal :
-    IWebGPUMarshal<VertexBufferLayout, VertexBufferLayoutFFI, VertexBufferLayoutMarshal.Cache>
+    IWebGPUCollectionMarshal<VertexBufferLayout, VertexBufferLayoutFFI, VertexBufferLayoutMarshal.Cache>
 {
     public struct Cache { };
 

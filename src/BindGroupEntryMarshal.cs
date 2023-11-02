@@ -1,27 +1,20 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
-public unsafe class BindGroupEntryMarshal :
-    IWebGPUMarshal<BindGroupEntry, BindGroupEntryFFI, BindGroupEntryMarshal.Cache>
+public unsafe class BindGroupEntryCollectionMarshal :
+    IWebGPUCollectionMarshal<BindGroupEntry, BindGroupEntryFFI, BindGroupEntryCollectionMarshal.Cache>
 {
-    private BindGroupEntryMarshal() { }
+    private BindGroupEntryCollectionMarshal() { }
 
     public struct Cache { }
 
     public static void MarshalTo(in BindGroupEntry item, ref BindGroupEntryFFI ffiItem)
     {
-        ffiItem = new BindGroupEntryFFI(
-            nextInChain: null,
-            binding: item.Binding,
-            buffer: item.Buffer?.GetHandle() ?? default,
-            offset: item.Offset,
-            size: item.Size,
-            sampler: item.Sampler?.GetHandle() ?? default,
-            textureView: item.TextureView?.GetHandle() ?? default
-        );
+        ToFFI(item, out ffiItem);
     }
 
 

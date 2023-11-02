@@ -5,18 +5,19 @@ using static WebGpuSharp.WebGPUMarshal;
 namespace WebGpuSharp;
 
 public partial struct FragmentState :
-    IUnsafeMarshalAlloc<FragmentState, FragmentStateFFI>
+    IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
 {
     public ShaderModule Module;
     public string EntryPoint;
     public ConstantEntryList? Constants;
     public ColorTargetStateList? Targets;
 
-    static unsafe void IUnsafeMarshalAlloc<FragmentState, FragmentStateFFI>.UnsafeMarshalTo(
+    static unsafe void IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>.UnsafeConvertToFFI(
         in FragmentState input,
         WebGpuAllocatorHandle allocator,
-        ref FragmentStateFFI dest)
+        out FragmentStateFFI dest)
     {
+        dest = new FragmentStateFFI();
         ToFFI(input.Module, out dest.Module);
         ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);

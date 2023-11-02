@@ -3,37 +3,18 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Instance : BaseWebGpuSafeHandle<InstanceHandle>
+public sealed class Instance : BaseWebGpuSafeHandle<Instance, InstanceHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<InstanceHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<InstanceHandle> Create(InstanceHandle handle)
-        {
-            return new Instance(handle);
-        }
-    }
-
     private Instance(InstanceHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static Instance? FromHandle(InstanceHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.InstanceReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.InstanceRelease(_handle);
-    }
-
-    internal static Instance? FromHandle(InstanceHandle handle, bool incrementReferenceCount = true)
-    {
-        var newInstance = WebGpuSafeHandleCache<InstanceHandle>.GetOrCreate<CacheFactory>(handle) as Instance;
-        if (incrementReferenceCount && newInstance != null)
+        var newInstance = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Instance(handle));
+        if (isOwnedHandle)
         {
-            newInstance.AddReference(false);
+            newInstance?.AddReference(false);
         }
 
         return newInstance;
@@ -43,7 +24,7 @@ public sealed class Instance : BaseWebGpuSafeHandle<InstanceHandle>
     {
         return _handle.RequestAdapterAsync(options).ContinueWith(static task =>
         {
-            return Adapter.FromHandle(task.Result);
+            return task.Result.ToSafeHandle(true);
         });
     }
 

@@ -5,14 +5,14 @@ using static WebGpuSharp.WebGPUMarshal;
 namespace WebGpuSharp;
 
 public partial struct VertexState :
-    IUnsafeMarshalAlloc<VertexState, VertexStateFFI>
+    IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
 {
     public ShaderModule Module;
     public string EntryPoint;
     public ConstantEntryList? Constants;
     public VertexBufferLayoutList? Buffers;
 
-    static unsafe void IUnsafeMarshalAlloc<VertexState, VertexStateFFI>.UnsafeMarshalTo(
+    static unsafe void IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>.UnsafeMarshalTo(
         in VertexState input, WebGpuAllocatorHandle allocator, ref VertexStateFFI dest)
     {
         ToFFI(input.Module, out dest.Module);

@@ -1,8 +1,6 @@
-using WebGpuSharp.Internal;
+namespace WebGpuSharp.Internal;
 
-namespace WebGpuSharp;
-
-public interface IWebGPUMarshal<TManaged, TFFI, TCache>
+public interface IWebGPUCollectionMarshal<TManaged, TFFI, TCache>
     where TFFI : unmanaged
     where TCache : struct
 {

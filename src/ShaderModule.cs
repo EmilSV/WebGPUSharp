@@ -9,31 +9,12 @@ public sealed class ShaderModule : BaseWebGpuSafeHandle<ShaderModuleHandle>
     {
     }
 
-    private class CacheFactory :
-        WebGpuSafeHandleCache<ShaderModuleHandle>.ISafeHandleFactory
+    internal static ShaderModule? FromHandle(ShaderModuleHandle handle, bool isOwnedHandle)
     {
-        public static BaseWebGpuSafeHandle<ShaderModuleHandle> Create(ShaderModuleHandle handle)
+        var newShaderModule = WebGpuSafeHandleCache.GetOrCreate(handle, h => new ShaderModule(h));
+        if (isOwnedHandle)
         {
-            return new ShaderModule(handle);
-        }
-    }
-
-    protected override void WebGpuReference()
-    {
-        WebGPU_FFI.ShaderModuleReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.ShaderModuleRelease(_handle);
-    }
-
-    internal static ShaderModule? FromHandle(ShaderModuleHandle handle, bool incrementReferenceCount = true)
-    {
-        var newShaderModule = WebGpuSafeHandleCache<ShaderModuleHandle>.GetOrCreate<CacheFactory>(handle) as ShaderModule;
-        if (incrementReferenceCount && newShaderModule != null)
-        {
-            newShaderModule.AddReference(false);
+            newShaderModule?.AddReference(false);
         }
         return newShaderModule;
     }

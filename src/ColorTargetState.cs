@@ -1,21 +1,45 @@
 using System.Runtime.InteropServices;
+using WebGpuSharp.FFI;
+using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
 [StructLayout(LayoutKind.Auto)]
-public partial struct ColorTargetState
+public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>
 {
     public TextureFormat Format;
     public BlendState? Blend;
     public ColorWriteMask WriteMask;
 
     public ColorTargetState(
-        TextureFormat format = default, 
-        BlendState? blend = default, 
+        TextureFormat format = default,
+        BlendState? blend = default,
         ColorWriteMask writeMask = default)
     {
         this.Format = format;
         this.Blend = blend;
         this.WriteMask = writeMask;
+    }
+
+    static void IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>.UnsafeConvertToFFI(
+        in ColorTargetState input, WebGpuAllocatorHandle allocator, out ColorTargetStateFFI dest)
+    {
+        if (input.Blend.HasValue)
+        {
+            var blendStatePtr = allocator.Alloc<BlendState>(1);
+            *blendStatePtr = input.Blend.Value;
+            dest = new ColorTargetStateFFI(
+                format: input.Format,
+                blend: blendStatePtr,
+                writeMask: input.WriteMask
+            );
+        }
+        else
+        {
+            dest = new ColorTargetStateFFI(
+                input.Format,
+                null,
+                input.WriteMask);
+        }
     }
 }

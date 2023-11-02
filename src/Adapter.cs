@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Adapter : BaseWebGpuSafeHandle<AdapterHandle>
+public sealed class Adapter : BaseWebGpuSafeHandle<Adapter, AdapterHandle>
 {
     private Adapter(AdapterHandle handle) : base(handle)
     {

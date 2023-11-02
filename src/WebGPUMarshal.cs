@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
@@ -9,36 +10,59 @@ namespace WebGpuSharp;
 public unsafe static partial class WebGPUMarshal
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<TSelf, TFFI>(WGPUNullableRef<TSelf> input, ref TFFI dest)
-        where TSelf : struct, IUnsafeMarshal<TSelf, TFFI>
+    public static void ToFFI<TFrom, TTo>(WGPUNullableRef<TFrom> input, out TTo dest)
+        where TFrom : struct, IWebGpuFFIConvertible<TFrom, TTo>
     {
         if (input.HasValue)
         {
-            TSelf.UnsafeMarshalTo(in input.Value, ref dest);
+            TFrom.UnsafeConvertToFFI(in input.Value, out dest);
+        }
+        else
+        {
+            dest = default!;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<TSelf, TFFI>(
-        WGPUNullableRef<TSelf> input, WebGpuAllocatorHandle allocator, ref TFFI dest)
-        where TSelf : struct, IUnsafeMarshalAlloc<TSelf, TFFI>
+    public static TTo ToFFI<TFrom, TTo>(WGPUNullableRef<TFrom> input)
+        where TFrom : struct, IWebGpuFFIConvertible<TFrom, TTo>
     {
         if (input.HasValue)
         {
-            TSelf.UnsafeMarshalTo(in input.Value, allocator, ref dest);
+            TFrom.UnsafeConvertToFFI(in input.Value, out var dest);
+            return dest;
+        }
+        else
+        {
+            return default!;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void ToFFI<TSelf, TFFI>(
-        WGPUNullableRef<TSelf> input, WebGpuAllocatorHandle allocator, out TFFI* dest)
-        where TSelf : struct, IUnsafeMarshalAlloc<TSelf, TFFI>
-        where TFFI : unmanaged
+    public static void ToFFI<TFrom, TTo>(
+        WGPUNullableRef<TFrom> input, WebGpuAllocatorHandle allocator, out TTo dest)
+        where TFrom : struct, IWebGpuFFIConvertibleAlloc<TFrom, TTo>
     {
         if (input.HasValue)
         {
-            TFFI* newDestPtr = allocator.Alloc<TFFI>(1);
-            TSelf.UnsafeMarshalTo(in input.Value, allocator, ref Unsafe.AsRef<TFFI>(newDestPtr));
+            TFrom.UnsafeConvertToFFI(in input.Value, allocator, out dest);
+        }
+        else
+        {
+            dest = default!;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void ToFFI<TFrom, TTo>(
+        WGPUNullableRef<TFrom> input, WebGpuAllocatorHandle allocator, out TTo* dest)
+        where TFrom : struct, IWebGpuFFIConvertibleAlloc<TFrom, TTo>
+        where TTo : unmanaged
+    {
+        if (input.HasValue)
+        {
+            TTo* newDestPtr = allocator.Alloc<TTo>(1);
+            TFrom.UnsafeConvertToFFI(in input.Value, allocator, out Unsafe.AsRef<TTo>(newDestPtr));
             dest = newDestPtr;
         }
         else
@@ -47,39 +71,43 @@ public unsafe static partial class WebGPUMarshal
         }
     }
 
-
-    public static void ToFFI<TSafeHandle, THandle>(
-        ReadOnlySpan<TSafeHandle> handles,
-        WebGpuAllocatorHandle allocator,
-        out THandle* outHandles,
-        out nuint outCount
-    )
-         where TSafeHandle : BaseWebGpuSafeHandle<THandle>
-         where THandle : unmanaged, IWebGpuHandle<THandle>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ToFFI<TFrom, TTo>([AllowNull] in TFrom input, out TTo dest)
+        where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
     {
-        int length = handles.Length;
-        outHandles = allocator.Alloc<THandle>((nuint)length);
-        for (int i = 0; i < length; i++)
+        if (input is null)
         {
-            outHandles[i] = handles[i].GetHandle();
+            dest = default!;
+            return;
         }
 
-        outCount = (nuint)handles.Length;
-    }
-
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<TSelf, TFFI>(in TSelf input, ref TFFI dest)
-        where TSelf : IUnsafeMarshal<TSelf, TFFI>
-    {
-        TSelf.UnsafeMarshalTo(in input, ref dest);
+        TFrom.UnsafeConvertToFFI(in input, out dest);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<TSelf, TFFI>(in TSelf input, WebGpuAllocatorHandle allocator, ref TFFI dest)
-        where TSelf : IUnsafeMarshalAlloc<TSelf, TFFI>
+    public static TTo ToFFI<TFrom, TTo>([AllowNull] in TFrom input)
+        where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
     {
-        TSelf.UnsafeMarshalTo(in input, allocator, ref dest);
+        if (input is null)
+        {
+            return default!;
+        }
+
+        TFrom.UnsafeConvertToFFI(in input, out var dest);
+        return dest;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ToFFI<TFrom, TTo>([AllowNull] in TFrom input, WebGpuAllocatorHandle allocator, out TTo dest)
+        where TFrom : IWebGpuFFIConvertibleAlloc<TFrom, TTo>
+    {
+        if (input is null)
+        {
+            dest = default!;
+            return;
+        }
+
+        TFrom.UnsafeConvertToFFI(in input, allocator, out dest);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,12 +117,18 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<T, TFFI>(
+    public static unsafe byte* ToFFI(string input, WebGpuAllocatorHandle allocator)
+    {
+        return UFT8CStrFactory.Create(input, allocator);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ToFFI<T, TTo>(
         T? input, WebGpuAllocatorHandle allocator,
-        out TFFI* dest, out nuint outCount
+        out TTo* dest, out nuint outCount
     )
-        where T : IUnsafeMarshalCollectionAlloc<TFFI>
-        where TFFI : unmanaged
+        where T : IWebGpuFFIConvertibleCollectionAlloc<TTo>
+        where TTo : unmanaged
     {
         if (input is null)
         {
@@ -103,16 +137,16 @@ public unsafe static partial class WebGPUMarshal
             return;
         }
 
-        input.GetPointerToFFIItems(allocator, out dest, out outCount);
+        input.UnsafeConvertToFFI(allocator, out dest, out outCount);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<T, TFFI>(
+    public static void ToFFI<T, TTo>(
         T? input, WebGpuAllocatorHandle allocator,
-        out TFFI* dest, out uint outCount
+        out TTo* dest, out uint outCount
     )
-        where T : IUnsafeMarshalCollectionAlloc<TFFI>
-        where TFFI : unmanaged
+        where T : IWebGpuFFIConvertibleCollectionAlloc<TTo>
+        where TTo : unmanaged
     {
         if (input is null)
         {
@@ -121,15 +155,15 @@ public unsafe static partial class WebGPUMarshal
             return;
         }
 
-        input.GetPointerToFFIItems(allocator, out dest, out outCount);
+        input.UnsafeConvertToFFI(allocator, out dest, out var outCountNuint);
+        outCount = (uint)outCountNuint;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<T, TFFI>(
-        T? input,
-        out TFFI* dest, out nuint outCount)
-        where T : IUnsafeMarshalCollection<TFFI>
-        where TFFI : unmanaged
+    public static void ToFFI<T, TTo>(
+        T? input, out TTo* dest, out nuint outCount)
+        where T : IWebGpuFFIConvertibleCollection<TTo>
+        where TTo : unmanaged
     {
         if (input is null)
         {
@@ -138,15 +172,14 @@ public unsafe static partial class WebGPUMarshal
             return;
         }
 
-        input.GetPointerToFFIItems(out dest, out outCount);
+        input.UnsafeConvertToFFI(out dest, out outCount);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<T, TFFI>(
-        T? input,
-        out TFFI* dest, out uint outCount)
-        where T : IUnsafeMarshalCollection<TFFI>
-        where TFFI : unmanaged
+    public static void ToFFI<TFrom, TTo>(
+        TFrom? input, out TTo* dest, out uint outCount)
+        where TFrom : IWebGpuFFIConvertibleCollection<TTo>
+        where TTo : unmanaged
     {
         if (input is null)
         {
@@ -155,7 +188,8 @@ public unsafe static partial class WebGPUMarshal
             return;
         }
 
-        input.GetPointerToFFIItems(out dest, out outCount);
+        input.UnsafeConvertToFFI(out dest, out var outCountNuint);
+        outCount = (uint)outCountNuint;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

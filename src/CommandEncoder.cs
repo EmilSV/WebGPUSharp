@@ -3,43 +3,24 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class CommandEncoder : BaseWebGpuSafeHandle<CommandEncoderHandle>
+public sealed class CommandEncoder : BaseWebGpuSafeHandle<CommandEncoder, CommandEncoderHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<CommandEncoderHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<CommandEncoderHandle> Create(CommandEncoderHandle handle)
-        {
-            return new CommandEncoder(handle);
-        }
-    }
-
     private CommandEncoder(CommandEncoderHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static CommandEncoder? FromHandle(CommandEncoderHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.CommandEncoderReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.CommandEncoderRelease(_handle);
-    }
-
-    internal static CommandEncoder? FromHandle(CommandEncoderHandle handle, bool incrementReferenceCount = true)
-    {
-        var newCommandEncoder = WebGpuSafeHandleCache<CommandEncoderHandle>.GetOrCreate<CacheFactory>(handle) as CommandEncoder;
-        if (incrementReferenceCount && newCommandEncoder != null)
+        var newCommandEncoder = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new CommandEncoder(handle));
+        if (isOwnedHandle)
         {
-            newCommandEncoder.AddReference(false);
+            newCommandEncoder?.AddReference(false);
         }
         return newCommandEncoder;
     }
 
     public RenderPassEncoder? BeginRenderPass(in RenderPassDescriptor descriptor) =>
-        RenderPassEncoder.FromHandle(_handle.BeginRenderPass(descriptor));
+        RenderPassEncoder.FromHandle(_handle.BeginRenderPass(descriptor), true);
 
     public void CopyBufferToBuffer(
         Buffer source,
