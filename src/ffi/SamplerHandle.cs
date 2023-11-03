@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct SamplerHandle :
-    IDisposable, IWebGpuHandle<SamplerHandle>
+    IDisposable, IWebGpuHandle<SamplerHandle, Sampler>
 {
     public static ref nuint AsPointer(ref SamplerHandle handle)
     {
@@ -41,5 +41,10 @@ public readonly partial struct SamplerHandle :
         {
             WebGPU_FFI.SamplerRelease(this);
         }
+    }
+
+    public Sampler? ToSafeHandle(bool isOwnedHandle)
+    {
+        return Sampler.FromHandle(this, isOwnedHandle);
     }
 }

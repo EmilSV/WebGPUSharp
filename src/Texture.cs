@@ -9,10 +9,13 @@ public sealed class Texture : BaseWebGpuSafeHandle<TextureHandle>
     {
     }
 
-    internal static Texture? FromHandle(TextureHandle handle, bool incrementReferenceCount)
+    internal static Texture? FromHandle(TextureHandle handle, bool isOwnedHandle)
     {
         var newTexture = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Texture(handle));
-        newTexture?.AddReference(incrementReferenceCount);
+        if (isOwnedHandle)
+        {
+            newTexture?.AddReference(false);
+        }
         return newTexture;
     }
 

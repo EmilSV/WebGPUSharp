@@ -43,8 +43,8 @@ public readonly unsafe partial struct BindGroupHandle :
         WebGPU_FFI.BindGroupRelease(handle);
     }
 
-    public BindGroup ToSafeHandle(bool incrementReferenceCount)
+    public BindGroup? ToSafeHandle(bool isOwnedHandle)
     {
-        return BindGroup.FromHandle(this, incrementReferenceCount)!;
+        return BindGroup.FromHandle(this, isOwnedHandle);
     }
 }

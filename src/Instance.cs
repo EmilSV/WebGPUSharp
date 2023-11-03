@@ -35,6 +35,6 @@ public sealed class Instance : BaseWebGpuSafeHandle<Instance, InstanceHandle>
 
     public Surface? CreateSurface(SurfaceDescriptor descriptor)
     {
-        return Surface.FromHandle(_handle.CreateSurface(descriptor));
+        return _handle.CreateSurface(descriptor).ToSafeHandle(true);
     }
 }

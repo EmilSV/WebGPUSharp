@@ -1,5 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -18,10 +19,10 @@ public struct RenderPassDepthStencilAttachment :
 
 
 
-    static void IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeMarshalTo(
-        in RenderPassDepthStencilAttachment input, ref RenderPassDepthStencilAttachmentFFI dest)
+    static void IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
+        in RenderPassDepthStencilAttachment input, out RenderPassDepthStencilAttachmentFFI dest)
     {
-        dest.View = input.View.GetHandle();
+        dest.View = ToFFI<TextureView, TextureViewHandle>(input.View);
         dest.DepthLoadOp = input.DepthLoadOp;
         dest.DepthStoreOp = input.DepthStoreOp;
         dest.DepthClearValue = input.DepthClearValue;
@@ -32,17 +33,9 @@ public struct RenderPassDepthStencilAttachment :
         dest.StencilReadOnly = input.StencilReadOnly;
     }
 
-    static void IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeMarshalTo(
-        in RenderPassDepthStencilAttachment input, WebGpuAllocatorHandle allocator, ref RenderPassDepthStencilAttachmentFFI dest)
+    static void IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
+        in RenderPassDepthStencilAttachment input, WebGpuAllocatorHandle allocator, out RenderPassDepthStencilAttachmentFFI dest)
     {
-        dest.View = input.View.GetHandle();
-        dest.DepthLoadOp = input.DepthLoadOp;
-        dest.DepthStoreOp = input.DepthStoreOp;
-        dest.DepthClearValue = input.DepthClearValue;
-        dest.DepthReadOnly = input.DepthReadOnly;
-        dest.StencilLoadOp = input.StencilLoadOp;
-        dest.StencilStoreOp = input.StencilStoreOp;
-        dest.StencilClearValue = input.StencilClearValue;
-        dest.StencilReadOnly = input.StencilReadOnly;
+        ToFFI(in input, out dest);
     }
 }

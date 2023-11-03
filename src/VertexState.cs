@@ -12,9 +12,10 @@ public partial struct VertexState :
     public ConstantEntryList? Constants;
     public VertexBufferLayoutList? Buffers;
 
-    static unsafe void IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>.UnsafeMarshalTo(
-        in VertexState input, WebGpuAllocatorHandle allocator, ref VertexStateFFI dest)
+    static unsafe void IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>.UnsafeConvertToFFI(
+        in VertexState input, WebGpuAllocatorHandle allocator, out VertexStateFFI dest)
     {
+        dest = default;
         ToFFI(input.Module, out dest.Module);
         ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);

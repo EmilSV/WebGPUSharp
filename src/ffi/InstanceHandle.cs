@@ -6,7 +6,8 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp.FFI;
 
 
-public readonly unsafe partial struct InstanceHandle : IDisposable, IWebGpuHandle<InstanceHandle>
+public readonly unsafe partial struct InstanceHandle :
+    IDisposable, IWebGpuHandle<InstanceHandle, Instance>
 {
     public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptionsFFI options)
     {
@@ -136,5 +137,20 @@ public readonly unsafe partial struct InstanceHandle : IDisposable, IWebGpuHandl
     public static InstanceHandle UnsafeFromPointer(nuint pointer)
     {
         return new InstanceHandle(pointer);
+    }
+
+    public static void Reference(InstanceHandle handle)
+    {
+        WebGPU_FFI.InstanceReference(handle);
+    }
+
+    public static void Release(InstanceHandle handle)
+    {
+        WebGPU_FFI.InstanceRelease(handle);
+    }
+
+    public Instance? ToSafeHandle(bool isOwnedHandle)
+    {
+        return Instance.FromHandle(this, isOwnedHandle);
     }
 }

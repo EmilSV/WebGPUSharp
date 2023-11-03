@@ -35,9 +35,9 @@ public readonly partial struct TextureViewHandle :
         return new TextureViewHandle(pointer);
     }
 
-    public TextureView? ToSafeHandle(bool incrementReferenceCount)
+    public TextureView? ToSafeHandle(bool isOwnedHandle)
     {
-        return TextureView.FromHandle(this, incrementReferenceCount);
+        return TextureView.FromHandle(this, isOwnedHandle);
     }
 
     public void Dispose()

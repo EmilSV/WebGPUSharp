@@ -17,8 +17,8 @@ public readonly partial struct SwapChainHandle :
         }
     }
 
-    public SwapChain? ToSafeHandle(bool incrementReferenceCount) =>
-         SwapChain.FromHandle(this, incrementReferenceCount);
+    public SwapChain? ToSafeHandle(bool isOwnedHandle) =>
+         SwapChain.FromHandle(this, isOwnedHandle);
 
 
     public static ref nuint AsPointer(ref SwapChainHandle handle)

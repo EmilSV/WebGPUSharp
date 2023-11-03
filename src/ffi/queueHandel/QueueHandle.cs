@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly unsafe partial struct QueueHandle : IDisposable, IWebGpuHandle<QueueHandle, Queue>
+public readonly unsafe partial struct QueueHandle : 
+    IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(ReadOnlySpan<CommandBufferHandle> commands)

@@ -111,6 +111,47 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ToFFI<TFrom, TTo>(
+        ReadOnlySpan<TFrom> input,
+        WebGpuAllocatorHandle allocator,
+        out TTo* dest,
+        out nuint outCount
+    )
+        where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
+        where TTo : unmanaged
+    {
+        if (input.IsEmpty)
+        {
+            dest = null;
+            outCount = 0;
+            return;
+        }
+
+        var newDestPtr = allocator.Alloc<TTo>((nuint)input.Length);
+        outCount = (nuint)input.Length;
+        for (var i = 0; i < input.Length; i++)
+        {
+            TFrom.UnsafeConvertToFFI(in input[i], out Unsafe.AsRef<TTo>(newDestPtr + i));
+        }
+
+        dest = newDestPtr;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ToFFI<TFrom, TTo>(
+        ReadOnlySpan<TFrom> input,
+        WebGpuAllocatorHandle allocator,
+        out TTo* dest,
+        out uint outCount
+    )
+    where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
+    where TTo : unmanaged
+    {
+        ToFFI(input, allocator, out dest, out nuint outCountNuint);
+        outCount = (uint)outCountNuint;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void ToFFI(string input, WebGpuAllocatorHandle allocator, out byte* dest)
     {
         dest = UFT8CStrFactory.Create(input, allocator);

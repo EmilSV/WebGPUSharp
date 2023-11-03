@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct BindGroupLayoutHandle :
-     IDisposable, IWebGpuHandle<BindGroupLayoutHandle>
+     IDisposable, IWebGpuHandle<BindGroupLayoutHandle, BindGroupLayout>
 {
     public static ref nuint AsPointer(ref BindGroupLayoutHandle handle)
     {
@@ -41,5 +41,10 @@ public readonly partial struct BindGroupLayoutHandle :
         {
             WebGPU_FFI.BindGroupLayoutRelease(this);
         }
+    }
+
+    public BindGroupLayout? ToSafeHandle(bool isOwnedHandle)
+    {
+        return BindGroupLayout.FromHandle(this, isOwnedHandle);
     }
 }

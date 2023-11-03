@@ -4,7 +4,7 @@ namespace WebGpuSharp.FFI;
 
 
 public partial struct QuerySetHandle :
-    IWebGpuHandle<QuerySetHandle>
+    IWebGpuHandle<QuerySetHandle, QuerySet>, IDisposable
 {
     public static ref nuint AsPointer(ref QuerySetHandle handle)
     {
@@ -33,6 +33,19 @@ public partial struct QuerySetHandle :
 
     public static QuerySetHandle UnsafeFromPointer(nuint pointer)
     {
-       return new QuerySetHandle(pointer);
+        return new QuerySetHandle(pointer);
+    }
+
+    public void Dispose()
+    {
+        if (_ptr != UIntPtr.Zero)
+        {
+            WebGPU_FFI.QuerySetRelease(this);
+        }
+    }
+
+    public QuerySet? ToSafeHandle(bool isOwnedHandle)
+    {
+        return QuerySet.FromHandle(this, isOwnedHandle);
     }
 }

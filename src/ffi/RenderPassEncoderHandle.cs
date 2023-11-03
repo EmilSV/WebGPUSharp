@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct RenderPassEncoderHandle :
-    IDisposable, IWebGpuHandle<RenderPassEncoderHandle>
+    IDisposable, IWebGpuHandle<RenderPassEncoderHandle, RenderPassEncoder>
 {
     public readonly void SetPipeline(RenderPipelineHandle pipeline) =>
         WebGPU_FFI.RenderPassEncoderSetPipeline(this, pipeline);
@@ -158,5 +158,10 @@ public readonly partial struct RenderPassEncoderHandle :
     public static void Release(RenderPassEncoderHandle handle)
     {
         WebGPU_FFI.RenderPassEncoderRelease(handle);
+    }
+
+    public RenderPassEncoder? ToSafeHandle(bool isOwnedHandle)
+    {
+        return RenderPassEncoder.FromHandle(this, isOwnedHandle);
     }
 }

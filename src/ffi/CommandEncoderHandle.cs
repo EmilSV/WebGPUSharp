@@ -10,23 +10,27 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        RenderPassColorAttachmentFFI* renderPassColorAttachmentFFI = allocator.Alloc<RenderPassColorAttachmentFFI>(
-            (nuint)descriptor.ColorAttachments.Length
+        ToFFI(
+            input: descriptor.ColorAttachments,
+            allocator: allocator,
+            dest: out RenderPassColorAttachmentFFI* colorAttachmentsPtr,
+            outCount: out nuint colorAttachmentsCount
+        );
+        ToFFI(
+            input: descriptor.TimestampWrites,
+            allocator: allocator,
+            dest: out RenderPassTimestampWriteFFI* timestampWritePtr,
+            outCount: out nuint timestampWriteCount
         );
 
-        ToFFI(descriptor.ColorAttachments, allocator, out RenderPassColorAttachmentFFI colorAttachments, out uint outCount);
-
-        RenderPassTimestampWriteFFI* renderPassTimestampWriteFFI = allocator.Alloc<RenderPassTimestampWriteFFI>(
-            (nuint)descriptor.TimestampWrites.Length
-        );
-
-        RenderPassDepthStencilAttachmentFFI* depthStencilAttachmentFFI = null;
+        Unsafe.SkipInit(out RenderPassDepthStencilAttachmentFFI depthStencilAttachmentFFI);
+        RenderPassDepthStencilAttachmentFFI* depthStencilAttachmentPtr = null;
         if (descriptor.DepthStencilAttachment.HasValue)
         {
-            depthStencilAttachmentFFI = allocator.Alloc<RenderPassDepthStencilAttachmentFFI>(1);
-            ref readonly RenderPassDepthStencilAttachment depthStencilAttachment = ref descriptor.DepthStencilAttachment.Value;
-            *depthStencilAttachmentFFI = new(
-                view: depthStencilAttachment.View?.GetHandle() ?? default,
+            ref readonly var depthStencilAttachment = ref descriptor.DepthStencilAttachment.Value;
+
+            depthStencilAttachmentFFI = new(
+                view: ToFFI<TextureView, TextureViewHandle>(depthStencilAttachment.View),
                 depthLoadOp: depthStencilAttachment.DepthLoadOp,
                 depthStoreOp: depthStencilAttachment.DepthStoreOp,
                 depthClearValue: depthStencilAttachment.DepthClearValue,
@@ -36,43 +40,19 @@ public readonly unsafe partial struct CommandEncoderHandle :
                 stencilClearValue: depthStencilAttachment.StencilClearValue,
                 stencilReadOnly: depthStencilAttachment.StencilReadOnly
             );
+            depthStencilAttachmentPtr = &depthStencilAttachmentFFI;
         }
-
-        int length = descriptor.ColorAttachments.Length;
-        for (int i = 0; i < length; i++)
-        {
-            ref readonly RenderPassColorAttachment attachment = ref descriptor.ColorAttachments[i];
-            renderPassColorAttachmentFFI[i] = new(
-                view: attachment.View?.GetHandle() ?? default,
-                resolveTarget: attachment.ResolveTarget?.GetHandle() ?? default,
-                clearValue: attachment.ClearValue,
-                loadOp: attachment.LoadOp,
-                storeOp: attachment.StoreOp
-            );
-        }
-
-        length = descriptor.TimestampWrites.Length;
-        for (int i = 0; i < length; i++)
-        {
-            ref readonly RenderPassTimestampWrite timestampWrite = ref descriptor.TimestampWrites[i];
-            renderPassTimestampWriteFFI[i] = new(
-                querySet: timestampWrite.QuerySet.GetHandle(),
-                queryIndex: timestampWrite.QueryIndex,
-                location: timestampWrite.Location
-            );
-        }
-
 
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
         {
             RenderPassDescriptorFFI descriptorFFI = new(
                 label: labelPtr,
-                colorAttachmentCount: (uint)descriptor.ColorAttachments.Length,
-                colorAttachments: renderPassColorAttachmentFFI,
-                depthStencilAttachment: depthStencilAttachmentFFI,
-                occlusionQuerySet: descriptor.OcclusionQuerySet?.GetHandle() ?? default,
-                timestampWriteCount: (uint)descriptor.TimestampWrites.Length,
-                timestampWrites: renderPassTimestampWriteFFI
+                colorAttachmentCount: colorAttachmentsCount,
+                colorAttachments: colorAttachmentsPtr,
+                depthStencilAttachment: depthStencilAttachmentPtr,
+                occlusionQuerySet: ToFFI<QuerySet, QuerySetHandle>(descriptor.OcclusionQuerySet),
+                timestampWriteCount: timestampWriteCount,
+                timestampWrites: timestampWritePtr
             );
             return BeginRenderPass(in descriptorFFI);
         }

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct RenderPipelineHandle :
-    IDisposable, IWebGpuHandle<RenderPipelineHandle>
+    IDisposable, IWebGpuHandle<RenderPipelineHandle, RenderPipeline>
 {
     public static ref nuint AsPointer(ref RenderPipelineHandle handle)
     {
@@ -41,5 +41,10 @@ public readonly partial struct RenderPipelineHandle :
         {
             WebGPU_FFI.RenderPipelineRelease(this);
         }
+    }
+
+    public RenderPipeline? ToSafeHandle(bool isOwnedHandle)
+    {
+        return RenderPipeline.FromHandle(this, isOwnedHandle);
     }
 }

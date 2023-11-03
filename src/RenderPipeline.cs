@@ -4,37 +4,18 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public sealed class RenderPipeline : BaseWebGpuSafeHandle<RenderPipelineHandle>
+public sealed class RenderPipeline : BaseWebGpuSafeHandle<RenderPipeline, RenderPipelineHandle>
 {
-    private sealed class CacheFactory :
-        WebGpuSafeHandleCache<RenderPipelineHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<RenderPipelineHandle> Create(RenderPipelineHandle handle)
-        {
-            return new RenderPipeline(handle);
-        }
-    }
-
     private RenderPipeline(RenderPipelineHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static RenderPipeline? FromHandle(RenderPipelineHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.RenderPipelineReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.RenderPipelineRelease(_handle);
-    }
-
-    internal static RenderPipeline? FromHandle(RenderPipelineHandle handle, bool incrementReferenceCount = true)
-    {
-        var newRenderPipeline = WebGpuSafeHandleCache<RenderPipelineHandle>.GetOrCreate<CacheFactory>(handle) as RenderPipeline;
-        if (incrementReferenceCount && newRenderPipeline != null)
+        var newRenderPipeline = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new RenderPipeline(handle));
+        if (isOwnedHandle)
         {
-            newRenderPipeline.AddReference(false);
+            newRenderPipeline?.AddReference(false);
         }
         return newRenderPipeline;
     }

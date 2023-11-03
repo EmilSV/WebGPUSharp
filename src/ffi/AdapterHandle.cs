@@ -7,7 +7,7 @@ using static WebGpuSharp.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct AdapterHandle :
-    IDisposable, IWebGpuHandle<AdapterHandle>
+    IDisposable, IWebGpuHandle<AdapterHandle, Adapter>
 {
     public readonly nuint GetEnumerateFeaturesCount()
     {

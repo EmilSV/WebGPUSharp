@@ -14,5 +14,5 @@ public interface IWebGpuHandle<TSelf>
 public interface IWebGpuHandle<TSelf, TSafeHandle> : IWebGpuHandle<TSelf>
     where TSelf : unmanaged, IWebGpuHandle<TSelf>
 {
-    public TSafeHandle? ToSafeHandle(bool incrementReferenceCount);
+    public TSafeHandle? ToSafeHandle(bool isOwnedHandle);
 }

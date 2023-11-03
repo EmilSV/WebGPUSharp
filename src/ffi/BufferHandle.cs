@@ -4,7 +4,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct BufferHandle :
+public unsafe readonly partial struct BufferHandle :
     IDisposable, IWebGpuHandle<BufferHandle, Buffer>
 {
     public void MapAsync(
@@ -13,28 +13,25 @@ public readonly partial struct BufferHandle :
         nuint size,
         Action<BufferMapAsyncStatus> callback)
     {
-        unsafe
+        CallbackUserDataHandle handle = default;
+        try
         {
-            CallbackUserDataHandle handle = default;
-            try
+            handle = CallbackUserDataHandle.Alloc(callback);
+            WebGPU_FFI.BufferMapAsync(
+                buffer: this,
+                mode: mode,
+                offset: offset,
+                size: size,
+                callback: &BufferHandelCallbacks.OnBufferMapCallback_Action,
+                userdata: (void*)handle
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+            if (handle.IsValid())
             {
-                handle = CallbackUserDataHandle.Alloc(callback);
-                WebGPU_FFI.BufferMapAsync(
-                    buffer: this,
-                    mode: mode,
-                    offset: offset,
-                    size: size,
-                    callback: &BufferHandelCallbacks.OnBufferMapCallback_Action,
-                    userdata: (void*)handle
-                );
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex);
-                if (handle.IsValid())
-                {
-                    handle.Dispose();
-                }
+                handle.Dispose();
             }
         }
     }
@@ -44,34 +41,31 @@ public readonly partial struct BufferHandle :
         nuint offset,
         nuint size)
     {
-        unsafe
+        TaskCompletionSource<BufferMapAsyncStatus> taskCompletionSource;
+        CallbackUserDataHandle handle = default;
+        try
         {
-            TaskCompletionSource<BufferMapAsyncStatus> taskCompletionSource;
-            CallbackUserDataHandle handle = default;
-            try
-            {
-                taskCompletionSource = new TaskCompletionSource<BufferMapAsyncStatus>();
-                handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
-                WebGPU_FFI.BufferMapAsync(
-                    buffer: this,
-                    mode: mode,
-                    offset: offset,
-                    size: size,
-                    callback: &BufferHandelCallbacks.OnBufferMapCallback_TaskCompletionSource,
-                    userdata: (void*)handle
-                );
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex);
-                if (handle.IsValid())
-                {
-                    handle.Dispose();
-                }
-                return Task.FromResult(BufferMapAsyncStatus.Unknown);
-            }
-            return taskCompletionSource.Task;
+            taskCompletionSource = new TaskCompletionSource<BufferMapAsyncStatus>();
+            handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
+            WebGPU_FFI.BufferMapAsync(
+                buffer: this,
+                mode: mode,
+                offset: offset,
+                size: size,
+                callback: &BufferHandelCallbacks.OnBufferMapCallback_TaskCompletionSource,
+                userdata: (void*)handle
+            );
         }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+            if (handle.IsValid())
+            {
+                handle.Dispose();
+            }
+            return Task.FromResult(BufferMapAsyncStatus.Unknown);
+        }
+        return taskCompletionSource.Task;
     }
 
 

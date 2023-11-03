@@ -25,7 +25,7 @@ namespace WebGpuSharp.FFI
                 RenderPipelineDescriptorFFI descriptorFFI = default;
                 descriptorFFI.Label = labelPtr;
                 ToFFI(descriptor.Layout, out descriptorFFI.Layout);
-                ToFFI(descriptor.Vertex, allocator, ref descriptorFFI.Vertex);
+                ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
                 descriptorFFI.Primitive = descriptor.Primitive;
                 descriptorFFI.DepthStencil = depthStencilPtr;
                 descriptorFFI.Multisample = descriptor.Multisample;

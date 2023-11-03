@@ -52,18 +52,6 @@ namespace WebGpuSharp.FFI
     }
 }
 
-namespace WebGpuSharp
-{
-    public partial class Device
-    {
-        public ShaderModule? LoadShaderModuleFromFile(string path, WGPURefText label = default)
-        {
-            return ShaderModule.FromHandle(_handle.LoadShaderModuleFromFile(path, label));
-        }
-    }
-}
-
-
 file enum ResultType : sbyte
 {
     Success = 1,

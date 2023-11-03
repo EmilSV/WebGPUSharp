@@ -9,10 +9,13 @@ public sealed class SwapChain : BaseWebGpuSafeHandle<SwapChainHandle>
     {
     }
 
-    internal static SwapChain? FromHandle(SwapChainHandle handle, bool incrementReferenceCount)
+    internal static SwapChain? FromHandle(SwapChainHandle handle, bool isOwnedHandle)
     {
         var newSwapChain = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new SwapChain(handle));
-        newSwapChain?.AddReference(incrementReferenceCount);
+        if (isOwnedHandle)
+        {
+            newSwapChain?.AddReference(false);
+        }
         return newSwapChain;
     }
 

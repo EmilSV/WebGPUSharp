@@ -10,10 +10,13 @@ public sealed class TextureView :
     {
     }
 
-    internal static TextureView? FromHandle(TextureViewHandle handle, bool incrementReferenceCount)
+    internal static TextureView? FromHandle(TextureViewHandle handle, bool isOwnedHandle)
     {
         var newTextureView = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new TextureView(handle));
-        newTextureView?.AddReference(incrementReferenceCount);
+        if (isOwnedHandle)
+        {
+            newTextureView?.AddReference(false);
+        }
         return newTextureView;
     }
 }

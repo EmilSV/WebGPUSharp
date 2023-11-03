@@ -9,10 +9,13 @@ public sealed class BindGroup : BaseWebGpuSafeHandle<BindGroup, BindGroupHandle>
     {
     }
 
-    internal static BindGroup? FromHandle(BindGroupHandle handle, bool incrementReferenceCount)
+    internal static BindGroup? FromHandle(BindGroupHandle handle, bool isOwnedHandle)
     {
         var newBindGroup = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new BindGroup(handle));
-        newBindGroup?.AddReference(incrementReferenceCount);
+        if (isOwnedHandle)
+        {
+            newBindGroup?.AddReference(false);
+        }
         return newBindGroup;
     }
 }

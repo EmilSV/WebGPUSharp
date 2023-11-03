@@ -7,7 +7,7 @@ namespace WebGpuSharp.Internal;
 
 internal unsafe class WebGpuAllocator
 {
-    public static class StructInfo
+    internal static class StructInfo
     {
         // See :https://stackoverflow.com/questions/364483/determining-the-alignment-of-c-c-structures-in-relation-to-its-members
         [StructLayout(LayoutKind.Sequential)]

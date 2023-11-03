@@ -3,38 +3,18 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Sampler : BaseWebGpuSafeHandle<Sampler,SamplerHandle>
+public sealed class Sampler : BaseWebGpuSafeHandle<Sampler, SamplerHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<SamplerHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<SamplerHandle> Create(SamplerHandle handle)
-        {
-            return new Sampler(handle);
-        }
-    }
-
     private Sampler(SamplerHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static Sampler? FromHandle(SamplerHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.SamplerReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.SamplerRelease(_handle);
-    }
-
-
-    internal static Sampler? FromHandle(SamplerHandle handle, bool incrementReferenceCount = true)
-    {
-        var newSampler = WebGpuSafeHandleCache<SamplerHandle>.GetOrCreate<CacheFactory>(handle) as Sampler;
-        if (newSampler != null && incrementReferenceCount)
+        var newSampler = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new Sampler(handle));
+        if (isOwnedHandle)
         {
-            newSampler.AddReference(false);
+            newSampler?.AddReference(false);
         }
         return newSampler;
     }

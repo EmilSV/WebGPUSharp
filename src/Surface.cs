@@ -6,38 +6,19 @@ namespace WebGpuSharp;
 
 public sealed class Surface : BaseWebGpuSafeHandle<SurfaceHandle>
 {
-    private class CacheFactory :
-        WebGpuSafeHandleCache<SurfaceHandle>.ISafeHandleFactory
-    {
-        public static BaseWebGpuSafeHandle<SurfaceHandle> Create(SurfaceHandle handle)
-        {
-            return new Surface(handle);
-        }
-    }
-
     private Surface(SurfaceHandle handle) : base(handle)
     {
     }
 
-    protected override void WebGpuReference()
+    internal static Surface? FromHandle(SurfaceHandle handle, bool isOwnedHandle)
     {
-        WebGPU_FFI.SurfaceReference(_handle);
-    }
-
-    protected override void WebGpuRelease()
-    {
-        WebGPU_FFI.SurfaceRelease(_handle);
-    }
-
-    internal static Surface? FromHandle(SurfaceHandle handle, bool incrementReferenceCount = true)
-    {
-        var newSurface = WebGpuSafeHandleCache<SurfaceHandle>.GetOrCreate<CacheFactory>(handle) as Surface;
-        if (incrementReferenceCount && newSurface != null)
+        var newSurface = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new Surface(handle));
+        if (isOwnedHandle)
         {
-            newSurface.AddReference(false);
+            newSurface?.AddReference(false);
         }
         return newSurface;
     }
 
-    public TextureFormat GetPreferredFormat(Adapter adapter) => _handle.GetPreferredFormat(adapter.GetHandle());
+    public TextureFormat GetPreferredFormat(Adapter adapter) => _handle.GetPreferredFormat(adapter);
 }

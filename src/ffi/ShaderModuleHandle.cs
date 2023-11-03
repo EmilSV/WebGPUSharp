@@ -4,7 +4,7 @@ namespace WebGpuSharp.FFI;
 
 public readonly partial struct ShaderModuleHandle :
     IDisposable,
-    IWebGpuHandle<ShaderModuleHandle>
+    IWebGpuHandle<ShaderModuleHandle, ShaderModule>
 {
 
     public static ref nuint AsPointer(ref ShaderModuleHandle handle)
