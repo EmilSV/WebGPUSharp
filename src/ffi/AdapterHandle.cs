@@ -34,6 +34,7 @@ public unsafe readonly partial struct AdapterHandle :
 
     public readonly bool GetLimits(out SupportedLimits limits)
     {
+        limits = default;
         fixed (SupportedLimits* limitsPtr = &limits)
         {
             return WebGPU_FFI.AdapterGetLimits(this, limitsPtr);
@@ -42,7 +43,7 @@ public unsafe readonly partial struct AdapterHandle :
 
     public readonly SupportedLimits? GetLimits()
     {
-        SupportedLimits limits;
+        SupportedLimits limits = default;
         if (WebGPU_FFI.AdapterGetLimits(this, &limits))
         {
             return limits;

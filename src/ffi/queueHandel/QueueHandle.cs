@@ -1,9 +1,11 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
-public readonly unsafe partial struct QueueHandle : 
+public readonly unsafe partial struct QueueHandle :
     IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -19,6 +21,21 @@ public readonly unsafe partial struct QueueHandle :
     public readonly void Submit(CommandBufferHandle commands)
     {
         WebGPU_FFI.QueueSubmit(this, 1, &commands);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void Submit(ReadOnlySpan<CommandBuffer> commands)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        ToFFI(commands, allocator, out CommandBufferHandle* handlesPtr, out nuint outCount);
+        WebGPU_FFI.QueueSubmit(this, outCount, handlesPtr);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void Submit(CommandBuffer command)
+    {
+        CommandBufferHandle handle = (CommandBufferHandle)command;
+        WebGPU_FFI.QueueSubmit(this, 1, &handle);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

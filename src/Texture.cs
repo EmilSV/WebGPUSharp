@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Texture : BaseWebGpuSafeHandle<TextureHandle>
+public sealed class Texture : BaseWebGpuSafeHandle<Texture, TextureHandle>
 {
     private Texture(TextureHandle handle) : base(handle)
     {

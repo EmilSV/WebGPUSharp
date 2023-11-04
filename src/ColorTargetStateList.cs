@@ -17,7 +17,7 @@ public unsafe sealed class ColorTargetStateList :
 
     private int _size;
     private int _version = 0;
-    private int? _lastMarshalVersion = 0;
+    private int _lastMarshalVersion = -1;
 
     public int Count
     {
@@ -106,20 +106,25 @@ public unsafe sealed class ColorTargetStateList :
 
     public ColorTargetStateList()
     {
-        _itemsColorTargetState = GC.AllocateUninitializedArray<ColorTargetStateFFI>(DefaultCapacity, pinned: true);
-        _itemsBlendState = GC.AllocateUninitializedArray<BlendState>(DefaultCapacity, pinned: true);
+        _itemsColorTargetState = Array.Empty<ColorTargetStateFFI>();
+        _itemsBlendState = Array.Empty<BlendState>();
     }
 
     public ColorTargetStateList(int capacity)
     {
-        _itemsColorTargetState = GC.AllocateUninitializedArray<ColorTargetStateFFI>(capacity, pinned: true);
-        _itemsBlendState = GC.AllocateUninitializedArray<BlendState>(DefaultCapacity, pinned: true);
+        _itemsColorTargetState = capacity != 0 ?
+            GC.AllocateUninitializedArray<ColorTargetStateFFI>(capacity, pinned: true) :
+            Array.Empty<ColorTargetStateFFI>();
+
+        _itemsBlendState = capacity != 0 ?
+            GC.AllocateUninitializedArray<BlendState>(capacity, pinned: true) :
+            Array.Empty<BlendState>();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add(ColorTargetState value)
     {
-        ColorTargetStateFFI colorTargetState = new ColorTargetStateFFI(
+        ColorTargetStateFFI colorTargetState = new(
             format: value.Format,
             blend: null,
             writeMask: value.WriteMask
@@ -349,9 +354,14 @@ public unsafe sealed class ColorTargetStateList :
         return false;
     }
 
-    internal ColorTargetStateFFI* GetPointerToPinedArray()
+    private ColorTargetStateFFI* GetPointerToPinedArray()
     {
-        if (_lastMarshalVersion.HasValue && _lastMarshalVersion.Value == _version)
+        if(_size == 0)
+        {
+            return null;
+        }
+        
+        if (_lastMarshalVersion == _version)
         {
             return (ColorTargetStateFFI*)Unsafe.AsPointer(ref _itemsColorTargetState[0]);
         }

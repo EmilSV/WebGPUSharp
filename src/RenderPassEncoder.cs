@@ -1,5 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -17,5 +18,43 @@ public sealed class RenderPassEncoder : BaseWebGpuSafeHandle<RenderPassEncoderHa
             newRenderPassEncoder?.AddReference(false);
         }
         return newRenderPassEncoder;
+    }
+
+    public void Draw(
+        uint vertexCount, uint instanceCount,
+        uint firstVertex, uint firstInstance)
+    {
+        _handle.Draw(vertexCount, instanceCount, firstVertex, firstInstance);
+    }
+
+    public void End()
+    {
+        _handle.End();
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroup group)
+    {
+        _handle.SetBindGroup(groupIndex, group);
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
+    {
+        _handle.SetBindGroup(groupIndex, group, dynamicOffset);
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
+    {
+        _handle.SetBindGroup(groupIndex, group, dynamicOffsets);
+    }
+
+    public void SetPipeline(RenderPipeline pipeline)
+    {
+        _handle.SetPipeline(pipeline);
+    }
+
+    public void SetVertexBuffer(
+        uint slot, Buffer buffer, ulong offset, ulong size)
+    {
+        _handle.SetVertexBuffer(slot, buffer, offset, size);
     }
 }

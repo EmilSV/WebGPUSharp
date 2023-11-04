@@ -21,5 +21,6 @@ public readonly partial struct QueueHandle : IEquatable<QueueHandle>
 	public bool Equals(QueueHandle h) => _ptr == h._ptr;
 	public override bool Equals(object? o) => (o is QueueHandle h && Equals(h)) || (o is null && _ptr == UIntPtr.Zero);
 	public override int GetHashCode() => _ptr.GetHashCode();
+
 }
 

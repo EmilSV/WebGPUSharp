@@ -20,7 +20,7 @@ public sealed class Instance : BaseWebGpuSafeHandle<Instance, InstanceHandle>
         return newInstance;
     }
 
-    public Task<Adapter?> RequestAdapterAsync(in RequestAdapterOptionsFFI options)
+    public Task<Adapter?> RequestAdapterAsync(in RequestAdapterOptions options)
     {
         return _handle.RequestAdapterAsync(options).ContinueWith(static task =>
         {

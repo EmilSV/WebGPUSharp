@@ -4,7 +4,7 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public sealed class Surface : BaseWebGpuSafeHandle<SurfaceHandle>
+public sealed class Surface : BaseWebGpuSafeHandle<Surface, SurfaceHandle>
 {
     private Surface(SurfaceHandle handle) : base(handle)
     {

@@ -12,14 +12,14 @@ public readonly ref struct WGPUNullableRef<T>
     public bool HasValue
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Unsafe.IsNullRef(ref Unsafe.AsRef(_value));
+        get => !Unsafe.IsNullRef(ref Unsafe.AsRef(_value));
     }
     public ref readonly T Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            if (HasValue)
+            if (!HasValue)
             {
                 throw new InvalidOperationException("Nullable object does not have a value.");
             }

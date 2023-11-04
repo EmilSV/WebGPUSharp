@@ -201,8 +201,8 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
 
     private void Grow(int capacity)
     {
-        Debug.Assert(_ffiCacheItems == null || _size < _ffiCacheItems.Length);
-        Debug.Assert(_size < _managedItems.Length);
+        Debug.Assert(_ffiCacheItems == null || _size <= _ffiCacheItems.Length);
+        Debug.Assert(_size <= _managedItems.Length);
 
         int length = _managedItems.Length;
         int newCapacity = length == 0 ? DefaultCapacity : 2 * length;
@@ -388,13 +388,13 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void AddWithResize(TManaged item)
     {
-        Debug.Assert(_ffiCacheItems == null || _size < _ffiCacheItems.Length);
+        Debug.Assert(_ffiCacheItems == null || _size <= _ffiCacheItems.Length);
         Debug.Assert(_size == _managedItems.Length);
 
         int size = _size;
         Grow(size + 1);
         _size = size + 1;
-        _managedItems[_size] = item;
+        _managedItems[size] = item;
         if (HasCache)
         {
             _ffiCacheItems![size] = default;

@@ -36,6 +36,6 @@ public sealed class CommandEncoder : BaseWebGpuSafeHandle<CommandEncoder, Comman
         size
     );
 
-    public CommandBufferHandle Finish(in CommandBufferDescriptor descriptor) =>
-        _handle.Finish(descriptor);
+    public CommandBuffer? Finish(in CommandBufferDescriptor descriptor) =>
+        _handle.Finish(descriptor).ToSafeHandle(true);
 }

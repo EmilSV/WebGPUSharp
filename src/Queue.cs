@@ -22,13 +22,13 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Submit(ReadOnlySpan<CommandBufferHandle> commands)
+    public void Submit(ReadOnlySpan<CommandBuffer> commands)
     {
         _handle.Submit(commands);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Submit(CommandBufferHandle commands)
+    public void Submit(CommandBuffer commands)
     {
         _handle.Submit(commands);
     }
@@ -70,7 +70,7 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in ImageCopyTexture destination,
         List<T> data,
         in TextureDataLayout dataLayout,
         in Extent3D writeSize
@@ -86,7 +86,7 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in ImageCopyTexture destination,
         T[] data,
         in TextureDataLayout dataLayout,
         in Extent3D writeSize
@@ -102,7 +102,7 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in ImageCopyTexture destination,
         Span<T> data,
         in TextureDataLayout dataLayout,
         in Extent3D writeSize
@@ -118,7 +118,7 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in ImageCopyTexture destination,
         ReadOnlySpan<T> data,
         in TextureDataLayout dataLayout,
         in Extent3D writeSize)

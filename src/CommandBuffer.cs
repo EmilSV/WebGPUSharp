@@ -5,7 +5,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class CommandBuffer : BaseWebGpuSafeHandle<CommandBufferHandle>
+public sealed class CommandBuffer : BaseWebGpuSafeHandle<CommandBuffer, CommandBufferHandle>
 {
     private CommandBuffer(CommandBufferHandle handle) : base(handle)
     {

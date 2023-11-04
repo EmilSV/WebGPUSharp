@@ -48,6 +48,11 @@ public abstract class BaseWebGpuSafeHandle<THandle>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal THandle GetHandle() => _handle;
 
+    public static explicit operator THandle(BaseWebGpuSafeHandle<THandle> safeHandle)
+    {
+        return safeHandle._handle;
+    }
+
     ~BaseWebGpuSafeHandle()
     {
         int localReferenceCount = Interlocked.Exchange(ref _referenceCount, _referenceCount);

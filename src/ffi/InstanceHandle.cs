@@ -3,6 +3,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 
@@ -44,6 +45,13 @@ public readonly unsafe partial struct InstanceHandle :
         }
     }
 
+    public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptions options)
+    {
+        ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
+        return RequestAdapterAsync(optionFFI);
+    }
+
+
     public void ProcessEvents()
     {
         WebGPU_FFI.InstanceProcessEvents(this);
@@ -54,6 +62,14 @@ public readonly unsafe partial struct InstanceHandle :
         if (_ptr != UIntPtr.Zero)
         {
             WebGPU_FFI.InstanceRelease(this);
+        }
+    }
+
+    public SurfaceHandle CreateSurface(in SurfaceDescriptorFFI descriptor)
+    {
+        fixed (SurfaceDescriptorFFI* surfaceDescriptorPtr = &descriptor)
+        {
+            return WebGPU_FFI.InstanceCreateSurface(this, surfaceDescriptorPtr);
         }
     }
 

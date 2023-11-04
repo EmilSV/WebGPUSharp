@@ -65,4 +65,49 @@ public readonly partial struct QueueHandle
             }
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void WriteTexture<T>(
+        in ImageCopyTexture destination,
+        List<T> data,
+        in TextureDataLayout dataLayout,
+        in Extent3D writeSize)
+        where T : unmanaged
+    {
+        WriteTexture(destination, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data), dataLayout, writeSize);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void WriteTexture<T>(
+        in ImageCopyTexture destination,
+        T[] data,
+        in TextureDataLayout dataLayout,
+        in Extent3D writeSize)
+        where T : unmanaged
+    {
+        WriteTexture(destination, (ReadOnlySpan<T>)data, dataLayout, writeSize);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void WriteTexture<T>(
+        in ImageCopyTexture destination,
+        Span<T> data,
+        in TextureDataLayout dataLayout,
+        in Extent3D writeSize)
+        where T : unmanaged
+    {
+        WriteTexture(destination, (ReadOnlySpan<T>)data, dataLayout, writeSize);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void WriteTexture<T>(
+       in ImageCopyTexture destination,
+       ReadOnlySpan<T> data,
+       in TextureDataLayout dataLayout,
+       in Extent3D writeSize)
+       where T : unmanaged
+    {
+        WebGPUMarshal.ToFFI(destination, out ImageCopyTextureFFI destinationFFI);
+        WriteTexture(destinationFFI, data, dataLayout, writeSize);
+    }
 }

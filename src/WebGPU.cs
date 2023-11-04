@@ -4,23 +4,17 @@ namespace WebGpuSharp;
 
 public static unsafe partial class WebGPU
 {
-    public static InstanceHandle CreateInstance()
+    public static Instance? CreateInstance()
     {
-        unsafe
-        {
-            InstanceDescriptor descriptor = default;
-            return WebGPU_FFI.CreateInstance(&descriptor);
-        }
+        InstanceDescriptor descriptor = default;
+        return WebGPU_FFI.CreateInstance(&descriptor).ToSafeHandle(true);
     }
 
-    public static InstanceHandle CreateInstance(in InstanceDescriptor descriptor)
+    public static Instance? CreateInstance(in InstanceDescriptor descriptor)
     {
-        unsafe
+        fixed (InstanceDescriptor* pDescriptor = &descriptor)
         {
-            fixed (InstanceDescriptor* pDescriptor = &descriptor)
-            {
-                return WebGPU_FFI.CreateInstance(pDescriptor);
-            }
+            return WebGPU_FFI.CreateInstance(pDescriptor).ToSafeHandle(true);
         }
     }
 }
