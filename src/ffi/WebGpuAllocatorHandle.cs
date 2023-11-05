@@ -1,7 +1,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using WebGpuSharp.Internal;
 
-namespace WebGpuSharp.Internal;
+namespace WebGpuSharp.FFI;
 
 public readonly ref struct WebGpuAllocatorHandle
 {

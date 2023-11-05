@@ -1,6 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.WebGPUMarshal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 

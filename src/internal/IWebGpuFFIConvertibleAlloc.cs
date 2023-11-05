@@ -1,3 +1,5 @@
+using WebGpuSharp.FFI;
+
 namespace WebGpuSharp.Internal;
 
 public interface IWebGpuFFIConvertibleAlloc<TSelf, TFFI>

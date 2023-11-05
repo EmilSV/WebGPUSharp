@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -14,25 +15,27 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
-    public readonly TextureViewHandle CreateView(in TextureViewDescriptor textureViewDescriptor)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly TextureViewHandle CreateView(TextureViewDescriptor textureViewDescriptor)
     {
-        unsafe
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = ToRefCstrUtf8(textureViewDescriptor.Label, allocator))
         {
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory uft8Factory = new(allocator);
+            TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor;
+            textureViewDescriptorPtr->Label = labelPtr;
+            return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
+        }
+    }
 
-            fixed (TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor)
-            fixed (byte* labelPtr = textureViewDescriptor.Label)
-            {
-                textureViewDescriptorPtr->Label = uft8Factory.Create(
-                    text: labelPtr,
-                    is16BitSize: textureViewDescriptor.Label.Is16BitSize,
-                    length: textureViewDescriptor.Label.Length,
-                    allowPassthrough: true
-                );
+    public readonly TextureViewHandle CreateView(ref TextureViewDescriptor textureViewDescriptor)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-                return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
-            }
+        fixed (TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor)
+        fixed (byte* labelPtr = ToRefCstrUtf8(textureViewDescriptor.Label, allocator))
+        {
+            textureViewDescriptorPtr->Label = labelPtr;
+            return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }
 

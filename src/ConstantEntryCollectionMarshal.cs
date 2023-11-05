@@ -19,7 +19,7 @@ public unsafe class ConstantEntryCollectionMarshal :
     public static void MarshalTemporaryTo(in ConstantEntry item, ref ConstantEntryFFI ffiItem, WebGpuAllocatorHandle allocator)
     {
         ffiItem = new ConstantEntryFFI(
-            key: UFT8CStrFactory.Create(item.Key, allocator),
+            key: WebGPUMarshal.ToFFI(item.Key, allocator),
             value: item.Value
         );
     }

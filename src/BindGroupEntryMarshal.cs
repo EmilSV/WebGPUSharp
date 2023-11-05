@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
-using static WebGpuSharp.WebGPUMarshal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 

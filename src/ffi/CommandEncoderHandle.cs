@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.WebGPUMarshal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -87,17 +87,11 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public CommandBufferHandle Finish(in CommandBufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        UFT8CStrFactory utf8Factory = new(allocator);
-        fixed (byte* labelPtr = descriptor.label)
+        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
         {
             CommandBufferDescriptorFFI commandBufferDescriptor = new()
             {
-                Label = utf8Factory.Create(
-                    text: labelPtr,
-                    is16BitSize: descriptor.label.Is16BitSize,
-                    length: descriptor.label.Length,
-                    allowPassthrough: true
-                ),
+                Label = labelPtr,
             };
 
             return WebGPU_FFI.CommandEncoderFinish(this, &commandBufferDescriptor);

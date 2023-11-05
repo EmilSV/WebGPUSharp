@@ -3,7 +3,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.WebGPUMarshal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 
@@ -78,20 +78,13 @@ public readonly unsafe partial struct InstanceHandle :
         unsafe
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
             ref var next = ref descriptor._next;
-            fixed (byte* LabelPtr = descriptor.Label)
+            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
             fixed (ChainedStruct* nextPtr = &next)
             {
                 var surfaceDescriptor = new SurfaceDescriptorFFI(
                     nextInChain: nextPtr,
-                    label: utf8Factory.Create(
-                        text: LabelPtr,
-                        is16BitSize: descriptor.Label.Is16BitSize,
-                        length: descriptor.Label.Length,
-                        allowPassthrough: true
-                    )
+                    label: labelPtr
                 );
                 return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
             }

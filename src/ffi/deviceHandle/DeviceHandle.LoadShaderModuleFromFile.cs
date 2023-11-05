@@ -1,6 +1,9 @@
 using SafeFileHandle = Microsoft.Win32.SafeHandles.SafeFileHandle;
 using System.Diagnostics;
-using WebGpuSharp.Internal;
+
+using static WebGpuSharp.FFI.WebGPUMarshal;
+
+using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.FFI
 {
@@ -14,8 +17,6 @@ namespace WebGpuSharp.FFI
             }
 
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            UFT8CStrFactory utf8Factory = new(allocator);
-
             var (data, dataPtrAllocType) = FileReaderUtils.ReadAllBytesUnsafe(path, allocator);
 
             if (dataPtrAllocType != ResultType.Success)
@@ -24,7 +25,7 @@ namespace WebGpuSharp.FFI
             }
 
             fixed (byte* dataPtr = data)
-            fixed (byte* labelPtr = label)
+            fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
             {
                 ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
                 {
@@ -38,12 +39,7 @@ namespace WebGpuSharp.FFI
 
                 ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
                 {
-                    Label = utf8Factory.Create(
-                        text: labelPtr,
-                        is16BitSize: label.Is16BitSize,
-                        length: label.Length,
-                        allowPassthrough: true
-                    ),
+                    Label = labelPtr,
                     NextInChain = &shaderModuleWGSLDescriptor.Chain,
                 };
                 return WebGPU_FFI.DeviceCreateShaderModule(this, &shaderModuleDescriptor);

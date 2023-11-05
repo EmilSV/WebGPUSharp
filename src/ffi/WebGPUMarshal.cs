@@ -1,11 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
-using WebGpuSharp.FFI;
+using System.Text;
 using WebGpuSharp.Internal;
 
-namespace WebGpuSharp;
+namespace WebGpuSharp.FFI;
 
 public unsafe static partial class WebGPUMarshal
 {
@@ -154,13 +152,18 @@ public unsafe static partial class WebGPUMarshal
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void ToFFI(string input, WebGpuAllocatorHandle allocator, out byte* dest)
     {
-        dest = UFT8CStrFactory.Create(input, allocator);
+        dest = ToFFI(input, allocator);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe byte* ToFFI(string input, WebGpuAllocatorHandle allocator)
     {
-        return UFT8CStrFactory.Create(input, allocator);
+        var newSize = Encoding.UTF8.GetByteCount(input) + 1;
+        var result = allocator.Alloc<byte>((nuint)newSize);
+        var resultSpan = new Span<byte>(result, newSize);
+        Encoding.UTF8.GetBytes(input, new Span<byte>(result, newSize));
+        resultSpan[^1] = 0;
+        return result;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
