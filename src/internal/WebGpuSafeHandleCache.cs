@@ -11,6 +11,7 @@ internal static class WebGpuSafeHandleCache
         where THandle : unmanaged
     {
         public static readonly ConcurrentDictionary<THandle, GCHandle> _cache = new();
+        public static readonly ReaderWriterLockSlim _cacheLock = new();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -24,6 +25,7 @@ internal static class WebGpuSafeHandleCache
             return null;
         }
 
+        Cache<THandle>._cacheLock.EnterReadLock();
         var gcHandle = Cache<THandle>._cache.GetOrAdd(
              handle,
            static (THandle handle, Func<THandle, TSafeHandle> createFunc) =>
@@ -33,19 +35,21 @@ internal static class WebGpuSafeHandleCache
             createFunc
          );
 
-        if (gcHandle.IsAllocated)
+        TSafeHandle? safeHandle = null;
+        bool isAllocated = gcHandle.IsAllocated;
+        if (isAllocated)
         {
-            var safeHandle = (TSafeHandle)gcHandle.Target!;
-            if (safeHandle == null)
-            {
-                RemoveHandle(handle);
-                return GetOrCreate(handle, createFunc);
-            }
+            safeHandle = (TSafeHandle)gcHandle.Target!;
+        }
+        Cache<THandle>._cacheLock.ExitReadLock();
 
-            return safeHandle;
+        if (isAllocated && safeHandle == null)
+        {
+            RemoveHandle(handle);
+            return GetOrCreate(handle, createFunc);
         }
 
-        return null;
+        return safeHandle;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,9 +61,11 @@ internal static class WebGpuSafeHandleCache
             return;
         }
 
+        Cache<THandle>._cacheLock.EnterWriteLock();
         if (Cache<THandle>._cache.TryRemove(handle, out GCHandle gcHandle))
         {
             gcHandle.Free();
         }
+        Cache<THandle>._cacheLock.ExitWriteLock();
     }
 }
