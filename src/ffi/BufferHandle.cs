@@ -68,7 +68,10 @@ public unsafe readonly partial struct BufferHandle :
         return taskCompletionSource.Task;
     }
 
-
+    public void Destroy()
+    {
+        WebGPU_FFI.BufferDestroy(this);
+    }
 
     public void Dispose()
     {
