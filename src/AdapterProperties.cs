@@ -9,34 +9,34 @@ public unsafe partial struct AdapterProperties
 {
     internal AdapterPropertiesFFI _unmanagedDescriptor;
 
-    public ref uint VendorID
+    public readonly uint VendorID
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.VendorID;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _unmanagedDescriptor.VendorID;
     }
 
-    public ref uint DeviceID
+    public readonly uint DeviceID
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.DeviceID;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _unmanagedDescriptor.DeviceID;
     }
 
-    public ref AdapterType AdapterType
+    public readonly AdapterType AdapterType
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.AdapterType;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _unmanagedDescriptor.AdapterType;
     }
 
-    public ref BackendType BackendType
+    public readonly BackendType BackendType
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.BackendType;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _unmanagedDescriptor.BackendType;
     }
 
-    public ref WGPUBool CompatibilityMode
+    public readonly WGPUBool CompatibilityMode
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.CompatibilityMode;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _unmanagedDescriptor.CompatibilityMode;
     }
 
 
