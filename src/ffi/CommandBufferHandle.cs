@@ -37,6 +37,15 @@ public readonly unsafe partial struct CommandBufferHandle :
         return new CommandBufferHandle(pointer);
     }
 
+    public void SetLabel(WGPURefText label)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.CommandBufferSetLabel(this, labelPtr);
+        }
+    }
+
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)

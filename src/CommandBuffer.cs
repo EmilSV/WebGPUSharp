@@ -20,4 +20,6 @@ public sealed class CommandBuffer : BaseWebGpuSafeHandle<CommandBuffer, CommandB
         }
         return newCommandBuffer;
     }
+
+    public void SetLabel(WGPURefText label) => _handle.SetLabel(label);
 }
