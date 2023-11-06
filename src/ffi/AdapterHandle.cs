@@ -74,7 +74,7 @@ public unsafe readonly partial struct AdapterHandle :
         return WebGPU_FFI.AdapterHasFeature(this, feature);
     }
 
-    public readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
+    private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
         CallbackUserDataHandle handle = default;
@@ -86,7 +86,7 @@ public unsafe readonly partial struct AdapterHandle :
             WebGPU_FFI.AdapterRequestDevice(
                adapter: this,
                descriptor: descriptor,
-               callback: &OnDeviceRequestEnded,
+               callback: &OnDeviceRequestEndedTaskCompletionSource,
                userdata: (void*)handle
             );
         }
@@ -128,8 +128,104 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+    public readonly void RequestDevice(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+
+        CallbackUserDataHandle handle = default;
+        try
+        {
+            fixed (byte* deviceDescriptorLabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+            fixed (byte* queueLabelPtr = ToRefCstrUtf8(descriptor.DefaultQueue.Label, allocator))
+            fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
+            fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
+            {
+                DeviceDescriptorFFI deviceDescriptor = new(
+                    label: deviceDescriptorLabelPtr,
+                    requiredFeatures: requiredFeaturesPtr,
+                    requiredFeaturesCount: (uint)descriptor.RequiredFeatures.Length,
+                    requiredLimits: requiredLimitsPtr,
+                    defaultQueue: new(
+                        label: queueLabelPtr
+                    ),
+                    deviceLostCallback: null,
+                    deviceLostUserdata: null
+                );
+
+                handle = CallbackUserDataHandle.Alloc(callback);
+                WebGPU_FFI.AdapterRequestDevice(
+                   adapter: this,
+                   descriptor: &deviceDescriptor,
+                   callback: &OnDeviceRequestEndedCallback,
+                   userdata: (void*)handle
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            if (handle.IsValid())
+            {
+                handle.Dispose();
+            }
+            callback(default);
+        }
+    }
+
+    public readonly void RequestDevice(in DeviceDescriptor descriptor, Action<Device> callback)
+    {
+        RequestDevice(descriptor, (DeviceHandle device) =>
+        {
+            if (DeviceHandle.IsNull(device))
+            {
+                callback(default);
+            }
+            else
+            {
+                callback(Device.FromHandle(device, true)!);
+            }
+        });
+    }
+
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    private static unsafe void OnDeviceRequestEnded(
+    private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
+      RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
+    {
+        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
+        Action<DeviceHandle>? callback = null;
+        try
+        {
+
+            callback = (Action<DeviceHandle>)handle.GetObject()!;
+
+            if (status == RequestDeviceStatus.Success)
+            {
+                callback(device);
+            }
+            else
+            {
+                string? messageStr = Marshal.PtrToStringAnsi((IntPtr)message);
+                Console.WriteLine($"Could not get WebGPU device: {messageStr ?? "Failed to get error message"}");
+                callback(default);
+            }
+        }
+        catch (Exception)
+        {
+            device.Dispose();
+            callback?.Invoke(default);
+        }
+        finally
+        {
+            if (handle.IsValid())
+            {
+                handle.Dispose();
+            }
+        }
+    }
+
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    private static unsafe void OnDeviceRequestEndedCallback(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
@@ -163,6 +259,7 @@ public unsafe readonly partial struct AdapterHandle :
             }
         }
     }
+
 
     public void Dispose()
     {

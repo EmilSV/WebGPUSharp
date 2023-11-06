@@ -37,4 +37,7 @@ public sealed class Adapter : BaseWebGpuSafeHandle<Adapter, AdapterHandle>
 
     public Task<Device?> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
         _handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(true));
+
+    public void RequestDevice(in DeviceDescriptor descriptor, Action<Device> callback) =>
+        _handle.RequestDevice(descriptor, callback);
 }
