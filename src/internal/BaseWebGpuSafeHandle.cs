@@ -48,8 +48,13 @@ public abstract class BaseWebGpuSafeHandle<THandle>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal THandle GetHandle() => _handle;
 
-    public static explicit operator THandle(BaseWebGpuSafeHandle<THandle> safeHandle)
+    public static explicit operator THandle(BaseWebGpuSafeHandle<THandle>? safeHandle)
     {
+        if(safeHandle == null)
+        {
+            return THandle.Null;
+        }
+
         return safeHandle._handle;
     }
 

@@ -13,6 +13,16 @@ public readonly unsafe partial struct BindGroupHandle :
         }
     }
 
+    public readonly void SetLabel(WGPURefText label)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+
+        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.BindGroupSetLabel(this, labelPtr);
+        }
+    }
+
     public static ref UIntPtr AsPointer(ref BindGroupHandle handle)
     {
         return ref Unsafe.AsRef(handle._ptr);

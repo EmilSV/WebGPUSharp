@@ -1,65 +1,59 @@
-using SafeFileHandle = Microsoft.Win32.SafeHandles.SafeFileHandle;
 using System.Diagnostics;
-
+using Microsoft.Win32.SafeHandles;
+using WebGpuSharp.FFI;
 using static WebGpuSharp.FFI.WebGPUMarshal;
 
-using WebGpuSharp.FFI;
+namespace WebGpuSharp.Internal;
 
-namespace WebGpuSharp.FFI
+internal unsafe static class LoadShaderModuleFromFileHandler
 {
-    public readonly unsafe partial struct DeviceHandle
+    public static ShaderModuleHandle LoadShaderModuleFromFile(DeviceHandle device, string path, WGPURefText label = default)
     {
-        public readonly ShaderModuleHandle LoadShaderModuleFromFile(string path, WGPURefText label = default)
+        if (label.Length == 0)
         {
-            if (label.Length == 0)
-            {
-                label = path;
-            }
+            label = path;
+        }
 
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            var (data, dataPtrAllocType) = FileReaderUtils.ReadAllBytesUnsafe(path, allocator);
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        var (data, dataPtrAllocType) = ReadAllBytesUnsafe(path, allocator);
 
-            if (dataPtrAllocType != ResultType.Success)
-            {
-                return ShaderModuleHandle.Null;
-            }
+        if (dataPtrAllocType != ResultType.Success)
+        {
+            return ShaderModuleHandle.Null;
+        }
 
-            fixed (byte* dataPtr = data)
-            fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        fixed (byte* dataPtr = data)
+        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        {
+            ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
             {
-                ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
+                Chain = new()
                 {
-                    Chain = new()
-                    {
-                        Next = null,
-                        SType = SType.ShaderModuleWGSLDescriptor
-                    },
-                    Code = dataPtr
-                };
+                    Next = null,
+                    SType = SType.ShaderModuleWGSLDescriptor
+                },
+                Code = dataPtr
+            };
 
-                ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
-                {
-                    Label = labelPtr,
-                    NextInChain = &shaderModuleWGSLDescriptor.Chain,
-                };
-                return WebGPU_FFI.DeviceCreateShaderModule(this, &shaderModuleDescriptor);
-            }
+            ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
+            {
+                Label = labelPtr,
+                NextInChain = &shaderModuleWGSLDescriptor.Chain,
+            };
+            return WebGPU_FFI.DeviceCreateShaderModule(device, &shaderModuleDescriptor);
         }
     }
-}
 
-file enum ResultType : sbyte
-{
-    Success = 1,
-    NotSet = 0,
-    FailedUnexpectedEndOfFile = -1,
-    FailedFileToBig = -2,
-    FailedUnknownException = -3,
-}
+    private enum ResultType : sbyte
+    {
+        Success = 1,
+        NotSet = 0,
+        FailedUnexpectedEndOfFile = -1,
+        FailedFileToBig = -2,
+        FailedUnknownException = -3,
+    }
 
-file static class FileReaderUtils
-{
-    public readonly unsafe ref struct Result
+    private readonly unsafe ref struct Result
     {
         public readonly Span<byte> Buffer;
         public readonly ResultType AllocType;
@@ -77,7 +71,7 @@ file static class FileReaderUtils
         }
     }
 
-    public static unsafe Result ReadAllBytesUnsafe(
+    private static unsafe Result ReadAllBytesUnsafe(
         string path, WebGpuAllocatorHandle allocator)
     {
         FileOptions options = OperatingSystem.IsWindows() ? FileOptions.SequentialScan : FileOptions.None;

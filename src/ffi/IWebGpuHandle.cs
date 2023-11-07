@@ -4,7 +4,7 @@ public interface IWebGpuHandle<TSelf>
     where TSelf : unmanaged, IWebGpuHandle<TSelf>
 {
     public static abstract ref UIntPtr AsPointer(ref TSelf handle);
-    public static abstract TSelf GetNullHandle();
+    public static abstract TSelf Null { get; }
     public static abstract bool IsNull(TSelf handle);
     public static abstract TSelf UnsafeFromPointer(UIntPtr pointer);
     public static abstract void Reference(TSelf handle);

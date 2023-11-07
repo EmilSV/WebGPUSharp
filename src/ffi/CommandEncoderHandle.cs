@@ -66,11 +66,29 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    public void ClearBuffer(BufferHandle buffer, ulong offset, ulong size)
+    {
+        WebGPU_FFI.CommandEncoderClearBuffer(
+            commandEncoder: this,
+            buffer: buffer,
+            offset: offset,
+            size: size
+        );
+    }
+
+    public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
+    {
+        ClearBuffer(
+            buffer: (BufferHandle)buffer,
+            offset: offset,
+            size: size
+        );
+    }
+
+
     public void CopyBufferToBuffer(
-        BufferHandle source,
-        ulong sourceOffset,
-        BufferHandle destination,
-        ulong destinationOffset,
+        BufferHandle source, ulong sourceOffset,
+        BufferHandle destination, ulong destinationOffset,
         ulong size
     )
     {
@@ -84,19 +102,223 @@ public readonly unsafe partial struct CommandEncoderHandle :
         );
     }
 
+
+    public void CopyBufferToBuffer(
+        Buffer source, ulong sourceOffset,
+        Buffer destination, ulong destinationOffset,
+        ulong size
+    )
+    {
+        CopyBufferToBuffer(
+            (BufferHandle)source,
+            sourceOffset,
+            (BufferHandle)destination,
+            destinationOffset,
+            size
+        );
+    }
+
+    public void CopyBufferToTexture(in ImageCopyBuffer source, in ImageCopyTexture destination, in Extent3D copySize)
+    {
+        ToFFI(
+            input: source,
+            dest: out ImageCopyBufferFFI sourceFFI
+        );
+
+        ToFFI(
+            input: destination,
+            dest: out ImageCopyTextureFFI destinationFFI
+        );
+
+        fixed (Extent3D* copySizePtr = &copySize)
+        {
+            WebGPU_FFI.CommandEncoderCopyBufferToTexture(
+                commandEncoder: this,
+                source: &sourceFFI,
+                destination: &destinationFFI,
+                copySize: copySizePtr
+            );
+        }
+    }
+
+    public void CopyBufferToTexture(in ImageCopyBufferFFI source, in ImageCopyTextureFFI destination, in Extent3D copySize)
+    {
+        fixed (ImageCopyBufferFFI* sourcePtr = &source)
+        fixed (ImageCopyTextureFFI* destinationPtr = &destination)
+        fixed (Extent3D* copySizePtr = &copySize)
+        {
+            WebGPU_FFI.CommandEncoderCopyBufferToTexture(
+                commandEncoder: this,
+                source: sourcePtr,
+                destination: destinationPtr,
+                copySize: copySizePtr
+            );
+        }
+    }
+
+    public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
+    {
+        ToFFI(
+            input: source,
+            dest: out ImageCopyTextureFFI sourceFFI
+        );
+
+        ToFFI(
+            input: destination,
+            dest: out ImageCopyBufferFFI destinationFFI
+        );
+        fixed (Extent3D* copySizePtr = &copySize)
+        {
+            WebGPU_FFI.CommandEncoderCopyTextureToBuffer(
+                commandEncoder: this,
+                source: &sourceFFI,
+                destination: &destinationFFI,
+                copySize: copySizePtr
+            );
+        }
+    }
+
+    public void CopyTextureToBuffer(in ImageCopyTextureFFI source, in ImageCopyBufferFFI destination, in Extent3D copySize)
+    {
+        fixed (ImageCopyTextureFFI* sourcePtr = &source)
+        fixed (ImageCopyBufferFFI* destinationPtr = &destination)
+        fixed (Extent3D* copySizePtr = &copySize)
+        {
+            WebGPU_FFI.CommandEncoderCopyTextureToBuffer(
+                commandEncoder: this,
+                source: sourcePtr,
+                destination: destinationPtr,
+                copySize: copySizePtr
+            );
+        }
+    }
+
+    public void CommandEncoderCopyTextureToTexture(
+        in ImageCopyTextureFFI source, in ImageCopyTextureFFI destination, in Extent3D copySize)
+    {
+        fixed (ImageCopyTextureFFI* sourcePtr = &source)
+        fixed (ImageCopyTextureFFI* destinationPtr = &destination)
+        fixed (Extent3D* copySizePtr = &copySize)
+        {
+            WebGPU_FFI.CommandEncoderCopyTextureToTexture(
+                commandEncoder: this,
+                source: sourcePtr,
+                destination: destinationPtr,
+                copySize: copySizePtr
+            );
+        }
+    }
+
+    public void CommandEncoderCopyTextureToTexture(
+        in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
+    {
+        ToFFI(source, out ImageCopyTextureFFI sourceFFI);
+        ToFFI(destination, out ImageCopyTextureFFI destinationFFI);
+
+        fixed (Extent3D* copySizePtr = &copySize)
+        {
+            WebGPU_FFI.CommandEncoderCopyTextureToTexture(
+                commandEncoder: this,
+                source: &sourceFFI,
+                destination: &destinationFFI,
+                copySize: copySizePtr
+            );
+        }
+    }
+
+
     public CommandBufferHandle Finish(in CommandBufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
         {
-            CommandBufferDescriptorFFI commandBufferDescriptor = new()
-            {
-                Label = labelPtr,
-            };
+            CommandBufferDescriptorFFI commandBufferDescriptor = new(
+                label: labelPtr
+            );
 
             return WebGPU_FFI.CommandEncoderFinish(this, &commandBufferDescriptor);
         }
     }
+
+    public void InsertDebugMarker(WGPURefText markerLabel)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* markerLabelPtr = ToRefCstrUtf8(markerLabel, allocator))
+        {
+            WebGPU_FFI.CommandEncoderInsertDebugMarker(this, markerLabelPtr);
+        }
+    }
+
+    public void PopDebugGroup()
+    {
+        WebGPU_FFI.CommandEncoderPopDebugGroup(this);
+    }
+
+    public void PushDebugGroup(WGPURefText groupLabel)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* groupLabelPtr = ToRefCstrUtf8(groupLabel, allocator))
+        {
+            WebGPU_FFI.CommandEncoderPushDebugGroup(this, groupLabelPtr);
+        }
+    }
+
+    public void ResolveQuerySet(
+        QuerySetHandle querySet, uint firstQuery, uint queryCount,
+        BufferHandle destination, ulong destinationOffset)
+    {
+        WebGPU_FFI.CommandEncoderResolveQuerySet(
+            commandEncoder: this,
+            querySet: querySet,
+            firstQuery: firstQuery,
+            queryCount: queryCount,
+            destination: destination,
+            destinationOffset: destinationOffset
+        );
+    }
+
+
+    public void ResolveQuerySet(
+        QuerySet querySet, uint firstQuery, uint queryCount,
+        Buffer destination, ulong destinationOffset)
+    {
+        WebGPU_FFI.CommandEncoderResolveQuerySet(
+            commandEncoder: this,
+            querySet: (QuerySetHandle)querySet,
+            firstQuery: firstQuery,
+            queryCount: queryCount,
+            destination: (BufferHandle)destination,
+            destinationOffset: destinationOffset
+        );
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.CommandEncoderSetLabel(this, labelPtr);
+        }
+    }
+
+    public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex)
+    {
+        WebGPU_FFI.CommandEncoderWriteTimestamp(
+           commandEncoder: this,
+           querySet: querySet,
+           queryIndex: queryIndex
+       );
+    }
+
+    public void WriteTimestamp(QuerySet querySet, uint queryIndex)
+    {
+        WebGPU_FFI.CommandEncoderWriteTimestamp(
+           commandEncoder: this,
+           querySet: (QuerySetHandle)querySet,
+           queryIndex: queryIndex
+       );
+    }
+
 
     public void Dispose()
     {

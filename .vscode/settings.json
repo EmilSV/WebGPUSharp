@@ -5,6 +5,7 @@
         "Multisample",
         "TFFI",
         "Uncaptured",
-        "WGPU"
+        "WGPU",
+        "Workgroups"
     ]
 }
