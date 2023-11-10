@@ -597,3 +597,4 @@ FodyWeavers.xsd
 !Main/resources/**
 
 !**/native_lib/**
+webgpu.h

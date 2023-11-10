@@ -128,7 +128,7 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly void RequestDevice(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
+    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
@@ -172,9 +172,9 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly void RequestDevice(in DeviceDescriptor descriptor, Action<Device> callback)
+    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<Device?> callback)
     {
-        RequestDevice(descriptor, (DeviceHandle device) =>
+        RequestDeviceAsync(descriptor, (DeviceHandle device) =>
         {
             if (DeviceHandle.IsNull(device))
             {

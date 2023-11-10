@@ -1,6 +1,7 @@
 namespace WebGpuSharp;
 
-public ref partial struct CommandEncoderDescriptor
+public ref struct SharedTextureMemoryDescriptor
 {
     public WGPURefText Label;
 }
+
