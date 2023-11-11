@@ -635,41 +635,30 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return WebGPU_FFI.DeviceHasFeature(this, feature);
     }
 
-    public SharedFenceHandle ImportSharedFence(in SharedFenceDescriptorFFI descriptor)
+
+    public void PopErrorScope(DevicePopErrorScopeDelegate callback)
     {
-        fixed (SharedFenceDescriptorFFI* descriptorPtr = &descriptor)
-        {
-            return WebGPU_FFI.DeviceImportSharedFence(this, descriptorPtr);
-        }
+        DevicePopErrorScopeHandler.DevicePopErrorScope(this, callback);
     }
 
-    public SharedFenceHandle ImportSharedFence(in SharedFenceDescriptor descriptor)
+
+    public Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
+    {
+        return DevicePopErrorScopeHandler.DevicePopErrorScope(this);
+    }
+
+    public void PushErrorScope(ErrorFilter errorFilter)
+    {
+        WebGPU_FFI.DevicePushErrorScope(this, errorFilter);
+    }
+
+
+    public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
         {
-            SharedFenceDescriptorFFI descriptorFFI = new(label: labelPtr);
-            return WebGPU_FFI.DeviceImportSharedFence(this, &descriptorFFI);
-        }
-    }
-
-    public SharedTextureMemoryHandle ImportSharedTextureMemory(
-        in SharedTextureMemoryDescriptorFFI descriptor)
-    {
-        fixed (SharedTextureMemoryDescriptorFFI* descriptorPtr = &descriptor)
-        {
-            return WebGPU_FFI.DeviceImportSharedTextureMemory(this, descriptorPtr);
-        }
-    }
-
-    public SharedTextureMemoryHandle ImportSharedTextureMemory(
-        in SharedTextureMemoryDescriptor descriptor)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        {
-            SharedTextureMemoryDescriptorFFI descriptorFFI = new(label: labelPtr);
-            return WebGPU_FFI.DeviceImportSharedTextureMemory(this, &descriptorFFI);
+            WebGPU_FFI.DeviceSetLabel(this, labelPtr);
         }
     }
 
@@ -682,7 +671,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         DeviceLostCallbackHandler.RemoveDeviceLostCallback(this, callback);
     }
-
 
 
     public void AddUncapturedErrorCallback(UncapturedErrorDelegate callback)
@@ -784,9 +772,9 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return new DeviceHandle(pointer);
     }
 
-    public Device? ToSafeHandle(bool incrementReferenceCount)
+    public Device? ToSafeHandle(bool isOwnedHandle)
     {
-        return Device.FromHandle(this, incrementReferenceCount);
+        return Device.FromHandle(this, isOwnedHandle);
     }
 
     public static void Reference(DeviceHandle handle)

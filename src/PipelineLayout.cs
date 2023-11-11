@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class PipelineLayout : BaseWebGpuSafeHandle<PipelineLayout, PipelineLayoutHandle>
+public unsafe sealed class PipelineLayout : BaseWebGpuSafeHandle<PipelineLayout, PipelineLayoutHandle>
 {
     private PipelineLayout(PipelineLayoutHandle handle) : base(handle)
     {

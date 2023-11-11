@@ -2,9 +2,19 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct PipelineLayoutHandle :
+public unsafe readonly partial struct PipelineLayoutHandle :
     IDisposable, IWebGpuHandle<PipelineLayoutHandle, PipelineLayout>
 {
+
+    public void SetLabel(WGPURefText label)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.PipelineLayoutSetLabel(this, labelPtr);
+        }
+    }
+
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)
