@@ -156,7 +156,7 @@ public unsafe readonly partial struct AdapterHandle :
                 WebGPU_FFI.AdapterRequestDevice(
                    adapter: this,
                    descriptor: &deviceDescriptor,
-                   callback: &OnDeviceRequestEndedCallback,
+                   callback: &OnDeviceRequestEndedDelegate,
                    userdata: (void*)handle
                 );
             }
@@ -188,7 +188,7 @@ public unsafe readonly partial struct AdapterHandle :
     }
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
+    private static unsafe void OnDeviceRequestEndedDelegate(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
@@ -225,7 +225,7 @@ public unsafe readonly partial struct AdapterHandle :
 
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    private static unsafe void OnDeviceRequestEndedCallback(
+    private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
