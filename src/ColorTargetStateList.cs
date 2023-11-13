@@ -198,7 +198,7 @@ public unsafe sealed class ColorTargetStateList :
 
     private void Grow(int capacity)
     {
-        Debug.Assert(_size < _itemsColorTargetState.Length);
+        Debug.Assert(_size <= _itemsColorTargetState.Length);
 
         int length = _itemsColorTargetState.Length;
         int newCapacity = length == 0 ? DefaultCapacity : 2 * length;
