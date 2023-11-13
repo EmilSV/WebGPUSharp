@@ -23,4 +23,15 @@ public sealed class Texture : BaseWebGpuSafeHandle<Texture, TextureHandle>
     {
         return _handle.CreateView(textureViewDescriptor).ToSafeHandle(false);
     }
+
+    public void Destroy() => _handle.Destroy();
+    public uint GetDepthOrArrayLayers() => _handle.GetDepthOrArrayLayers();
+    public TextureDimension GetDimension() => _handle.GetDimension();
+    public TextureFormat GetFormat() => _handle.GetFormat();
+    public uint GetHeight() => _handle.GetHeight();
+    public uint GetMipLevelCount() => _handle.GetMipLevelCount();
+    public uint GetSampleCount() => _handle.GetSampleCount();
+    public TextureUsage GetUsage() => _handle.GetUsage();
+    public uint GetWidth() => _handle.GetWidth();
+    public void SetLabel(WGPURefText label) => _handle.SetLabel(label);
 }

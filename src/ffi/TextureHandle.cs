@@ -16,7 +16,7 @@ public readonly unsafe partial struct TextureHandle :
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly TextureViewHandle CreateView(TextureViewDescriptor textureViewDescriptor)
+    public TextureViewHandle CreateView(TextureViewDescriptor textureViewDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = ToRefCstrUtf8(textureViewDescriptor.Label, allocator))
@@ -27,7 +27,7 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
-    public readonly TextureViewHandle CreateView(ref TextureViewDescriptor textureViewDescriptor)
+    public TextureViewHandle CreateView(ref TextureViewDescriptor textureViewDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
@@ -36,6 +36,60 @@ public readonly unsafe partial struct TextureHandle :
         {
             textureViewDescriptorPtr->Label = labelPtr;
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
+        }
+    }
+
+    public void Destroy()
+    {
+        WebGPU_FFI.TextureDestroy(this);
+    }
+
+    public uint GetDepthOrArrayLayers()
+    {
+        return WebGPU_FFI.TextureGetDepthOrArrayLayers(this);
+    }
+
+    public TextureDimension GetDimension()
+    {
+        return WebGPU_FFI.TextureGetDimension(this);
+    }
+
+    public TextureFormat GetFormat()
+    {
+        return WebGPU_FFI.TextureGetFormat(this);
+    }
+
+    public uint GetHeight()
+    {
+        return WebGPU_FFI.TextureGetHeight(this);
+    }
+
+    public uint GetMipLevelCount()
+    {
+        return WebGPU_FFI.TextureGetMipLevelCount(this);
+    }
+
+    public uint GetSampleCount()
+    {
+        return WebGPU_FFI.TextureGetSampleCount(this);
+    }
+
+    public TextureUsage GetUsage()
+    {
+        return WebGPU_FFI.TextureGetUsage(this);
+    }
+
+    public uint GetWidth()
+    {
+        return WebGPU_FFI.TextureGetWidth(this);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.TextureSetLabel(this, labelPtr);
         }
     }
 
