@@ -4,7 +4,7 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct RenderBundleEncoderHandle :
-    IDisposable, IWebGpuHandle<RenderBundleEncoderHandle, RenderBundleEncoder>
+IDisposable, IWebGpuHandle<RenderBundleEncoderHandle, RenderBundleEncoder>
 {
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance)
     {
@@ -82,9 +82,20 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets)
+    public void SetBindGroup(uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffset)
     {
-        WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, (BindGroupHandle)group, dynamicOffsetCount, dynamicOffsets);
+        fixed (uint* dynamicOffsetPtr = dynamicOffset)
+        {
+            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, (nuint)dynamicOffset.Length, dynamicOffsetPtr);
+        }
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffset)
+    {
+        fixed (uint* dynamicOffsetPtr = dynamicOffset)
+        {
+            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, (BindGroupHandle)group, (nuint)dynamicOffset.Length, dynamicOffsetPtr);
+        }
     }
 
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, ulong offset, ulong size)
@@ -119,6 +130,12 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, buffer, offset, size);
+    }
+
+
+    public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset, ulong size)
+    {
+        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, (BufferHandle)buffer, offset, size);
     }
 
     public static ref nuint AsPointer(ref RenderBundleEncoderHandle handle)
