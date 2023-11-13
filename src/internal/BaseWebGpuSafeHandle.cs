@@ -61,15 +61,14 @@ public abstract class BaseWebGpuSafeHandle<THandle>
     ~BaseWebGpuSafeHandle()
     {
         int localReferenceCount = Interlocked.Exchange(ref _referenceCount, 0);
-        if (localReferenceCount == 0)
+        if (localReferenceCount <= 0)
         {
             return;
         }
 
-        while (Interlocked.Decrement(ref _referenceCount) >= 0)
+        while (localReferenceCount-- != 0)
         {
             THandle.Release(_handle);
-
         }
 
         WebGpuSafeHandleCache.RemoveHandle(_handle);
