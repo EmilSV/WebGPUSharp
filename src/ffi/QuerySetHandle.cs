@@ -3,9 +3,33 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 
-public partial struct QuerySetHandle :
+public unsafe readonly partial struct QuerySetHandle :
     IWebGpuHandle<QuerySetHandle, QuerySet>, IDisposable
 {
+    public void Destroy()
+    {
+        WebGPU_FFI.QuerySetDestroy(this);
+    }
+
+    public uint GetCount()
+    {
+        return WebGPU_FFI.QuerySetGetCount(this);
+    }
+
+    public QueryType GetQueryType()
+    {
+        return WebGPU_FFI.QuerySetGetType(this);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.QuerySetSetLabel(this, labelPtr);
+        }
+    }
+
     public static ref nuint AsPointer(ref QuerySetHandle handle)
     {
         return ref Unsafe.As<QuerySetHandle, UIntPtr>(ref handle);
