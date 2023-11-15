@@ -15,7 +15,7 @@ public readonly partial struct PipelineLayoutHandle :
 
     public static ref UIntPtr AsPointer(ref PipelineLayoutHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static PipelineLayoutHandle GetNullHandle()

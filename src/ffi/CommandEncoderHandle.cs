@@ -330,7 +330,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
     public static ref nuint AsPointer(ref CommandEncoderHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static CommandEncoderHandle GetNullHandle()

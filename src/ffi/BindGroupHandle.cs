@@ -25,7 +25,7 @@ public readonly unsafe partial struct BindGroupHandle :
 
     public static ref UIntPtr AsPointer(ref BindGroupHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static BindGroupHandle GetNullHandle()

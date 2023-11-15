@@ -7,7 +7,7 @@ public readonly partial struct SamplerHandle :
 {
     public static ref nuint AsPointer(ref SamplerHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static SamplerHandle GetNullHandle()

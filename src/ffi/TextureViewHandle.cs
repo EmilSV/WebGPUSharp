@@ -7,7 +7,7 @@ public readonly partial struct TextureViewHandle :
 {
     public static ref nuint AsPointer(ref TextureViewHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static TextureViewHandle GetNullHandle()

@@ -12,7 +12,7 @@ public readonly ref struct WGPUNullableRef<T>
     public bool HasValue
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => !Unsafe.IsNullRef(ref Unsafe.AsRef(_value));
+        get => !Unsafe.IsNullRef(in _value);
     }
     public ref readonly T Value
     {

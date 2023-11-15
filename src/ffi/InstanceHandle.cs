@@ -130,7 +130,7 @@ public readonly unsafe partial struct InstanceHandle :
 
     public static ref nuint AsPointer(ref InstanceHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static InstanceHandle GetNullHandle()

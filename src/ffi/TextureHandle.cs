@@ -95,7 +95,7 @@ public readonly unsafe partial struct TextureHandle :
 
     public static ref nuint AsPointer(ref TextureHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.As<TextureHandle, nuint>(ref handle);
     }
 
     public static TextureHandle GetNullHandle()

@@ -63,7 +63,7 @@ public readonly ref struct WGPURefText
     {
         if (Is16BitSize)
         {
-            ref var refChar = ref Unsafe.AsRef(_reference);
+            ref var refChar = ref Unsafe.AsRef(in _reference);
             outSpan = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<byte, char>(ref refChar), Length);
             return true;
         }
@@ -78,8 +78,8 @@ public readonly ref struct WGPURefText
     {
         if (Is16BitSize)
         {
-            ref var refChar = ref Unsafe.AsRef(_reference);
-            outSpan = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(_reference), Length);
+            ref var refChar = ref Unsafe.AsRef(in _reference);
+            outSpan = MemoryMarshal.CreateReadOnlySpan(in _reference, Length);
             return true;
         }
         else

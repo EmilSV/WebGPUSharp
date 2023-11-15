@@ -42,7 +42,7 @@ public unsafe class PinnedList<T> : IList<T>, IReadOnlyList<T>
                 }
                 else
                 {
-                    _items = Array.Empty<T>();
+                    _items = [];
                 }
             }
         }
@@ -81,6 +81,13 @@ public unsafe class PinnedList<T> : IList<T>, IReadOnlyList<T>
     protected PinnedList(int capacity)
     {
         _items = GC.AllocateUninitializedArray<T>(capacity, pinned: true);
+    }
+
+    protected PinnedList(ReadOnlySpan<T> items)
+    {
+        _items = GC.AllocateUninitializedArray<T>(items.Length, pinned: true);
+        _size = items.Length;
+        items.CopyTo(_items);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -151,15 +158,8 @@ public unsafe class PinnedList<T> : IList<T>, IReadOnlyList<T>
     // Removes a range of elements from this list.
     public void RemoveRange(int index, int count)
     {
-        if (index < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
-        if (count < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
 
         if (_size - index < count)
         {

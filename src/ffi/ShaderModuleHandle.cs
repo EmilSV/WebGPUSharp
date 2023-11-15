@@ -9,7 +9,7 @@ public readonly partial struct ShaderModuleHandle :
 
     public static ref nuint AsPointer(ref ShaderModuleHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.As<ShaderModuleHandle, nuint>(ref handle);
     }
 
     public static ShaderModuleHandle GetNullHandle()

@@ -98,7 +98,7 @@ public unsafe sealed class ColorTargetStateList :
 
             if (value.Blend.HasValue)
             {
-                _itemsBlendState[index] = Nullable.GetValueRefOrDefaultRef(value.Blend);
+                _itemsBlendState[index] = Nullable.GetValueRefOrDefaultRef(in value.Blend);
             }
             _version++;
         }
@@ -131,7 +131,7 @@ public unsafe sealed class ColorTargetStateList :
         );
 
         ref BlendState blendState = ref (value.Blend.HasValue ?
-            ref Unsafe.AsRef(Nullable.GetValueRefOrDefaultRef(value.Blend)) :
+            ref Unsafe.AsRef(in Nullable.GetValueRefOrDefaultRef(in value.Blend)) :
             ref Unsafe.NullRef<BlendState>()
         );
 
@@ -151,7 +151,7 @@ public unsafe sealed class ColorTargetStateList :
         if ((uint)size < (uint)colorTargetStateArray.Length)
         {
             _size = size + 1;
-            if (Unsafe.IsNullRef(ref Unsafe.AsRef(blendState)))
+            if (Unsafe.IsNullRef(in blendState))
             {
                 blendStateArray[size] = default;
                 colorTargetStateArray[size] = colorTargetState;
@@ -182,7 +182,7 @@ public unsafe sealed class ColorTargetStateList :
         Grow(size + 1);
         _size = size + 1;
 
-        if (Unsafe.IsNullRef(ref Unsafe.AsRef(blendState)))
+        if (Unsafe.IsNullRef(in blendState))
         {
             _itemsBlendState[size] = default;
             _itemsColorTargetState[size] = colorTargetState;
@@ -320,7 +320,7 @@ public unsafe sealed class ColorTargetStateList :
 
         if (item.Blend.HasValue)
         {
-            _itemsBlendState[index] = Nullable.GetValueRefOrDefaultRef(item.Blend);
+            _itemsBlendState[index] = Nullable.GetValueRefOrDefaultRef(in item.Blend);
         }
 
         _size++;

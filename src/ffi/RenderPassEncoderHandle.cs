@@ -141,7 +141,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     public static ref nuint AsPointer(ref RenderPassEncoderHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static RenderPassEncoderHandle GetNullHandle()

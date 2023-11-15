@@ -15,7 +15,7 @@ public readonly partial struct SurfaceHandle :
 
     public static ref nuint AsPointer(ref SurfaceHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.As<SurfaceHandle, nuint>(ref handle);
     }
 
     public static SurfaceHandle GetNullHandle()

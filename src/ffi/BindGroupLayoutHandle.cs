@@ -7,7 +7,7 @@ public readonly partial struct BindGroupLayoutHandle :
 {
     public static ref nuint AsPointer(ref BindGroupLayoutHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static BindGroupLayoutHandle GetNullHandle()

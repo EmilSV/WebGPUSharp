@@ -7,7 +7,7 @@ public readonly partial struct RenderPipelineHandle :
 {
     public static ref nuint AsPointer(ref RenderPipelineHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.AsRef(in handle._ptr);
     }
 
     public static RenderPipelineHandle GetNullHandle()

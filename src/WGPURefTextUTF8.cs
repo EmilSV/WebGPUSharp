@@ -21,7 +21,7 @@ public readonly ref struct WGPURefCStrUTF8
 
         if (text.Is16BitSize)
         {
-            ref byte refChar = ref Unsafe.AsRef(text._reference);
+            ref byte refChar = ref Unsafe.AsRef(in text._reference);
             ReadOnlySpan<char> charTextSpan = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<byte, char>(ref refChar), length);
             int newSize = Encoding.UTF8.GetByteCount(charTextSpan) + 1;
             byte* result = allocator.Alloc<byte>((nuint)newSize);
@@ -32,10 +32,10 @@ public readonly ref struct WGPURefCStrUTF8
         }
         else
         {
-            ReadOnlySpan<byte> utf8TextSpan = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(text._reference), length);
+            ReadOnlySpan<byte> utf8TextSpan = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in text._reference), length);
             if (utf8TextSpan[^1] == 0)
             {
-                _reference = ref Unsafe.AsRef(text._reference);
+                _reference = ref Unsafe.AsRef(in text._reference);
             }
             else
             {
