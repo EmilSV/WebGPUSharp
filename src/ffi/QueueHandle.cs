@@ -225,7 +225,7 @@ public readonly unsafe partial struct QueueHandle :
 
     public static ref nuint AsPointer(ref QueueHandle handle)
     {
-        return ref Unsafe.AsRef(handle._ptr);
+        return ref Unsafe.As<QueueHandle, nuint>(ref handle);
     }
 
     public static QueueHandle GetNullHandle()
