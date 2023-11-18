@@ -35,8 +35,8 @@ public sealed unsafe partial class Device : BaseWebGpuSafeHandle<Device, DeviceH
     public Queue? GetQueue() =>
         _handle.GetQueue().ToSafeHandle(true);
 
-    public CommandEncoder? CreateCommandEncoder(in CommandEncoderDescriptor descriptor) =>
-        _handle.CreateCommandEncoder(descriptor).ToSafeHandle(true);
+    public CommandEncoder CreateCommandEncoder(in CommandEncoderDescriptor descriptor) =>
+        _handle.CreateCommandEncoder(descriptor).ToSafeHandle();
 
     public void Tick() => _handle.Tick();
 

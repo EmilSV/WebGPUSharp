@@ -47,15 +47,30 @@ public readonly unsafe partial struct QueueHandle :
     public readonly void Submit(ReadOnlySpan<CommandBuffer> commands)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        ToFFI(commands, allocator, out CommandBufferHandle* handlesPtr, out nuint outCount);
-        WebGPU_FFI.QueueSubmit(this, outCount, handlesPtr);
+        var commandBufferHandles = allocator.AllocAsSpan<CommandBufferHandle>((nuint)commands.Length);
+        for (int i = 0; i < commands.Length; i++)
+        {
+            commands[i]._pooledHandle.VerifyToken(commands[i]._localToken);
+            commandBufferHandles[i] = commands[i]._pooledHandle.handle;
+        }
+        fixed (CommandBufferHandle* commandBuffersPtr = commandBufferHandles)
+        {
+            WebGPU_FFI.QueueSubmit(this, (uint)commands.Length, commandBuffersPtr);
+        }
+
+        for (int i = 0; i < commands.Length; i++)
+        {
+            PooledHandle<CommandBufferHandle>.Return(commands[i]._pooledHandle);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(CommandBuffer command)
     {
-        CommandBufferHandle handle = (CommandBufferHandle)command;
+        command._pooledHandle.VerifyToken(command._localToken);
+        CommandBufferHandle handle = command._pooledHandle.handle;
         WebGPU_FFI.QueueSubmit(this, 1, &handle);
+        PooledHandle<CommandBufferHandle>.Return(command._pooledHandle);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

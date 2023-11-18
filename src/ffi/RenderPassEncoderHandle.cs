@@ -4,7 +4,7 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct RenderPassEncoderHandle :
-    IDisposable, IWebGpuHandle<RenderPassEncoderHandle, RenderPassEncoder>
+    IDisposable, IWebGpuHandle<RenderPassEncoderHandle>
 {
 
     public readonly void SetPipeline(RenderPipeline pipeline) =>
@@ -169,8 +169,8 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         WebGPU_FFI.RenderPassEncoderRelease(handle);
     }
 
-    public RenderPassEncoder? ToSafeHandle(bool isOwnedHandle)
+    public RenderPassEncoder ToSafeHandle()
     {
-        return RenderPassEncoder.FromHandle(this, isOwnedHandle);
+        return RenderPassEncoder.FromHandle(this);
     }
 }

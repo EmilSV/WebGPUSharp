@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly unsafe partial struct CommandBufferHandle :
-    IWebGpuHandle<CommandBufferHandle, CommandBuffer>, IDisposable
+    IWebGpuHandle<CommandBufferHandle>, IDisposable
 {
     public static ref nuint AsPointer(ref CommandBufferHandle handle)
     {
@@ -54,8 +54,8 @@ public readonly unsafe partial struct CommandBufferHandle :
         }
     }
 
-    public CommandBuffer? ToSafeHandle(bool isOwnedHandle)
+    public CommandBuffer ToSafeHandle()
     {
-        return CommandBuffer.FromHandle(this, isOwnedHandle);
+        return CommandBuffer.FromHandle(this);
     }
 }

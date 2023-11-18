@@ -1,60 +1,102 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
-public sealed class RenderPassEncoder : BaseWebGpuSafeHandle<RenderPassEncoderHandle>
+public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
 {
-    private RenderPassEncoder(RenderPassEncoderHandle handle) : base(handle)
+    private readonly ulong _localToken;
+    private readonly RenderPassEncoderHandle _originalHandle;
+    private readonly PooledHandle<RenderPassEncoderHandle> _pooledHandle;
+
+    private RenderPassEncoder(PooledHandle<RenderPassEncoderHandle> pooledHandle)
     {
+        _originalHandle = pooledHandle.handle;
+        _localToken = pooledHandle.token;
+        _pooledHandle = pooledHandle;
     }
 
-    internal static RenderPassEncoder? FromHandle(RenderPassEncoderHandle handle, bool isOwnedHandle)
+    internal static RenderPassEncoder FromHandle(RenderPassEncoderHandle handle)
     {
-        var newRenderPassEncoder = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new RenderPassEncoder(handle));
-        if (isOwnedHandle)
-        {
-            newRenderPassEncoder?.AddReference(false);
-        }
-        return newRenderPassEncoder;
+        var newRenderPassEncoderPooledHandle = PooledHandle<RenderPassEncoderHandle>.Get(handle);
+        return new RenderPassEncoder(newRenderPassEncoderPooledHandle);
+    }
+
+    internal RenderPassEncoderHandle GetOwnedHandle()
+    {
+        return _pooledHandle.GetOwnedHandle(_localToken);
     }
 
     public void Draw(
         uint vertexCount, uint instanceCount,
         uint firstVertex, uint firstInstance)
     {
-        _handle.Draw(vertexCount, instanceCount, firstVertex, firstInstance);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.Draw(vertexCount, instanceCount, firstVertex, firstInstance);
     }
 
     public void End()
     {
-        _handle.End();
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.End();
+        PooledHandle<RenderPassEncoderHandle>.Return(_pooledHandle);
     }
 
     public void SetBindGroup(uint groupIndex, BindGroup group)
     {
-        _handle.SetBindGroup(groupIndex, group);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetBindGroup(groupIndex, group);
     }
 
     public void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
     {
-        _handle.SetBindGroup(groupIndex, group, dynamicOffset);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetBindGroup(groupIndex, group, dynamicOffset);
     }
 
     public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
     {
-        _handle.SetBindGroup(groupIndex, group, dynamicOffsets);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetBindGroup(groupIndex, group, dynamicOffsets);
     }
 
     public void SetPipeline(RenderPipeline pipeline)
     {
-        _handle.SetPipeline(pipeline);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetPipeline(pipeline);
     }
 
     public void SetVertexBuffer(
         uint slot, Buffer buffer, ulong offset, ulong size)
     {
-        _handle.SetVertexBuffer(slot, buffer, offset, size);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset, size);
+    }
+
+    public bool Equals(RenderPassEncoder other)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        other._pooledHandle.VerifyToken(other._localToken);
+        return _pooledHandle.handle == other._pooledHandle.handle;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is RenderPassEncoder encoder && Equals(encoder);
+    }
+
+    public static bool operator ==(RenderPassEncoder left, RenderPassEncoder right)
+    {
+        return left._originalHandle == right._originalHandle;
+    }
+
+    public static bool operator !=(RenderPassEncoder left, RenderPassEncoder right)
+    {
+        return left._originalHandle != right._originalHandle;
+    }
+
+    public override int GetHashCode()
+    {
+        return _originalHandle.GetHashCode();
     }
 }

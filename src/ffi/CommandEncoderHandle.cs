@@ -5,7 +5,7 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 public readonly unsafe partial struct CommandEncoderHandle :
-    IDisposable, IWebGpuHandle<CommandEncoderHandle, CommandEncoder>
+    IDisposable, IWebGpuHandle<CommandEncoderHandle>
 {
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptor descriptor)
     {
@@ -348,9 +348,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
         return new CommandEncoderHandle(pointer);
     }
 
-    public CommandEncoder? ToSafeHandle(bool incrementReferenceCount)
+    public CommandEncoder ToSafeHandle()
     {
-        return CommandEncoder.FromHandle(this, incrementReferenceCount);
+        return CommandEncoder.FromHandle(this);
     }
 
     public static void Reference(CommandEncoderHandle handle)

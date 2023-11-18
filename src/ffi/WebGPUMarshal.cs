@@ -273,4 +273,10 @@ public unsafe static partial class WebGPUMarshal
         T.Reference(handle);
         return handle;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RenderPassEncoderHandle GetOwnedHandle(RenderPassEncoder safeHandle)
+    {
+        return safeHandle.GetOwnedHandle();
+    }
 }
