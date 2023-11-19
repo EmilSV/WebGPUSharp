@@ -7,8 +7,8 @@ namespace WebGpuSharp;
 public struct RenderPassColorAttachment :
     IWebGpuFFIConvertible<RenderPassColorAttachment, RenderPassColorAttachmentFFI>
 {
-    public TextureView? View;
-    public TextureView? ResolveTarget;
+    public TextureViewSource View;
+    public TextureViewSource ResolveTarget;
     public LoadOp LoadOp;
     public StoreOp StoreOp;
     public Color ClearValue;
@@ -17,8 +17,8 @@ public struct RenderPassColorAttachment :
         in RenderPassColorAttachment input, out RenderPassColorAttachmentFFI dest)
     {
         dest = new RenderPassColorAttachmentFFI(
-            view: ToFFI<TextureView, TextureViewHandle>(input.View),
-            resolveTarget: ToFFI<TextureView, TextureViewHandle>(input.ResolveTarget),
+            view: input.View.GetHandle(),
+            resolveTarget: input.ResolveTarget.GetHandle(),
             loadOp: input.LoadOp,
             storeOp: input.StoreOp,
             clearValue: input.ClearValue

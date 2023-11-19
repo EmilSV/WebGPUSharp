@@ -11,7 +11,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEn
     public ulong Offset;
     public ulong Size;
     public Sampler? Sampler;
-    public TextureView? TextureView;
+    public TextureViewSource TextureView;
 
     public BindGroupEntry()
     {
@@ -26,7 +26,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEn
     public BindGroupEntry(
         uint binding = default, Buffer? buffer = default,
         ulong offset = default, ulong size = default,
-        Sampler? sampler = default, TextureView? textureView = default)
+        Sampler? sampler = default, TextureViewSource textureView = default)
     {
         Binding = binding;
         Buffer = buffer;
@@ -51,7 +51,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEn
             offset: input.Offset,
             size: input.Size,
             sampler: ToFFI<Sampler, SamplerHandle>(input.Sampler),
-            textureView: ToFFI<TextureView, TextureViewHandle>(input.TextureView)
+            textureView: input.TextureView.GetHandle()
         );
     }
 }

@@ -2,7 +2,7 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-interface ITextureSource
+public interface ITextureSource
 {
     Texture? GetCurrentTexture();
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]

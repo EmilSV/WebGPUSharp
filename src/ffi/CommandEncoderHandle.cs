@@ -30,7 +30,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             ref readonly var depthStencilAttachment = ref descriptor.DepthStencilAttachment.Value;
 
             depthStencilAttachmentFFI = new(
-                view: ToFFI<TextureView, TextureViewHandle>(depthStencilAttachment.View),
+                view: depthStencilAttachment.View.GetHandle(),
                 depthLoadOp: depthStencilAttachment.DepthLoadOp,
                 depthStoreOp: depthStencilAttachment.DepthStoreOp,
                 depthClearValue: depthStencilAttachment.DepthClearValue,

@@ -7,7 +7,7 @@ namespace WebGpuSharp;
 public struct RenderPassDepthStencilAttachment :
      IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>
 {
-    public TextureView View;
+    public TextureViewSource View;
     public LoadOp DepthLoadOp;
     public StoreOp DepthStoreOp;
     public float DepthClearValue;
@@ -22,7 +22,7 @@ public struct RenderPassDepthStencilAttachment :
     static void IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
         in RenderPassDepthStencilAttachment input, out RenderPassDepthStencilAttachmentFFI dest)
     {
-        dest.View = ToFFI<TextureView, TextureViewHandle>(input.View);
+        dest.View = input.View.GetHandle();
         dest.DepthLoadOp = input.DepthLoadOp;
         dest.DepthStoreOp = input.DepthStoreOp;
         dest.DepthClearValue = input.DepthClearValue;

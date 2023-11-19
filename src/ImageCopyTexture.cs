@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public struct ImageCopyTexture :
     IWebGpuFFIConvertible<ImageCopyTexture, ImageCopyTextureFFI>
 {
-    public Texture Texture;
+    public TextureSource Texture;
     public uint MipLevel;
     public Origin3D Origin;
     public TextureAspect Aspect;
@@ -15,7 +15,7 @@ public struct ImageCopyTexture :
         in ImageCopyTexture input, out ImageCopyTextureFFI dest)
     {
         dest = new(
-            texture: WebGPUMarshal.ToFFI<Texture, TextureHandle>(input.Texture),
+            texture: input.Texture.GetHandle(),
             mipLevel: input.MipLevel,
             origin: input.Origin,
             aspect: input.Aspect

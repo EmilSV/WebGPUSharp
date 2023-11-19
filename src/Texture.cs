@@ -3,7 +3,9 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Texture : BaseWebGpuSafeHandle<Texture, TextureHandle>
+public sealed class Texture : 
+    BaseWebGpuSafeHandle<Texture, TextureHandle>,
+    ITextureSource
 {
     private Texture(TextureHandle handle) : base(handle)
     {
@@ -25,6 +27,9 @@ public sealed class Texture : BaseWebGpuSafeHandle<Texture, TextureHandle>
     }
 
     public void Destroy() => _handle.Destroy();
+
+
+
     public uint GetDepthOrArrayLayers() => _handle.GetDepthOrArrayLayers();
     public TextureDimension GetDimension() => _handle.GetDimension();
     public TextureFormat GetFormat() => _handle.GetFormat();
@@ -34,4 +39,14 @@ public sealed class Texture : BaseWebGpuSafeHandle<Texture, TextureHandle>
     public TextureUsage GetUsage() => _handle.GetUsage();
     public uint GetWidth() => _handle.GetWidth();
     public void SetLabel(WGPURefText label) => _handle.SetLabel(label);
+
+    Texture? ITextureSource.GetCurrentTexture()
+    {
+        return this;
+    }
+
+    TextureHandle ITextureSource.UnsafeGetCurrentTextureHandle()
+    {
+        return _handle;
+    }
 }
