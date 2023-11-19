@@ -47,7 +47,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     }
 
 
-    public CommandBuffer? Finish(in CommandBufferDescriptor descriptor)
+    public CommandBuffer Finish(in CommandBufferDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
         var commandBufferHandle = _pooledHandle.handle.Finish(descriptor);
