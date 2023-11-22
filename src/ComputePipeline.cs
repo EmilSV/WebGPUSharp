@@ -19,4 +19,14 @@ public sealed class ComputePipeline :
         }
         return newComputePipeline;
     }
+
+    public BindGroupLayout? GetBindGroupLayout(uint groupIndex)
+    {
+        return _handle.GetBindGroupLayout(groupIndex).ToSafeHandle(true);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        _handle.SetLabel(label);
+    }
 }

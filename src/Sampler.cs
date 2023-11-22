@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Sampler : BaseWebGpuSafeHandle<Sampler, SamplerHandle>
+public unsafe sealed class Sampler : BaseWebGpuSafeHandle<Sampler, SamplerHandle>
 {
     private Sampler(SamplerHandle handle) : base(handle)
     {
@@ -17,5 +17,11 @@ public sealed class Sampler : BaseWebGpuSafeHandle<Sampler, SamplerHandle>
             newSampler?.AddReference(false);
         }
         return newSampler;
+    }
+
+
+    public void SetLabel(WGPURefText label)
+    {
+        _handle.SetLabel(label);
     }
 }

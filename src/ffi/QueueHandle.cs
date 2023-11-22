@@ -226,7 +226,7 @@ public readonly unsafe partial struct QueueHandle :
        in Extent3D writeSize)
        where T : unmanaged
     {
-        WebGPUMarshal.ToFFI(destination, out ImageCopyTextureFFI destinationFFI);
+        ToFFI(destination, out ImageCopyTextureFFI destinationFFI);
         WriteTexture(destinationFFI, data, dataLayout, writeSize);
     }
 

@@ -32,8 +32,8 @@ public class RenderBundleEncoder : BaseWebGpuSafeHandle<RenderBundleEncoder, Ren
     public void DrawIndirect(Buffer indirectBuffer, ulong indirectOffset) =>
         _handle.DrawIndirect(indirectBuffer, indirectOffset);
 
-    public RenderBundleHandle Finish(in RenderBundleDescriptor descriptor) =>
-        _handle.Finish(descriptor);
+    public RenderBundle? Finish(in RenderBundleDescriptor descriptor) =>
+        _handle.Finish(descriptor).ToSafeHandle(true);
 
     public void InsertDebugMarker(WGPURefText label) =>
         _handle.InsertDebugMarker(label);

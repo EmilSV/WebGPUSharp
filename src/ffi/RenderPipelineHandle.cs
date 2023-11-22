@@ -2,9 +2,23 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct RenderPipelineHandle :
+public unsafe readonly partial struct RenderPipelineHandle :
     IDisposable, IWebGpuHandle<RenderPipelineHandle, RenderPipeline>
 {
+    public BindGroupLayoutHandle GetBindGroupLayout(uint groupIndex)
+    {
+        return WebGPU_FFI.RenderPipelineGetBindGroupLayout(this, groupIndex);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        using var allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.RenderPipelineSetLabel(this, labelPtr);
+        }
+    }
+
     public static ref nuint AsPointer(ref RenderPipelineHandle handle)
     {
         return ref Unsafe.AsRef(in handle._ptr);

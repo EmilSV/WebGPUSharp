@@ -6,6 +6,7 @@
         "Multisample",
         "TFFI",
         "Uncaptured",
+        "Unmap",
         "WGPU",
         "Workgroups"
     ]

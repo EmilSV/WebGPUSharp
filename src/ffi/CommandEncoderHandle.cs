@@ -193,7 +193,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void CommandEncoderCopyTextureToTexture(
+    public void CopyTextureToTexture(
         in ImageCopyTextureFFI source, in ImageCopyTextureFFI destination, in Extent3D copySize)
     {
         fixed (ImageCopyTextureFFI* sourcePtr = &source)
@@ -209,7 +209,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void CommandEncoderCopyTextureToTexture(
+    public void CopyTextureToTexture(
         in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
     {
         ToFFI(source, out ImageCopyTextureFFI sourceFFI);

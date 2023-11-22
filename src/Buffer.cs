@@ -26,6 +26,12 @@ public sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         return _handle.MapAsync(mode, offset, size);
     }
 
+    public void Destroy() => _handle.Destroy();
+    public BufferMapState GetMapState() => _handle.GetMapState();
+    public ulong GetSize() => _handle.GetSize();
+    public BufferUsage GetUsage() => _handle.GetUsage();
+    public void Unmap() => _handle.Unmap();
+
     internal static Buffer? FromHandle(BufferHandle handle, bool isOwnedHandle)
     {
         var newBuffer = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Buffer(handle));

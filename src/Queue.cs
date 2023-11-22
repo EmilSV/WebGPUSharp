@@ -21,6 +21,21 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
         return newQueue;
     }
 
+    public void OnSubmittedWorkDone(ulong signalValue, Action<QueueWorkDoneStatus> callback)
+    {
+        _handle.OnSubmittedWorkDone(signalValue, callback);
+    }
+
+    public Task<QueueWorkDoneStatus> OnSubmittedWorkDoneAsync(ulong signalValue)
+    {
+        return _handle.OnSubmittedWorkDoneAsync(signalValue);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        _handle.SetLabel(label);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Submit(ReadOnlySpan<CommandBuffer> commands)
     {

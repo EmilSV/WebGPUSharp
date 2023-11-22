@@ -84,6 +84,21 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     }
 
     public void SetBindGroup(
+        uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffsets)
+    {
+        fixed (uint* dynamicOffsetsPtr = dynamicOffsets)
+        {
+            WebGPU_FFI.ComputePassEncoderSetBindGroup(
+                computePassEncoder: this,
+                groupIndex: groupIndex,
+                group: group,
+                dynamicOffsetCount: (nuint)dynamicOffsets.Length,
+                dynamicOffsets: dynamicOffsetsPtr
+            );
+        }
+    }
+
+    public void SetBindGroup(
         uint groupIndex, BindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets)
     {
         WebGPU_FFI.ComputePassEncoderSetBindGroup(
@@ -95,6 +110,22 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         );
 
     }
+
+    public void SetBindGroup(
+        uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
+    {
+        fixed (uint* dynamicOffsetsPtr = dynamicOffsets)
+        {
+            WebGPU_FFI.ComputePassEncoderSetBindGroup(
+                computePassEncoder: this,
+                groupIndex: groupIndex,
+                group: (BindGroupHandle)group,
+                dynamicOffsetCount: (nuint)dynamicOffsets.Length,
+                dynamicOffsets: dynamicOffsetsPtr
+            );
+        }
+    }
+
 
 
     public void SetLabel(WGPURefText label)
@@ -118,7 +149,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     }
 
 
-    
+
     public void SetPipeline(ComputePipeline pipeline)
     {
         WebGPU_FFI.ComputePassEncoderSetPipeline(

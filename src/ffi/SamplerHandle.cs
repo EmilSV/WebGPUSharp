@@ -2,9 +2,18 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct SamplerHandle :
+public unsafe readonly partial struct SamplerHandle :
     IDisposable, IWebGpuHandle<SamplerHandle, Sampler>
 {
+    public void SetLabel(WGPURefText label)
+    {
+        using var allocator = WebGpuAllocatorHandle.Get();
+        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        {
+            WebGPU_FFI.SamplerSetLabel(this, labelPtr);
+        }
+    }
+
     public static ref nuint AsPointer(ref SamplerHandle handle)
     {
         return ref Unsafe.AsRef(in handle._ptr);

@@ -18,4 +18,9 @@ public sealed class ShaderModule : BaseWebGpuSafeHandle<ShaderModuleHandle>
         }
         return newShaderModule;
     }
+
+    public void GetCompilationInfo(CompilationInfoCallback callback)
+    {
+        _handle.GetCompilationInfo(callback);
+    }
 }

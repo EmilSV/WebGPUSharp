@@ -5,6 +5,16 @@ namespace WebGpuSharp.FFI;
 public readonly partial struct SurfaceHandle :
     IDisposable, IWebGpuHandle<SurfaceHandle, Surface>
 {
+
+    //Not in dawn yet
+    // public void Configure(in SurfaceConfigurationFFI configuration)
+    // {
+    //     WebGPU_FFI.SurfaceConfigure(this, configuration);
+    // }
+    
+    public TextureFormat GetPreferredFormat(AdapterHandle adapter) => TextureFormat.BGRA8Unorm;
+    public TextureFormat GetPreferredFormat(Adapter adapter) => TextureFormat.BGRA8Unorm;
+
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)
@@ -42,9 +52,6 @@ public readonly partial struct SurfaceHandle :
     {
         WebGPU_FFI.SurfaceRelease(handle);
     }
-
-    public TextureFormat GetPreferredFormat(AdapterHandle adapter) => TextureFormat.BGRA8Unorm;
-    public TextureFormat GetPreferredFormat(Adapter adapter) => TextureFormat.BGRA8Unorm;
 
     public Surface? ToSafeHandle(bool isOwnedHandle)
     {

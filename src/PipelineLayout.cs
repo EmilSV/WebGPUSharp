@@ -19,4 +19,8 @@ public unsafe sealed class PipelineLayout : BaseWebGpuSafeHandle<PipelineLayout,
         return newPipelineLayout;
     }
 
+    public void SetLabel(WGPURefText label)
+    {
+        _handle.SetLabel(label);
+    }
 }

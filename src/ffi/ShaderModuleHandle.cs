@@ -7,6 +7,12 @@ public readonly partial struct ShaderModuleHandle :
     IWebGpuHandle<ShaderModuleHandle, ShaderModule>
 {
 
+    public void GetCompilationInfo(CompilationInfoCallback callback)
+    {
+        ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callback);
+    }
+
+
     public static ref nuint AsPointer(ref ShaderModuleHandle handle)
     {
         return ref Unsafe.As<ShaderModuleHandle, nuint>(ref handle);

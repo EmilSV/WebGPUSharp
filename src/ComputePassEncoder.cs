@@ -20,4 +20,32 @@ public sealed class ComputePassEncoder :
         }
         return newComputePassEncoder;
     }
+
+    public void DispatchWorkgroups(uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ) =>
+        _handle.DispatchWorkgroups(workgroupCountX, workgroupCountY, workgroupCountZ);
+
+    public void DispatchWorkgroupsIndirect(Buffer indirectBuffer, ulong indirectOffset) =>
+        _handle.DispatchWorkgroupsIndirect(indirectBuffer, indirectOffset);
+
+    public void End() => _handle.End();
+
+    public void InsertDebugMarker(WGPURefText markerLabel) =>
+        _handle.InsertDebugMarker(markerLabel);
+
+    public void PopDebugGroup() =>
+        _handle.PopDebugGroup();
+
+    public void PushDebugGroup(WGPURefText groupLabel) =>
+        _handle.PushDebugGroup(groupLabel);
+
+
+    public void SetBindGroup(
+        uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets) =>
+        _handle.SetBindGroup(groupIndex, group, dynamicOffsets);
+
+    public void SetLabel(WGPURefText label) =>
+        _handle.SetLabel(label);
+
+    public void SetPipeline(ComputePipeline pipeline) =>
+        _handle.SetPipeline(pipeline);
 }

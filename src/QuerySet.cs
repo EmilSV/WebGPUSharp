@@ -18,4 +18,21 @@ public sealed class QuerySet : BaseWebGpuSafeHandle<QuerySet, QuerySetHandle>
         }
         return newQuerySet;
     }
+
+    public void Destroy()
+    {
+        _handle.Destroy();
+    }
+    public uint GetCount()
+    {
+        return _handle.GetCount();
+    }
+    public QueryType GetQueryType()
+    {
+        return _handle.GetQueryType();
+    }
+    public void SetLabel(WGPURefText label)
+    {
+        _handle.SetLabel(label);
+    }
 }

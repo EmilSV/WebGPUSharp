@@ -28,6 +28,8 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         return _pooledHandle.handle.BeginRenderPass(descriptor).ToSafeHandle();
     }
 
+
+
     public void CopyBufferToBuffer(
         Buffer source,
         ulong sourceOffset,
@@ -46,6 +48,67 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         );
     }
 
+    public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.ClearBuffer(buffer, offset, size);
+    }
+
+    public void CopyBufferToTexture(in ImageCopyBuffer source, in ImageCopyTexture destination, in Extent3D copySize)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.CopyBufferToTexture(source, destination, copySize);
+    }
+
+    public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.CopyTextureToBuffer(source, destination, copySize);
+    }
+
+    public void CopyTextureToTexture(in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.CopyTextureToTexture(source, destination, copySize);
+    }
+
+    public void InsertDebugMarker(WGPURefText markerLabel)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.InsertDebugMarker(markerLabel);
+    }
+
+    public void PopDebugGroup()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.PopDebugGroup();
+    }
+
+    public void PushDebugGroup(WGPURefText groupLabel)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.PushDebugGroup(groupLabel);
+    }
+
+    public void ResolveQuerySet(
+        QuerySet querySet, uint firstQuery, uint queryCount,
+        Buffer destination, ulong destinationOffset)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.ResolveQuerySet(querySet, firstQuery, queryCount, destination, destinationOffset);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetLabel(label);
+    }
+
+    public void WriteTimestamp(QuerySet querySet, uint queryIndex)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.WriteTimestamp(querySet, queryIndex);
+    }
 
     public CommandBuffer Finish(in CommandBufferDescriptor descriptor)
     {

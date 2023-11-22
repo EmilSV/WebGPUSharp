@@ -37,7 +37,7 @@ public unsafe readonly partial struct ComputePipelineHandle :
         return WebGPU_FFI.ComputePipelineGetBindGroupLayout(this, groupIndex);
     }
 
-    public void ComputePipelineSetLabel(WGPURefText label)
+    public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
