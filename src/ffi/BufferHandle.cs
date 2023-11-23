@@ -12,12 +12,10 @@ public unsafe readonly partial struct BufferHandle :
         WebGPU_FFI.BufferDestroy(this);
     }
 
-
     public void* GetConstMappedRange(nuint offset, nuint size)
     {
         return WebGPU_FFI.BufferGetConstMappedRange(this, offset, size);
     }
-
 
     public BufferMapState GetMapState()
     {

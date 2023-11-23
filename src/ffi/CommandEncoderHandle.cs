@@ -16,12 +16,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
             dest: out RenderPassColorAttachmentFFI* colorAttachmentsPtr,
             outCount: out nuint colorAttachmentsCount
         );
-        ToFFI(
-            input: descriptor.TimestampWrites,
-            allocator: allocator,
-            dest: out RenderPassTimestampWriteFFI* timestampWritePtr,
-            outCount: out nuint timestampWriteCount
-        );
 
         Unsafe.SkipInit(out RenderPassDepthStencilAttachmentFFI depthStencilAttachmentFFI);
         RenderPassDepthStencilAttachmentFFI* depthStencilAttachmentPtr = null;
@@ -51,8 +45,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
                 colorAttachments: colorAttachmentsPtr,
                 depthStencilAttachment: depthStencilAttachmentPtr,
                 occlusionQuerySet: ToFFI<QuerySet, QuerySetHandle>(descriptor.OcclusionQuerySet),
-                timestampWriteCount: timestampWriteCount,
-                timestampWrites: timestampWritePtr
+                timestampWrites: null
             );
             return BeginRenderPass(in descriptorFFI);
         }

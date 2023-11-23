@@ -340,7 +340,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                 type: descriptor.Type,
                 count: descriptor.Count,
                 pipelineStatistics: pipelineStatisticsPtr,
-                pipelineStatisticsCount: (nuint)descriptor.PipelineStatistics.Length
+                pipelineStatisticCount: (nuint)descriptor.PipelineStatistics.Length
             );
             return WebGPU_FFI.DeviceCreateQuerySet(this, &descriptorFFI);
         }
@@ -363,7 +363,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderBundleEncoderDescriptorFFI descriptorFFI = new(
                 label: labelPtr,
-                colorFormatsCount: (nuint)descriptor.ColorFormats.Length,
+                colorFormatCount: (nuint)descriptor.ColorFormats.Length,
                 colorFormats: colorFormatsPtr,
                 depthStencilFormat: descriptor.DepthStencilFormat,
                 sampleCount: descriptor.SampleCount,

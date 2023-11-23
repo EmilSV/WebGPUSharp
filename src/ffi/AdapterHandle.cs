@@ -116,7 +116,7 @@ public unsafe readonly partial struct AdapterHandle :
             DeviceDescriptorFFI deviceDescriptor = new(
                 label: deviceDescriptorLabelPtr,
                 requiredFeatures: requiredFeaturesPtr,
-                requiredFeaturesCount: (uint)descriptor.RequiredFeatures.Length,
+                requiredFeatureCount: (uint)descriptor.RequiredFeatures.Length,
                 requiredLimits: requiredLimitsPtr,
                 defaultQueue: new(
                     label: queueLabelPtr
@@ -143,7 +143,7 @@ public unsafe readonly partial struct AdapterHandle :
                 DeviceDescriptorFFI deviceDescriptor = new(
                     label: deviceDescriptorLabelPtr,
                     requiredFeatures: requiredFeaturesPtr,
-                    requiredFeaturesCount: (uint)descriptor.RequiredFeatures.Length,
+                    requiredFeatureCount: (uint)descriptor.RequiredFeatures.Length,
                     requiredLimits: requiredLimitsPtr,
                     defaultQueue: new(
                         label: queueLabelPtr

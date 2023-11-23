@@ -8,7 +8,7 @@ public unsafe partial struct DeviceDescriptorFFI
 {
 	public ChainedStruct* NextInChain;
 	public byte* Label;
-	public nuint RequiredFeaturesCount;
+	public nuint RequiredFeatureCount;
 	public FeatureName* RequiredFeatures;
 	public RequiredLimits* RequiredLimits;
 	public QueueDescriptorFFI DefaultQueue;
@@ -19,7 +19,7 @@ public unsafe partial struct DeviceDescriptorFFI
 	{
 		this.NextInChain = default;
 		this.Label = default;
-		this.RequiredFeaturesCount = default;
+		this.RequiredFeatureCount = default;
 		this.RequiredFeatures = default;
 		this.RequiredLimits = default;
 		this.DefaultQueue = default;
@@ -27,10 +27,10 @@ public unsafe partial struct DeviceDescriptorFFI
 		this.DeviceLostUserdata = default;
 	}
 
-	public DeviceDescriptorFFI(byte* label = default, nuint requiredFeaturesCount = default, FeatureName* requiredFeatures = default, RequiredLimits* requiredLimits = default, QueueDescriptorFFI defaultQueue = default, delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> deviceLostCallback = default, void* deviceLostUserdata = default)
+	public DeviceDescriptorFFI(byte* label = default, nuint requiredFeatureCount = default, FeatureName* requiredFeatures = default, RequiredLimits* requiredLimits = default, QueueDescriptorFFI defaultQueue = default, delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> deviceLostCallback = default, void* deviceLostUserdata = default)
 	{
 		this.Label = label;
-		this.RequiredFeaturesCount = requiredFeaturesCount;
+		this.RequiredFeatureCount = requiredFeatureCount;
 		this.RequiredFeatures = requiredFeatures;
 		this.RequiredLimits = requiredLimits;
 		this.DefaultQueue = defaultQueue;
@@ -38,11 +38,11 @@ public unsafe partial struct DeviceDescriptorFFI
 		this.DeviceLostUserdata = deviceLostUserdata;
 	}
 
-	public DeviceDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint requiredFeaturesCount = default, FeatureName* requiredFeatures = default, RequiredLimits* requiredLimits = default, QueueDescriptorFFI defaultQueue = default, delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> deviceLostCallback = default, void* deviceLostUserdata = default)
+	public DeviceDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint requiredFeatureCount = default, FeatureName* requiredFeatures = default, RequiredLimits* requiredLimits = default, QueueDescriptorFFI defaultQueue = default, delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> deviceLostCallback = default, void* deviceLostUserdata = default)
 	{
 		this.NextInChain = nextInChain;
 		this.Label = label;
-		this.RequiredFeaturesCount = requiredFeaturesCount;
+		this.RequiredFeatureCount = requiredFeatureCount;
 		this.RequiredFeatures = requiredFeatures;
 		this.RequiredLimits = requiredLimits;
 		this.DefaultQueue = defaultQueue;

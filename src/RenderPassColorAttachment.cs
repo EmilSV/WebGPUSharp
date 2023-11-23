@@ -8,6 +8,7 @@ public struct RenderPassColorAttachment :
     IWebGpuFFIConvertible<RenderPassColorAttachment, RenderPassColorAttachmentFFI>
 {
     public TextureViewSource View;
+    public uint DepthSlice;
     public TextureViewSource ResolveTarget;
     public LoadOp LoadOp;
     public StoreOp StoreOp;
@@ -18,6 +19,7 @@ public struct RenderPassColorAttachment :
     {
         dest = new RenderPassColorAttachmentFFI(
             view: input.View.GetHandle(),
+            depthSlice: input.DepthSlice,
             resolveTarget: input.ResolveTarget.GetHandle(),
             loadOp: input.LoadOp,
             storeOp: input.StoreOp,

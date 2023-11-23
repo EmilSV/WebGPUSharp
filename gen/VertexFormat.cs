@@ -33,5 +33,6 @@ public enum VertexFormat : int
 	Sint32x2 = 28,
 	Sint32x3 = 29,
 	Sint32x4 = 30,
+	Unorm10 = 31,
 }
 

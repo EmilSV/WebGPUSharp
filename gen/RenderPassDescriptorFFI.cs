@@ -12,8 +12,7 @@ public unsafe partial struct RenderPassDescriptorFFI
 	public RenderPassColorAttachmentFFI* ColorAttachments;
 	public RenderPassDepthStencilAttachmentFFI* DepthStencilAttachment;
 	public QuerySetHandle OcclusionQuerySet;
-	public nuint TimestampWriteCount;
-	public RenderPassTimestampWriteFFI* TimestampWrites;
+	public RenderPassTimestampWritesFFI* TimestampWrites;
 
 	public RenderPassDescriptorFFI()
 	{
@@ -23,22 +22,20 @@ public unsafe partial struct RenderPassDescriptorFFI
 		this.ColorAttachments = default;
 		this.DepthStencilAttachment = default;
 		this.OcclusionQuerySet = default;
-		this.TimestampWriteCount = default;
 		this.TimestampWrites = default;
 	}
 
-	public RenderPassDescriptorFFI(byte* label = default, nuint colorAttachmentCount = default, RenderPassColorAttachmentFFI* colorAttachments = default, RenderPassDepthStencilAttachmentFFI* depthStencilAttachment = default, QuerySetHandle occlusionQuerySet = default, nuint timestampWriteCount = default, RenderPassTimestampWriteFFI* timestampWrites = default)
+	public RenderPassDescriptorFFI(byte* label = default, nuint colorAttachmentCount = default, RenderPassColorAttachmentFFI* colorAttachments = default, RenderPassDepthStencilAttachmentFFI* depthStencilAttachment = default, QuerySetHandle occlusionQuerySet = default, RenderPassTimestampWritesFFI* timestampWrites = default)
 	{
 		this.Label = label;
 		this.ColorAttachmentCount = colorAttachmentCount;
 		this.ColorAttachments = colorAttachments;
 		this.DepthStencilAttachment = depthStencilAttachment;
 		this.OcclusionQuerySet = occlusionQuerySet;
-		this.TimestampWriteCount = timestampWriteCount;
 		this.TimestampWrites = timestampWrites;
 	}
 
-	public RenderPassDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint colorAttachmentCount = default, RenderPassColorAttachmentFFI* colorAttachments = default, RenderPassDepthStencilAttachmentFFI* depthStencilAttachment = default, QuerySetHandle occlusionQuerySet = default, nuint timestampWriteCount = default, RenderPassTimestampWriteFFI* timestampWrites = default)
+	public RenderPassDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint colorAttachmentCount = default, RenderPassColorAttachmentFFI* colorAttachments = default, RenderPassDepthStencilAttachmentFFI* depthStencilAttachment = default, QuerySetHandle occlusionQuerySet = default, RenderPassTimestampWritesFFI* timestampWrites = default)
 	{
 		this.NextInChain = nextInChain;
 		this.Label = label;
@@ -46,7 +43,6 @@ public unsafe partial struct RenderPassDescriptorFFI
 		this.ColorAttachments = colorAttachments;
 		this.DepthStencilAttachment = depthStencilAttachment;
 		this.OcclusionQuerySet = occlusionQuerySet;
-		this.TimestampWriteCount = timestampWriteCount;
 		this.TimestampWrites = timestampWrites;
 	}
 }

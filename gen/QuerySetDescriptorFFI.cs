@@ -11,7 +11,7 @@ public unsafe partial struct QuerySetDescriptorFFI
 	public QueryType Type;
 	public uint Count;
 	public PipelineStatisticName* PipelineStatistics;
-	public nuint PipelineStatisticsCount;
+	public nuint PipelineStatisticCount;
 
 	public QuerySetDescriptorFFI()
 	{
@@ -20,26 +20,26 @@ public unsafe partial struct QuerySetDescriptorFFI
 		this.Type = default;
 		this.Count = default;
 		this.PipelineStatistics = default;
-		this.PipelineStatisticsCount = default;
+		this.PipelineStatisticCount = default;
 	}
 
-	public QuerySetDescriptorFFI(byte* label = default, QueryType type = default, uint count = default, PipelineStatisticName* pipelineStatistics = default, nuint pipelineStatisticsCount = default)
+	public QuerySetDescriptorFFI(byte* label = default, QueryType type = default, uint count = default, PipelineStatisticName* pipelineStatistics = default, nuint pipelineStatisticCount = default)
 	{
 		this.Label = label;
 		this.Type = type;
 		this.Count = count;
 		this.PipelineStatistics = pipelineStatistics;
-		this.PipelineStatisticsCount = pipelineStatisticsCount;
+		this.PipelineStatisticCount = pipelineStatisticCount;
 	}
 
-	public QuerySetDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, QueryType type = default, uint count = default, PipelineStatisticName* pipelineStatistics = default, nuint pipelineStatisticsCount = default)
+	public QuerySetDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, QueryType type = default, uint count = default, PipelineStatisticName* pipelineStatistics = default, nuint pipelineStatisticCount = default)
 	{
 		this.NextInChain = nextInChain;
 		this.Label = label;
 		this.Type = type;
 		this.Count = count;
 		this.PipelineStatistics = pipelineStatistics;
-		this.PipelineStatisticsCount = pipelineStatisticsCount;
+		this.PipelineStatisticCount = pipelineStatisticCount;
 	}
 }
 

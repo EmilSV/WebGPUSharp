@@ -2,8 +2,8 @@ namespace WebGpuSharp;
 
 public enum PresentMode : int
 {
-	Immediate = 0,
-	Mailbox = 1,
-	Fifo = 2,
+	Fifo = 0,
+	Immediate = 2,
+	Mailbox = 3,
 }
 

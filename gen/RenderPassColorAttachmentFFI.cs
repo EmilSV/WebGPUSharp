@@ -8,6 +8,7 @@ public unsafe partial struct RenderPassColorAttachmentFFI
 {
 	public ChainedStruct* NextInChain;
 	public TextureViewHandle View;
+	public uint DepthSlice;
 	public TextureViewHandle ResolveTarget;
 	public LoadOp LoadOp;
 	public StoreOp StoreOp;
@@ -17,25 +18,28 @@ public unsafe partial struct RenderPassColorAttachmentFFI
 	{
 		this.NextInChain = default;
 		this.View = default;
+		this.DepthSlice = default;
 		this.ResolveTarget = default;
 		this.LoadOp = default;
 		this.StoreOp = default;
 		this.ClearValue = default;
 	}
 
-	public RenderPassColorAttachmentFFI(TextureViewHandle view = default, TextureViewHandle resolveTarget = default, LoadOp loadOp = default, StoreOp storeOp = default, Color clearValue = default)
+	public RenderPassColorAttachmentFFI(TextureViewHandle view = default, uint depthSlice = default, TextureViewHandle resolveTarget = default, LoadOp loadOp = default, StoreOp storeOp = default, Color clearValue = default)
 	{
 		this.View = view;
+		this.DepthSlice = depthSlice;
 		this.ResolveTarget = resolveTarget;
 		this.LoadOp = loadOp;
 		this.StoreOp = storeOp;
 		this.ClearValue = clearValue;
 	}
 
-	public RenderPassColorAttachmentFFI(ChainedStruct* nextInChain = default, TextureViewHandle view = default, TextureViewHandle resolveTarget = default, LoadOp loadOp = default, StoreOp storeOp = default, Color clearValue = default)
+	public RenderPassColorAttachmentFFI(ChainedStruct* nextInChain = default, TextureViewHandle view = default, uint depthSlice = default, TextureViewHandle resolveTarget = default, LoadOp loadOp = default, StoreOp storeOp = default, Color clearValue = default)
 	{
 		this.NextInChain = nextInChain;
 		this.View = view;
+		this.DepthSlice = depthSlice;
 		this.ResolveTarget = resolveTarget;
 		this.LoadOp = loadOp;
 		this.StoreOp = storeOp;

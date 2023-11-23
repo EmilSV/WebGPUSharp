@@ -62,7 +62,7 @@ public unsafe readonly ref partial struct CompilationInfo
         public CompilationMessage Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new(_compilationInfoFFI.Messages[_index]);
+            get => new(in _compilationInfoFFI.Messages[_index]);
         }
     }
 

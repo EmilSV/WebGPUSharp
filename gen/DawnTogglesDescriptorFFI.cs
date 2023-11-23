@@ -7,26 +7,26 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct DawnTogglesDescriptorFFI
 {
 	public ChainedStruct Chain;
-	public nuint EnabledTogglesCount;
+	public nuint EnabledToggleCount;
 	public byte** EnabledToggles;
-	public nuint DisabledTogglesCount;
+	public nuint DisabledToggleCount;
 	public byte** DisabledToggles;
 
 	public DawnTogglesDescriptorFFI()
 	{
 		this.Chain = default;
-		this.EnabledTogglesCount = default;
+		this.EnabledToggleCount = default;
 		this.EnabledToggles = default;
-		this.DisabledTogglesCount = default;
+		this.DisabledToggleCount = default;
 		this.DisabledToggles = default;
 	}
 
-	public DawnTogglesDescriptorFFI(ChainedStruct chain = default, nuint enabledTogglesCount = default, byte** enabledToggles = default, nuint disabledTogglesCount = default, byte** disabledToggles = default)
+	public DawnTogglesDescriptorFFI(ChainedStruct chain = default, nuint enabledToggleCount = default, byte** enabledToggles = default, nuint disabledToggleCount = default, byte** disabledToggles = default)
 	{
 		this.Chain = chain;
-		this.EnabledTogglesCount = enabledTogglesCount;
+		this.EnabledToggleCount = enabledToggleCount;
 		this.EnabledToggles = enabledToggles;
-		this.DisabledTogglesCount = disabledTogglesCount;
+		this.DisabledToggleCount = disabledToggleCount;
 		this.DisabledToggles = disabledToggles;
 	}
 }

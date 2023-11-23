@@ -8,5 +8,4 @@ public ref partial struct RenderPassDescriptor
     public ReadOnlySpan<RenderPassColorAttachment> ColorAttachments;
     public WGPUNullableRef<RenderPassDepthStencilAttachment> DepthStencilAttachment;
     public QuerySet? OcclusionQuerySet;
-    public ReadOnlySpan<RenderPassTimestampWrite> TimestampWrites;
 }

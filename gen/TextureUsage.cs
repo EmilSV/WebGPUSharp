@@ -10,5 +10,6 @@ public enum TextureUsage : uint
 	StorageBinding = 8,
 	RenderAttachment = 16,
 	TransientAttachment = 32,
+	StorageAttachment = 64,
 }
 

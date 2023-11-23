@@ -7,8 +7,17 @@ namespace WebGpuSharp.FFI;
 public static unsafe partial class WebGPU_FFI
 {
 
+	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuAdapterPropertiesFreeMembers")]
+	public static extern void AdapterPropertiesFreeMembers(AdapterPropertiesFFI value);
+
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCreateInstance")]
 	public static extern InstanceHandle CreateInstance(InstanceDescriptor* descriptor);
+
+	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuGetInstanceFeatures")]
+	public static extern WGPUBool GetInstanceFeatures(InstanceFeatures* features);
+
+	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSharedTextureMemoryEndAccessStateFreeMembers")]
+	public static extern void SharedTextureMemoryEndAccessStateFreeMembers(SharedTextureMemoryEndAccessStateFFI value);
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuAdapterCreateDevice")]
 	public static extern DeviceHandle AdapterCreateDevice(AdapterHandle adapter, DeviceDescriptorFFI* descriptor);
@@ -349,6 +358,9 @@ public static unsafe partial class WebGPU_FFI
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceRequestAdapter")]
 	public static extern void InstanceRequestAdapter(InstanceHandle instance, RequestAdapterOptionsFFI* options, delegate* unmanaged[Cdecl]<RequestAdapterStatus, AdapterHandle, byte*, void*, void> callback, void* userdata);
 
+	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceWaitAny")]
+	public static extern WaitStatus InstanceWaitAny(InstanceHandle instance, nuint futureCount, FutureWaitInfo* futures, ulong timeoutNS);
+
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceReference")]
 	public static extern void InstanceReference(InstanceHandle instance);
 
@@ -390,6 +402,9 @@ public static unsafe partial class WebGPU_FFI
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueOnSubmittedWorkDone")]
 	public static extern void QueueOnSubmittedWorkDone(QueueHandle queue, ulong signalValue, delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> callback, void* userdata);
+
+	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueOnSubmittedWorkDoneF")]
+	public static extern Future QueueOnSubmittedWorkDoneF(QueueHandle queue, QueueWorkDoneCallbackInfoFFI callbackInfo);
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueSetLabel")]
 	public static extern void QueueSetLabel(QueueHandle queue, byte* label);
@@ -490,6 +505,9 @@ public static unsafe partial class WebGPU_FFI
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPassEncoderInsertDebugMarker")]
 	public static extern void RenderPassEncoderInsertDebugMarker(RenderPassEncoderHandle renderPassEncoder, byte* markerLabel);
 
+	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPassEncoderPixelLocalStorageBarrier")]
+	public static extern void RenderPassEncoderPixelLocalStorageBarrier(RenderPassEncoderHandle renderPassEncoder);
+
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPassEncoderPopDebugGroup")]
 	public static extern void RenderPassEncoderPopDebugGroup(RenderPassEncoderHandle renderPassEncoder);
 
@@ -575,13 +593,13 @@ public static unsafe partial class WebGPU_FFI
 	public static extern void SharedFenceRelease(SharedFenceHandle sharedFence);
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSharedTextureMemoryBeginAccess")]
-	public static extern void SharedTextureMemoryBeginAccess(SharedTextureMemoryHandle sharedTextureMemory, TextureHandle texture, SharedTextureMemoryBeginAccessDescriptorFFI* descriptor);
+	public static extern WGPUBool SharedTextureMemoryBeginAccess(SharedTextureMemoryHandle sharedTextureMemory, TextureHandle texture, SharedTextureMemoryBeginAccessDescriptorFFI* descriptor);
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSharedTextureMemoryCreateTexture")]
 	public static extern TextureHandle SharedTextureMemoryCreateTexture(SharedTextureMemoryHandle sharedTextureMemory, TextureDescriptorFFI* descriptor);
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSharedTextureMemoryEndAccess")]
-	public static extern void SharedTextureMemoryEndAccess(SharedTextureMemoryHandle sharedTextureMemory, TextureHandle texture, SharedTextureMemoryEndAccessStateFFI* descriptor);
+	public static extern WGPUBool SharedTextureMemoryEndAccess(SharedTextureMemoryHandle sharedTextureMemory, TextureHandle texture, SharedTextureMemoryEndAccessStateFFI* descriptor);
 
 	[DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSharedTextureMemoryGetProperties")]
 	public static extern void SharedTextureMemoryGetProperties(SharedTextureMemoryHandle sharedTextureMemory, SharedTextureMemoryProperties* properties);
