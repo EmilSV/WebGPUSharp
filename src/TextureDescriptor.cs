@@ -1,48 +1,72 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-
-public ref partial struct TextureDescriptor
+public unsafe ref partial struct TextureDescriptor
 {
-    internal TextureDescriptorFFI _unmanagedDescriptor;
+    internal TextureDescriptorFFI _unmanagedDescriptor = new(
+        label: default,
+        usage: default,
+        dimension: TextureDimension._2D,
+        size: default,
+        format: default,
+        mipLevelCount: 1,
+        sampleCount: 1,
+        viewFormatCount: default,
+        viewFormats: default
+    );
     public WGPURefText Label;
-    public ref TextureUsage Usage
+    required public TextureUsage Usage
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.Usage;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unmanagedDescriptor.Usage;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unmanagedDescriptor.Usage = value;
     }
 
-    public ref TextureDimension Dimension
+    public TextureDimension Dimension
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.Dimension;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unmanagedDescriptor.Dimension;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unmanagedDescriptor.Dimension = value;
     }
 
-    public ref Extent3D Size
+    required public Extent3D Size
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.Size;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unmanagedDescriptor.Size;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unmanagedDescriptor.Size = value;
     }
 
-    public ref TextureFormat Format
+    required public TextureFormat Format
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.Format;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unmanagedDescriptor.Format;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unmanagedDescriptor.Format = value;
     }
 
-    public ref uint MipLevelCount
+    public uint MipLevelCount
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.MipLevelCount;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unmanagedDescriptor.MipLevelCount;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unmanagedDescriptor.MipLevelCount = value;
     }
 
-    public ref uint SampleCount
+    public uint SampleCount
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unmanagedDescriptor.SampleCount;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unmanagedDescriptor.SampleCount;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unmanagedDescriptor.SampleCount = value;
     }
     public ReadOnlySpan<TextureFormat> ViewFormats;
+
+    public TextureDescriptor()
+    {
+    }
 }

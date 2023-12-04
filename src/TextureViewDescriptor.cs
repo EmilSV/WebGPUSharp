@@ -3,49 +3,74 @@ using WebGpuSharp.FFI;
 namespace WebGpuSharp;
 
 
-public ref partial struct TextureViewDescriptor
+// dictionary GPUTextureViewDescriptor
+//          : GPUObjectDescriptorBase {
+//     GPUTextureFormat format;
+//     GPUTextureViewDimension dimension;
+//     GPUTextureAspect aspect = "all";
+//     GPUIntegerCoordinate baseMipLevel = 0;
+//     GPUIntegerCoordinate mipLevelCount;
+//     GPUIntegerCoordinate baseArrayLayer = 0;
+//     GPUIntegerCoordinate arrayLayerCount;
+// };
+
+public unsafe ref partial struct TextureViewDescriptor
 {
-    internal TextureViewDescriptorFFI _unsafeDescriptor;
+    internal TextureViewDescriptorFFI _unsafeDescriptor = new(
+        label: default,
+        format: default,
+        dimension: default,
+        aspect: TextureAspect.All,
+        baseMipLevel: 0,
+        mipLevelCount: default,
+        baseArrayLayer: 0,
+        arrayLayerCount: default
+    );
     public WGPURefText Label;
-    public ref TextureFormat Format
+
+    public TextureViewDescriptor()
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.Format;
     }
 
-    public ref TextureViewDimension Dimension
+    public TextureFormat Format
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.Dimension;
+        readonly get => _unsafeDescriptor.Format;
+        set => _unsafeDescriptor.Format = value;
     }
 
-    public ref uint BaseMipLevel
+    public TextureViewDimension Dimension
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.BaseMipLevel;
+        readonly get => _unsafeDescriptor.Dimension;
+        set => _unsafeDescriptor.Dimension = value;
     }
 
-    public ref uint MipLevelCount
+    public uint BaseMipLevel
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.MipLevelCount;
+        readonly get => _unsafeDescriptor.BaseMipLevel;
+        set => _unsafeDescriptor.BaseMipLevel = value;
     }
 
-    public ref uint BaseArrayLayer
+    public uint MipLevelCount
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.BaseArrayLayer;
+        readonly get => _unsafeDescriptor.MipLevelCount;
+        set => _unsafeDescriptor.MipLevelCount = value;
     }
 
-    public ref uint ArrayLayerCount
+    public uint BaseArrayLayer
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.ArrayLayerCount;
+        readonly get => _unsafeDescriptor.BaseArrayLayer;
+        set => _unsafeDescriptor.BaseArrayLayer = value;
     }
 
-    public ref TextureAspect Aspect
+    public uint ArrayLayerCount
     {
-        [UnscopedRef]
-        get => ref _unsafeDescriptor.Aspect;
+        readonly get => _unsafeDescriptor.ArrayLayerCount;
+        set => _unsafeDescriptor.ArrayLayerCount = value;
+    }
+
+    public TextureAspect Aspect
+    {
+        readonly get => _unsafeDescriptor.Aspect;
+        set => _unsafeDescriptor.Aspect = value;
     }
 }

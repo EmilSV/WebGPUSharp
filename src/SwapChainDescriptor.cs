@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
 namespace WebGpuSharp;
@@ -8,33 +7,43 @@ public ref partial struct SwapChainDescriptor
     internal SwapChainDescriptorFFI _unsafeDescriptor;
     public WGPURefText Label;
 
-    public ref TextureUsage Usage
+    public TextureUsage Usage
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.Usage;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.Usage;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.Usage = value;
     }
 
-    public ref TextureFormat Format
+    public TextureFormat Format
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.Format;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.Format;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.Format = value;
     }
 
-    public ref uint Width
+    public uint Width
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.Width;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.Width;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.Width = value;
     }
 
-    public ref uint Height
+    public uint Height
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.Height;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.Height;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.Height = value;
     }
 
-    public ref PresentMode PresentMode
+    public PresentMode PresentMode
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.PresentMode;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.PresentMode;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.PresentMode = value;
     }
 }

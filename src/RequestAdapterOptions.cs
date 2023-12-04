@@ -6,17 +6,21 @@ namespace WebGpuSharp;
 public struct RequestAdapterOptions :
     IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>
 {
-    public Surface CompatibleSurface;
+    public required Surface CompatibleSurface;
     public PowerPreference PowerPreference;
     public BackendType BackendType;
-    public bool ForceFallbackAdapter;
+    public bool ForceFallbackAdapter = false;
     public bool CompatibilityMode;
+
+    public RequestAdapterOptions()
+    {
+    }
 
     static void IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(
         in RequestAdapterOptions input, out RequestAdapterOptionsFFI dest)
     {
         dest = new(
-            compatibleSurface : WebGPUMarshal.ToFFI<Surface, SurfaceHandle>(input.CompatibleSurface),
+            compatibleSurface: WebGPUMarshal.ToFFI<Surface, SurfaceHandle>(input.CompatibleSurface),
             powerPreference: input.PowerPreference,
             backendType: input.BackendType,
             forceFallbackAdapter: input.ForceFallbackAdapter,
