@@ -18,6 +18,7 @@ public unsafe readonly ref partial struct CompilationInfo
     {
         get
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, MessageCount);
             return new(in _compilationInfoFFI.Messages[index]);
         }
@@ -27,6 +28,7 @@ public unsafe readonly ref partial struct CompilationInfo
     {
         get
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, (int)MessageCount);
             return new(in _compilationInfoFFI.Messages[index]);
         }

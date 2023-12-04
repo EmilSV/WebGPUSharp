@@ -39,13 +39,27 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
         {
+            RenderPassTimestampWritesFFI timestampWritesFFI;
+            RenderPassTimestampWritesFFI* timestampWritesFFIPtr;
+            if (descriptor.TimestampWrites.HasValue)
+            {
+                ref readonly var timestampWrites = ref descriptor.TimestampWrites.Value;
+                ToFFI(timestampWrites, out timestampWritesFFI);
+                timestampWritesFFIPtr = &timestampWritesFFI;
+            }
+            else
+            {
+                timestampWritesFFIPtr = null;
+            }
+
+
             RenderPassDescriptorFFI descriptorFFI = new(
                 label: labelPtr,
                 colorAttachmentCount: colorAttachmentsCount,
                 colorAttachments: colorAttachmentsPtr,
                 depthStencilAttachment: depthStencilAttachmentPtr,
                 occlusionQuerySet: ToFFI<QuerySet, QuerySetHandle>(descriptor.OcclusionQuerySet),
-                timestampWrites: null
+                timestampWrites: timestampWritesFFIPtr
             );
             return BeginRenderPass(in descriptorFFI);
         }
