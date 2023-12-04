@@ -89,6 +89,21 @@ public readonly ref struct WGPURefText
         }
     }
 
+    public static implicit operator WGPURefText(byte[] value)
+    {
+        return value is null ? default : new WGPURefText(value);
+    }
+
+    public static implicit operator WGPURefText(char[] value)
+    {
+        return value is null ? default : new WGPURefText(value);
+    }
+
+    public static implicit operator WGPURefText(string value)
+    {
+        return value is null ? default : new WGPURefText(value);
+    }
+
     public static implicit operator WGPURefText(ReadOnlySpan<byte> value)
     {
         return new WGPURefText(value);
@@ -109,19 +124,6 @@ public readonly ref struct WGPURefText
         return new WGPURefText(value);
     }
 
-    public static implicit operator WGPURefText(byte[] value)
-    {
-        return value is null ? default : new WGPURefText(value);
-    }
 
-    public static implicit operator WGPURefText(char[] value)
-    {
-        return value is null ? default : new WGPURefText(value);
-    }
-
-    public static implicit operator WGPURefText(string value)
-    {
-        return value is null ? default : new WGPURefText(value);
-    }
 
 }

@@ -4,60 +4,106 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-public ref partial struct SamplerDescriptor
+// dictionary GPUSamplerDescriptor
+//          : GPUObjectDescriptorBase {
+//     GPUAddressMode addressModeU = "clamp-to-edge";
+//     GPUAddressMode addressModeV = "clamp-to-edge";
+//     GPUAddressMode addressModeW = "clamp-to-edge";
+//     GPUFilterMode magFilter = "nearest";
+//     GPUFilterMode minFilter = "nearest";
+//     GPUMipmapFilterMode mipmapFilter = "nearest";
+//     float lodMinClamp = 0;
+//     float lodMaxClamp = 32;
+//     GPUCompareFunction compare;
+//     [Clamp] unsigned short maxAnisotropy = 1;
+// };
+
+public unsafe ref struct SamplerDescriptor
 {
-    internal SamplerDescriptorFFI _unsafeDescriptor;
+    internal SamplerDescriptorFFI _unsafeDescriptor = new(
+        label: null,
+        addressModeU: AddressMode.ClampToEdge,
+        addressModeV: AddressMode.ClampToEdge,
+        addressModeW: AddressMode.ClampToEdge,
+        magFilter: FilterMode.Nearest,
+        minFilter: FilterMode.Nearest,
+        mipmapFilter: MipmapFilterMode.Nearest,
+        lodMinClamp: 0,
+        lodMaxClamp: 32,
+        compare: default,
+        maxAnisotropy: 1
+    );
 
     public WGPURefText Label;
-    public ref AddressMode AddressModeU
+    public AddressMode AddressModeU
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.AddressModeU;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.AddressModeU;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.AddressModeU = value;
     }
-    public ref AddressMode AddressModeV
+    public AddressMode AddressModeV
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.AddressModeV;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.AddressModeV;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.AddressModeV = value;
     }
-    public ref AddressMode AddressModeW
+    public AddressMode AddressModeW
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.AddressModeW;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.AddressModeW;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.AddressModeW = value;
     }
-    public ref FilterMode MagFilter
+    public FilterMode MagFilter
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.MagFilter;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.MagFilter;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.MagFilter = value;
     }
-    public ref FilterMode MinFilter
+    public FilterMode MinFilter
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.MinFilter;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.MinFilter;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.MinFilter = value;
     }
-    public ref MipmapFilterMode MipmapFilter
+    public MipmapFilterMode MipmapFilter
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.MipmapFilter;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.MipmapFilter;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.MipmapFilter = value;
     }
-    public ref float LodMinClamp
+    public float LodMinClamp
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.LodMinClamp;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.LodMinClamp;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.LodMinClamp = value;
     }
-    public ref float LodMaxClamp
+    public float LodMaxClamp
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.LodMaxClamp;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.LodMaxClamp;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.LodMaxClamp = value;
     }
-    public ref CompareFunction Compare
+    public CompareFunction Compare
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.Compare;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.Compare;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.Compare = value;
     }
-    public ref ushort MaxAnisotropy
+    public ushort MaxAnisotropy
     {
-        [UnscopedRef, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref _unsafeDescriptor.MaxAnisotropy;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly get => _unsafeDescriptor.MaxAnisotropy;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set => _unsafeDescriptor.MaxAnisotropy = value;
     }
 
     public SamplerDescriptor()

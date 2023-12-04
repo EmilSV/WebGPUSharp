@@ -4,5 +4,5 @@ public ref struct ComputePipelineDescriptor
 {
     public WGPURefText Label;
     public PipelineLayout? Layout;
-    public ProgrammableStageDescriptor Compute;
+    required public ProgrammableStageDescriptor Compute;
 }

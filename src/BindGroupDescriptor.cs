@@ -5,6 +5,6 @@ namespace WebGpuSharp;
 public ref partial struct BindGroupDescriptor
 {
     public WGPURefText Label;
-    public BindGroupLayout Layout;
-    public ReadOnlySpan<BindGroupEntry> Entries;
+    public required BindGroupLayout Layout;
+    public required ReadOnlySpan<BindGroupEntry> Entries;
 }
