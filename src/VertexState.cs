@@ -4,10 +4,10 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
-public partial struct VertexState :
+public struct VertexState :
     IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
 {
-    public ShaderModule Module;
+    public required ShaderModule Module;
     public string EntryPoint;
     public ConstantEntryList? Constants;
     public VertexBufferLayoutList? Buffers;

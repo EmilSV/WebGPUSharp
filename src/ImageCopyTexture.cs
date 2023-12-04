@@ -6,10 +6,14 @@ namespace WebGpuSharp;
 public struct ImageCopyTexture :
     IWebGpuFFIConvertible<ImageCopyTexture, ImageCopyTextureFFI>
 {
-    public TextureSource Texture;
-    public uint MipLevel;
+    public required TextureSource Texture;
+    public uint MipLevel = 0;
     public Origin3D Origin;
-    public TextureAspect Aspect;
+    public TextureAspect Aspect = TextureAspect.All;
+
+    public ImageCopyTexture()
+    {
+    }
 
     static void IWebGpuFFIConvertible<ImageCopyTexture, ImageCopyTextureFFI>.UnsafeConvertToFFI(
         in ImageCopyTexture input, out ImageCopyTextureFFI dest)

@@ -7,17 +7,19 @@ namespace WebGpuSharp;
 public struct RenderPassDepthStencilAttachment :
      IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>
 {
-    public TextureViewSource View;
+    public required TextureViewSource View;
     public LoadOp DepthLoadOp;
     public StoreOp DepthStoreOp;
     public float DepthClearValue;
-    public bool DepthReadOnly;
+    public bool DepthReadOnly = false;
     public LoadOp StencilLoadOp;
     public StoreOp StencilStoreOp;
-    public uint StencilClearValue;
-    public bool StencilReadOnly;
+    public uint StencilClearValue = 0;
+    public bool StencilReadOnly = false;
 
-
+    public RenderPassDepthStencilAttachment()
+    {
+    }
 
     static void IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
         in RenderPassDepthStencilAttachment input, out RenderPassDepthStencilAttachmentFFI dest)

@@ -9,7 +9,7 @@ public ref partial struct BufferDescriptor
     internal BufferDescriptorFFI _unmanagedDescriptor;
     public WGPURefText Label;
 
-    required public BufferUsage Usage
+    public required BufferUsage Usage
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly get => _unmanagedDescriptor.Usage;
@@ -17,7 +17,7 @@ public ref partial struct BufferDescriptor
         set => _unmanagedDescriptor.Usage = value;
     }
 
-    required public ulong Size
+    public required ulong Size
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly get => _unmanagedDescriptor.Size;

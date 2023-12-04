@@ -7,12 +7,12 @@ namespace WebGpuSharp;
 public struct RenderPassColorAttachment :
     IWebGpuFFIConvertible<RenderPassColorAttachment, RenderPassColorAttachmentFFI>
 {
-    public TextureViewSource View;
+    public required TextureViewSource View;
     public uint DepthSlice;
     public TextureViewSource ResolveTarget;
-    public LoadOp LoadOp;
-    public StoreOp StoreOp;
     public Color ClearValue;
+    public required LoadOp LoadOp;
+    public required StoreOp StoreOp;
 
     static void IWebGpuFFIConvertible<RenderPassColorAttachment, RenderPassColorAttachmentFFI>.UnsafeConvertToFFI(
         in RenderPassColorAttachment input, out RenderPassColorAttachmentFFI dest)

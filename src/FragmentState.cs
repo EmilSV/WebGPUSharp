@@ -7,10 +7,10 @@ namespace WebGpuSharp;
 public partial struct FragmentState :
     IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
 {
-    public ShaderModule Module;
+    public required ShaderModule Module;
     public string EntryPoint;
     public ConstantEntryList? Constants;
-    public ColorTargetStateList? Targets;
+    public required ColorTargetStateList Targets;
 
     static unsafe void IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>.UnsafeConvertToFFI(
         in FragmentState input,

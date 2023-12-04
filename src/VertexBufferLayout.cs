@@ -1,15 +1,20 @@
 namespace WebGpuSharp;
 
-public partial struct VertexBufferLayout
+public struct VertexBufferLayout
 {
-    public ulong ArrayStride;
-    public VertexStepMode StepMode;
-    public VertexAttributeList? Attributes;
+    public required ulong ArrayStride;
+    public VertexStepMode StepMode = VertexStepMode.Vertex;
+    public required VertexAttributeList Attributes;
+
+    public VertexBufferLayout()
+    {
+
+    }
 
     public VertexBufferLayout(
-        ulong arrayStride = default,
-        VertexStepMode stepMode = default,
-        VertexAttributeList? attributes = default
+        ulong arrayStride,
+        VertexStepMode stepMode,
+        VertexAttributeList attributes
     )
     {
         this.ArrayStride = arrayStride;
