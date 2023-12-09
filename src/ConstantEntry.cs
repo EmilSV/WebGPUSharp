@@ -6,8 +6,13 @@ namespace WebGpuSharp;
 
 public unsafe partial struct ConstantEntry : IWebGpuFFIConvertibleAlloc<ConstantEntry, ConstantEntryFFI>
 {
-    public string Key;
-    public double Value;
+    public required string Key;
+    public required double Value;
+
+    
+    public ConstantEntry()
+    {
+    }
 
     public ConstantEntry(string key, double value)
     {
