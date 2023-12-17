@@ -7,18 +7,25 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
-public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
+public sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
 {
+    [StructLayout(LayoutKind.Explicit)]
+    internal struct ReadWriteStateChange(ulong value)
+    {
+        [FieldOffset(0)]
+        public ulong value = value;
+
+        [FieldOffset(0)]
+        public uint readWrite;
+
+        [FieldOffset(4)]
+        public uint stateChange;
+    }
+
     private class BufferAndCallback(Buffer buffer, Action<BufferMapAsyncStatus> callback)
     {
         public readonly Buffer Buffer = buffer;
         public readonly Action<BufferMapAsyncStatus> Callback = callback;
-    }
-
-    private class BufferAndTaskCompletionSource(Buffer buffer, TaskCompletionSource<BufferMapAsyncStatus> taskCompletionSource)
-    {
-        public readonly Buffer Buffer = buffer;
-        public readonly TaskCompletionSource<BufferMapAsyncStatus> TaskCompletionSource = taskCompletionSource;
     }
 
     public delegate void ReadWriteOperationCallback(BufferReadWriteContext status);
@@ -26,8 +33,7 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
     public delegate T ReadWriteOperationCallbackWithData<T>(BufferReadWriteContext status, ref T userdata);
     public delegate TReturnData ReadWriteOperationCallbackWithData<TUserdata, TReturnData>(BufferReadWriteContext status, ref TUserdata userdata);
 
-
-    private long readWriteState = 0;
+    internal ReadWriteStateChange readWriteStateChange = default;
 
     private Buffer(BufferHandle handle) : base(handle)
     {
@@ -43,7 +49,7 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         return newBuffer;
     }
 
-    public void MapAsync(
+    public unsafe void MapAsync(
         MapMode mode,
         nuint offset,
         nuint size,
@@ -52,6 +58,7 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         CallbackUserDataHandle handle = default;
         try
         {
+            UnsafeBufferLock.AddStateChangeLock(this);
             BufferAndCallback bufferAndCallback = new(this, callback);
             handle = CallbackUserDataHandle.Alloc(bufferAndCallback);
             WebGPU_FFI.BufferMapAsync(
@@ -63,17 +70,18 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
                 userdata: (void*)handle
             );
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.Error.WriteLine(ex);
             if (handle.IsValid())
             {
                 handle.Dispose();
             }
+            UnsafeBufferLock.RemoveStateChangeLock(this);
+            throw;
         }
     }
 
-    public Task<BufferMapAsyncStatus> MapAsync(
+    public async Task<BufferMapAsyncStatus> MapAsync(
         MapMode mode,
         nuint offset,
         nuint size)
@@ -82,43 +90,89 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         CallbackUserDataHandle handle = default;
         try
         {
-            taskCompletionSource = new TaskCompletionSource<BufferMapAsyncStatus>();
-            BufferAndTaskCompletionSource bufferAndTaskCompletionSource = new(this, taskCompletionSource);
-            handle = CallbackUserDataHandle.Alloc(bufferAndTaskCompletionSource);
-            WebGPU_FFI.BufferMapAsync(
-                buffer: WebGPUMarshal.GetBorrowHandle(this),
-                mode: mode,
-                offset: offset,
-                size: size,
-                callback: &OnBufferMapCallback_TaskCompletionSource,
-                userdata: (void*)handle
-            );
+            unsafe
+            {
+                UnsafeBufferLock.AddStateChangeLock(this);
+                taskCompletionSource = new TaskCompletionSource<BufferMapAsyncStatus>();
+                handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
+                WebGPU_FFI.BufferMapAsync(
+                    buffer: WebGPUMarshal.GetBorrowHandle(this),
+                    mode: mode,
+                    offset: offset,
+                    size: size,
+                    callback: &OnBufferMapCallback_TaskCompletionSource,
+                    userdata: (void*)handle
+                );
+            }
+
+            return await taskCompletionSource.Task;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.Error.WriteLine(ex);
             if (handle.IsValid())
             {
                 handle.Dispose();
             }
-            return Task.FromResult(BufferMapAsyncStatus.Unknown);
+            throw;
         }
-        return taskCompletionSource.Task;
+        finally
+        {
+            UnsafeBufferLock.RemoveStateChangeLock(this);
+        }
     }
 
-    public void Destroy() => _handle.Destroy();
+    public void Destroy()
+    {
+        UnsafeBufferLock.AddStateChangeLock(this);
+        try
+        {
+            _handle.Destroy();
+        }
+        finally
+        {
+            UnsafeBufferLock.RemoveStateChangeLock(this);
+        }
+    }
+
     public BufferMapState GetMapState() => _handle.GetMapState();
     public ulong GetSize() => _handle.GetSize();
     public BufferUsage GetUsage() => _handle.GetUsage();
-    public void Unmap() => _handle.Unmap();
+
+    public void Unmap()
+    {
+        try
+        {
+            UnsafeBufferLock.AddStateChangeLock(this);
+            _handle.Unmap();
+        }
+        finally
+        {
+            UnsafeBufferLock.RemoveStateChangeLock(this);
+        }
+    }
+
 
     public static void DoReadWriteOperation(
         ReadOnlySpan<Buffer> buffers,
         ReadWriteOperationCallback callback
     )
     {
-        using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
-        callback(context);
+        try
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.AddReadWriteLock(buffer);
+            }
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            callback(context);
+        }
+        finally
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+            }
+        }
     }
 
     public static T DoReadWriteOperation<T>(
@@ -126,8 +180,22 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         ReadWriteOperationCallback<T> callback
     )
     {
-        using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
-        return callback(context);
+        try
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.AddReadWriteLock(buffer);
+            }
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            return callback(context);
+        }
+        finally
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+            }
+        }
     }
 
 
@@ -137,8 +205,22 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         ReadWriteOperationCallbackWithData<TUserdata> callback
     )
     {
-        using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
-        callback(context, ref state);
+        try
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.AddReadWriteLock(buffer);
+            }
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            callback(context, ref state);
+        }
+        finally
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+            }
+        }
     }
 
     public static TReturnData DoReadWriteOperation<TUserdata, TReturnData>(
@@ -147,19 +229,32 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         ReadWriteOperationCallbackWithData<TUserdata, TReturnData> callback
     )
     {
-        using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
-        return callback(context, ref state);
+        try
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.AddReadWriteLock(buffer);
+            }
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            return callback(context, ref state);
+        }
+        finally
+        {
+            foreach (Buffer buffer in buffers)
+            {
+                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+            }
+        }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     public unsafe static void OnBufferMapCallback_Action(BufferMapAsyncStatus status, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        BufferAndCallback? bufferAndCallback;
-
         try
         {
-            bufferAndCallback = (BufferAndCallback)handle.GetObject()!;
+            BufferAndCallback bufferAndCallback = (BufferAndCallback)handle.GetObject()!;
+            UnsafeBufferLock.RemoveStateChangeLock(bufferAndCallback.Buffer);
             bufferAndCallback.Callback(status);
         }
         catch (Exception)
@@ -180,12 +275,10 @@ public unsafe sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         BufferMapAsyncStatus status, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        BufferAndTaskCompletionSource? bufferAndTaskCompletionSource;
-
         try
         {
-            bufferAndTaskCompletionSource = (BufferAndTaskCompletionSource)handle.GetObject()!;
-            bufferAndTaskCompletionSource.TaskCompletionSource.SetResult(status);
+            TaskCompletionSource<BufferMapAsyncStatus> taskCompletionSource = (TaskCompletionSource<BufferMapAsyncStatus>)handle.GetObject()!;
+            taskCompletionSource.SetResult(status);
         }
         catch (Exception)
         {
