@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.Internal;
 
-internal unsafe struct CallbackUserDataHandle :
+internal unsafe readonly struct CallbackUserDataHandle :
     IDisposable
 {
     private readonly static ConcurrentDictionary<nuint, object> _handlesToObject = new();
@@ -52,6 +52,16 @@ internal unsafe struct CallbackUserDataHandle :
     public object? GetObject()
     {
         if (!_handlesToObject.TryGetValue(id, out var obj))
+        {
+            return null;
+        }
+
+        return obj;
+    }
+
+    public object? GetObjectAndDispose()
+    {
+        if (!_handlesToObject.TryRemove(id, out var obj))
         {
             return null;
         }

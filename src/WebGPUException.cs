@@ -1,8 +1,5 @@
 namespace WebGpuSharp;
 
-public class WebGPUException : Exception
+public class WebGPUException(string message) : Exception(message)
 {
-    public WebGPUException(string message) : base(message)
-    {
-    }
 }

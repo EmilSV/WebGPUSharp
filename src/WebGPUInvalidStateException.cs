@@ -1,9 +1,6 @@
 namespace WebGpuSharp;
 
 
-public class WebGPUInvalidStateException : WebGPUException
+public class WebGPUInvalidStateException(string message) : WebGPUException(message)
 {
-    public WebGPUInvalidStateException(string message) : base(message)
-    {
-    }
 }
