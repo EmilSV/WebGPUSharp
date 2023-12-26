@@ -36,7 +36,7 @@ internal unsafe class WebGpuAllocator
         Rental
     }
 
-    private struct BufferStruct
+    private readonly struct BufferStruct
     {
         public readonly UIntPtr Buffer;
         public readonly long Size;

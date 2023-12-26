@@ -1,5 +1,4 @@
 using System.Buffers;
-using WebGpuSharp;
 using WebGpuSharp.FFI;
 using GPUBuffer = WebGpuSharp.Buffer;
 
@@ -29,7 +28,7 @@ public unsafe ref struct BufferReadWriteContext
         }
     }
 
-    public ReadOnlySpan<T> GetConstMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
+    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
     {
         if (_buffersUsedInContext == null)
         {
@@ -46,18 +45,18 @@ public unsafe ref struct BufferReadWriteContext
                 void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetConstMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)
                 {
-                    return ReadOnlySpan<T>.Empty;
+                    return [];
                 }
 
                 return new ReadOnlySpan<T>(ptr, (int)size);
             }
         }
 
-        return ReadOnlySpan<T>.Empty;
+        return [];
     }
 
 
-    public ReadOnlySpan<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
+    public readonly ReadOnlySpan<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
     {
         if (_buffersUsedInContext == null)
         {
@@ -74,13 +73,13 @@ public unsafe ref struct BufferReadWriteContext
                 void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)
                 {
-                    return ReadOnlySpan<T>.Empty;
+                    return [];
                 }
 
                 return new ReadOnlySpan<T>(ptr, (int)size);
             }
         }
 
-        return ReadOnlySpan<T>.Empty;
+        return [];
     }
 }
