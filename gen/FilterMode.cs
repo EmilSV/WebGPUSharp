@@ -1,8 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum FilterMode : int
+public enum FilterMode
 {
-	Nearest = 0,
-	Linear = 1,
+    Undefined = 0,
+    Nearest = 1,
+    Linear = 2,
 }
-

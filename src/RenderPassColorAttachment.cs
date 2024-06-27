@@ -7,6 +7,8 @@ namespace WebGpuSharp;
 public struct RenderPassColorAttachment :
     IWebGpuFFIConvertible<RenderPassColorAttachment, RenderPassColorAttachmentFFI>
 {
+    public const uint DEPTH_SLICE_UNDEFINED = WebGPU_FFI.DEPTH_SLICE_UNDEFINED;
+
     public required TextureViewSource View;
     public uint DepthSlice;
     public TextureViewSource ResolveTarget;
@@ -17,14 +19,17 @@ public struct RenderPassColorAttachment :
     static void IWebGpuFFIConvertible<RenderPassColorAttachment, RenderPassColorAttachmentFFI>.UnsafeConvertToFFI(
         in RenderPassColorAttachment input, out RenderPassColorAttachmentFFI dest)
     {
-        dest = new RenderPassColorAttachmentFFI(
-            view: input.View.GetHandle(),
-            depthSlice: input.DepthSlice,
-            resolveTarget: input.ResolveTarget.GetHandle(),
-            loadOp: input.LoadOp,
-            storeOp: input.StoreOp,
-            clearValue: input.ClearValue
-        );
+        unsafe
+        {
+            dest = new RenderPassColorAttachmentFFI(
+                view: input.View.GetHandle(),
+                depthSlice: input.DepthSlice,
+                resolveTarget: input.ResolveTarget.GetHandle(),
+                loadOp: input.LoadOp,
+                storeOp: input.StoreOp,
+                clearValue: input.ClearValue
+            );
+        }
     }
 
     static void IWebGpuFFIConvertibleAlloc<RenderPassColorAttachment, RenderPassColorAttachmentFFI>.UnsafeConvertToFFI(

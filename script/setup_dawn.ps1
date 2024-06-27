@@ -45,7 +45,7 @@ else {
 # download dawn
 if (!(Test-Path "dawn")) {
     Write-Host "dawn not found, downloading..."
-    git clone -b "chromium/5938" https://dawn.googlesource.com/dawn 
+    git clone -b "chromium/6544" https://dawn.googlesource.com/dawn 
 
     Clear-Host
 

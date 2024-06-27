@@ -16,7 +16,7 @@ public unsafe readonly partial struct RenderBundleHandle :
 
     public static void Reference(RenderBundleHandle handle)
     {
-        WebGPU_FFI.RenderBundleReference(handle);
+        WebGPU_FFI.RenderBundleAddRef(handle);
     }
 
     public static void Release(RenderBundleHandle handle)

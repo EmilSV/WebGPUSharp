@@ -24,7 +24,7 @@ public readonly unsafe partial struct CommandBufferHandle :
 
     public static void Reference(CommandBufferHandle handle)
     {
-        WebGPU_FFI.CommandBufferReference(handle);
+        WebGPU_FFI.CommandBufferAddRef(handle);
     }
 
     public static void Release(CommandBufferHandle handle)

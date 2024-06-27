@@ -1,9 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum ErrorFilter : int
+public enum ErrorFilter
 {
-	Validation = 0,
-	OutOfMemory = 1,
-	Internal = 2,
+    Validation = 1,
+    OutOfMemory = 2,
+    Internal = 3,
 }
-

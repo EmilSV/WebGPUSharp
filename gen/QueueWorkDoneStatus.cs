@@ -1,10 +1,13 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum QueueWorkDoneStatus : int
+public enum QueueWorkDoneStatus
 {
-	Success = 0,
-	Error = 1,
-	Unknown = 2,
-	DeviceLost = 3,
+    Success = 1,
+    InstanceDropped = 2,
+    Error = 3,
+    Unknown = 4,
+    DeviceLost = 5,
 }
-

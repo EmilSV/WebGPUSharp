@@ -25,7 +25,7 @@ public ref partial struct BufferDescriptor
         set => _unmanagedDescriptor.Size = value;
     }
 
-    public WGPUBool MappedAtCreation
+    public WebGPUBool MappedAtCreation
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly get => _unmanagedDescriptor.MappedAtCreation;

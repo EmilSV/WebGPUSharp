@@ -333,14 +333,11 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (PipelineStatisticName* pipelineStatisticsPtr = descriptor.PipelineStatistics)
         {
             QuerySetDescriptorFFI descriptorFFI = new(
                 label: labelPtr,
                 type: descriptor.Type,
-                count: descriptor.Count,
-                pipelineStatistics: pipelineStatisticsPtr,
-                pipelineStatisticCount: (nuint)descriptor.PipelineStatistics.Length
+                count: descriptor.Count
             );
             return WebGPU_FFI.DeviceCreateQuerySet(this, &descriptorFFI);
         }
@@ -630,7 +627,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return WebGPU_FFI.DeviceGetSupportedSurfaceUsage(this, (SurfaceHandle)surface);
     }
 
-    public WGPUBool HasFeature(FeatureName feature)
+    public WebGPUBool HasFeature(FeatureName feature)
     {
         return WebGPU_FFI.DeviceHasFeature(this, feature);
     }
@@ -779,7 +776,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     public static void Reference(DeviceHandle handle)
     {
-        WebGPU_FFI.DeviceReference(handle);
+        WebGPU_FFI.DeviceAddRef(handle);
     }
 
     public static void Release(DeviceHandle handle)

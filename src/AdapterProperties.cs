@@ -33,7 +33,7 @@ public unsafe partial struct AdapterProperties
         get => _unmanagedDescriptor.BackendType;
     }
 
-    public readonly WGPUBool CompatibilityMode
+    public readonly WebGPUBool CompatibilityMode
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => _unmanagedDescriptor.CompatibilityMode;

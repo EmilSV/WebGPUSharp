@@ -1,11 +1,13 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-[System.Flags]
-public enum ShaderStage : uint
+[Flags]
+public enum ShaderStage
 {
-	None = 0,
-	Vertex = 1,
-	Fragment = 2,
-	Compute = 4,
+    None = 0,
+    Vertex = 1,
+    Fragment = 2,
+    Compute = 4,
 }
-

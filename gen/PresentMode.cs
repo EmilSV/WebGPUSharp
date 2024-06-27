@@ -1,9 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum PresentMode : int
+public enum PresentMode
 {
-	Fifo = 0,
-	Immediate = 2,
-	Mailbox = 3,
+    Fifo = 1,
+    FifoRelaxed = 2,
+    Immediate = 3,
+    Mailbox = 4,
 }
-

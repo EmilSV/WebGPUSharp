@@ -22,7 +22,7 @@ public readonly partial struct BindGroupLayoutHandle :
 
     public static void Reference(BindGroupLayoutHandle handle)
     {
-        WebGPU_FFI.BindGroupLayoutReference(handle);
+        WebGPU_FFI.BindGroupLayoutAddRef(handle);
     }
 
     public static void Release(BindGroupLayoutHandle handle)

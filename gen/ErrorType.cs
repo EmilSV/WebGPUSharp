@@ -1,12 +1,14 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum ErrorType : int
+public enum ErrorType
 {
-	NoError = 0,
-	Validation = 1,
-	OutOfMemory = 2,
-	Internal = 3,
-	Unknown = 4,
-	DeviceLost = 5,
+    NoError = 1,
+    Validation = 2,
+    OutOfMemory = 3,
+    Internal = 4,
+    Unknown = 5,
+    DeviceLost = 6,
 }
-

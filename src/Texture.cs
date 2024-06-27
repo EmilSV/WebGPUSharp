@@ -3,10 +3,12 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Texture : 
+public sealed class Texture :
     BaseWebGpuSafeHandle<Texture, TextureHandle>,
     ITextureSource
 {
+    public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
+
     private Texture(TextureHandle handle) : base(handle)
     {
     }

@@ -1,9 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum CompilationMessageType : int
+public enum CompilationMessageType
 {
-	Error = 0,
-	Warning = 1,
-	Info = 2,
+    Error = 1,
+    Warning = 2,
+    Info = 3,
 }
-

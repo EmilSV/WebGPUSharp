@@ -1,8 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum DeviceLostReason : int
+public enum DeviceLostReason
 {
-	Undefined = 0,
-	Destroyed = 1,
+    Unknown = 1,
+    Destroyed = 2,
+    InstanceDropped = 3,
+    FailedCreation = 4,
 }
-

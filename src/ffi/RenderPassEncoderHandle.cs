@@ -353,7 +353,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     public static void Reference(RenderPassEncoderHandle handle)
     {
-        WebGPU_FFI.RenderPassEncoderReference(handle);
+        WebGPU_FFI.RenderPassEncoderAddRef(handle);
     }
 
     public static void Release(RenderPassEncoderHandle handle)

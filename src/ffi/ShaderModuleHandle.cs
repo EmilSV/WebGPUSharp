@@ -35,7 +35,7 @@ public readonly partial struct ShaderModuleHandle :
 
     public static void Reference(ShaderModuleHandle handle)
     {
-        WebGPU_FFI.ShaderModuleReference(handle);
+        WebGPU_FFI.ShaderModuleAddRef(handle);
     }
 
     public static ShaderModuleHandle UnsafeFromPointer(nuint pointer)

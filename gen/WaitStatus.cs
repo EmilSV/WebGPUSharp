@@ -1,12 +1,14 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum WaitStatus : int
+public enum WaitStatus
 {
-	Success = 0,
-	TimedOut = 1,
-	UnsupportedTimeout = 2,
-	UnsupportedCount = 3,
-	UnsupportedMixedSources = 4,
-	Unknown = 5,
+    Success = 1,
+    TimedOut = 2,
+    UnsupportedTimeout = 3,
+    UnsupportedCount = 4,
+    UnsupportedMixedSources = 5,
+    Unknown = 6,
 }
-

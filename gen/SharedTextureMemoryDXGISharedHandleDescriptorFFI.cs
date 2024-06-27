@@ -3,22 +3,22 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-[StructLayout(LayoutKind.Sequential)]
 public unsafe partial struct SharedTextureMemoryDXGISharedHandleDescriptorFFI
 {
-	public ChainedStruct Chain;
-	public void* Handle;
+    public ChainedStruct Chain;
+    public void* Handle;
+    public WebGPUBool UseKeyedMutex;
 
-	public SharedTextureMemoryDXGISharedHandleDescriptorFFI()
-	{
-		this.Chain = default;
-		this.Handle = default;
-	}
+    public SharedTextureMemoryDXGISharedHandleDescriptorFFI()
+    {
+    }
 
-	public SharedTextureMemoryDXGISharedHandleDescriptorFFI(ChainedStruct chain = default, void* handle = default)
-	{
-		this.Chain = chain;
-		this.Handle = handle;
-	}
+
+    public SharedTextureMemoryDXGISharedHandleDescriptorFFI(ChainedStruct chain = default, void* handle = default, WebGPUBool useKeyedMutex = default)
+    {
+        this.Chain = chain;
+        this.Handle = handle;
+        this.UseKeyedMutex = useKeyedMutex;
+    }
+
 }
-

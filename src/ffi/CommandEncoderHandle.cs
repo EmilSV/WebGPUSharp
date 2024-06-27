@@ -362,7 +362,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
     public static void Reference(CommandEncoderHandle handle)
     {
-        WebGPU_FFI.CommandEncoderReference(handle);
+        WebGPU_FFI.CommandEncoderAddRef(handle);
     }
 
     public static void Release(CommandEncoderHandle handle)

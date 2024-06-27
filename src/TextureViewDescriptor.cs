@@ -16,6 +16,9 @@ namespace WebGpuSharp;
 
 public unsafe ref partial struct TextureViewDescriptor
 {
+    public const uint ARRAY_LAYER_COUNT_UNDEFINED = WebGPU_FFI.ARRAY_LAYER_COUNT_UNDEFINED;
+    public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
+
     internal TextureViewDescriptorFFI _unsafeDescriptor = new(
         label: default,
         format: default,

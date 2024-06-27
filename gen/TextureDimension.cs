@@ -1,9 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum TextureDimension : int
+public enum TextureDimension
 {
-	_1D = 0,
-	_2D = 1,
-	_3D = 2,
+    Undefined = 0,
+    D1 = 1,
+    D2 = 2,
+    D3 = 3,
 }
-

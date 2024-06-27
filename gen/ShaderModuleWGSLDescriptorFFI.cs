@@ -3,22 +3,20 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-[StructLayout(LayoutKind.Sequential)]
 public unsafe partial struct ShaderModuleWGSLDescriptorFFI
 {
-	public ChainedStruct Chain;
-	public byte* Code;
+    public ChainedStruct Chain;
+    public byte* Code;
 
-	public ShaderModuleWGSLDescriptorFFI()
-	{
-		this.Chain = default;
-		this.Code = default;
-	}
+    public ShaderModuleWGSLDescriptorFFI()
+    {
+    }
 
-	public ShaderModuleWGSLDescriptorFFI(ChainedStruct chain = default, byte* code = default)
-	{
-		this.Chain = chain;
-		this.Code = code;
-	}
+
+    public ShaderModuleWGSLDescriptorFFI(ChainedStruct chain = default, byte* code = default)
+    {
+        this.Chain = chain;
+        this.Code = code;
+    }
+
 }
-

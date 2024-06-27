@@ -1,23 +1,26 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum BlendFactor : int
+public enum BlendFactor
 {
-	Zero = 0,
-	One = 1,
-	Src = 2,
-	OneMinusSrc = 3,
-	SrcAlpha = 4,
-	OneMinusSrcAlpha = 5,
-	Dst = 6,
-	OneMinusDst = 7,
-	DstAlpha = 8,
-	OneMinusDstAlpha = 9,
-	SrcAlphaSaturated = 10,
-	Constant = 11,
-	OneMinusConstant = 12,
-	Src1 = 13,
-	OneMinusSrc1 = 14,
-	Src1Alpha = 15,
-	OneMinusSrc1Alpha = 16,
+    Undefined = 0,
+    Zero = 1,
+    One = 2,
+    Src = 3,
+    OneMinusSrc = 4,
+    SrcAlpha = 5,
+    OneMinusSrcAlpha = 6,
+    Dst = 7,
+    OneMinusDst = 8,
+    DstAlpha = 9,
+    OneMinusDstAlpha = 10,
+    SrcAlphaSaturated = 11,
+    Constant = 12,
+    OneMinusConstant = 13,
+    Src1 = 14,
+    OneMinusSrc1 = 15,
+    Src1Alpha = 16,
+    OneMinusSrc1Alpha = 17,
 }
-

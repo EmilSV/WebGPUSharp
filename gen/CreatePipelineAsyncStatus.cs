@@ -1,12 +1,15 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum CreatePipelineAsyncStatus : int
+public enum CreatePipelineAsyncStatus
 {
-	Success = 0,
-	ValidationError = 1,
-	InternalError = 2,
-	DeviceLost = 3,
-	DeviceDestroyed = 4,
-	Unknown = 5,
+    Success = 1,
+    InstanceDropped = 2,
+    ValidationError = 3,
+    InternalError = 4,
+    DeviceLost = 5,
+    DeviceDestroyed = 6,
+    Unknown = 7,
 }
-

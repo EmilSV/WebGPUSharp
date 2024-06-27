@@ -5,10 +5,12 @@ namespace WebGpuSharp;
 
 public unsafe ref partial struct TextureDescriptor
 {
+    public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
+
     internal TextureDescriptorFFI _unmanagedDescriptor = new(
         label: default,
         usage: default,
-        dimension: TextureDimension._2D,
+        dimension: TextureDimension.D2,
         size: default,
         format: default,
         mipLevelCount: 1,

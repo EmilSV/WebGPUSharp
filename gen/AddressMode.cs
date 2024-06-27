@@ -1,9 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum AddressMode : int
+public enum AddressMode
 {
-	Repeat = 0,
-	MirrorRepeat = 1,
-	ClampToEdge = 2,
+    Undefined = 0,
+    ClampToEdge = 1,
+    Repeat = 2,
+    MirrorRepeat = 3,
 }
-

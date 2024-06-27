@@ -22,7 +22,7 @@ public readonly partial struct TextureViewHandle :
 
     public static void Reference(TextureViewHandle handle)
     {
-        WebGPU_FFI.TextureViewReference(handle);
+        WebGPU_FFI.TextureViewAddRef(handle);
     }
 
     public static void Release(TextureViewHandle handle)

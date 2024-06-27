@@ -16,7 +16,7 @@ public struct RequestAdapterOptions :
     {
     }
 
-    static void IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(
+    static unsafe void IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(
         in RequestAdapterOptions input, out RequestAdapterOptionsFFI dest)
     {
         dest = new(

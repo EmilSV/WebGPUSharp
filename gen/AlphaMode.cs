@@ -1,9 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum AlphaMode : int
+public enum AlphaMode
 {
-	Premultiplied = 0,
-	Unpremultiplied = 1,
-	Opaque = 2,
+    Opaque = 1,
+    Premultiplied = 2,
+    Unpremultiplied = 3,
 }
-

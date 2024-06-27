@@ -1,15 +1,18 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum BufferMapAsyncStatus : int
+public enum BufferMapAsyncStatus
 {
-	Success = 0,
-	ValidationError = 1,
-	Unknown = 2,
-	DeviceLost = 3,
-	DestroyedBeforeCallback = 4,
-	UnmappedBeforeCallback = 5,
-	MappingAlreadyPending = 6,
-	OffsetOutOfRange = 7,
-	SizeOutOfRange = 8,
+    Success = 1,
+    InstanceDropped = 2,
+    ValidationError = 3,
+    Unknown = 4,
+    DeviceLost = 5,
+    DestroyedBeforeCallback = 6,
+    UnmappedBeforeCallback = 7,
+    MappingAlreadyPending = 8,
+    OffsetOutOfRange = 9,
+    SizeOutOfRange = 10,
 }
-

@@ -1,11 +1,15 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum TextureAspect : int
+public enum TextureAspect
 {
-	All = 0,
-	StencilOnly = 1,
-	DepthOnly = 2,
-	Plane0Only = 3,
-	Plane1Only = 4,
+    Undefined = 0,
+    All = 1,
+    StencilOnly = 2,
+    DepthOnly = 3,
+    Plane0Only = 4,
+    Plane1Only = 5,
+    Plane2Only = 6,
 }
-

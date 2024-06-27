@@ -45,7 +45,7 @@ public readonly unsafe partial struct BindGroupHandle :
 
     public static void Reference(BindGroupHandle handle)
     {
-        WebGPU_FFI.BindGroupReference(handle);
+        WebGPU_FFI.BindGroupAddRef(handle);
     }
 
     public static void Release(BindGroupHandle handle)

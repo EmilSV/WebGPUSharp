@@ -1,9 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum BufferMapState : int
+public enum BufferMapState
 {
-	Unmapped = 0,
-	Pending = 1,
-	Mapped = 2,
+    Unmapped = 1,
+    Pending = 2,
+    Mapped = 3,
 }
-

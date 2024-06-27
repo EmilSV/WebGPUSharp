@@ -189,7 +189,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
 
     public static void Reference(ComputePassEncoderHandle handle)
     {
-        WebGPU_FFI.ComputePassEncoderReference(handle);
+        WebGPU_FFI.ComputePassEncoderAddRef(handle);
     }
 
     public static void Release(ComputePassEncoderHandle handle)

@@ -3,25 +3,22 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-[StructLayout(LayoutKind.Sequential)]
 public unsafe partial struct SurfaceDescriptorFromXlibWindowFFI
 {
-	public ChainedStruct Chain;
-	public void* Display;
-	public uint Window;
+    public ChainedStruct Chain;
+    public void* Display;
+    public ulong Window;
 
-	public SurfaceDescriptorFromXlibWindowFFI()
-	{
-		this.Chain = default;
-		this.Display = default;
-		this.Window = default;
-	}
+    public SurfaceDescriptorFromXlibWindowFFI()
+    {
+    }
 
-	public SurfaceDescriptorFromXlibWindowFFI(ChainedStruct chain = default, void* display = default, uint window = default)
-	{
-		this.Chain = chain;
-		this.Display = display;
-		this.Window = window;
-	}
+
+    public SurfaceDescriptorFromXlibWindowFFI(ChainedStruct chain = default, void* display = default, ulong window = default)
+    {
+        this.Chain = chain;
+        this.Display = display;
+        this.Window = window;
+    }
+
 }
-

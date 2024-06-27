@@ -1,13 +1,15 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-[System.Flags]
-public enum ColorWriteMask : uint
+[Flags]
+public enum ColorWriteMask
 {
-	None = 0,
-	Red = 1,
-	Green = 2,
-	Blue = 4,
-	Alpha = 8,
-	All = 15,
+    None = 0,
+    Red = 1,
+    Green = 2,
+    Blue = 4,
+    Alpha = 8,
+    All = 15,
 }
-

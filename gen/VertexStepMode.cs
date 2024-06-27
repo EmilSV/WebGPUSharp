@@ -1,9 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum VertexStepMode : int
+public enum VertexStepMode
 {
-	Vertex = 0,
-	Instance = 1,
-	VertexBufferNotUsed = 2,
+    Undefined = 0,
+    VertexBufferNotUsed = 1,
+    Vertex = 2,
+    Instance = 3,
 }
-

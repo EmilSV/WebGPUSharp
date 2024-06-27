@@ -1,25 +1,26 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct SharedFenceHandle : IEquatable<SharedFenceHandle>
 {
-	private readonly UIntPtr _ptr;
-	public SharedFenceHandle(UIntPtr ptr) { _ptr = ptr; }
-	public static SharedFenceHandle Null => new SharedFenceHandle(UIntPtr.Zero);
-	public static explicit operator SharedFenceHandle(UIntPtr ptr) => new SharedFenceHandle(ptr);
-	public static explicit operator UIntPtr(SharedFenceHandle handle) => handle._ptr;
-	public static bool operator ==(SharedFenceHandle left, SharedFenceHandle right) => left._ptr == right._ptr;
-	public static bool operator !=(SharedFenceHandle left, SharedFenceHandle right) => left._ptr != right._ptr;
-	public static bool operator ==(SharedFenceHandle left, SharedFenceHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
-	public static bool operator !=(SharedFenceHandle left, SharedFenceHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
-	public static bool operator ==(SharedFenceHandle left, UIntPtr right) => left._ptr == right;
-	public static bool operator !=(SharedFenceHandle left, UIntPtr right) => left._ptr != right;
-	public UIntPtr GetAddress() => _ptr;
-	public bool Equals(SharedFenceHandle h) => _ptr == h._ptr;
-	public override bool Equals(object? o) => (o is SharedFenceHandle h && Equals(h)) || (o is null && _ptr == UIntPtr.Zero);
-	public override int GetHashCode() => _ptr.GetHashCode();
-}
+    private readonly nuint _ptr;
+    public static SharedFenceHandle Null
+    {
+        get => new(nuint.Zero);
+    }
 
+    public SharedFenceHandle(nuint ptr) => _ptr = ptr;
+    public static explicit operator nuint(SharedFenceHandle handle) => handle._ptr;
+    public static bool operator ==(SharedFenceHandle left, SharedFenceHandle right) => left._ptr == right._ptr;
+    public static bool operator !=(SharedFenceHandle left, SharedFenceHandle right) => left._ptr != right._ptr;
+    public static bool operator ==(SharedFenceHandle left, SharedFenceHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
+    public static bool operator !=(SharedFenceHandle left, SharedFenceHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
+    public static bool operator ==(SharedFenceHandle left, nuint right) => left._ptr == right;
+    public static bool operator !=(SharedFenceHandle left, nuint right) => left._ptr != right;
+    public nuint GetAddress() => _ptr;
+    public bool Equals(SharedFenceHandle other) => _ptr == other._ptr;
+    public override bool Equals(object? other) => other is SharedFenceHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
+    public override int GetHashCode() => _ptr.GetHashCode();
+}

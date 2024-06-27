@@ -21,14 +21,14 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
         return newQueue;
     }
 
-    public void OnSubmittedWorkDone(ulong signalValue, Action<QueueWorkDoneStatus> callback)
+    public void OnSubmittedWorkDone(Action<QueueWorkDoneStatus> callback)
     {
-        _handle.OnSubmittedWorkDone(signalValue, callback);
+        _handle.OnSubmittedWorkDone(callback);
     }
 
-    public Task<QueueWorkDoneStatus> OnSubmittedWorkDoneAsync(ulong signalValue)
+    public Task<QueueWorkDoneStatus> OnSubmittedWorkDoneAsync()
     {
-        return _handle.OnSubmittedWorkDoneAsync(signalValue);
+        return _handle.OnSubmittedWorkDoneAsync();
     }
 
     public void SetLabel(WGPURefText label)

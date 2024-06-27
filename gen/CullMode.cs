@@ -1,9 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum CullMode : int
+public enum CullMode
 {
-	None = 0,
-	Front = 1,
-	Back = 2,
+    Undefined = 0,
+    None = 1,
+    Front = 2,
+    Back = 3,
 }
-

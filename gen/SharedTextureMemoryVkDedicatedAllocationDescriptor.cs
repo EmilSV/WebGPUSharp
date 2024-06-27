@@ -1,25 +1,22 @@
 using System;
 using System.Runtime.InteropServices;
-using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-[StructLayout(LayoutKind.Sequential)]
 public partial struct SharedTextureMemoryVkDedicatedAllocationDescriptor
 {
-	public ChainedStruct Chain;
-	public WGPUBool DedicatedAllocation;
+    public ChainedStruct Chain;
+    public WebGPUBool DedicatedAllocation;
 
-	public SharedTextureMemoryVkDedicatedAllocationDescriptor()
-	{
-		this.Chain = default;
-		this.DedicatedAllocation = default;
-	}
+    public SharedTextureMemoryVkDedicatedAllocationDescriptor()
+    {
+    }
 
-	public SharedTextureMemoryVkDedicatedAllocationDescriptor(ChainedStruct chain = default, WGPUBool dedicatedAllocation = default)
-	{
-		this.Chain = chain;
-		this.DedicatedAllocation = dedicatedAllocation;
-	}
+
+    public SharedTextureMemoryVkDedicatedAllocationDescriptor(ChainedStruct chain = default, WebGPUBool dedicatedAllocation = default)
+    {
+        this.Chain = chain;
+        this.DedicatedAllocation = dedicatedAllocation;
+    }
+
 }
-

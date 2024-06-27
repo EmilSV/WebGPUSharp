@@ -1,10 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-[System.Flags]
-public enum MapMode : uint
+[Flags]
+public enum MapMode
 {
-	None = 0,
-	Read = 1,
-	Write = 2,
+    None = 0,
+    Read = 1,
+    Write = 2,
 }
-

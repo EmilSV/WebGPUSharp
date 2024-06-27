@@ -9,14 +9,14 @@ public readonly unsafe partial struct QueueHandle :
     IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
 
-    public void OnSubmittedWorkDone(ulong signalValue, Action<QueueWorkDoneStatus> callback)
+    public void OnSubmittedWorkDone(Action<QueueWorkDoneStatus> callback)
     {
-        QueueOnSubmittedWorkDoneHandler.QueueOnSubmittedWorkDone(this, signalValue, callback);
+        QueueOnSubmittedWorkDoneHandler.QueueOnSubmittedWorkDone(this, callback);
     }
 
-    public Task<QueueWorkDoneStatus> OnSubmittedWorkDoneAsync(ulong signalValue)
+    public Task<QueueWorkDoneStatus> OnSubmittedWorkDoneAsync()
     {
-        return QueueOnSubmittedWorkDoneHandler.QueueOnSubmittedWorkDone(this, signalValue);
+        return QueueOnSubmittedWorkDoneHandler.QueueOnSubmittedWorkDone(this);
     }
 
     public void SetLabel(WGPURefText label)
@@ -265,7 +265,7 @@ public readonly unsafe partial struct QueueHandle :
 
     public static void Reference(QueueHandle handle)
     {
-        WebGPU_FFI.QueueReference(handle);
+        WebGPU_FFI.QueueAddRef(handle);
     }
 
     public static void Release(QueueHandle handle)

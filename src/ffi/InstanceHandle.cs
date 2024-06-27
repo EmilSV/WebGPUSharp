@@ -150,7 +150,7 @@ public readonly unsafe partial struct InstanceHandle :
 
     public static void Reference(InstanceHandle handle)
     {
-        WebGPU_FFI.InstanceReference(handle);
+        WebGPU_FFI.InstanceAddRef(handle);
     }
 
     public static void Release(InstanceHandle handle)

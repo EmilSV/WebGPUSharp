@@ -1,9 +1,10 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum QueryType : int
+public enum QueryType
 {
-	Occlusion = 0,
-	PipelineStatistics = 1,
-	Timestamp = 2,
+    Occlusion = 1,
+    Timestamp = 2,
 }
-

@@ -1,14 +1,17 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum StencilOperation : int
+public enum StencilOperation
 {
-	Keep = 0,
-	Zero = 1,
-	Replace = 2,
-	Invert = 3,
-	IncrementClamp = 4,
-	DecrementClamp = 5,
-	IncrementWrap = 6,
-	DecrementWrap = 7,
+    Undefined = 0,
+    Keep = 1,
+    Zero = 2,
+    Replace = 3,
+    Invert = 4,
+    IncrementClamp = 5,
+    DecrementClamp = 6,
+    IncrementWrap = 7,
+    DecrementWrap = 8,
 }
-

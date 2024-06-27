@@ -43,7 +43,7 @@ public readonly partial struct SwapChainHandle :
 
     public static void Reference(SwapChainHandle handle)
     {
-        WebGPU_FFI.SwapChainReference(handle);
+        WebGPU_FFI.SwapChainAddRef(handle);
     }
 
     public static void Release(SwapChainHandle handle)

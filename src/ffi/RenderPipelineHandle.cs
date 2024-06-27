@@ -36,7 +36,7 @@ public unsafe readonly partial struct RenderPipelineHandle :
 
     public static void Reference(RenderPipelineHandle handle)
     {
-        WebGPU_FFI.RenderPipelineReference(handle);
+        WebGPU_FFI.RenderPipelineAddRef(handle);
     }
 
     public static void Release(RenderPipelineHandle handle)

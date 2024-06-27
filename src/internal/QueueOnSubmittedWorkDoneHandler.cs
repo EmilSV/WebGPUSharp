@@ -8,23 +8,23 @@ namespace WebGpuSharp.Internal;
 internal unsafe static class QueueOnSubmittedWorkDoneHandler
 {
     public static void QueueOnSubmittedWorkDone(
-        QueueHandle queue, ulong signalValue, Action<QueueWorkDoneStatus> callback)
+        QueueHandle queue, Action<QueueWorkDoneStatus> callback)
     {
         CallbackUserDataHandle callbackHandle = CallbackUserDataHandle.Alloc(callback);
 
-        WebGPU_FFI.QueueOnSubmittedWorkDone(queue, signalValue, &OnQueueOnSubmittedWorkDoneDelegate, (void*)callbackHandle);
+        WebGPU_FFI.QueueOnSubmittedWorkDone(queue, &OnQueueOnSubmittedWorkDoneDelegate, (void*)callbackHandle);
     }
 
-    public static Task<QueueWorkDoneStatus> QueueOnSubmittedWorkDone(QueueHandle queue, ulong signalValue)
+    public static Task<QueueWorkDoneStatus> QueueOnSubmittedWorkDone(QueueHandle queue)
     {
         TaskCompletionSource<QueueWorkDoneStatus> taskCompletionSource = new();
         CallbackUserDataHandle taskCompletionSourceHandle = CallbackUserDataHandle.Alloc(taskCompletionSource);
-        WebGPU_FFI.QueueOnSubmittedWorkDone(queue, signalValue, &OnQueueOnSubmittedWorkDoneTask, (void*)taskCompletionSourceHandle);
+        WebGPU_FFI.QueueOnSubmittedWorkDone(queue, &OnQueueOnSubmittedWorkDoneTask, (void*)taskCompletionSourceHandle);
         return taskCompletionSource.Task;
     }
 
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnQueueOnSubmittedWorkDoneDelegate(QueueWorkDoneStatus status, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
@@ -55,7 +55,7 @@ internal unsafe static class QueueOnSubmittedWorkDoneHandler
     }
 
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnQueueOnSubmittedWorkDoneTask(QueueWorkDoneStatus status, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;

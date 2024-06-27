@@ -18,7 +18,7 @@ public unsafe readonly partial struct ComputePipelineHandle :
 
     public static void Reference(ComputePipelineHandle handle)
     {
-        WebGPU_FFI.ComputePipelineReference(handle);
+        WebGPU_FFI.ComputePipelineAddRef(handle);
     }
 
     public static void Release(ComputePipelineHandle handle)

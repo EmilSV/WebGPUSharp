@@ -47,7 +47,7 @@ public unsafe readonly partial struct QuerySetHandle :
 
     public static void Reference(QuerySetHandle handle)
     {
-        WebGPU_FFI.QuerySetReference(handle);
+        WebGPU_FFI.QuerySetAddRef(handle);
     }
 
     public static void Release(QuerySetHandle handle)

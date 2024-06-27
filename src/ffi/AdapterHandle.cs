@@ -37,14 +37,14 @@ public unsafe readonly partial struct AdapterHandle :
         limits = default;
         fixed (SupportedLimits* limitsPtr = &limits)
         {
-            return WebGPU_FFI.AdapterGetLimits(this, limitsPtr);
+            return WebGPU_FFI.AdapterGetLimits(this, limitsPtr) == Status.Success;
         }
     }
 
     public readonly SupportedLimits? GetLimits()
     {
         SupportedLimits limits = default;
-        if (WebGPU_FFI.AdapterGetLimits(this, &limits))
+        if (WebGPU_FFI.AdapterGetLimits(this, &limits) == Status.Success)
         {
             return limits;
         }
@@ -114,6 +114,7 @@ public unsafe readonly partial struct AdapterHandle :
         fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
         {
             DeviceDescriptorFFI deviceDescriptor = new(
+                nextInChain: default,
                 label: deviceDescriptorLabelPtr,
                 requiredFeatures: requiredFeaturesPtr,
                 requiredFeatureCount: (uint)descriptor.RequiredFeatures.Length,
@@ -141,6 +142,7 @@ public unsafe readonly partial struct AdapterHandle :
             fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
             {
                 DeviceDescriptorFFI deviceDescriptor = new(
+                    nextInChain: default,
                     label: deviceDescriptorLabelPtr,
                     requiredFeatures: requiredFeaturesPtr,
                     requiredFeatureCount: (uint)descriptor.RequiredFeatures.Length,
@@ -296,7 +298,7 @@ public unsafe readonly partial struct AdapterHandle :
 
     public static void Reference(AdapterHandle handle)
     {
-        WebGPU_FFI.AdapterReference(handle);
+        WebGPU_FFI.AdapterAddRef(handle);
     }
 
     public static void Release(AdapterHandle handle)

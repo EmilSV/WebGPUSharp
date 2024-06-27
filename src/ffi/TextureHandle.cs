@@ -115,7 +115,7 @@ public readonly unsafe partial struct TextureHandle :
 
     public static void Reference(TextureHandle handle)
     {
-        WebGPU_FFI.TextureReference(handle);
+        WebGPU_FFI.TextureAddRef(handle);
     }
 
     public static void Release(TextureHandle handle)

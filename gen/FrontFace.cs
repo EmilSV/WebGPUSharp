@@ -1,8 +1,11 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum FrontFace : int
+public enum FrontFace
 {
-	CCW = 0,
-	CW = 1,
+    Undefined = 0,
+    CCW = 1,
+    CW = 2,
 }
-

@@ -45,7 +45,7 @@ public readonly partial struct SurfaceHandle :
 
     public static void Reference(SurfaceHandle handle)
     {
-        WebGPU_FFI.SurfaceReference(handle);
+        WebGPU_FFI.SurfaceAddRef(handle);
     }
 
     public static void Release(SurfaceHandle handle)

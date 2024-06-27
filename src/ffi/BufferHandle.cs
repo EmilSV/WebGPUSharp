@@ -133,7 +133,7 @@ public unsafe readonly partial struct BufferHandle :
 
     public static void Reference(BufferHandle handle)
     {
-        WebGPU_FFI.BufferReference(handle);
+        WebGPU_FFI.BufferAddRef(handle);
     }
 
     public static void Release(BufferHandle handle)

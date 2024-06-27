@@ -1,11 +1,14 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp;
 
-public enum BlendOperation : int
+public enum BlendOperation
 {
-	Add = 0,
-	Subtract = 1,
-	ReverseSubtract = 2,
-	Min = 3,
-	Max = 4,
+    Undefined = 0,
+    Add = 1,
+    Subtract = 2,
+    ReverseSubtract = 3,
+    Min = 4,
+    Max = 5,
 }
-

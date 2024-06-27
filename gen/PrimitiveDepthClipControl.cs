@@ -1,25 +1,22 @@
 using System;
 using System.Runtime.InteropServices;
-using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-[StructLayout(LayoutKind.Sequential)]
 public partial struct PrimitiveDepthClipControl
 {
-	public ChainedStruct Chain;
-	public WGPUBool UnclippedDepth;
+    public ChainedStruct Chain;
+    public WebGPUBool UnclippedDepth;
 
-	public PrimitiveDepthClipControl()
-	{
-		this.Chain = default;
-		this.UnclippedDepth = default;
-	}
+    public PrimitiveDepthClipControl()
+    {
+    }
 
-	public PrimitiveDepthClipControl(ChainedStruct chain = default, WGPUBool unclippedDepth = default)
-	{
-		this.Chain = chain;
-		this.UnclippedDepth = unclippedDepth;
-	}
+
+    public PrimitiveDepthClipControl(ChainedStruct chain = default, WebGPUBool unclippedDepth = default)
+    {
+        this.Chain = chain;
+        this.UnclippedDepth = unclippedDepth;
+    }
+
 }
-

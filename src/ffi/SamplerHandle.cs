@@ -31,7 +31,7 @@ public unsafe readonly partial struct SamplerHandle :
 
     public static void Reference(SamplerHandle handle)
     {
-        WebGPU_FFI.SamplerReference(handle);
+        WebGPU_FFI.SamplerAddRef(handle);
     }
 
     public static void Release(SamplerHandle handle)

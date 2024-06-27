@@ -151,7 +151,7 @@ IDisposable, IWebGpuHandle<RenderBundleEncoderHandle, RenderBundleEncoder>
 
     public static void Reference(RenderBundleEncoderHandle handle)
     {
-        WebGPU_FFI.RenderBundleEncoderReference(handle);
+        WebGPU_FFI.RenderBundleEncoderAddRef(handle);
     }
 
     public static void Release(RenderBundleEncoderHandle handle)

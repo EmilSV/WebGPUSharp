@@ -45,7 +45,7 @@ public unsafe readonly partial struct PipelineLayoutHandle :
 
     public static void Reference(PipelineLayoutHandle handle)
     {
-        WebGPU_FFI.PipelineLayoutReference(handle);
+        WebGPU_FFI.PipelineLayoutAddRef(handle);
     }
 
     public static void Release(PipelineLayoutHandle handle)
