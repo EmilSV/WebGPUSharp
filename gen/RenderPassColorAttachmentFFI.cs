@@ -5,8 +5,6 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct RenderPassColorAttachmentFFI
 {
-    public const uint DEPTH_SLICE_UNDEFINED = WebGPU_FFI.DEPTH_SLICE_UNDEFINED;
-
     public ChainedStruct* NextInChain;
     public TextureViewHandle View;
     public uint DepthSlice;

@@ -9,7 +9,7 @@ public enum TextureAspect
     All = 1,
     StencilOnly = 2,
     DepthOnly = 3,
-    Plane0Only = 4,
-    Plane1Only = 5,
-    Plane2Only = 6,
+    Plane0Only = 327680,
+    Plane1Only = 327681,
+    Plane2Only = 327682,
 }
