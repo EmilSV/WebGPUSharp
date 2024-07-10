@@ -53,10 +53,10 @@ public unsafe ref partial struct TextureViewDescriptor
         set => _unsafeDescriptor.BaseMipLevel = value;
     }
 
-    public uint MipLevelCount
+    public uint? MipLevelCount
     {
-        readonly get => _unsafeDescriptor.MipLevelCount;
-        set => _unsafeDescriptor.MipLevelCount = value;
+        readonly get => _unsafeDescriptor.MipLevelCount == MIP_LEVEL_COUNT_UNDEFINED ? null : _unsafeDescriptor.MipLevelCount;
+        set => _unsafeDescriptor.MipLevelCount = value ?? MIP_LEVEL_COUNT_UNDEFINED;
     }
 
     public uint BaseArrayLayer
@@ -65,10 +65,10 @@ public unsafe ref partial struct TextureViewDescriptor
         set => _unsafeDescriptor.BaseArrayLayer = value;
     }
 
-    public uint ArrayLayerCount
+    public uint? ArrayLayerCount
     {
-        readonly get => _unsafeDescriptor.ArrayLayerCount;
-        set => _unsafeDescriptor.ArrayLayerCount = value;
+        readonly get => _unsafeDescriptor.ArrayLayerCount == ARRAY_LAYER_COUNT_UNDEFINED ? null : _unsafeDescriptor.ArrayLayerCount;
+        set => _unsafeDescriptor.ArrayLayerCount = value ?? ARRAY_LAYER_COUNT_UNDEFINED;
     }
 
     public TextureAspect Aspect
