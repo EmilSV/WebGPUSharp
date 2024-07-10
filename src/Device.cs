@@ -20,13 +20,15 @@ public sealed unsafe partial class Device : BaseWebGpuSafeHandle<Device, DeviceH
         return newDevice;
     }
 
-
+    [Obsolete("AddUncapturedErrorCallback is deprecated. Pass the callback in the device descriptor instead.")]
     public void AddUncapturedErrorCallback(UncapturedErrorDelegate callback) =>
         _handle.AddUncapturedErrorCallback(callback);
 
+    [Obsolete("RemoveUncapturedErrorCallback  is deprecated. Pass the callback in the device descriptor instead.")]
     public void RemoveUncapturedErrorCallback(UncapturedErrorDelegate callback) =>
         _handle.RemoveUncapturedErrorCallback(callback);
 
+    [Obsolete("AddDeviceLostCallback is deprecated. Pass the callback in the device descriptor instead.")]
     public void AddDeviceLostCallback(DeviceLostCallbackDelegate callback) =>
         _handle.AddDeviceLostCallback(callback);
 

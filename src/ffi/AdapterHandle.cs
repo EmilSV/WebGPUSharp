@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -113,6 +114,9 @@ public unsafe readonly partial struct AdapterHandle :
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
         fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
         {
+            var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
+            var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
+
             DeviceDescriptorFFI deviceDescriptor = new(
                 nextInChain: default,
                 label: deviceDescriptorLabelPtr,
@@ -123,7 +127,16 @@ public unsafe readonly partial struct AdapterHandle :
                     label: queueLabelPtr
                 ),
                 deviceLostCallback: null,
-                deviceLostUserdata: null
+                deviceLostUserdata: null,
+                deviceLostCallbackInfo: new(
+                    mode: descriptor.DeviceLostCallbackMode,
+                    callback: deviceLostCallbackFuncPtrAndId.funcPtr,
+                    userdata: (void*)deviceLostCallbackFuncPtrAndId.id
+                ),
+                uncapturedErrorCallbackInfo: new(
+                    callback: uncapturedErrorCallbackFuncPtrAndId.funcPtr,
+                    userdata: (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                )
             );
             return RequestDeviceAsync(&deviceDescriptor);
         }
@@ -141,6 +154,9 @@ public unsafe readonly partial struct AdapterHandle :
             fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
             fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
             {
+                var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
+                var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
+
                 DeviceDescriptorFFI deviceDescriptor = new(
                     nextInChain: default,
                     label: deviceDescriptorLabelPtr,
@@ -151,7 +167,16 @@ public unsafe readonly partial struct AdapterHandle :
                         label: queueLabelPtr
                     ),
                     deviceLostCallback: null,
-                    deviceLostUserdata: null
+                    deviceLostUserdata: null,
+                    deviceLostCallbackInfo: new(
+                        mode: descriptor.DeviceLostCallbackMode,
+                        callback: deviceLostCallbackFuncPtrAndId.funcPtr,
+                        userdata: (void*)deviceLostCallbackFuncPtrAndId.id
+                    ),
+                    uncapturedErrorCallbackInfo: new(
+                        callback: uncapturedErrorCallbackFuncPtrAndId.funcPtr,
+                        userdata: (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                    )
                 );
 
                 handle = CallbackUserDataHandle.Alloc(callback);
@@ -189,7 +214,7 @@ public unsafe readonly partial struct AdapterHandle :
         });
     }
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedDelegate(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
     {
@@ -226,7 +251,9 @@ public unsafe readonly partial struct AdapterHandle :
     }
 
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
     {
@@ -304,5 +331,78 @@ public unsafe readonly partial struct AdapterHandle :
     public static void Release(AdapterHandle handle)
     {
         WebGPU_FFI.AdapterRelease(handle);
+    }
+}
+
+
+file static class DeviceLostCallbackHandler
+{
+    public unsafe struct FuncPtrAndId
+    {
+        public delegate* unmanaged[Cdecl]<DeviceHandle*, DeviceLostReason, byte*, void*, void> funcPtr;
+        public nuint id;
+    }
+
+    private static volatile uint deviceLostCallbackId = 0;
+    private static readonly ConcurrentDictionary<nuint, DeviceLostCallbackDelegate> deviceLostCallbacks = new();
+
+    public unsafe static FuncPtrAndId AddDeviceLostCallback(DeviceLostCallbackDelegate? callback)
+    {
+        if (callback == null)
+        {
+            return new FuncPtrAndId { funcPtr = null, id = 0 };
+        }
+
+        nuint id = Interlocked.Increment(ref deviceLostCallbackId);
+        deviceLostCallbacks.TryAdd(id, callback);
+        return new FuncPtrAndId { funcPtr = &DeviceLostCallback, id = id };
+    }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static unsafe void DeviceLostCallback(
+      DeviceHandle* device, DeviceLostReason lostReason, byte* message, void* id)
+    {
+        nuint callbackId = (nuint)id;
+        if (deviceLostCallbacks.TryGetValue(callbackId, out var callback))
+        {
+            callback(lostReason, MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message));
+        }
+    }
+}
+
+file static class UncapturedErrorDelegateHandler
+{
+    public unsafe struct FuncPtrAndId
+    {
+        public delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> funcPtr;
+        public nuint id;
+    }
+
+
+    private static volatile uint uncapturedErrorCallbackId = 0;
+    private static readonly ConcurrentDictionary<nuint, UncapturedErrorDelegate> uncapturedErrorCallbacks = new();
+
+    public unsafe static FuncPtrAndId AddUncapturedErrorCallback(UncapturedErrorDelegate? callback)
+    {
+        if (callback == null)
+        {
+            return new FuncPtrAndId { funcPtr = null, id = 0 };
+        }
+
+        nuint id = Interlocked.Increment(ref uncapturedErrorCallbackId);
+        uncapturedErrorCallbacks.TryAdd(id, callback);
+        return new FuncPtrAndId { funcPtr = &UncapturedErrorCallback, id = id };
+    }
+
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static unsafe void UncapturedErrorCallback(
+        ErrorType type, byte* message, void* id)
+    {
+        nuint callbackId = (nuint)id;
+        if (uncapturedErrorCallbacks.TryGetValue(callbackId, out var callback))
+        {
+            callback(type, MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message));
+        }
     }
 }

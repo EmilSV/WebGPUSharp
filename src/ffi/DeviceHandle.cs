@@ -659,22 +659,25 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    [Obsolete("AddDeviceLostCallback is deprecated. Pass the callback in the device descriptor instead.")]
     public readonly void AddDeviceLostCallback(DeviceLostCallbackDelegate callback)
     {
         DeviceLostCallbackHandler.AddDeviceLostCallback(this, callback);
     }
 
+    [Obsolete("RemoveDeviceLostCallback is deprecated. Pass the callback in the device descriptor instead.")]
     public readonly void RemoveDeviceLostCallback(DeviceLostCallbackDelegate callback)
     {
         DeviceLostCallbackHandler.RemoveDeviceLostCallback(this, callback);
     }
 
-
+    [Obsolete("AddUncapturedErrorCallback is deprecated. Pass the callback in the device descriptor instead.")]
     public void AddUncapturedErrorCallback(UncapturedErrorDelegate callback)
     {
         UncapturedErrorCallbackHandler.AddUncapturedErrorCallback(this, callback);
     }
 
+    [Obsolete("RemoveUncapturedErrorCallback  is deprecated. Pass the callback in the device descriptor instead.")]
     public void RemoveUncapturedErrorCallback(UncapturedErrorDelegate callback)
     {
         UncapturedErrorCallbackHandler.RemoveUncapturedErrorCallback(this, callback);
