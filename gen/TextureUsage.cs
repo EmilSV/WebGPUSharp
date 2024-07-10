@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 [Flags]
-public enum TextureUsage
+public enum TextureUsage : ulong
 {
     None = 0,
     CopySrc = 1,

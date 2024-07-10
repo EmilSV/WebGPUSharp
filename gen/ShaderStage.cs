@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 [Flags]
-public enum ShaderStage
+public enum ShaderStage : ulong
 {
     None = 0,
     Vertex = 1,

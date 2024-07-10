@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 [Flags]
-public enum HeapProperty
+public enum HeapProperty : ulong
 {
     DeviceLocal = 1,
     HostVisible = 2,

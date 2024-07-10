@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 [Flags]
-public enum ColorWriteMask
+public enum ColorWriteMask : ulong
 {
     None = 0,
     Red = 1,
