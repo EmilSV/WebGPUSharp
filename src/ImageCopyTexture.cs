@@ -4,9 +4,9 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 public struct ImageCopyTexture :
-    IWebGpuFFIConvertible<ImageCopyTexture, ImageCopyTextureFFI>
+    IWebGpuFFIConvertibleAlloc<ImageCopyTexture, ImageCopyTextureFFI>
 {
-    public required TextureSource Texture;
+    public required ITextureSource Texture;
     public uint MipLevel = 0;
     public Origin3D Origin;
     public TextureAspect Aspect = TextureAspect.All;
@@ -15,20 +15,17 @@ public struct ImageCopyTexture :
     {
     }
 
-    static void IWebGpuFFIConvertible<ImageCopyTexture, ImageCopyTextureFFI>.UnsafeConvertToFFI(
-        in ImageCopyTexture input, out ImageCopyTextureFFI dest)
+    static void IWebGpuFFIConvertibleAlloc<ImageCopyTexture, ImageCopyTextureFFI>.UnsafeConvertToFFI(
+        in ImageCopyTexture input, WebGpuAllocatorHandle allocator, out ImageCopyTextureFFI dest)
     {
-        dest = new(
-            texture: input.Texture.GetHandle(),
+        var ownedTextureHandle = input.Texture.UnsafeGetCurrentOwnedTextureHandle();
+        allocator.AddHandleToDispose(ownedTextureHandle);
+
+        dest = new ImageCopyTextureFFI(
+            texture: ownedTextureHandle,
             mipLevel: input.MipLevel,
             origin: input.Origin,
             aspect: input.Aspect
         );
-    }
-
-    static void IWebGpuFFIConvertibleAlloc<ImageCopyTexture, ImageCopyTextureFFI>.UnsafeConvertToFFI(
-        in ImageCopyTexture input, WebGpuAllocatorHandle allocator, out ImageCopyTextureFFI dest)
-    {
-        WebGPUMarshal.ToFFI(input, out dest);
     }
 }

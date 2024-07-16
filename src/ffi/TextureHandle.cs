@@ -39,6 +39,14 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
+    public TextureViewHandle CreateView(in TextureViewDescriptorFFI descriptor)
+    {
+        fixed (TextureViewDescriptorFFI* descriptorPtr = &descriptor)
+        {
+            return WebGPU_FFI.TextureCreateView(this, descriptorPtr);
+        }
+    }
+
     public void Destroy()
     {
         WebGPU_FFI.TextureDestroy(this);

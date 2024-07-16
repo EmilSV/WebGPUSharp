@@ -4,14 +4,14 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
-public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEntryFFI>
+public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>
 {
     public uint Binding;
     public Buffer? Buffer;
     public ulong Offset;
     public ulong Size;
     public Sampler? Sampler;
-    public TextureViewSource TextureView;
+    public ITextureViewSource? TextureView;
 
     public BindGroupEntry()
     {
@@ -26,7 +26,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEn
     public BindGroupEntry(
         uint binding = default, Buffer? buffer = default,
         ulong offset = default, ulong size = default,
-        Sampler? sampler = default, TextureViewSource textureView = default)
+        Sampler? sampler = default, ITextureViewSource? textureView = default)
     {
         Binding = binding;
         Buffer = buffer;
@@ -39,19 +39,17 @@ public struct BindGroupEntry : IWebGpuFFIConvertible<BindGroupEntry, BindGroupEn
     static void IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>.UnsafeConvertToFFI(
         in BindGroupEntry input, WebGpuAllocatorHandle allocator, out BindGroupEntryFFI dest)
     {
-        ToFFI(input, out dest);
-    }
+        var textureViewOwnedHandle = input.TextureView?.UnsafeGetCurrentTextureViewOwnedHandle()
+            ?? TextureViewHandle.Null;
+        allocator.AddHandleToDispose(textureViewOwnedHandle);
 
-    static void IWebGpuFFIConvertible<BindGroupEntry, BindGroupEntryFFI>.UnsafeConvertToFFI(
-        in BindGroupEntry input, out BindGroupEntryFFI dest)
-    {
         dest = new(
             binding: input.Binding,
-            buffer: ToFFI<Buffer, BufferHandle>(input.Buffer),
+            buffer: GetBorrowHandle(input.Buffer),
             offset: input.Offset,
             size: input.Size,
-            sampler: ToFFI<Sampler, SamplerHandle>(input.Sampler),
-            textureView: input.TextureView.GetHandle()
+            sampler: GetBorrowHandle(input.Sampler),
+            textureView: textureViewOwnedHandle
         );
     }
 }

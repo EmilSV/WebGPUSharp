@@ -49,4 +49,11 @@ public class BindGroupLayoutCollectionMarshal :
     {
         MarshalTo(items, ffiItems);
     }
+
+    public static void UpdateFFIBeforeWebGpuCall(
+        ReadOnlySpan<BindGroupLayout> items,
+        Span<BindGroupLayoutHandle> ffiItems,
+        Span<Cache> caches,
+        WebGpuAllocatorHandle allocator)
+    { return; }
 }

@@ -226,7 +226,13 @@ public readonly unsafe partial struct QueueHandle :
        in Extent3D writeSize)
        where T : unmanaged
     {
-        ToFFI(destination, out ImageCopyTextureFFI destinationFFI);
+        using var destinationTextureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
+        ImageCopyTextureFFI destinationFFI = new(
+            texture: destinationTextureHandle,
+            mipLevel: destination.MipLevel,
+            origin: destination.Origin,
+            aspect: destination.Aspect
+        );
         WriteTexture(destinationFFI, data, dataLayout, writeSize);
     }
 

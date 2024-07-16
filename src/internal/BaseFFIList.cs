@@ -69,14 +69,14 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
                 {
                     if (_ffiCacheItems != null)
                     {
-                        _ffiCacheItems = Array.Empty<TFFI>();
+                        _ffiCacheItems = [];
                     }
                     if (_cacheItems != null)
                     {
-                        _cacheItems = Array.Empty<TCache>();
+                        _cacheItems = [];
                     }
 
-                    _managedItems = Array.Empty<TManaged>();
+                    _managedItems = [];
                 }
             }
         }
@@ -493,15 +493,31 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
 
     internal unsafe TFFI* GetPointerToFFIItems(WebGpuAllocatorHandle allocator)
     {
-        if (_ffiCacheItems != null && _lastMarshalVersion.HasValue && _lastMarshalVersion.Value == _version)
-        {
-            return (TFFI*)Unsafe.AsPointer(ref _ffiCacheItems[0]);
-        }
-
         switch (FFIMemory)
         {
             case FFIMemoryType.Cached:
-                UpdateFFICache();
+                if (_lastMarshalVersion == null || _lastMarshalVersion.Value != _version)
+                {
+                    UpdateFFICache();
+                }
+                if (HasCache)
+                {
+                    TMarshal.UpdateFFIBeforeWebGpuCall(
+                        items: _managedItems.AsSpan(0, _size),
+                        ffiItems: _ffiCacheItems.AsSpan(0, _size),
+                        caches: _cacheItems!.AsSpan(0, _size),
+                        allocator: allocator
+                    );
+                }
+                else
+                {
+                    TMarshal.UpdateFFIBeforeWebGpuCall(
+                        items: _managedItems.AsSpan(0, _size),
+                        ffiItems: _ffiCacheItems.AsSpan(0, _size),
+                        caches: [],
+                        allocator: allocator
+                    );
+                }
                 return (TFFI*)Unsafe.AsPointer(ref _ffiCacheItems![0]);
             case FFIMemoryType.Temporary:
                 return GetPointerToFFIItemsTemporary(allocator);
@@ -544,7 +560,7 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
         dest = GetPointerToFFIItems(allocator);
         outCount = (nuint)_size;
     }
-    
+
     public struct Enumerator : IEnumerator<TManaged>, IEnumerator
     {
         private readonly BaseFFIList<TMarshal, TManaged, TFFI, TCache> _list;
@@ -560,9 +576,7 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
             _current = default;
         }
 
-        public void Dispose()
-        {
-        }
+
 
         public bool MoveNext()
         {
@@ -591,7 +605,7 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
 
         public readonly TManaged Current => _current!;
 
-        object? IEnumerator.Current
+        readonly object? IEnumerator.Current
         {
             get
             {
@@ -612,6 +626,11 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
 
             _index = 0;
             _current = default;
+        }
+
+        readonly void IDisposable.Dispose()
+        {
+           
         }
     }
 }

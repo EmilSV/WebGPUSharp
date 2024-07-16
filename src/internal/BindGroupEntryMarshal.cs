@@ -14,12 +14,19 @@ public unsafe class BindGroupEntryCollectionMarshal :
 
     public static void MarshalTo(in BindGroupEntry item, ref BindGroupEntryFFI ffiItem)
     {
-        ToFFI(item, out ffiItem);
+        ffiItem = new(
+            binding: item.Binding,
+            buffer: GetBorrowHandle(item.Buffer),
+            offset: item.Offset,
+            size: item.Size,
+            sampler: GetBorrowHandle(item.Sampler),
+            textureView: default
+        );
     }
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool NeedsCache() => false;
+    public static bool NeedsCache() => true;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarkDirty(ref BindGroupEntry newItem, in BindGroupEntry oldItem, ref Cache cache) { }
@@ -58,5 +65,24 @@ public unsafe class BindGroupEntryCollectionMarshal :
     public static void MarshalTo(ReadOnlySpan<BindGroupEntry> items, Span<BindGroupEntryFFI> ffiItems, Span<Cache> caches)
     {
         MarshalTo(items, ffiItems);
+    }
+
+    public static void UpdateFFIBeforeWebGpuCall(
+        ReadOnlySpan<BindGroupEntry> items,
+        Span<BindGroupEntryFFI> ffiItems,
+        Span<Cache> caches,
+        WebGpuAllocatorHandle allocator)
+    {
+        for (var i = 0; i < items.Length; i++)
+        {
+            var ownedTextureViewHandle = TextureViewHandle.Null;
+            var textureViewSource = items[i].TextureView;
+            if (textureViewSource != null)
+            {
+                ownedTextureViewHandle = textureViewSource.UnsafeGetCurrentTextureViewOwnedHandle();
+            }
+            allocator.AddHandleToDispose(ownedTextureViewHandle);
+            ffiItems[i].TextureView = ownedTextureViewHandle;
+        }
     }
 }

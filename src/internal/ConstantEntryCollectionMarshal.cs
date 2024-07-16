@@ -93,4 +93,7 @@ public unsafe class ConstantEntryCollectionMarshal :
     {
         throw new NotSupportedException();
     }
+
+    public static void UpdateFFIBeforeWebGpuCall(ReadOnlySpan<ConstantEntry> items, Span<ConstantEntryFFI> ffiItems, Span<Cache> caches, WebGpuAllocatorHandle allocator)
+    { return; }
 }

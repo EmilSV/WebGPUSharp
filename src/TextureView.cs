@@ -26,8 +26,9 @@ public sealed class TextureView :
         return this;
     }
 
-    TextureViewHandle ITextureViewSource.UnsafeGetCurrentTextureViewHandle()
+    TextureViewHandle ITextureViewSource.UnsafeGetCurrentTextureViewOwnedHandle()
     {
+        TextureViewHandle.Reference(_handle);
         return _handle;
     }
 }

@@ -10,6 +10,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+
         ToFFI(
             input: descriptor.ColorAttachments,
             allocator: allocator,
@@ -22,9 +23,11 @@ public readonly unsafe partial struct CommandEncoderHandle :
         if (descriptor.DepthStencilAttachment.HasValue)
         {
             ref readonly var depthStencilAttachment = ref descriptor.DepthStencilAttachment.Value;
+            var ownedViewHandle = depthStencilAttachment.View.UnsafeGetCurrentTextureViewOwnedHandle();
+            allocator.AddHandleToDispose(ownedViewHandle);
 
             depthStencilAttachmentFFI = new(
-                view: depthStencilAttachment.View.GetHandle(),
+                view: ownedViewHandle,
                 depthLoadOp: depthStencilAttachment.DepthLoadOp,
                 depthStoreOp: depthStencilAttachment.DepthStoreOp,
                 depthClearValue: depthStencilAttachment.DepthClearValue,
@@ -132,10 +135,14 @@ public readonly unsafe partial struct CommandEncoderHandle :
             dest: out ImageCopyBufferFFI sourceFFI
         );
 
-        ToFFI(
-            input: destination,
-            dest: out ImageCopyTextureFFI destinationFFI
+        using var textureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
+        ImageCopyTextureFFI destinationFFI = new(
+            texture: textureHandle,
+            mipLevel: destination.MipLevel,
+            origin: destination.Origin,
+            aspect: destination.Aspect
         );
+
 
         fixed (Extent3D* copySizePtr = &copySize)
         {
@@ -165,15 +172,19 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
     public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
     {
-        ToFFI(
-            input: source,
-            dest: out ImageCopyTextureFFI sourceFFI
+        using var ownedTextureHandle = source.Texture.UnsafeGetCurrentOwnedTextureHandle();
+        ImageCopyTextureFFI sourceFFI = new(
+            texture: ownedTextureHandle,
+            mipLevel: source.MipLevel,
+            origin: source.Origin,
+            aspect: source.Aspect
         );
 
         ToFFI(
             input: destination,
             dest: out ImageCopyBufferFFI destinationFFI
         );
+
         fixed (Extent3D* copySizePtr = &copySize)
         {
             WebGPU_FFI.CommandEncoderCopyTextureToBuffer(
@@ -219,8 +230,21 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void CopyTextureToTexture(
         in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
     {
-        ToFFI(source, out ImageCopyTextureFFI sourceFFI);
-        ToFFI(destination, out ImageCopyTextureFFI destinationFFI);
+        using var sourceTextureHandle = source.Texture.UnsafeGetCurrentOwnedTextureHandle();
+        ImageCopyTextureFFI sourceFFI = new(
+            texture: sourceTextureHandle,
+            mipLevel: source.MipLevel,
+            origin: source.Origin,
+            aspect: source.Aspect
+        );
+
+        using var destinationTextureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
+        ImageCopyTextureFFI destinationFFI = new(
+            texture: destinationTextureHandle,
+            mipLevel: destination.MipLevel,
+            origin: destination.Origin,
+            aspect: destination.Aspect
+        );
 
         fixed (Extent3D* copySizePtr = &copySize)
         {

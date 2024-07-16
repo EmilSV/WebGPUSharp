@@ -5,9 +5,9 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp;
 
 public struct RenderPassDepthStencilAttachment :
-     IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>
+     IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>
 {
-    public required TextureViewSource View;
+    public required ITextureViewSource View;
     public LoadOp DepthLoadOp;
     public StoreOp DepthStoreOp;
     public float DepthClearValue;
@@ -21,10 +21,13 @@ public struct RenderPassDepthStencilAttachment :
     {
     }
 
-    static void IWebGpuFFIConvertible<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
-        in RenderPassDepthStencilAttachment input, out RenderPassDepthStencilAttachmentFFI dest)
+    static void IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
+        in RenderPassDepthStencilAttachment input, WebGpuAllocatorHandle allocator, out RenderPassDepthStencilAttachmentFFI dest)
     {
-        dest.View = input.View.GetHandle();
+        var ownedViewHandle = input.View.UnsafeGetCurrentTextureViewOwnedHandle();
+        allocator.AddHandleToDispose(ownedViewHandle);
+
+        dest.View = ownedViewHandle;
         dest.DepthLoadOp = input.DepthLoadOp;
         dest.DepthStoreOp = input.DepthStoreOp;
         dest.DepthClearValue = input.DepthClearValue;
@@ -33,11 +36,5 @@ public struct RenderPassDepthStencilAttachment :
         dest.StencilStoreOp = input.StencilStoreOp;
         dest.StencilClearValue = input.StencilClearValue;
         dest.StencilReadOnly = input.StencilReadOnly;
-    }
-
-    static void IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
-        in RenderPassDepthStencilAttachment input, WebGpuAllocatorHandle allocator, out RenderPassDepthStencilAttachmentFFI dest)
-    {
-        ToFFI(in input, out dest);
     }
 }

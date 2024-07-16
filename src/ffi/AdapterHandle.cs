@@ -213,7 +213,7 @@ public unsafe readonly partial struct AdapterHandle :
             }
         });
     }
-
+    
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedDelegate(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)

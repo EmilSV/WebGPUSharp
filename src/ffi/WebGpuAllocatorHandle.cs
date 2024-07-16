@@ -44,6 +44,17 @@ public readonly ref struct WebGpuAllocatorHandle
         span = new Span<T>(ptr, (int)amount);
     }
 
+    public unsafe void AddHandleToDispose<THandle>(THandle handle)
+        where THandle : unmanaged, IWebGpuHandle<THandle>
+    {
+        if (THandle.IsNull(handle))
+        {
+            return;
+        }
+
+        _allocator.AddDisposableHandles(DisposableHandle.FromHandle(handle));
+    }
+
     public void Dispose()
     {
         WebGpuAllocator.Return(_allocator);

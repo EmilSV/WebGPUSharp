@@ -1,7 +1,7 @@
 namespace WebGpuSharp;
 
 
-public static class SupportedLimitsDefaults
+public static class LimitsDefaults
 {
     /// <summary>
     /// The maximum allowed value for the size.width of a texture created with dimension "1d".
@@ -179,41 +179,49 @@ public static class SupportedLimitsDefaults
     /// The maximum value for the arguments of dispatchWorkgroups(workgroupCountX, workgroupCountY, workgroupCountZ).
     /// </summary>
     public const uint MAX_COMPUTE_WORKGROUPS_PER_DIMENSION = 65535;
-    
-    public static void SetToDefaultValues(ref SupportedLimits supportedLimits)
-    {
-        ref var limits = ref supportedLimits.Limits;
 
-        limits.MaxTextureDimension1D = MAX_TEXTURE_DIMENSION_1D;
-        limits.MaxTextureDimension2D = MAX_TEXTURE_DIMENSION_2D;
-        limits.MaxTextureDimension3D = MAX_TEXTURE_DIMENSION_3D;
-        limits.MaxTextureArrayLayers = MAX_TEXTURE_ARRAY_LAYERS;
-        limits.MaxBindGroups = MAX_BIND_GROUPS;
-        limits.MaxBindingsPerBindGroup = MAX_BINDINGS_PER_BIND_GROUP;
-        limits.MaxDynamicUniformBuffersPerPipelineLayout = MAX_DYNAMIC_UNIFORM_BUFFERS_PER_PIPELINE_LAYOUT;
-        limits.MaxDynamicStorageBuffersPerPipelineLayout = MAX_DYNAMIC_STORAGE_BUFFERS_PER_PIPELINE_LAYOUT;
-        limits.MaxSampledTexturesPerShaderStage = MAX_SAMPLED_TEXTURES_PER_SHADER_STAGE;
-        limits.MaxSamplersPerShaderStage = MAX_SAMPLERS_PER_SHADER_STAGE;
-        limits.MaxStorageBuffersPerShaderStage = MAX_STORAGE_BUFFERS_PER_SHADER_STAGE;
-        limits.MaxStorageTexturesPerShaderStage = MAX_STORAGE_TEXTURES_PER_SHADER_STAGE;
-        limits.MaxUniformBuffersPerShaderStage = MAX_UNIFORM_BUFFERS_PER_SHADER_STAGE;
-        limits.MaxUniformBufferBindingSize = MAX_UNIFORM_BUFFER_BINDING_SIZE;
-        limits.MaxStorageBufferBindingSize = MAX_STORAGE_BUFFER_BINDING_SIZE;
-        limits.MinUniformBufferOffsetAlignment = MIN_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
-        limits.MinStorageBufferOffsetAlignment = MIN_STORAGE_BUFFER_OFFSET_ALIGNMENT;
-        limits.MaxVertexBuffers = MAX_VERTEX_BUFFERS;
-        limits.MaxBufferSize = MAX_BUFFER_SIZE;
-        limits.MaxVertexAttributes = MAX_VERTEX_ATTRIBUTES;
-        limits.MaxVertexBufferArrayStride = MAX_VERTEX_BUFFER_ARRAY_STRIDE;
-        limits.MaxInterStageShaderComponents = MAX_INTER_STAGE_SHADER_COMPONENTS;
-        limits.MaxInterStageShaderVariables = MAX_INTER_STAGE_SHADER_VARIABLES;
-        limits.MaxColorAttachments = MAX_COLOR_ATTACHMENTS;
-        limits.MaxColorAttachmentBytesPerSample = MAX_COLOR_ATTACHMENT_BYTES_PER_SAMPLE;
-        limits.MaxComputeWorkgroupStorageSize = MAX_COMPUTE_WORKGROUP_STORAGE_SIZE;
-        limits.MaxComputeInvocationsPerWorkgroup = MAX_COMPUTE_INVOCATIONS_PER_WORKGROUP;
-        limits.MaxComputeWorkgroupSizeX = MAX_COMPUTE_WORKGROUP_SIZE_X;
-        limits.MaxComputeWorkgroupSizeY = MAX_COMPUTE_WORKGROUP_SIZE_Y;
-        limits.MaxComputeWorkgroupSizeZ = MAX_COMPUTE_WORKGROUP_SIZE_Z;
-        limits.MaxComputeWorkgroupsPerDimension = MAX_COMPUTE_WORKGROUPS_PER_DIMENSION;
+    public static void SetToDefaultValues(out Limits limits)
+    {
+        limits = new()
+        {
+            MaxTextureDimension1D = MAX_TEXTURE_DIMENSION_1D,
+            MaxTextureDimension2D = MAX_TEXTURE_DIMENSION_2D,
+            MaxTextureDimension3D = MAX_TEXTURE_DIMENSION_3D,
+            MaxTextureArrayLayers = MAX_TEXTURE_ARRAY_LAYERS,
+            MaxBindGroups = MAX_BIND_GROUPS,
+            MaxBindingsPerBindGroup = MAX_BINDINGS_PER_BIND_GROUP,
+            MaxDynamicUniformBuffersPerPipelineLayout = MAX_DYNAMIC_UNIFORM_BUFFERS_PER_PIPELINE_LAYOUT,
+            MaxDynamicStorageBuffersPerPipelineLayout = MAX_DYNAMIC_STORAGE_BUFFERS_PER_PIPELINE_LAYOUT,
+            MaxSampledTexturesPerShaderStage = MAX_SAMPLED_TEXTURES_PER_SHADER_STAGE,
+            MaxSamplersPerShaderStage = MAX_SAMPLERS_PER_SHADER_STAGE,
+            MaxStorageBuffersPerShaderStage = MAX_STORAGE_BUFFERS_PER_SHADER_STAGE,
+            MaxStorageTexturesPerShaderStage = MAX_STORAGE_TEXTURES_PER_SHADER_STAGE,
+            MaxUniformBuffersPerShaderStage = MAX_UNIFORM_BUFFERS_PER_SHADER_STAGE,
+            MaxUniformBufferBindingSize = MAX_UNIFORM_BUFFER_BINDING_SIZE,
+            MaxStorageBufferBindingSize = MAX_STORAGE_BUFFER_BINDING_SIZE,
+            MinUniformBufferOffsetAlignment = MIN_UNIFORM_BUFFER_OFFSET_ALIGNMENT,
+            MinStorageBufferOffsetAlignment = MIN_STORAGE_BUFFER_OFFSET_ALIGNMENT,
+            MaxVertexBuffers = MAX_VERTEX_BUFFERS,
+            MaxBufferSize = MAX_BUFFER_SIZE,
+            MaxVertexAttributes = MAX_VERTEX_ATTRIBUTES,
+            MaxVertexBufferArrayStride = MAX_VERTEX_BUFFER_ARRAY_STRIDE,
+            MaxInterStageShaderComponents = MAX_INTER_STAGE_SHADER_COMPONENTS,
+            MaxInterStageShaderVariables = MAX_INTER_STAGE_SHADER_VARIABLES,
+            MaxColorAttachments = MAX_COLOR_ATTACHMENTS,
+            MaxColorAttachmentBytesPerSample = MAX_COLOR_ATTACHMENT_BYTES_PER_SAMPLE,
+            MaxComputeWorkgroupStorageSize = MAX_COMPUTE_WORKGROUP_STORAGE_SIZE,
+            MaxComputeInvocationsPerWorkgroup = MAX_COMPUTE_INVOCATIONS_PER_WORKGROUP,
+            MaxComputeWorkgroupSizeX = MAX_COMPUTE_WORKGROUP_SIZE_X,
+            MaxComputeWorkgroupSizeY = MAX_COMPUTE_WORKGROUP_SIZE_Y,
+            MaxComputeWorkgroupSizeZ = MAX_COMPUTE_WORKGROUP_SIZE_Z,
+            MaxComputeWorkgroupsPerDimension = MAX_COMPUTE_WORKGROUPS_PER_DIMENSION,
+            MaxBindGroupsPlusVertexBuffers = MAX_BIND_GROUPS_PLUS_VERTEX_BUFFERS
+        };
+    }
+
+    public static Limits GetDefaultLimits()
+    {
+        SetToDefaultValues(out var limits);
+        return limits;
     }
 }

@@ -50,7 +50,7 @@ public abstract class BaseWebGpuSafeHandle<THandle>
 
     public static explicit operator THandle(BaseWebGpuSafeHandle<THandle>? safeHandle)
     {
-        if(safeHandle == null)
+        if (safeHandle == null)
         {
             return THandle.Null;
         }

@@ -4,20 +4,6 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
-// dictionary GPUSamplerDescriptor
-//          : GPUObjectDescriptorBase {
-//     GPUAddressMode addressModeU = "clamp-to-edge";
-//     GPUAddressMode addressModeV = "clamp-to-edge";
-//     GPUAddressMode addressModeW = "clamp-to-edge";
-//     GPUFilterMode magFilter = "nearest";
-//     GPUFilterMode minFilter = "nearest";
-//     GPUMipmapFilterMode mipmapFilter = "nearest";
-//     float lodMinClamp = 0;
-//     float lodMaxClamp = 32;
-//     GPUCompareFunction compare;
-//     [Clamp] unsigned short maxAnisotropy = 1;
-// };
-
 public unsafe ref struct SamplerDescriptor
 {
     internal SamplerDescriptorFFI _unsafeDescriptor = new(

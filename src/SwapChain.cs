@@ -9,11 +9,7 @@ public sealed class SwapChain :
     ITextureSource,
     ITextureViewSource
 {
-    private TextureViewHandle _currentTextureViewHandle = TextureViewHandle.Null;
-    private TextureHandle _currentTextureHandle = TextureHandle.Null;
-
-
-    public SwapChain(SwapChainHandle handle) : base(handle)
+    private SwapChain(SwapChainHandle handle) : base(handle)
     {
     }
 
@@ -29,75 +25,16 @@ public sealed class SwapChain :
 
     public TextureView? GetCurrentTextureView() => _handle.GetCurrentTextureView().ToSafeHandle(true);
     public Texture? GetCurrentTexture() => _handle.GetCurrentTexture().ToSafeHandle(true);
-    public void Present()
+    public void Present() => _handle.Present();
+
+    TextureHandle ITextureSource.UnsafeGetCurrentOwnedTextureHandle()
     {
-        _handle.Present();
-
-        if (_currentTextureHandle != TextureHandle.Null)
-        {
-            TextureViewHandle oldTextureViewHandle = _currentTextureViewHandle;
-            if (WebGPUHandleInterlock.CompareExchange(
-                ref _currentTextureViewHandle, TextureViewHandle.Null, oldTextureViewHandle) == oldTextureViewHandle)
-            {
-                oldTextureViewHandle.Dispose();
-            }
-        }
-
-        if (_currentTextureHandle != TextureHandle.Null)
-        {
-            TextureHandle oldTextureHandle = _currentTextureHandle;
-            if (WebGPUHandleInterlock.CompareExchange(
-                ref _currentTextureHandle, TextureHandle.Null, oldTextureHandle) == oldTextureHandle)
-            {
-                oldTextureHandle.Dispose();
-            }
-        }
+        return _handle.GetCurrentTexture();
     }
 
-    ~SwapChain()
+    TextureViewHandle ITextureViewSource.UnsafeGetCurrentTextureViewOwnedHandle()
     {
-        if (_currentTextureHandle != TextureHandle.Null)
-        {
-            TextureViewHandle oldTextureViewHandle = _currentTextureViewHandle;
-            if (WebGPUHandleInterlock.CompareExchange(
-                ref _currentTextureViewHandle, TextureViewHandle.Null, oldTextureViewHandle) == oldTextureViewHandle)
-            {
-                oldTextureViewHandle.Dispose();
-            }
-        }
-
-        if (_currentTextureHandle != TextureHandle.Null)
-        {
-            TextureHandle oldTextureHandle = _currentTextureHandle;
-            if (WebGPUHandleInterlock.CompareExchange(
-                ref _currentTextureHandle, TextureHandle.Null, oldTextureHandle) == oldTextureHandle)
-            {
-                oldTextureHandle.Dispose();
-            }
-        }
-    }
-
-    TextureViewHandle ITextureViewSource.UnsafeGetCurrentTextureViewHandle()
-    {
-        TextureViewHandle newTextureViewHandle = _handle.GetCurrentTextureView();
-        TextureViewHandle oldTextureViewHandle = WebGPUHandleInterlock.Exchange(ref _currentTextureViewHandle, newTextureViewHandle);
-        if (oldTextureViewHandle != TextureViewHandle.Null)
-        {
-            oldTextureViewHandle.Dispose();
-        }
-
-        return newTextureViewHandle;
-    }
-
-    TextureHandle ITextureSource.UnsafeGetCurrentTextureHandle()
-    {
-        TextureHandle newTextureHandle = _handle.GetCurrentTexture();
-        TextureHandle oldTextureHandle = WebGPUHandleInterlock.Exchange(ref _currentTextureHandle, newTextureHandle);
-        if (oldTextureHandle != TextureHandle.Null)
-        {
-            oldTextureHandle.Dispose();
-        }
-
-        return newTextureHandle;
+        var currentTextureViewHandle = _handle.GetCurrentTextureView();
+        return currentTextureViewHandle;
     }
 }

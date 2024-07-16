@@ -74,4 +74,7 @@ public unsafe class VertexBufferLayoutMarshal :
     {
         MarshalTo(items, ffiItems);
     }
+
+    public static void UpdateFFIBeforeWebGpuCall(ReadOnlySpan<VertexBufferLayout> items, Span<VertexBufferLayoutFFI> ffiItems, Span<Cache> caches, WebGpuAllocatorHandle allocator)
+    { return; }
 }

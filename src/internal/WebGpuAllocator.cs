@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
@@ -132,6 +133,7 @@ internal unsafe class WebGpuAllocator
     private bool _isUsingInnerDataBuffer = true;
     private BufferStruct _currentBuffer = default;
     private long _currentBufferOffset = 0;
+    private List<DisposableHandle> _disposableHandles = new(16);
 
     private void UpdateCurrentBufferAllocRecord()
     {
@@ -284,6 +286,12 @@ internal unsafe class WebGpuAllocator
         return (T*)Realloc((void*)ptr, newSize * (uint)sizeof(T));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddDisposableHandles(DisposableHandle disposableHandle)
+    {
+        _disposableHandles.Add(disposableHandle);
+    }
+
 
     private void DisposeAllBuffers()
     {
@@ -350,6 +358,12 @@ internal unsafe class WebGpuAllocator
         _isUsingInnerDataBuffer = true;
         _currentBuffer = default;
         _currentBufferOffset = 0;
+
+        foreach (var item in _disposableHandles)
+        {
+            item.Dispose();
+        }
+        _disposableHandles.Clear();
     }
 
     private WebGpuAllocator()

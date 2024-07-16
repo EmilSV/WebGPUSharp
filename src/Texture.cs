@@ -47,8 +47,9 @@ public sealed class Texture :
         return this;
     }
 
-    TextureHandle ITextureSource.UnsafeGetCurrentTextureHandle()
+    TextureHandle ITextureSource.UnsafeGetCurrentOwnedTextureHandle()
     {
+        TextureHandle.Reference(_handle);
         return _handle;
     }
 }

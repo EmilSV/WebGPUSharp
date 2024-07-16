@@ -6,5 +6,5 @@ public interface ITextureSource
 {
     Texture? GetCurrentTexture();
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    TextureHandle UnsafeGetCurrentTextureHandle();
+    TextureHandle UnsafeGetCurrentOwnedTextureHandle();
 }

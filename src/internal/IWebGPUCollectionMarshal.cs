@@ -19,5 +19,7 @@ public interface IWebGPUCollectionMarshal<TManaged, TFFI, TCache>
     public abstract static void MarkDirty(ref TManaged newItem, in TManaged oldItem);
 
     public abstract static bool NeedsCache();
+
+    public abstract static void UpdateFFIBeforeWebGpuCall(ReadOnlySpan<TManaged> items, Span<TFFI> ffiItems, Span<TCache> caches, WebGpuAllocatorHandle allocator);
 }
 

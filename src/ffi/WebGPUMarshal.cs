@@ -115,7 +115,7 @@ public unsafe static partial class WebGPUMarshal
         out TTo* dest,
         out nuint outCount
     )
-        where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
+        where TFrom : IWebGpuFFIConvertibleAlloc<TFrom, TTo>
         where TTo : unmanaged
     {
         if (input.IsEmpty)
@@ -129,7 +129,7 @@ public unsafe static partial class WebGPUMarshal
         outCount = (nuint)input.Length;
         for (var i = 0; i < input.Length; i++)
         {
-            TFrom.UnsafeConvertToFFI(in input[i], out Unsafe.AsRef<TTo>(newDestPtr + i));
+            TFrom.UnsafeConvertToFFI(in input[i], allocator, out Unsafe.AsRef<TTo>(newDestPtr + i));
         }
 
         dest = newDestPtr;
@@ -142,8 +142,8 @@ public unsafe static partial class WebGPUMarshal
         out TTo* dest,
         out uint outCount
     )
-    where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
-    where TTo : unmanaged
+        where TFrom : IWebGpuFFIConvertible<TFrom, TTo>
+        where TTo : unmanaged
     {
         ToFFI(input, allocator, out dest, out nuint outCountNuint);
         outCount = (uint)outCountNuint;
@@ -259,10 +259,10 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetBorrowHandle<T>(BaseWebGpuSafeHandle<T> safeHandle)
+    public static T GetBorrowHandle<T>(BaseWebGpuSafeHandle<T>? safeHandle)
        where T : unmanaged, IWebGpuHandle<T>
     {
-        return safeHandle.GetHandle();
+        return safeHandle?.GetHandle() ?? T.Null;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
