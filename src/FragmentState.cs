@@ -8,7 +8,7 @@ public partial struct FragmentState :
     IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
 {
     public required ShaderModule Module;
-    public string EntryPoint;
+    public string? EntryPoint;
     public ConstantEntryList? Constants;
     public required ColorTargetStateList Targets;
 
