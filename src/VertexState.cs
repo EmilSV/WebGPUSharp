@@ -8,7 +8,7 @@ public struct VertexState :
     IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
 {
     public required ShaderModule Module;
-    public string EntryPoint;
+    public string? EntryPoint;
     public ConstantEntryList? Constants;
     public VertexBufferLayoutList? Buffers;
 

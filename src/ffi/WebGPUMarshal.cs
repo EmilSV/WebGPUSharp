@@ -150,14 +150,19 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void ToFFI(string input, WebGpuAllocatorHandle allocator, out byte* dest)
+    public static unsafe void ToFFI(string? input, WebGpuAllocatorHandle allocator, out byte* dest)
     {
         dest = ToFFI(input, allocator);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe byte* ToFFI(string input, WebGpuAllocatorHandle allocator)
+    public static unsafe byte* ToFFI(string? input, WebGpuAllocatorHandle allocator)
     {
+        if (input is null)
+        {
+            return null;
+        }
+
         var newSize = Encoding.UTF8.GetByteCount(input) + 1;
         var result = allocator.Alloc<byte>((nuint)newSize);
         var resultSpan = new Span<byte>(result, newSize);
