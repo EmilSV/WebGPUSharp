@@ -16,6 +16,8 @@ public enum FeatureName
     RG11B10UfloatRenderable = 9,
     BGRA8UnormStorage = 10,
     Float32Filterable = 11,
+    Subgroups = 12,
+    SubgroupsF16 = 13,
     DawnInternalUsages = 327680,
     DawnMultiPlanarFormats = 327681,
     DawnNative = 327682,
@@ -70,4 +72,7 @@ public enum FeatureName
     YCbCrVulkanSamplers = 327731,
     ShaderModuleCompilationOptions = 327732,
     DawnLoadResolveTexture = 327733,
+    DawnPartialLoadResolveTexture = 327734,
+    MultiDrawIndirect = 327735,
+    ClipDistances = 327736,
 }

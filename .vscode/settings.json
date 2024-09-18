@@ -5,10 +5,12 @@
         "GPUFFI",
         "mipmap",
         "Multisample",
+        "SPIRV",
         "TFFI",
         "Uncaptured",
         "Unmap",
         "WGPU",
+        "WGSL",
         "Workgroups"
     ]
 }

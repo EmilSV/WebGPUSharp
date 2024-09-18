@@ -27,18 +27,21 @@ internal unsafe static class LoadShaderModuleFromFileHandler
         {
             ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
             {
-                Chain = new()
+                Value =
                 {
-                    Next = null,
-                    SType = SType.ShaderModuleWGSLDescriptor
-                },
-                Code = dataPtr
+                    Chain =
+                    {
+                        Next = null,
+                        SType = SType.ShaderSourceWGSL
+                    },
+                    Code = dataPtr
+                }
             };
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
                 Label = labelPtr,
-                NextInChain = &shaderModuleWGSLDescriptor.Chain,
+                NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
             };
             return WebGPU_FFI.DeviceCreateShaderModule(device, &shaderModuleDescriptor);
         }

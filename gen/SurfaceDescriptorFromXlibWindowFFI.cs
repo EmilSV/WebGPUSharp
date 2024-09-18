@@ -5,20 +5,16 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromXlibWindowFFI
 {
-    public ChainedStruct Chain;
-    public void* Display;
-    public ulong Window;
+    public SurfaceSourceXlibWindowFFI Value;
 
     public SurfaceDescriptorFromXlibWindowFFI()
     {
     }
 
 
-    public SurfaceDescriptorFromXlibWindowFFI(ChainedStruct chain = default, void* display = default, ulong window = default)
+    public SurfaceDescriptorFromXlibWindowFFI(SurfaceSourceXlibWindowFFI value = default)
     {
-        this.Chain = chain;
-        this.Display = display;
-        this.Window = window;
+        this.Value = value;
     }
 
 }

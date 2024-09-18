@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public enum LoadOp
 {
     Undefined = 0,
-    Clear = 1,
-    Load = 2,
+    Load = 1,
+    Clear = 2,
     ExpandResolveTexture = 327683,
 }

@@ -61,12 +61,16 @@ public unsafe static partial class WebGPU_FFI
     public static extern void AdapterRelease(FFI.AdapterHandle adapter);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BindGroupSetLabel(FFI.BindGroupHandle bindGroup, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void BindGroupSetLabel2(FFI.BindGroupHandle bindGroup, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BindGroupAddRef(FFI.BindGroupHandle bindGroup);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BindGroupRelease(FFI.BindGroupHandle bindGroup);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupLayoutSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BindGroupLayoutSetLabel(FFI.BindGroupLayoutHandle bindGroupLayout, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupLayoutSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void BindGroupLayoutSetLabel2(FFI.BindGroupLayoutHandle bindGroupLayout, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupLayoutAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BindGroupLayoutAddRef(FFI.BindGroupLayoutHandle bindGroupLayout);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupLayoutRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -91,6 +95,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern Future BufferMapAsyncF(FFI.BufferHandle buffer, MapMode mode, nuint offset, nuint size, FFI.BufferMapCallbackInfoFFI callbackInfo);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferSetLabel(FFI.BufferHandle buffer, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void BufferSetLabel2(FFI.BufferHandle buffer, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferUnmap", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferUnmap(FFI.BufferHandle buffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -99,6 +105,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern void BufferRelease(FFI.BufferHandle buffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandBufferSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandBufferSetLabel(FFI.CommandBufferHandle commandBuffer, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandBufferSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CommandBufferSetLabel2(FFI.CommandBufferHandle commandBuffer, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandBufferAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandBufferAddRef(FFI.CommandBufferHandle commandBuffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandBufferRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -121,16 +129,24 @@ public unsafe static partial class WebGPU_FFI
     public static extern FFI.CommandBufferHandle CommandEncoderFinish(FFI.CommandEncoderHandle commandEncoder, FFI.CommandBufferDescriptorFFI* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderInjectValidationError", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderInjectValidationError(FFI.CommandEncoderHandle commandEncoder, byte* message);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderInjectValidationError2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CommandEncoderInjectValidationError2(FFI.CommandEncoderHandle commandEncoder, FFI.StringViewFFI message);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderInsertDebugMarker(FFI.CommandEncoderHandle commandEncoder, byte* markerLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderInsertDebugMarker2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CommandEncoderInsertDebugMarker2(FFI.CommandEncoderHandle commandEncoder, FFI.StringViewFFI markerLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderPopDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderPopDebugGroup(FFI.CommandEncoderHandle commandEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderPushDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderPushDebugGroup(FFI.CommandEncoderHandle commandEncoder, byte* groupLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderPushDebugGroup2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CommandEncoderPushDebugGroup2(FFI.CommandEncoderHandle commandEncoder, FFI.StringViewFFI groupLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderResolveQuerySet", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderResolveQuerySet(FFI.CommandEncoderHandle commandEncoder, FFI.QuerySetHandle querySet, uint firstQuery, uint queryCount, FFI.BufferHandle destination, ulong destinationOffset);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderSetLabel(FFI.CommandEncoderHandle commandEncoder, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void CommandEncoderSetLabel2(FFI.CommandEncoderHandle commandEncoder, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderWriteBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderWriteBuffer(FFI.CommandEncoderHandle commandEncoder, FFI.BufferHandle buffer, ulong bufferOffset, byte* data, ulong size);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderWriteTimestamp", CallingConvention = CallingConvention.Cdecl)]
@@ -147,14 +163,20 @@ public unsafe static partial class WebGPU_FFI
     public static extern void ComputePassEncoderEnd(FFI.ComputePassEncoderHandle computePassEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderInsertDebugMarker(FFI.ComputePassEncoderHandle computePassEncoder, byte* markerLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderInsertDebugMarker2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ComputePassEncoderInsertDebugMarker2(FFI.ComputePassEncoderHandle computePassEncoder, FFI.StringViewFFI markerLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderPopDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderPopDebugGroup(FFI.ComputePassEncoderHandle computePassEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderPushDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderPushDebugGroup(FFI.ComputePassEncoderHandle computePassEncoder, byte* groupLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderPushDebugGroup2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ComputePassEncoderPushDebugGroup2(FFI.ComputePassEncoderHandle computePassEncoder, FFI.StringViewFFI groupLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderSetBindGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderSetBindGroup(FFI.ComputePassEncoderHandle computePassEncoder, uint groupIndex, FFI.BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderSetLabel(FFI.ComputePassEncoderHandle computePassEncoder, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ComputePassEncoderSetLabel2(FFI.ComputePassEncoderHandle computePassEncoder, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderSetPipeline", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderSetPipeline(FFI.ComputePassEncoderHandle computePassEncoder, FFI.ComputePipelineHandle pipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderWriteTimestamp", CallingConvention = CallingConvention.Cdecl)]
@@ -167,6 +189,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern FFI.BindGroupLayoutHandle ComputePipelineGetBindGroupLayout(FFI.ComputePipelineHandle computePipeline, uint groupIndex);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePipelineSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePipelineSetLabel(FFI.ComputePipelineHandle computePipeline, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePipelineSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ComputePipelineSetLabel2(FFI.ComputePipelineHandle computePipeline, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePipelineAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePipelineAddRef(FFI.ComputePipelineHandle computePipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePipelineRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -193,6 +217,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern FFI.ExternalTextureHandle DeviceCreateErrorExternalTexture(FFI.DeviceHandle device);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceCreateErrorShaderModule", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.ShaderModuleHandle DeviceCreateErrorShaderModule(FFI.DeviceHandle device, FFI.ShaderModuleDescriptorFFI* descriptor, byte* errorMessage);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceCreateErrorShaderModule2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern FFI.ShaderModuleHandle DeviceCreateErrorShaderModule2(FFI.DeviceHandle device, FFI.ShaderModuleDescriptorFFI* descriptor, FFI.StringViewFFI errorMessage);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceCreateErrorTexture", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.TextureHandle DeviceCreateErrorTexture(FFI.DeviceHandle device, FFI.TextureDescriptorFFI* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceCreateExternalTexture", CallingConvention = CallingConvention.Cdecl)]
@@ -225,6 +251,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern nuint DeviceEnumerateFeatures(FFI.DeviceHandle device, FeatureName* features);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceForceLoss", CallingConvention = CallingConvention.Cdecl)]
     public static extern void DeviceForceLoss(FFI.DeviceHandle device, DeviceLostReason type, byte* message);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceForceLoss2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DeviceForceLoss2(FFI.DeviceHandle device, DeviceLostReason type, FFI.StringViewFFI message);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceGetAHardwareBufferProperties", CallingConvention = CallingConvention.Cdecl)]
     public static extern Status DeviceGetAHardwareBufferProperties(FFI.DeviceHandle device, void* handle, AHardwareBufferProperties* properties);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceGetAdapter", CallingConvention = CallingConvention.Cdecl)]
@@ -245,6 +273,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern FFI.SharedTextureMemoryHandle DeviceImportSharedTextureMemory(FFI.DeviceHandle device, FFI.SharedTextureMemoryDescriptorFFI* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceInjectError", CallingConvention = CallingConvention.Cdecl)]
     public static extern void DeviceInjectError(FFI.DeviceHandle device, ErrorType type, byte* message);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceInjectError2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DeviceInjectError2(FFI.DeviceHandle device, ErrorType type, FFI.StringViewFFI message);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDevicePopErrorScope", CallingConvention = CallingConvention.Cdecl)]
     public static extern void DevicePopErrorScope(FFI.DeviceHandle device, delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> oldCallback, void* userdata);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDevicePopErrorScope2", CallingConvention = CallingConvention.Cdecl)]
@@ -257,6 +287,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern void DeviceSetDeviceLostCallback(FFI.DeviceHandle device, delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> callback, void* userdata);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void DeviceSetLabel(FFI.DeviceHandle device, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DeviceSetLabel2(FFI.DeviceHandle device, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceSetLoggingCallback", CallingConvention = CallingConvention.Cdecl)]
     public static extern void DeviceSetLoggingCallback(FFI.DeviceHandle device, delegate* unmanaged[Cdecl]<LoggingType, byte*, void*, void> callback, void* userdata);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceSetUncapturedErrorCallback", CallingConvention = CallingConvention.Cdecl)]
@@ -277,6 +309,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern void ExternalTextureRefresh(FFI.ExternalTextureHandle externalTexture);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuExternalTextureSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ExternalTextureSetLabel(FFI.ExternalTextureHandle externalTexture, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuExternalTextureSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ExternalTextureSetLabel2(FFI.ExternalTextureHandle externalTexture, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuExternalTextureAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ExternalTextureAddRef(FFI.ExternalTextureHandle externalTexture);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuExternalTextureRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -303,6 +337,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern void InstanceRelease(FFI.InstanceHandle instance);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuPipelineLayoutSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void PipelineLayoutSetLabel(FFI.PipelineLayoutHandle pipelineLayout, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuPipelineLayoutSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void PipelineLayoutSetLabel2(FFI.PipelineLayoutHandle pipelineLayout, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuPipelineLayoutAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void PipelineLayoutAddRef(FFI.PipelineLayoutHandle pipelineLayout);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuPipelineLayoutRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -315,6 +351,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern QueryType QuerySetGetType(FFI.QuerySetHandle querySet);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQuerySetSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QuerySetSetLabel(FFI.QuerySetHandle querySet, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuQuerySetSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void QuerySetSetLabel2(FFI.QuerySetHandle querySet, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQuerySetAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QuerySetAddRef(FFI.QuerySetHandle querySet);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQuerySetRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -331,6 +369,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern Future QueueOnSubmittedWorkDoneF(FFI.QueueHandle queue, FFI.QueueWorkDoneCallbackInfoFFI callbackInfo);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QueueSetLabel(FFI.QueueHandle queue, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void QueueSetLabel2(FFI.QueueHandle queue, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueSubmit", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QueueSubmit(FFI.QueueHandle queue, nuint commandCount, FFI.CommandBufferHandle* commands);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueWriteBuffer", CallingConvention = CallingConvention.Cdecl)]
@@ -343,6 +383,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern void QueueRelease(FFI.QueueHandle queue);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleSetLabel(FFI.RenderBundleHandle renderBundle, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderBundleSetLabel2(FFI.RenderBundleHandle renderBundle, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleAddRef(FFI.RenderBundleHandle renderBundle);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -359,16 +401,22 @@ public unsafe static partial class WebGPU_FFI
     public static extern FFI.RenderBundleHandle RenderBundleEncoderFinish(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.RenderBundleDescriptorFFI* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderInsertDebugMarker(FFI.RenderBundleEncoderHandle renderBundleEncoder, byte* markerLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderInsertDebugMarker2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderBundleEncoderInsertDebugMarker2(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.StringViewFFI markerLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderPopDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderPopDebugGroup(FFI.RenderBundleEncoderHandle renderBundleEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderPushDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderPushDebugGroup(FFI.RenderBundleEncoderHandle renderBundleEncoder, byte* groupLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderPushDebugGroup2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderBundleEncoderPushDebugGroup2(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.StringViewFFI groupLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetBindGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderSetBindGroup(FFI.RenderBundleEncoderHandle renderBundleEncoder, uint groupIndex, FFI.BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetIndexBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderSetIndexBuffer(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.BufferHandle buffer, IndexFormat format, ulong offset, ulong size);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderSetLabel(FFI.RenderBundleEncoderHandle renderBundleEncoder, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderBundleEncoderSetLabel2(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetPipeline", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderSetPipeline(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.RenderPipelineHandle pipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetVertexBuffer", CallingConvention = CallingConvention.Cdecl)]
@@ -395,12 +443,20 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderPassEncoderExecuteBundles(FFI.RenderPassEncoderHandle renderPassEncoder, nuint bundleCount, FFI.RenderBundleHandle* bundles);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderInsertDebugMarker(FFI.RenderPassEncoderHandle renderPassEncoder, byte* markerLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderInsertDebugMarker2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderPassEncoderInsertDebugMarker2(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.StringViewFFI markerLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderMultiDrawIndexedIndirect", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderPassEncoderMultiDrawIndexedIndirect(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset, uint maxDrawCount, FFI.BufferHandle drawCountBuffer, ulong drawCountBufferOffset);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderMultiDrawIndirect", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderPassEncoderMultiDrawIndirect(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset, uint maxDrawCount, FFI.BufferHandle drawCountBuffer, ulong drawCountBufferOffset);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderPixelLocalStorageBarrier", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderPixelLocalStorageBarrier(FFI.RenderPassEncoderHandle renderPassEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderPopDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderPopDebugGroup(FFI.RenderPassEncoderHandle renderPassEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderPushDebugGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderPushDebugGroup(FFI.RenderPassEncoderHandle renderPassEncoder, byte* groupLabel);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderPushDebugGroup2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderPassEncoderPushDebugGroup2(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.StringViewFFI groupLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetBindGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetBindGroup(FFI.RenderPassEncoderHandle renderPassEncoder, uint groupIndex, FFI.BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetBlendConstant", CallingConvention = CallingConvention.Cdecl)]
@@ -409,6 +465,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderPassEncoderSetIndexBuffer(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.BufferHandle buffer, IndexFormat format, ulong offset, ulong size);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetLabel(FFI.RenderPassEncoderHandle renderPassEncoder, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderPassEncoderSetLabel2(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetPipeline", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetPipeline(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.RenderPipelineHandle pipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetScissorRect", CallingConvention = CallingConvention.Cdecl)]
@@ -429,12 +487,16 @@ public unsafe static partial class WebGPU_FFI
     public static extern FFI.BindGroupLayoutHandle RenderPipelineGetBindGroupLayout(FFI.RenderPipelineHandle renderPipeline, uint groupIndex);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPipelineSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPipelineSetLabel(FFI.RenderPipelineHandle renderPipeline, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPipelineSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void RenderPipelineSetLabel2(FFI.RenderPipelineHandle renderPipeline, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPipelineAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPipelineAddRef(FFI.RenderPipelineHandle renderPipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPipelineRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPipelineRelease(FFI.RenderPipelineHandle renderPipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSamplerSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SamplerSetLabel(FFI.SamplerHandle sampler, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuSamplerSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SamplerSetLabel2(FFI.SamplerHandle sampler, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSamplerAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SamplerAddRef(FFI.SamplerHandle sampler);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSamplerRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -447,6 +509,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern Future ShaderModuleGetCompilationInfoF(FFI.ShaderModuleHandle shaderModule, FFI.CompilationInfoCallbackInfoFFI callbackInfo);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuShaderModuleSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ShaderModuleSetLabel(FFI.ShaderModuleHandle shaderModule, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuShaderModuleSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void ShaderModuleSetLabel2(FFI.ShaderModuleHandle shaderModule, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuShaderModuleAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ShaderModuleAddRef(FFI.ShaderModuleHandle shaderModule);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuShaderModuleRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -463,6 +527,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern WebGPUBool SharedBufferMemoryIsDeviceLost(FFI.SharedBufferMemoryHandle sharedBufferMemory);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedBufferMemorySetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SharedBufferMemorySetLabel(FFI.SharedBufferMemoryHandle sharedBufferMemory, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedBufferMemorySetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SharedBufferMemorySetLabel2(FFI.SharedBufferMemoryHandle sharedBufferMemory, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedBufferMemoryAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SharedBufferMemoryAddRef(FFI.SharedBufferMemoryHandle sharedBufferMemory);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedBufferMemoryRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -485,6 +551,8 @@ public unsafe static partial class WebGPU_FFI
     public static extern WebGPUBool SharedTextureMemoryIsDeviceLost(FFI.SharedTextureMemoryHandle sharedTextureMemory);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedTextureMemorySetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SharedTextureMemorySetLabel(FFI.SharedTextureMemoryHandle sharedTextureMemory, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedTextureMemorySetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SharedTextureMemorySetLabel2(FFI.SharedTextureMemoryHandle sharedTextureMemory, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedTextureMemoryAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SharedTextureMemoryAddRef(FFI.SharedTextureMemoryHandle sharedTextureMemory);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSharedTextureMemoryRelease", CallingConvention = CallingConvention.Cdecl)]
@@ -499,6 +567,10 @@ public unsafe static partial class WebGPU_FFI
     public static extern TextureFormat SurfaceGetPreferredFormat(FFI.SurfaceHandle surface, FFI.AdapterHandle adapter);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfacePresent", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SurfacePresent(FFI.SurfaceHandle surface);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceSetLabel", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SurfaceSetLabel(FFI.SurfaceHandle surface, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void SurfaceSetLabel2(FFI.SurfaceHandle surface, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceUnconfigure", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SurfaceUnconfigure(FFI.SurfaceHandle surface);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -539,12 +611,16 @@ public unsafe static partial class WebGPU_FFI
     public static extern uint TextureGetWidth(FFI.TextureHandle texture);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void TextureSetLabel(FFI.TextureHandle texture, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void TextureSetLabel2(FFI.TextureHandle texture, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void TextureAddRef(FFI.TextureHandle texture);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void TextureRelease(FFI.TextureHandle texture);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureViewSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void TextureViewSetLabel(FFI.TextureViewHandle textureView, byte* label);
+    [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureViewSetLabel2", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void TextureViewSetLabel2(FFI.TextureViewHandle textureView, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureViewAddRef", CallingConvention = CallingConvention.Cdecl)]
     public static extern void TextureViewAddRef(FFI.TextureViewHandle textureView);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureViewRelease", CallingConvention = CallingConvention.Cdecl)]

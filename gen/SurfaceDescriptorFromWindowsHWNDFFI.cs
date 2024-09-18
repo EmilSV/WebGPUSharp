@@ -5,20 +5,16 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromWindowsHWNDFFI
 {
-    public ChainedStruct Chain;
-    public void* Hinstance;
-    public void* Hwnd;
+    public SurfaceSourceWindowsHWNDFFI Value;
 
     public SurfaceDescriptorFromWindowsHWNDFFI()
     {
     }
 
 
-    public SurfaceDescriptorFromWindowsHWNDFFI(ChainedStruct chain = default, void* hinstance = default, void* hwnd = default)
+    public SurfaceDescriptorFromWindowsHWNDFFI(SurfaceSourceWindowsHWNDFFI value = default)
     {
-        this.Chain = chain;
-        this.Hinstance = hinstance;
-        this.Hwnd = hwnd;
+        this.Value = value;
     }
 
 }

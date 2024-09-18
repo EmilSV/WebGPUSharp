@@ -12,7 +12,7 @@ public ref partial struct ShaderModuleDescriptor
         ref ShaderModuleWGSLDescriptor next
     )
     {
-        next._chainType = SType.ShaderModuleWGSLDescriptor;
+        next._chainType = SType.ShaderSourceWGSL;
         _next = ref next._chainType;
         unsafe
         {
@@ -27,12 +27,12 @@ public ref partial struct ShaderModuleDescriptor
 
     public bool IsWgslNext()
     {
-        return _next == SType.ShaderModuleWGSLDescriptor;
+        return _next == SType.ShaderSourceWGSL;
     }
 
     public bool IsSpirvNext()
     {
-        return _next == SType.ShaderModuleSPIRVDescriptor;
+        return _next == SType.ShaderSourceSPIRV;
     }
 
     internal unsafe ref ShaderModuleWGSLDescriptor GetNextWgsl()

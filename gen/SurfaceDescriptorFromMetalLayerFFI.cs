@@ -5,18 +5,16 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromMetalLayerFFI
 {
-    public ChainedStruct Chain;
-    public void* Layer;
+    public SurfaceSourceMetalLayerFFI Value;
 
     public SurfaceDescriptorFromMetalLayerFFI()
     {
     }
 
 
-    public SurfaceDescriptorFromMetalLayerFFI(ChainedStruct chain = default, void* layer = default)
+    public SurfaceDescriptorFromMetalLayerFFI(SurfaceSourceMetalLayerFFI value = default)
     {
-        this.Chain = chain;
-        this.Layer = layer;
+        this.Value = value;
     }
 
 }

@@ -5,18 +5,16 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromCanvasHTMLSelectorFFI
 {
-    public ChainedStruct Chain;
-    public byte* Selector;
+    public SurfaceSourceCanvasHTMLSelector_EmscriptenFFI Value;
 
     public SurfaceDescriptorFromCanvasHTMLSelectorFFI()
     {
     }
 
 
-    public SurfaceDescriptorFromCanvasHTMLSelectorFFI(ChainedStruct chain = default, byte* selector = default)
+    public SurfaceDescriptorFromCanvasHTMLSelectorFFI(SurfaceSourceCanvasHTMLSelector_EmscriptenFFI value = default)
     {
-        this.Chain = chain;
-        this.Selector = selector;
+        this.Value = value;
     }
 
 }

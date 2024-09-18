@@ -697,15 +697,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
 
             ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new(
-                chain: new ChainedStruct(
+                value: new(new ChainedStruct(
                     next: null,
-                    sType: SType.ShaderModuleWGSLDescriptor
-                ),
-                code: codePtr
+                    sType: SType.ShaderSourceWGSL
+                ))
             );
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new(
-                nextInChain: &shaderModuleWGSLDescriptor.Chain,
+                nextInChain: &shaderModuleWGSLDescriptor.Value.Chain,
                 label: labelPtr
             );
 
@@ -723,15 +722,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
 
             ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new(
-                chain: new ChainedStruct(
+                value: new(new ChainedStruct(
                     next: null,
-                    sType: SType.ShaderModuleWGSLDescriptor
-                ),
-                code: codePtr
+                    sType: SType.ShaderSourceWGSL
+                ))
             );
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new(
-                nextInChain: &shaderModuleWGSLDescriptor.Chain,
+                nextInChain: &shaderModuleWGSLDescriptor.Value.Chain,
                 label: labelPtr
             );
 

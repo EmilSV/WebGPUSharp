@@ -5,18 +5,16 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromAndroidNativeWindowFFI
 {
-    public ChainedStruct Chain;
-    public void* Window;
+    public SurfaceSourceAndroidNativeWindowFFI Value;
 
     public SurfaceDescriptorFromAndroidNativeWindowFFI()
     {
     }
 
 
-    public SurfaceDescriptorFromAndroidNativeWindowFFI(ChainedStruct chain = default, void* window = default)
+    public SurfaceDescriptorFromAndroidNativeWindowFFI(SurfaceSourceAndroidNativeWindowFFI value = default)
     {
-        this.Chain = chain;
-        this.Window = window;
+        this.Value = value;
     }
 
 }

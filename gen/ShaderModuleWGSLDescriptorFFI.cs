@@ -5,18 +5,16 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct ShaderModuleWGSLDescriptorFFI
 {
-    public ChainedStruct Chain;
-    public byte* Code;
+    public ShaderSourceWGSLFFI Value;
 
     public ShaderModuleWGSLDescriptorFFI()
     {
     }
 
 
-    public ShaderModuleWGSLDescriptorFFI(ChainedStruct chain = default, byte* code = default)
+    public ShaderModuleWGSLDescriptorFFI(ShaderSourceWGSLFFI value = default)
     {
-        this.Chain = chain;
-        this.Code = code;
+        this.Value = value;
     }
 
 }

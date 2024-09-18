@@ -5,18 +5,16 @@ namespace WebGpuSharp;
 
 public partial struct RenderPassDescriptorMaxDrawCount
 {
-    public ChainedStruct Chain;
-    public ulong MaxDrawCount;
+    public RenderPassMaxDrawCount Value;
 
     public RenderPassDescriptorMaxDrawCount()
     {
     }
 
 
-    public RenderPassDescriptorMaxDrawCount(ChainedStruct chain = default, ulong maxDrawCount = default)
+    public RenderPassDescriptorMaxDrawCount(RenderPassMaxDrawCount value = default)
     {
-        this.Chain = chain;
-        this.MaxDrawCount = maxDrawCount;
+        this.Value = value;
     }
 
 }
