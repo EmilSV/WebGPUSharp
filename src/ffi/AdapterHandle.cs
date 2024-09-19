@@ -126,8 +126,6 @@ public unsafe readonly partial struct AdapterHandle :
                 defaultQueue: new(
                     label: queueLabelPtr
                 ),
-                deviceLostCallback: null,
-                deviceLostUserdata: null,
                 deviceLostCallbackInfo: new(
                     mode: descriptor.DeviceLostCallbackMode,
                     callback: deviceLostCallbackFuncPtrAndId.funcPtr,
@@ -166,8 +164,6 @@ public unsafe readonly partial struct AdapterHandle :
                     defaultQueue: new(
                         label: queueLabelPtr
                     ),
-                    deviceLostCallback: null,
-                    deviceLostUserdata: null,
                     deviceLostCallbackInfo: new(
                         mode: descriptor.DeviceLostCallbackMode,
                         callback: deviceLostCallbackFuncPtrAndId.funcPtr,

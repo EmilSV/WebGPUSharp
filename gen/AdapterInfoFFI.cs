@@ -14,14 +14,13 @@ public unsafe partial struct AdapterInfoFFI
     public AdapterType AdapterType;
     public uint VendorID;
     public uint DeviceID;
-    public WebGPUBool CompatibilityMode;
 
     public AdapterInfoFFI()
     {
     }
 
 
-    public AdapterInfoFFI(ChainedStructOut* nextInChain = default, byte* vendor = default, byte* architecture = default, byte* device = default, byte* description = default, BackendType backendType = default, AdapterType adapterType = default, uint vendorID = default, uint deviceID = default, WebGPUBool compatibilityMode = default)
+    public AdapterInfoFFI(ChainedStructOut* nextInChain = default, byte* vendor = default, byte* architecture = default, byte* device = default, byte* description = default, BackendType backendType = default, AdapterType adapterType = default, uint vendorID = default, uint deviceID = default)
     {
         this.NextInChain = nextInChain;
         this.Vendor = vendor;
@@ -32,11 +31,10 @@ public unsafe partial struct AdapterInfoFFI
         this.AdapterType = adapterType;
         this.VendorID = vendorID;
         this.DeviceID = deviceID;
-        this.CompatibilityMode = compatibilityMode;
     }
 
 
-    public AdapterInfoFFI(byte* vendor = default, byte* architecture = default, byte* device = default, byte* description = default, BackendType backendType = default, AdapterType adapterType = default, uint vendorID = default, uint deviceID = default, WebGPUBool compatibilityMode = default)
+    public AdapterInfoFFI(byte* vendor = default, byte* architecture = default, byte* device = default, byte* description = default, BackendType backendType = default, AdapterType adapterType = default, uint vendorID = default, uint deviceID = default)
     {
         this.Vendor = vendor;
         this.Architecture = architecture;
@@ -46,7 +44,6 @@ public unsafe partial struct AdapterInfoFFI
         this.AdapterType = adapterType;
         this.VendorID = vendorID;
         this.DeviceID = deviceID;
-        this.CompatibilityMode = compatibilityMode;
     }
 
 }

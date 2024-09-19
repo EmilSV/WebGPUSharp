@@ -8,5 +8,4 @@ public enum LoadOp
     Undefined = 0,
     Load = 1,
     Clear = 2,
-    ExpandResolveTexture = 327683,
 }

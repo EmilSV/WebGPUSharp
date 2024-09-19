@@ -33,13 +33,6 @@ public unsafe partial struct AdapterProperties
         get => _unmanagedDescriptor.BackendType;
     }
 
-    public readonly WebGPUBool CompatibilityMode
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _unmanagedDescriptor.CompatibilityMode;
-    }
-
-
     public readonly ReadOnlySpan<byte> GetVendorName() =>
         MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_unmanagedDescriptor.VendorName);
 

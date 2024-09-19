@@ -8,17 +8,6 @@ namespace WebGpuSharp.FFI;
 public readonly unsafe partial struct QueueHandle :
     IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
-
-    public void OnSubmittedWorkDone(Action<QueueWorkDoneStatus> callback)
-    {
-        QueueOnSubmittedWorkDoneHandler.QueueOnSubmittedWorkDone(this, callback);
-    }
-
-    public Task<QueueWorkDoneStatus> OnSubmittedWorkDoneAsync()
-    {
-        return QueueOnSubmittedWorkDoneHandler.QueueOnSubmittedWorkDone(this);
-    }
-
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

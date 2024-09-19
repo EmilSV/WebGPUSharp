@@ -14,14 +14,13 @@ public unsafe partial struct AdapterPropertiesFFI
     public byte* DriverDescription;
     public AdapterType AdapterType;
     public BackendType BackendType;
-    public WebGPUBool CompatibilityMode;
 
     public AdapterPropertiesFFI()
     {
     }
 
 
-    public AdapterPropertiesFFI(ChainedStructOut* nextInChain = default, uint vendorID = default, byte* vendorName = default, byte* architecture = default, uint deviceID = default, byte* name = default, byte* driverDescription = default, AdapterType adapterType = default, BackendType backendType = default, WebGPUBool compatibilityMode = default)
+    public AdapterPropertiesFFI(ChainedStructOut* nextInChain = default, uint vendorID = default, byte* vendorName = default, byte* architecture = default, uint deviceID = default, byte* name = default, byte* driverDescription = default, AdapterType adapterType = default, BackendType backendType = default)
     {
         this.NextInChain = nextInChain;
         this.VendorID = vendorID;
@@ -32,11 +31,10 @@ public unsafe partial struct AdapterPropertiesFFI
         this.DriverDescription = driverDescription;
         this.AdapterType = adapterType;
         this.BackendType = backendType;
-        this.CompatibilityMode = compatibilityMode;
     }
 
 
-    public AdapterPropertiesFFI(uint vendorID = default, byte* vendorName = default, byte* architecture = default, uint deviceID = default, byte* name = default, byte* driverDescription = default, AdapterType adapterType = default, BackendType backendType = default, WebGPUBool compatibilityMode = default)
+    public AdapterPropertiesFFI(uint vendorID = default, byte* vendorName = default, byte* architecture = default, uint deviceID = default, byte* name = default, byte* driverDescription = default, AdapterType adapterType = default, BackendType backendType = default)
     {
         this.VendorID = vendorID;
         this.VendorName = vendorName;
@@ -46,7 +44,6 @@ public unsafe partial struct AdapterPropertiesFFI
         this.DriverDescription = driverDescription;
         this.AdapterType = adapterType;
         this.BackendType = backendType;
-        this.CompatibilityMode = compatibilityMode;
     }
 
 }

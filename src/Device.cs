@@ -28,11 +28,6 @@ public sealed unsafe partial class Device : BaseWebGpuSafeHandle<Device, DeviceH
     public void RemoveUncapturedErrorCallback(UncapturedErrorDelegate callback) =>
         _handle.RemoveUncapturedErrorCallback(callback);
 
-    [Obsolete("AddDeviceLostCallback is deprecated. Pass the callback in the device descriptor instead.")]
-    public void AddDeviceLostCallback(DeviceLostCallbackDelegate callback) =>
-        _handle.AddDeviceLostCallback(callback);
-
-
 
     public Queue? GetQueue() =>
         _handle.GetQueue().ToSafeHandle(true);
@@ -40,17 +35,12 @@ public sealed unsafe partial class Device : BaseWebGpuSafeHandle<Device, DeviceH
     public CommandEncoder CreateCommandEncoder(in CommandEncoderDescriptor descriptor) =>
         _handle.CreateCommandEncoder(descriptor).ToSafeHandle();
 
-    public void Tick() => _handle.Tick();
-
     public Buffer? CreateBuffer(ref BufferDescriptor descriptor) =>
         _handle.CreateBuffer(descriptor).ToSafeHandle(true);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Buffer? CreateBuffer(BufferDescriptor descriptor) =>
         _handle.CreateBuffer(descriptor).ToSafeHandle(true);
-
-    public SwapChain? CreateSwapChain(Surface surface, in SwapChainDescriptor descriptor) =>
-        _handle.CreateSwapChain(surface.GetHandle(), descriptor).ToSafeHandle(true);
 
     public ShaderModule? CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
         _handle.CreateShaderModule(descriptor).ToSafeHandle(true);

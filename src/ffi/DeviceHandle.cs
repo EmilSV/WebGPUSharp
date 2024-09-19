@@ -197,104 +197,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
-    public BufferHandle CreateErrorBuffer(DeviceHandle device, in BufferDescriptorFFI descriptor)
-    {
-        fixed (BufferDescriptorFFI* descriptorPtr = &descriptor)
-        {
-            return WebGPU_FFI.DeviceCreateErrorBuffer(device, descriptorPtr);
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BufferHandle CreateErrorBuffer(DeviceHandle device, BufferDescriptor descriptor)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        {
-            descriptor._unmanagedDescriptor.Label = LabelPtr;
-            return WebGPU_FFI.DeviceCreateErrorBuffer(this, &descriptor._unmanagedDescriptor);
-        }
-    }
-
-    public BufferHandle CreateErrorBuffer(DeviceHandle device, ref BufferDescriptor descriptor)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (BufferDescriptorFFI* descriptorPtr = &descriptor._unmanagedDescriptor)
-        {
-            descriptorPtr->Label = LabelPtr;
-            return WebGPU_FFI.DeviceCreateErrorBuffer(this, descriptorPtr);
-        }
-    }
-
-    public ExternalTextureHandle CreateErrorExternalTexture()
-    {
-        return WebGPU_FFI.DeviceCreateErrorExternalTexture(this);
-    }
-
-    public ShaderModuleHandle CreateErrorShaderModule(in ShaderModuleDescriptor descriptor, WGPURefText errorMessage)
-    {
-        if (descriptor.IsWgslNext())
-        {
-            return CreateErrorShaderModuleWgsl(descriptor, descriptor.GetNextWgsl().Code, errorMessage);
-        }
-        else if (descriptor.IsSpirvNext())
-        {
-            throw new NotImplementedException();
-            //return CreateShaderModuleSpirv(descriptor, descriptor.GetNextSpirv().Code);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public TextureHandle CreateErrorTexture(DeviceHandle device, in TextureDescriptorFFI descriptor)
-    {
-        fixed (TextureDescriptorFFI* descriptorPtr = &descriptor)
-        {
-            return WebGPU_FFI.DeviceCreateErrorTexture(device, descriptorPtr);
-        }
-    }
-
-    public TextureHandle CreateErrorTexture(ref TextureDescriptor textureDescriptor)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(textureDescriptor.Label, allocator))
-        fixed (TextureFormat* viewFormatsPtr = textureDescriptor.ViewFormats)
-        fixed (TextureDescriptorFFI* textureDescriptorPtr = &textureDescriptor._unmanagedDescriptor)
-        {
-            textureDescriptorPtr->Label = labelPtr;
-            textureDescriptorPtr->ViewFormatCount = (uint)textureDescriptor.ViewFormats.Length;
-            textureDescriptorPtr->ViewFormats = viewFormatsPtr;
-
-            return WebGPU_FFI.DeviceCreateErrorTexture(this, textureDescriptorPtr);
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TextureHandle CreateErrorTexture(TextureDescriptor textureDescriptor)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(textureDescriptor.Label, allocator))
-        fixed (TextureFormat* viewFormatsPtr = textureDescriptor.ViewFormats)
-        {
-            textureDescriptor._unmanagedDescriptor.Label = labelPtr;
-            textureDescriptor._unmanagedDescriptor.ViewFormatCount = (uint)textureDescriptor.ViewFormats.Length;
-            textureDescriptor._unmanagedDescriptor.ViewFormats = viewFormatsPtr;
-
-            return WebGPU_FFI.DeviceCreateErrorTexture(this, &textureDescriptor._unmanagedDescriptor);
-        }
-    }
-
-    public ExternalTextureHandle CreateExternalTexture(in ExternalTextureDescriptorFFI descriptor)
-    {
-        fixed (ExternalTextureDescriptorFFI* descriptorPtr = &descriptor)
-        {
-            return WebGPU_FFI.DeviceCreateExternalTexture(this, descriptorPtr);
-        }
-    }
-
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptorFFI descriptor)
     {
         fixed (PipelineLayoutDescriptorFFI* descriptorPtr = &descriptor)
@@ -500,27 +402,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
-    public SwapChainHandle CreateSwapChain(SurfaceHandle surface, ref SwapChainDescriptor descriptor)
-    {
-        WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (SwapChainDescriptorFFI* descriptorPtr = &descriptor._unsafeDescriptor)
-        {
-            descriptorPtr->Label = LabelPtr;
-            return WebGPU_FFI.DeviceCreateSwapChain(this, surface, descriptorPtr);
-        }
-    }
-
-    public SwapChainHandle CreateSwapChain(SurfaceHandle surface, SwapChainDescriptor descriptor)
-    {
-        WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        {
-            descriptor._unsafeDescriptor.Label = LabelPtr;
-            return WebGPU_FFI.DeviceCreateSwapChain(this, surface, &descriptor._unsafeDescriptor);
-        }
-    }
-
     public TextureHandle CreateTexture(ref TextureDescriptor textureDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -582,20 +463,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return features;
     }
 
-    public void ForceLoss(DeviceLostReason type, WGPURefText message)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* messagePtr = ToRefCstrUtf8(message, allocator))
-        {
-            WebGPU_FFI.DeviceForceLoss(this, type, messagePtr);
-        }
-    }
-
-    public AdapterHandle GetAdapter()
-    {
-        return WebGPU_FFI.DeviceGetAdapter(this);
-    }
-
     [SkipLocalsInit]
     public SupportedLimits GetLimits()
     {
@@ -615,16 +482,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public QueueHandle GetQueue()
     {
         return WebGPU_FFI.DeviceGetQueue(this);
-    }
-
-    public TextureUsage GetSupportedSurfaceUsage(SurfaceHandle surface)
-    {
-        return WebGPU_FFI.DeviceGetSupportedSurfaceUsage(this, surface);
-    }
-
-    public TextureUsage GetSupportedSurfaceUsage(Surface surface)
-    {
-        return WebGPU_FFI.DeviceGetSupportedSurfaceUsage(this, (SurfaceHandle)surface);
     }
 
     public WebGPUBool HasFeature(FeatureName feature)
@@ -659,18 +516,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
-    [Obsolete("AddDeviceLostCallback is deprecated. Pass the callback in the device descriptor instead.")]
-    public readonly void AddDeviceLostCallback(DeviceLostCallbackDelegate callback)
-    {
-        DeviceLostCallbackHandler.AddDeviceLostCallback(this, callback);
-    }
-
-    [Obsolete("RemoveDeviceLostCallback is deprecated. Pass the callback in the device descriptor instead.")]
-    public readonly void RemoveDeviceLostCallback(DeviceLostCallbackDelegate callback)
-    {
-        DeviceLostCallbackHandler.RemoveDeviceLostCallback(this, callback);
-    }
-
     [Obsolete("AddUncapturedErrorCallback is deprecated. Pass the callback in the device descriptor instead.")]
     public void AddUncapturedErrorCallback(UncapturedErrorDelegate callback)
     {
@@ -682,12 +527,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         UncapturedErrorCallbackHandler.RemoveUncapturedErrorCallback(this, callback);
     }
-
-    public void Tick()
-    {
-        WebGPU_FFI.DeviceTick(this);
-    }
-
 
     private ShaderModuleHandle CreateShaderModuleWgsl(in ShaderModuleDescriptor descriptor, WGPURefText code)
     {
@@ -709,31 +548,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             );
 
             return WebGPU_FFI.DeviceCreateShaderModule(this, &shaderModuleDescriptor);
-        }
-    }
-
-    private ShaderModuleHandle CreateErrorShaderModuleWgsl(
-        in ShaderModuleDescriptor descriptor, WGPURefText code, WGPURefText errorMessage)
-    {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* codePtr = ToRefCstrUtf8(code, allocator))
-        fixed (byte* errorMessagePtr = ToRefCstrUtf8(errorMessage, allocator))
-        {
-
-            ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new(
-                value: new(new ChainedStruct(
-                    next: null,
-                    sType: SType.ShaderSourceWGSL
-                ))
-            );
-
-            ShaderModuleDescriptorFFI shaderModuleDescriptor = new(
-                nextInChain: &shaderModuleWGSLDescriptor.Value.Chain,
-                label: labelPtr
-            );
-
-            return WebGPU_FFI.DeviceCreateErrorShaderModule(this, &shaderModuleDescriptor, errorMessagePtr);
         }
     }
 

@@ -10,7 +10,6 @@ public struct RequestAdapterOptions :
     public PowerPreference PowerPreference;
     public BackendType BackendType;
     public bool ForceFallbackAdapter = false;
-    public bool CompatibilityMode;
 
     public RequestAdapterOptions()
     {
@@ -23,8 +22,7 @@ public struct RequestAdapterOptions :
             compatibleSurface: WebGPUMarshal.ToFFI<Surface, SurfaceHandle>(input.CompatibleSurface),
             powerPreference: input.PowerPreference,
             backendType: input.BackendType,
-            forceFallbackAdapter: input.ForceFallbackAdapter,
-            compatibilityMode: input.CompatibilityMode
+            forceFallbackAdapter: input.ForceFallbackAdapter
         );
     }
 

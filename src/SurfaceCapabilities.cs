@@ -8,13 +8,10 @@ public class SurfaceCapabilities
     private int _formatsArrayCount = 0;
     private PresentMode[] _presentModesArray = [];
     private int _presentModesArrayCount = 0;
-    private AlphaMode[] _alphaModesArray = [];
-    private int _alphaModesArrayCount = 0;
 
     public TextureUsage Usages { get; private set; }
     public ReadOnlySpan<TextureFormat> Formats => _formatsArray.AsSpan(0, _formatsArrayCount);
     public ReadOnlySpan<PresentMode> PresentModes => _presentModesArray.AsSpan(0, _presentModesArrayCount);
-    public ReadOnlySpan<AlphaMode> AlphaModes => _alphaModesArray.AsSpan(0, _alphaModesArrayCount);
 
     internal unsafe Status SetInternalSurfaceCapabilities(SurfaceHandle surface, AdapterHandle adapter)
     {
@@ -38,13 +35,6 @@ public class SurfaceCapabilities
                 Array.Resize(ref _presentModesArray, _presentModesArrayCount);
             }
             new ReadOnlySpan<PresentMode>(surfaceCapabilitiesFFI.PresentModes, _presentModesArrayCount).CopyTo(_presentModesArray);
-
-            _alphaModesArrayCount = (int)surfaceCapabilitiesFFI.AlphaModeCount;
-            if (_alphaModesArray.Length < _alphaModesArrayCount)
-            {
-                Array.Resize(ref _alphaModesArray, _alphaModesArrayCount);
-            }
-            new ReadOnlySpan<AlphaMode>(surfaceCapabilitiesFFI.AlphaModes, _alphaModesArrayCount).CopyTo(_alphaModesArray);
         }
 
         WebGPU_FFI.SurfaceCapabilitiesFreeMembers(surfaceCapabilitiesFFI);
