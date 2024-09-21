@@ -15,7 +15,7 @@ public partial struct StencilFaceState
     }
 
 
-    public StencilFaceState(CompareFunction compare = default, StencilOperation failOp = default, StencilOperation depthFailOp = default, StencilOperation passOp = default)
+    public StencilFaceState(CompareFunction compare = CompareFunction.Always, StencilOperation failOp = StencilOperation.Keep, StencilOperation depthFailOp = StencilOperation.Keep, StencilOperation passOp = StencilOperation.Keep)
     {
         this.Compare = compare;
         this.FailOp = failOp;

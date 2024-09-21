@@ -23,7 +23,7 @@ public unsafe partial struct SamplerDescriptorFFI
     }
 
 
-    public SamplerDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, AddressMode addressModeU = default, AddressMode addressModeV = default, AddressMode addressModeW = default, FilterMode magFilter = default, FilterMode minFilter = default, MipmapFilterMode mipmapFilter = default, float lodMinClamp = default, float lodMaxClamp = default, CompareFunction compare = default, ushort maxAnisotropy = default)
+    public SamplerDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, AddressMode addressModeU = AddressMode.ClampToEdge, AddressMode addressModeV = AddressMode.ClampToEdge, AddressMode addressModeW = AddressMode.ClampToEdge, FilterMode magFilter = FilterMode.Nearest, FilterMode minFilter = FilterMode.Nearest, MipmapFilterMode mipmapFilter = MipmapFilterMode.Nearest, float lodMinClamp = 0, float lodMaxClamp = 32, CompareFunction compare = default, ushort maxAnisotropy = 1)
     {
         this.NextInChain = nextInChain;
         this.Label = label;
@@ -40,7 +40,7 @@ public unsafe partial struct SamplerDescriptorFFI
     }
 
 
-    public SamplerDescriptorFFI(byte* label = default, AddressMode addressModeU = default, AddressMode addressModeV = default, AddressMode addressModeW = default, FilterMode magFilter = default, FilterMode minFilter = default, MipmapFilterMode mipmapFilter = default, float lodMinClamp = default, float lodMaxClamp = default, CompareFunction compare = default, ushort maxAnisotropy = default)
+    public SamplerDescriptorFFI(byte* label = default, AddressMode addressModeU = AddressMode.ClampToEdge, AddressMode addressModeV = AddressMode.ClampToEdge, AddressMode addressModeW = AddressMode.ClampToEdge, FilterMode magFilter = FilterMode.Nearest, FilterMode minFilter = FilterMode.Nearest, MipmapFilterMode mipmapFilter = MipmapFilterMode.Nearest, float lodMinClamp = 0, float lodMaxClamp = 32, CompareFunction compare = default, ushort maxAnisotropy = 1)
     {
         this.Label = label;
         this.AddressModeU = addressModeU;

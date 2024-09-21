@@ -19,7 +19,7 @@ public unsafe partial struct RenderBundleEncoderDescriptorFFI
     }
 
 
-    public RenderBundleEncoderDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint colorFormatCount = default, TextureFormat* colorFormats = default, TextureFormat depthStencilFormat = default, uint sampleCount = default, WebGPUBool depthReadOnly = default, WebGPUBool stencilReadOnly = default)
+    public RenderBundleEncoderDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint colorFormatCount = default, TextureFormat* colorFormats = default, TextureFormat depthStencilFormat = default, uint sampleCount = default, WebGPUBool depthReadOnly = false, WebGPUBool stencilReadOnly = false)
     {
         this.NextInChain = nextInChain;
         this.Label = label;
@@ -32,7 +32,7 @@ public unsafe partial struct RenderBundleEncoderDescriptorFFI
     }
 
 
-    public RenderBundleEncoderDescriptorFFI(byte* label = default, nuint colorFormatCount = default, TextureFormat* colorFormats = default, TextureFormat depthStencilFormat = default, uint sampleCount = default, WebGPUBool depthReadOnly = default, WebGPUBool stencilReadOnly = default)
+    public RenderBundleEncoderDescriptorFFI(byte* label = default, nuint colorFormatCount = default, TextureFormat* colorFormats = default, TextureFormat depthStencilFormat = default, uint sampleCount = default, WebGPUBool depthReadOnly = false, WebGPUBool stencilReadOnly = false)
     {
         this.Label = label;
         this.ColorFormatCount = colorFormatCount;

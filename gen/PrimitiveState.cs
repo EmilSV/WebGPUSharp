@@ -17,7 +17,7 @@ public unsafe partial struct PrimitiveState
     }
 
 
-    public PrimitiveState(ChainedStruct* nextInChain = default, PrimitiveTopology topology = default, IndexFormat stripIndexFormat = default, FrontFace frontFace = default, CullMode cullMode = default, WebGPUBool unclippedDepth = default)
+    public PrimitiveState(ChainedStruct* nextInChain = default, PrimitiveTopology topology = PrimitiveTopology.TriangleList, IndexFormat stripIndexFormat = default, FrontFace frontFace = FrontFace.CCW, CullMode cullMode = CullMode.None, WebGPUBool unclippedDepth = false)
     {
         this.NextInChain = nextInChain;
         this.Topology = topology;
@@ -28,7 +28,7 @@ public unsafe partial struct PrimitiveState
     }
 
 
-    public PrimitiveState(PrimitiveTopology topology = default, IndexFormat stripIndexFormat = default, FrontFace frontFace = default, CullMode cullMode = default, WebGPUBool unclippedDepth = default)
+    public PrimitiveState(PrimitiveTopology topology = PrimitiveTopology.TriangleList, IndexFormat stripIndexFormat = default, FrontFace frontFace = FrontFace.CCW, CullMode cullMode = CullMode.None, WebGPUBool unclippedDepth = false)
     {
         this.Topology = topology;
         this.StripIndexFormat = stripIndexFormat;

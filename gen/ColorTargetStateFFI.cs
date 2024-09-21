@@ -15,7 +15,7 @@ public unsafe partial struct ColorTargetStateFFI
     }
 
 
-    public ColorTargetStateFFI(ChainedStruct* nextInChain = default, TextureFormat format = default, BlendState* blend = default, ColorWriteMask writeMask = default)
+    public ColorTargetStateFFI(ChainedStruct* nextInChain = default, TextureFormat format = default, BlendState* blend = default, ColorWriteMask writeMask = 15)
     {
         this.NextInChain = nextInChain;
         this.Format = format;
@@ -24,7 +24,7 @@ public unsafe partial struct ColorTargetStateFFI
     }
 
 
-    public ColorTargetStateFFI(TextureFormat format = default, BlendState* blend = default, ColorWriteMask writeMask = default)
+    public ColorTargetStateFFI(TextureFormat format = default, BlendState* blend = default, ColorWriteMask writeMask = 15)
     {
         this.Format = format;
         this.Blend = blend;

@@ -15,7 +15,7 @@ public unsafe partial struct StorageTextureBindingLayout
     }
 
 
-    public StorageTextureBindingLayout(ChainedStruct* nextInChain = default, StorageTextureAccess access = default, TextureFormat format = default, TextureViewDimension viewDimension = default)
+    public StorageTextureBindingLayout(ChainedStruct* nextInChain = default, StorageTextureAccess access = StorageTextureAccess.WriteOnly, TextureFormat format = default, TextureViewDimension viewDimension = TextureViewDimension.D2)
     {
         this.NextInChain = nextInChain;
         this.Access = access;
@@ -24,7 +24,7 @@ public unsafe partial struct StorageTextureBindingLayout
     }
 
 
-    public StorageTextureBindingLayout(StorageTextureAccess access = default, TextureFormat format = default, TextureViewDimension viewDimension = default)
+    public StorageTextureBindingLayout(StorageTextureAccess access = StorageTextureAccess.WriteOnly, TextureFormat format = default, TextureViewDimension viewDimension = TextureViewDimension.D2)
     {
         this.Access = access;
         this.Format = format;

@@ -13,14 +13,14 @@ public unsafe partial struct SamplerBindingLayout
     }
 
 
-    public SamplerBindingLayout(ChainedStruct* nextInChain = default, SamplerBindingType type = default)
+    public SamplerBindingLayout(ChainedStruct* nextInChain = default, SamplerBindingType type = SamplerBindingType.Filtering)
     {
         this.NextInChain = nextInChain;
         this.Type = type;
     }
 
 
-    public SamplerBindingLayout(SamplerBindingType type = default)
+    public SamplerBindingLayout(SamplerBindingType type = SamplerBindingType.Filtering)
     {
         this.Type = type;
     }

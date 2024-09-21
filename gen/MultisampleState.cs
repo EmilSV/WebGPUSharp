@@ -15,7 +15,7 @@ public unsafe partial struct MultisampleState
     }
 
 
-    public MultisampleState(ChainedStruct* nextInChain = default, uint count = default, uint mask = default, WebGPUBool alphaToCoverageEnabled = default)
+    public MultisampleState(ChainedStruct* nextInChain = default, uint count = 1, uint mask = 4294967295, WebGPUBool alphaToCoverageEnabled = false)
     {
         this.NextInChain = nextInChain;
         this.Count = count;
@@ -24,7 +24,7 @@ public unsafe partial struct MultisampleState
     }
 
 
-    public MultisampleState(uint count = default, uint mask = default, WebGPUBool alphaToCoverageEnabled = default)
+    public MultisampleState(uint count = 1, uint mask = 4294967295, WebGPUBool alphaToCoverageEnabled = false)
     {
         this.Count = count;
         this.Mask = mask;

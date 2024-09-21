@@ -14,7 +14,7 @@ public partial struct BlendComponent
     }
 
 
-    public BlendComponent(BlendOperation operation = default, BlendFactor srcFactor = default, BlendFactor dstFactor = default)
+    public BlendComponent(BlendOperation operation = BlendOperation.Add, BlendFactor srcFactor = BlendFactor.One, BlendFactor dstFactor = BlendFactor.Zero)
     {
         this.Operation = operation;
         this.SrcFactor = srcFactor;

@@ -15,7 +15,7 @@ public unsafe partial struct BufferBindingLayout
     }
 
 
-    public BufferBindingLayout(ChainedStruct* nextInChain = default, BufferBindingType type = default, WebGPUBool hasDynamicOffset = default, ulong minBindingSize = default)
+    public BufferBindingLayout(ChainedStruct* nextInChain = default, BufferBindingType type = BufferBindingType.Uniform, WebGPUBool hasDynamicOffset = false, ulong minBindingSize = 0)
     {
         this.NextInChain = nextInChain;
         this.Type = type;
@@ -24,7 +24,7 @@ public unsafe partial struct BufferBindingLayout
     }
 
 
-    public BufferBindingLayout(BufferBindingType type = default, WebGPUBool hasDynamicOffset = default, ulong minBindingSize = default)
+    public BufferBindingLayout(BufferBindingType type = BufferBindingType.Uniform, WebGPUBool hasDynamicOffset = false, ulong minBindingSize = 0)
     {
         this.Type = type;
         this.HasDynamicOffset = hasDynamicOffset;

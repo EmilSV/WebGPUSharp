@@ -15,7 +15,7 @@ public unsafe partial struct ImageCopyTextureFFI
     }
 
 
-    public ImageCopyTextureFFI(TextureHandle texture = default, uint mipLevel = default, Origin3D origin = default, TextureAspect aspect = default)
+    public ImageCopyTextureFFI(TextureHandle texture = default, uint mipLevel = 0, Origin3D origin = default, TextureAspect aspect = TextureAspect.All)
     {
         this.Texture = texture;
         this.MipLevel = mipLevel;

@@ -20,7 +20,7 @@ public unsafe partial struct RenderPassDepthStencilAttachmentFFI
     }
 
 
-    public RenderPassDepthStencilAttachmentFFI(TextureViewHandle view = default, LoadOp depthLoadOp = default, StoreOp depthStoreOp = default, float depthClearValue = default, WebGPUBool depthReadOnly = default, LoadOp stencilLoadOp = default, StoreOp stencilStoreOp = default, uint stencilClearValue = default, WebGPUBool stencilReadOnly = default)
+    public RenderPassDepthStencilAttachmentFFI(TextureViewHandle view = default, LoadOp depthLoadOp = default, StoreOp depthStoreOp = default, float depthClearValue = default, WebGPUBool depthReadOnly = false, LoadOp stencilLoadOp = default, StoreOp stencilStoreOp = default, uint stencilClearValue = 0, WebGPUBool stencilReadOnly = false)
     {
         this.View = view;
         this.DepthLoadOp = depthLoadOp;

@@ -20,7 +20,7 @@ public unsafe partial struct TextureViewDescriptorFFI
     }
 
 
-    public TextureViewDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, TextureFormat format = default, TextureViewDimension dimension = default, uint baseMipLevel = default, uint mipLevelCount = default, uint baseArrayLayer = default, uint arrayLayerCount = default, TextureAspect aspect = default)
+    public TextureViewDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, TextureFormat format = default, TextureViewDimension dimension = default, uint baseMipLevel = 0, uint mipLevelCount = default, uint baseArrayLayer = 0, uint arrayLayerCount = default, TextureAspect aspect = TextureAspect.All)
     {
         this.NextInChain = nextInChain;
         this.Label = label;
@@ -34,7 +34,7 @@ public unsafe partial struct TextureViewDescriptorFFI
     }
 
 
-    public TextureViewDescriptorFFI(byte* label = default, TextureFormat format = default, TextureViewDimension dimension = default, uint baseMipLevel = default, uint mipLevelCount = default, uint baseArrayLayer = default, uint arrayLayerCount = default, TextureAspect aspect = default)
+    public TextureViewDescriptorFFI(byte* label = default, TextureFormat format = default, TextureViewDimension dimension = default, uint baseMipLevel = 0, uint mipLevelCount = default, uint baseArrayLayer = 0, uint arrayLayerCount = default, TextureAspect aspect = TextureAspect.All)
     {
         this.Label = label;
         this.Format = format;

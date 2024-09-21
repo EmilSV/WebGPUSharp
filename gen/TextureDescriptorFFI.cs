@@ -21,7 +21,7 @@ public unsafe partial struct TextureDescriptorFFI
     }
 
 
-    public TextureDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, TextureUsage usage = default, TextureDimension dimension = default, Extent3D size = default, TextureFormat format = default, uint mipLevelCount = default, uint sampleCount = default, nuint viewFormatCount = default, TextureFormat* viewFormats = default)
+    public TextureDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, TextureUsage usage = default, TextureDimension dimension = TextureDimension.D2, Extent3D size = default, TextureFormat format = default, uint mipLevelCount = 1, uint sampleCount = 1, nuint viewFormatCount = default, TextureFormat* viewFormats = default)
     {
         this.NextInChain = nextInChain;
         this.Label = label;
@@ -36,7 +36,7 @@ public unsafe partial struct TextureDescriptorFFI
     }
 
 
-    public TextureDescriptorFFI(byte* label = default, TextureUsage usage = default, TextureDimension dimension = default, Extent3D size = default, TextureFormat format = default, uint mipLevelCount = default, uint sampleCount = default, nuint viewFormatCount = default, TextureFormat* viewFormats = default)
+    public TextureDescriptorFFI(byte* label = default, TextureUsage usage = default, TextureDimension dimension = TextureDimension.D2, Extent3D size = default, TextureFormat format = default, uint mipLevelCount = 1, uint sampleCount = 1, nuint viewFormatCount = default, TextureFormat* viewFormats = default)
     {
         this.Label = label;
         this.Usage = usage;

@@ -15,7 +15,7 @@ public unsafe partial struct VertexBufferLayoutFFI
     }
 
 
-    public VertexBufferLayoutFFI(ulong arrayStride = default, VertexStepMode stepMode = default, nuint attributeCount = default, VertexAttribute* attributes = default)
+    public VertexBufferLayoutFFI(ulong arrayStride = default, VertexStepMode stepMode = VertexStepMode.Vertex, nuint attributeCount = default, VertexAttribute* attributes = default)
     {
         this.ArrayStride = arrayStride;
         this.StepMode = stepMode;
