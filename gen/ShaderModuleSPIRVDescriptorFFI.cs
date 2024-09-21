@@ -11,10 +11,4 @@ public unsafe partial struct ShaderModuleSPIRVDescriptorFFI
     {
     }
 
-
-    public ShaderModuleSPIRVDescriptorFFI(ShaderSourceSPIRVFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

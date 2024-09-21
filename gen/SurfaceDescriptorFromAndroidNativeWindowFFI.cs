@@ -11,10 +11,4 @@ public unsafe partial struct SurfaceDescriptorFromAndroidNativeWindowFFI
     {
     }
 
-
-    public SurfaceDescriptorFromAndroidNativeWindowFFI(SurfaceSourceAndroidNativeWindowFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

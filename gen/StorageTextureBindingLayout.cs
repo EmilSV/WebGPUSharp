@@ -6,29 +6,12 @@ namespace WebGpuSharp;
 public unsafe partial struct StorageTextureBindingLayout
 {
     public ChainedStruct* NextInChain;
-    public StorageTextureAccess Access;
-    public TextureFormat Format;
-    public TextureViewDimension ViewDimension;
+    public StorageTextureAccess Access = StorageTextureAccess.WriteOnly;
+    public required TextureFormat Format;
+    public TextureViewDimension ViewDimension = TextureViewDimension.D2;
 
     public StorageTextureBindingLayout()
     {
-    }
-
-
-    public StorageTextureBindingLayout(ChainedStruct* nextInChain = default, StorageTextureAccess access = StorageTextureAccess.WriteOnly, TextureFormat format = default, TextureViewDimension viewDimension = TextureViewDimension.D2)
-    {
-        this.NextInChain = nextInChain;
-        this.Access = access;
-        this.Format = format;
-        this.ViewDimension = viewDimension;
-    }
-
-
-    public StorageTextureBindingLayout(StorageTextureAccess access = StorageTextureAccess.WriteOnly, TextureFormat format = default, TextureViewDimension viewDimension = TextureViewDimension.D2)
-    {
-        this.Access = access;
-        this.Format = format;
-        this.ViewDimension = viewDimension;
     }
 
 }

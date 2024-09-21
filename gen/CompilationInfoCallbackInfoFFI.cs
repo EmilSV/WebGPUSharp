@@ -14,21 +14,4 @@ public unsafe partial struct CompilationInfoCallbackInfoFFI
     {
     }
 
-
-    public CompilationInfoCallbackInfoFFI(ChainedStruct* nextInChain = default, CallbackMode mode = default, delegate* unmanaged[Cdecl]<CompilationInfoRequestStatus, CompilationInfoFFI*, void*, void> callback = default, void* userdata = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Mode = mode;
-        this.Callback = callback;
-        this.Userdata = userdata;
-    }
-
-
-    public CompilationInfoCallbackInfoFFI(CallbackMode mode = default, delegate* unmanaged[Cdecl]<CompilationInfoRequestStatus, CompilationInfoFFI*, void*, void> callback = default, void* userdata = default)
-    {
-        this.Mode = mode;
-        this.Callback = callback;
-        this.Userdata = userdata;
-    }
-
 }

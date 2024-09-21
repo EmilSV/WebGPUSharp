@@ -12,17 +12,4 @@ public unsafe partial struct SurfaceDescriptorFFI
     {
     }
 
-
-    public SurfaceDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-    }
-
-
-    public SurfaceDescriptorFFI(byte* label = default)
-    {
-        this.Label = label;
-    }
-
 }

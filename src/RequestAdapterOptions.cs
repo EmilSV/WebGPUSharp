@@ -18,12 +18,13 @@ public struct RequestAdapterOptions :
     static unsafe void IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(
         in RequestAdapterOptions input, out RequestAdapterOptionsFFI dest)
     {
-        dest = new(
-            compatibleSurface: WebGPUMarshal.ToFFI<Surface, SurfaceHandle>(input.CompatibleSurface),
-            powerPreference: input.PowerPreference,
-            backendType: input.BackendType,
-            forceFallbackAdapter: input.ForceFallbackAdapter
-        );
+        dest = new()
+        {
+            CompatibleSurface = WebGPUMarshal.ToFFI<Surface, SurfaceHandle>(input.CompatibleSurface),
+            PowerPreference = input.PowerPreference,
+            BackendType = input.BackendType,
+            ForceFallbackAdapter = input.ForceFallbackAdapter
+        };
     }
 
     static void IWebGpuFFIConvertibleAlloc<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(

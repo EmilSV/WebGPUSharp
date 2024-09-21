@@ -14,13 +14,4 @@ public partial struct Color
     {
     }
 
-
-    public Color(double r = default, double g = default, double b = default, double a = default)
-    {
-        this.R = r;
-        this.G = g;
-        this.B = b;
-        this.A = a;
-    }
-
 }

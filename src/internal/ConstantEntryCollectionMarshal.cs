@@ -18,10 +18,11 @@ public unsafe class ConstantEntryCollectionMarshal :
 
     public static void MarshalTemporaryTo(in ConstantEntry item, ref ConstantEntryFFI ffiItem, WebGpuAllocatorHandle allocator)
     {
-        ffiItem = new ConstantEntryFFI(
-            key: WebGPUMarshal.ToFFI(item.Key, allocator),
-            value: item.Value
-        );
+        ffiItem = new()
+        {
+            Key = WebGPUMarshal.ToFFI(item.Key, allocator),
+            Value = item.Value
+        };
     }
 
     public static void MarshalTemporaryTo(ReadOnlySpan<ConstantEntry> items, Span<ConstantEntryFFI> ffiItems, WebGpuAllocatorHandle allocator)
@@ -51,10 +52,11 @@ public unsafe class ConstantEntryCollectionMarshal :
             cache.dirty = false;
         }
 
-        ffiItem = new ConstantEntryFFI(
-            key: (byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]),
-            value: item.Value
-        );
+        ffiItem = new()
+        {
+            Key = (byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]),
+            Value = item.Value
+        };
     }
 
     public static void MarshalTo(in ConstantEntry item, ref ConstantEntryFFI ffiItem)

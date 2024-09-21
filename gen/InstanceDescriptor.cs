@@ -12,17 +12,4 @@ public unsafe partial struct InstanceDescriptor
     {
     }
 
-
-    public InstanceDescriptor(ChainedStruct* nextInChain = default, InstanceFeatures features = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Features = features;
-    }
-
-
-    public InstanceDescriptor(InstanceFeatures features = default)
-    {
-        this.Features = features;
-    }
-
 }

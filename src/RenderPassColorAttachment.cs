@@ -32,14 +32,15 @@ public struct RenderPassColorAttachment :
             allocator.AddHandleToDispose(ownedResolveTargetHandle);
         }
 
-        dest = new(
-            view: ownedViewHandle,
-            depthSlice: input.DepthSlice ?? DEPTH_SLICE_UNDEFINED,
-            resolveTarget: ownedResolveTargetHandle,
-            loadOp: input.LoadOp,
-            storeOp: input.StoreOp,
-            clearValue: input.ClearValue
-        );
+        dest = new()
+        {
+            View = ownedViewHandle,
+            DepthSlice = input.DepthSlice ?? DEPTH_SLICE_UNDEFINED,
+            ResolveTarget = ownedResolveTargetHandle,
+            LoadOp = input.LoadOp,
+            StoreOp = input.StoreOp,
+            ClearValue = input.ClearValue
+        };
     }
 
 }

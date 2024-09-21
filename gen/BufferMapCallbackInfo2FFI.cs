@@ -15,23 +15,4 @@ public unsafe partial struct BufferMapCallbackInfo2FFI
     {
     }
 
-
-    public BufferMapCallbackInfo2FFI(ChainedStruct* nextInChain = default, CallbackMode mode = default, delegate* unmanaged[Cdecl]<MapAsyncStatus, byte*, void*, void*, void> callback = default, void* userdata1 = default, void* userdata2 = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Mode = mode;
-        this.Callback = callback;
-        this.Userdata1 = userdata1;
-        this.Userdata2 = userdata2;
-    }
-
-
-    public BufferMapCallbackInfo2FFI(CallbackMode mode = default, delegate* unmanaged[Cdecl]<MapAsyncStatus, byte*, void*, void*, void> callback = default, void* userdata1 = default, void* userdata2 = default)
-    {
-        this.Mode = mode;
-        this.Callback = callback;
-        this.Userdata1 = userdata1;
-        this.Userdata2 = userdata2;
-    }
-
 }

@@ -13,12 +13,4 @@ public unsafe partial struct SurfaceSourceWaylandSurfaceFFI
     {
     }
 
-
-    public SurfaceSourceWaylandSurfaceFFI(ChainedStruct chain = default, void* display = default, void* surface = default)
-    {
-        this.Chain = chain;
-        this.Display = display;
-        this.Surface = surface;
-    }
-
 }

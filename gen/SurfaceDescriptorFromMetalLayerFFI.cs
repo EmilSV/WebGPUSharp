@@ -11,10 +11,4 @@ public unsafe partial struct SurfaceDescriptorFromMetalLayerFFI
     {
     }
 
-
-    public SurfaceDescriptorFromMetalLayerFFI(SurfaceSourceMetalLayerFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

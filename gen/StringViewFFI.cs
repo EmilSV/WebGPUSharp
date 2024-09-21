@@ -12,11 +12,4 @@ public unsafe partial struct StringViewFFI
     {
     }
 
-
-    public StringViewFFI(byte* data = default, nuint length = default)
-    {
-        this.Data = data;
-        this.Length = length;
-    }
-
 }

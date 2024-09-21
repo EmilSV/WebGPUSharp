@@ -11,10 +11,4 @@ public unsafe partial struct SurfaceDescriptorFromXlibWindowFFI
     {
     }
 
-
-    public SurfaceDescriptorFromXlibWindowFFI(SurfaceSourceXlibWindowFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

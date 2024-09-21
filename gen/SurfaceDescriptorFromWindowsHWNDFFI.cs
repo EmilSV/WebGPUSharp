@@ -11,10 +11,4 @@ public unsafe partial struct SurfaceDescriptorFromWindowsHWNDFFI
     {
     }
 
-
-    public SurfaceDescriptorFromWindowsHWNDFFI(SurfaceSourceWindowsHWNDFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

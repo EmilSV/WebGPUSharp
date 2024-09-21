@@ -9,29 +9,10 @@ public unsafe partial struct RequestAdapterOptionsFFI
     public SurfaceHandle CompatibleSurface;
     public PowerPreference PowerPreference;
     public BackendType BackendType;
-    public WebGPUBool ForceFallbackAdapter;
+    public WebGPUBool ForceFallbackAdapter = false;
 
     public RequestAdapterOptionsFFI()
     {
-    }
-
-
-    public RequestAdapterOptionsFFI(ChainedStruct* nextInChain = default, SurfaceHandle compatibleSurface = default, PowerPreference powerPreference = default, BackendType backendType = default, WebGPUBool forceFallbackAdapter = false)
-    {
-        this.NextInChain = nextInChain;
-        this.CompatibleSurface = compatibleSurface;
-        this.PowerPreference = powerPreference;
-        this.BackendType = backendType;
-        this.ForceFallbackAdapter = forceFallbackAdapter;
-    }
-
-
-    public RequestAdapterOptionsFFI(SurfaceHandle compatibleSurface = default, PowerPreference powerPreference = default, BackendType backendType = default, WebGPUBool forceFallbackAdapter = false)
-    {
-        this.CompatibleSurface = compatibleSurface;
-        this.PowerPreference = powerPreference;
-        this.BackendType = backendType;
-        this.ForceFallbackAdapter = forceFallbackAdapter;
     }
 
 }

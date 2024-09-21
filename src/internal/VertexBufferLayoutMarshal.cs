@@ -20,12 +20,13 @@ public unsafe class VertexBufferLayoutMarshal :
             attributes = item.Attributes.GetPointerToPinedArray();
         }
 
-        ffiItem = new VertexBufferLayoutFFI(
-            arrayStride: item.ArrayStride,
-            stepMode: item.StepMode,
-            attributeCount: attributeCount,
-            attributes: attributes
-        );
+        ffiItem = new()
+        {
+            ArrayStride = item.ArrayStride,
+            StepMode = item.StepMode,
+            AttributeCount = attributeCount,
+            Attributes = attributes
+        };
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

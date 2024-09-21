@@ -13,19 +13,4 @@ public unsafe partial struct InstanceFeatures
     {
     }
 
-
-    public InstanceFeatures(ChainedStruct* nextInChain = default, WebGPUBool timedWaitAnyEnable = default, nuint timedWaitAnyMaxCount = default)
-    {
-        this.NextInChain = nextInChain;
-        this.TimedWaitAnyEnable = timedWaitAnyEnable;
-        this.TimedWaitAnyMaxCount = timedWaitAnyMaxCount;
-    }
-
-
-    public InstanceFeatures(WebGPUBool timedWaitAnyEnable = default, nuint timedWaitAnyMaxCount = default)
-    {
-        this.TimedWaitAnyEnable = timedWaitAnyEnable;
-        this.TimedWaitAnyMaxCount = timedWaitAnyMaxCount;
-    }
-
 }

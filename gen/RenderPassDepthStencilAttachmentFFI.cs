@@ -5,32 +5,18 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct RenderPassDepthStencilAttachmentFFI
 {
-    public TextureViewHandle View;
+    public required TextureViewHandle View;
     public LoadOp DepthLoadOp;
     public StoreOp DepthStoreOp;
     public float DepthClearValue;
-    public WebGPUBool DepthReadOnly;
+    public WebGPUBool DepthReadOnly = false;
     public LoadOp StencilLoadOp;
     public StoreOp StencilStoreOp;
-    public uint StencilClearValue;
-    public WebGPUBool StencilReadOnly;
+    public uint StencilClearValue = 0;
+    public WebGPUBool StencilReadOnly = false;
 
     public RenderPassDepthStencilAttachmentFFI()
     {
-    }
-
-
-    public RenderPassDepthStencilAttachmentFFI(TextureViewHandle view = default, LoadOp depthLoadOp = default, StoreOp depthStoreOp = default, float depthClearValue = default, WebGPUBool depthReadOnly = false, LoadOp stencilLoadOp = default, StoreOp stencilStoreOp = default, uint stencilClearValue = 0, WebGPUBool stencilReadOnly = false)
-    {
-        this.View = view;
-        this.DepthLoadOp = depthLoadOp;
-        this.DepthStoreOp = depthStoreOp;
-        this.DepthClearValue = depthClearValue;
-        this.DepthReadOnly = depthReadOnly;
-        this.StencilLoadOp = stencilLoadOp;
-        this.StencilStoreOp = stencilStoreOp;
-        this.StencilClearValue = stencilClearValue;
-        this.StencilReadOnly = stencilReadOnly;
     }
 
 }

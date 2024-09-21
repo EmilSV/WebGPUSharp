@@ -12,11 +12,4 @@ public unsafe partial struct SurfaceSourceMetalLayerFFI
     {
     }
 
-
-    public SurfaceSourceMetalLayerFFI(ChainedStruct chain = default, void* layer = default)
-    {
-        this.Chain = chain;
-        this.Layer = layer;
-    }
-
 }

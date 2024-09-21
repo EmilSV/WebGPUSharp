@@ -11,33 +11,10 @@ public unsafe partial struct FragmentStateFFI
     public nuint ConstantCount;
     public ConstantEntryFFI* Constants;
     public nuint TargetCount;
-    public ColorTargetStateFFI* Targets;
+    public required ColorTargetStateFFI* Targets;
 
     public FragmentStateFFI()
     {
-    }
-
-
-    public FragmentStateFFI(ChainedStruct* nextInChain = default, ShaderModuleHandle module = default, byte* entryPoint = default, nuint constantCount = default, ConstantEntryFFI* constants = default, nuint targetCount = default, ColorTargetStateFFI* targets = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Module = module;
-        this.EntryPoint = entryPoint;
-        this.ConstantCount = constantCount;
-        this.Constants = constants;
-        this.TargetCount = targetCount;
-        this.Targets = targets;
-    }
-
-
-    public FragmentStateFFI(ShaderModuleHandle module = default, byte* entryPoint = default, nuint constantCount = default, ConstantEntryFFI* constants = default, nuint targetCount = default, ColorTargetStateFFI* targets = default)
-    {
-        this.Module = module;
-        this.EntryPoint = entryPoint;
-        this.ConstantCount = constantCount;
-        this.Constants = constants;
-        this.TargetCount = targetCount;
-        this.Targets = targets;
     }
 
 }

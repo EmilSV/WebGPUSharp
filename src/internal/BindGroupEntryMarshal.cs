@@ -14,14 +14,15 @@ public unsafe class BindGroupEntryCollectionMarshal :
 
     public static void MarshalTo(in BindGroupEntry item, ref BindGroupEntryFFI ffiItem)
     {
-        ffiItem = new(
-            binding: item.Binding,
-            buffer: GetBorrowHandle(item.Buffer),
-            offset: item.Offset,
-            size: item.Size,
-            sampler: GetBorrowHandle(item.Sampler),
-            textureView: default
-        );
+        ffiItem = new()
+        {
+            Binding = item.Binding,
+            Buffer = GetBorrowHandle(item.Buffer),
+            Offset = item.Offset,
+            Size = item.Size,
+            Sampler = GetBorrowHandle(item.Sampler),
+            TextureView = default
+        };
     }
 
 

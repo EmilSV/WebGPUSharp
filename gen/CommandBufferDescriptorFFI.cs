@@ -12,17 +12,4 @@ public unsafe partial struct CommandBufferDescriptorFFI
     {
     }
 
-
-    public CommandBufferDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-    }
-
-
-    public CommandBufferDescriptorFFI(byte* label = default)
-    {
-        this.Label = label;
-    }
-
 }

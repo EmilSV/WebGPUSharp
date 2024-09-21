@@ -11,10 +11,4 @@ public unsafe partial struct SurfaceDescriptorFromXcbWindowFFI
     {
     }
 
-
-    public SurfaceDescriptorFromXcbWindowFFI(SurfaceSourceXCBWindowFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

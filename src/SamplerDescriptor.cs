@@ -6,19 +6,7 @@ namespace WebGpuSharp;
 
 public unsafe ref struct SamplerDescriptor
 {
-    internal SamplerDescriptorFFI _unsafeDescriptor = new(
-        label: null,
-        addressModeU: AddressMode.ClampToEdge,
-        addressModeV: AddressMode.ClampToEdge,
-        addressModeW: AddressMode.ClampToEdge,
-        magFilter: FilterMode.Nearest,
-        minFilter: FilterMode.Nearest,
-        mipmapFilter: MipmapFilterMode.Nearest,
-        lodMinClamp: 0,
-        lodMaxClamp: 32,
-        compare: default,
-        maxAnisotropy: 1
-    );
+    internal SamplerDescriptorFFI _unsafeDescriptor = new();
 
     public WGPURefText Label;
     public AddressMode AddressModeU
@@ -95,34 +83,5 @@ public unsafe ref struct SamplerDescriptor
     public SamplerDescriptor()
     {
 
-    }
-
-    public unsafe SamplerDescriptor(
-        WGPURefText label = default,
-        AddressMode addressModeU = default,
-        AddressMode addressModeV = default,
-        AddressMode addressModeW = default,
-        FilterMode magFilter = default,
-        FilterMode minFilter = default,
-        MipmapFilterMode mipmapFilter = default,
-        float lodMinClamp = default,
-        float lodMaxClamp = default,
-        CompareFunction compare = default,
-        ushort maxAnisotropy = default)
-    {
-        Label = label;
-        _unsafeDescriptor = new(
-            label: null,
-            addressModeU: addressModeU,
-            addressModeV: addressModeV,
-            addressModeW: addressModeW,
-            magFilter: magFilter,
-            minFilter: minFilter,
-            mipmapFilter: mipmapFilter,
-            lodMinClamp: lodMinClamp,
-            lodMaxClamp: lodMaxClamp,
-            compare: compare,
-            maxAnisotropy: maxAnisotropy
-        );
     }
 }

@@ -12,11 +12,4 @@ public unsafe partial struct ChainedStructOut
     {
     }
 
-
-    public ChainedStructOut(ChainedStructOut* next = default, SType sType = default)
-    {
-        this.Next = next;
-        this.SType = sType;
-    }
-
 }

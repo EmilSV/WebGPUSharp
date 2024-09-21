@@ -20,33 +20,4 @@ public unsafe partial struct DeviceDescriptorFFI
     {
     }
 
-
-    public DeviceDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, nuint requiredFeatureCount = default, FeatureName* requiredFeatures = default, RequiredLimits* requiredLimits = default, QueueDescriptorFFI defaultQueue = default, DeviceLostCallbackInfoFFI deviceLostCallbackInfo = default, UncapturedErrorCallbackInfoFFI uncapturedErrorCallbackInfo = default, DeviceLostCallbackInfo2FFI deviceLostCallbackInfo2 = default, UncapturedErrorCallbackInfo2FFI uncapturedErrorCallbackInfo2 = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-        this.RequiredFeatureCount = requiredFeatureCount;
-        this.RequiredFeatures = requiredFeatures;
-        this.RequiredLimits = requiredLimits;
-        this.DefaultQueue = defaultQueue;
-        this.DeviceLostCallbackInfo = deviceLostCallbackInfo;
-        this.UncapturedErrorCallbackInfo = uncapturedErrorCallbackInfo;
-        this.DeviceLostCallbackInfo2 = deviceLostCallbackInfo2;
-        this.UncapturedErrorCallbackInfo2 = uncapturedErrorCallbackInfo2;
-    }
-
-
-    public DeviceDescriptorFFI(byte* label = default, nuint requiredFeatureCount = default, FeatureName* requiredFeatures = default, RequiredLimits* requiredLimits = default, QueueDescriptorFFI defaultQueue = default, DeviceLostCallbackInfoFFI deviceLostCallbackInfo = default, UncapturedErrorCallbackInfoFFI uncapturedErrorCallbackInfo = default, DeviceLostCallbackInfo2FFI deviceLostCallbackInfo2 = default, UncapturedErrorCallbackInfo2FFI uncapturedErrorCallbackInfo2 = default)
-    {
-        this.Label = label;
-        this.RequiredFeatureCount = requiredFeatureCount;
-        this.RequiredFeatures = requiredFeatures;
-        this.RequiredLimits = requiredLimits;
-        this.DefaultQueue = defaultQueue;
-        this.DeviceLostCallbackInfo = deviceLostCallbackInfo;
-        this.UncapturedErrorCallbackInfo = uncapturedErrorCallbackInfo;
-        this.DeviceLostCallbackInfo2 = deviceLostCallbackInfo2;
-        this.UncapturedErrorCallbackInfo2 = uncapturedErrorCallbackInfo2;
-    }
-
 }

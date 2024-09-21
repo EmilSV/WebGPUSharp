@@ -5,18 +5,11 @@ namespace WebGpuSharp;
 
 public partial struct BlendState
 {
-    public BlendComponent Color;
-    public BlendComponent Alpha;
+    public required BlendComponent Color;
+    public required BlendComponent Alpha;
 
     public BlendState()
     {
-    }
-
-
-    public BlendState(BlendComponent color = default, BlendComponent alpha = default)
-    {
-        this.Color = color;
-        this.Alpha = alpha;
     }
 
 }

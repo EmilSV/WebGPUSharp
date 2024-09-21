@@ -13,19 +13,4 @@ public unsafe partial struct CompilationInfoFFI
     {
     }
 
-
-    public CompilationInfoFFI(ChainedStruct* nextInChain = default, nuint messageCount = default, CompilationMessageFFI* messages = default)
-    {
-        this.NextInChain = nextInChain;
-        this.MessageCount = messageCount;
-        this.Messages = messages;
-    }
-
-
-    public CompilationInfoFFI(nuint messageCount = default, CompilationMessageFFI* messages = default)
-    {
-        this.MessageCount = messageCount;
-        this.Messages = messages;
-    }
-
 }

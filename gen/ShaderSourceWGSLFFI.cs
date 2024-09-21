@@ -12,11 +12,4 @@ public unsafe partial struct ShaderSourceWGSLFFI
     {
     }
 
-
-    public ShaderSourceWGSLFFI(ChainedStruct chain = default, byte* code = default)
-    {
-        this.Chain = chain;
-        this.Code = code;
-    }
-
 }

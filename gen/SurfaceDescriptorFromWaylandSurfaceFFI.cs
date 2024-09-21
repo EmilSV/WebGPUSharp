@@ -11,10 +11,4 @@ public unsafe partial struct SurfaceDescriptorFromWaylandSurfaceFFI
     {
     }
 
-
-    public SurfaceDescriptorFromWaylandSurfaceFFI(SurfaceSourceWaylandSurfaceFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

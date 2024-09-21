@@ -13,12 +13,4 @@ public unsafe partial struct ShaderSourceSPIRVFFI
     {
     }
 
-
-    public ShaderSourceSPIRVFFI(ChainedStruct chain = default, uint codeSize = default, uint* code = default)
-    {
-        this.Chain = chain;
-        this.CodeSize = codeSize;
-        this.Code = code;
-    }
-
 }

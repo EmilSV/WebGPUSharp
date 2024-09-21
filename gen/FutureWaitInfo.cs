@@ -12,11 +12,4 @@ public partial struct FutureWaitInfo
     {
     }
 
-
-    public FutureWaitInfo(Future future = default, WebGPUBool completed = default)
-    {
-        this.Future = future;
-        this.Completed = completed;
-    }
-
 }

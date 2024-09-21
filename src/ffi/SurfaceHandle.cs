@@ -23,17 +23,18 @@ public unsafe readonly partial struct SurfaceHandle :
     {
         fixed (TextureFormat* ViewFormatsPtr = configuration.ViewFormats)
         {
-            SurfaceConfigurationFFI surfaceConfigurationFFI = new(
-                device: (DeviceHandle)configuration.Device,
-                format: configuration.Format,
-                usage: configuration.Usage,
-                viewFormatCount: (nuint)configuration.ViewFormats.Length,
-                viewFormats: ViewFormatsPtr,
-                alphaMode: configuration.AlphaMode,
-                width: configuration.Width,
-                height: configuration.Height,
-                presentMode: configuration.PresentMode
-            );
+            SurfaceConfigurationFFI surfaceConfigurationFFI = new()
+            {
+                Device = (DeviceHandle)configuration.Device,
+                Format = configuration.Format,
+                Usage = configuration.Usage,
+                ViewFormatCount = (nuint)configuration.ViewFormats.Length,
+                ViewFormats = ViewFormatsPtr,
+                AlphaMode = configuration.AlphaMode,
+                Width = configuration.Width,
+                Height = configuration.Height,
+                PresentMode = configuration.PresentMode
+            };
             WebGPU_FFI.SurfaceConfigure(this, &surfaceConfigurationFFI);
         }
     }

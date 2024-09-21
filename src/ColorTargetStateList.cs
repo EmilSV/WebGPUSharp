@@ -124,11 +124,12 @@ public unsafe sealed class ColorTargetStateList :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add(ColorTargetState value)
     {
-        ColorTargetStateFFI colorTargetState = new(
-            format: value.Format,
-            blend: null,
-            writeMask: value.WriteMask
-        );
+        ColorTargetStateFFI colorTargetState = new()
+        {
+            Format = value.Format,
+            Blend = null,
+            WriteMask = value.WriteMask
+        };
 
         ref BlendState blendState = ref (value.Blend.HasValue ?
             ref Unsafe.AsRef(in Nullable.GetValueRefOrDefaultRef(in value.Blend)) :
@@ -312,11 +313,12 @@ public unsafe sealed class ColorTargetStateList :
             Array.Copy(_itemsColorTargetState, index, _itemsColorTargetState, index + 1, _size - index);
         }
 
-        _itemsColorTargetState[index] = new ColorTargetStateFFI(
-            format: item.Format,
-            blend: item.Blend.HasValue ? (BlendState*)1 : null,
-            writeMask: item.WriteMask
-        );
+        _itemsColorTargetState[index] = new()
+        {
+            Format = item.Format,
+            Blend = item.Blend.HasValue ? (BlendState*)1 : null,
+            WriteMask = item.WriteMask
+        };
 
         if (item.Blend.HasValue)
         {
@@ -356,11 +358,11 @@ public unsafe sealed class ColorTargetStateList :
 
     private ColorTargetStateFFI* GetPointerToPinedArray()
     {
-        if(_size == 0)
+        if (_size == 0)
         {
             return null;
         }
-        
+
         if (_lastMarshalVersion == _version)
         {
             return (ColorTargetStateFFI*)Unsafe.AsPointer(ref _itemsColorTargetState[0]);

@@ -11,10 +11,4 @@ public partial struct RenderPassDescriptorMaxDrawCount
     {
     }
 
-
-    public RenderPassDescriptorMaxDrawCount(RenderPassMaxDrawCount value = default)
-    {
-        this.Value = value;
-    }
-
 }

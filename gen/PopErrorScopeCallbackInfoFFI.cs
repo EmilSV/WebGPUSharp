@@ -15,23 +15,4 @@ public unsafe partial struct PopErrorScopeCallbackInfoFFI
     {
     }
 
-
-    public PopErrorScopeCallbackInfoFFI(ChainedStruct* nextInChain = default, CallbackMode mode = default, delegate* unmanaged[Cdecl]<PopErrorScopeStatus, ErrorType, byte*, void*, void> callback = default, delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> oldCallback = default, void* userdata = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Mode = mode;
-        this.Callback = callback;
-        this.OldCallback = oldCallback;
-        this.Userdata = userdata;
-    }
-
-
-    public PopErrorScopeCallbackInfoFFI(CallbackMode mode = default, delegate* unmanaged[Cdecl]<PopErrorScopeStatus, ErrorType, byte*, void*, void> callback = default, delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> oldCallback = default, void* userdata = default)
-    {
-        this.Mode = mode;
-        this.Callback = callback;
-        this.OldCallback = oldCallback;
-        this.Userdata = userdata;
-    }
-
 }

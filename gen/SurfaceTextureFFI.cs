@@ -13,12 +13,4 @@ public unsafe partial struct SurfaceTextureFFI
     {
     }
 
-
-    public SurfaceTextureFFI(TextureHandle texture = default, WebGPUBool suboptimal = default, SurfaceGetCurrentTextureStatus status = default)
-    {
-        this.Texture = texture;
-        this.Suboptimal = suboptimal;
-        this.Status = status;
-    }
-
 }

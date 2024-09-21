@@ -12,11 +12,4 @@ public partial struct RenderPassMaxDrawCount
     {
     }
 
-
-    public RenderPassMaxDrawCount(ChainedStruct chain = default, ulong maxDrawCount = default)
-    {
-        this.Chain = chain;
-        this.MaxDrawCount = maxDrawCount;
-    }
-
 }

@@ -14,21 +14,4 @@ public unsafe partial struct QueueWorkDoneCallbackInfoFFI
     {
     }
 
-
-    public QueueWorkDoneCallbackInfoFFI(ChainedStruct* nextInChain = default, CallbackMode mode = default, delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> callback = default, void* userdata = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Mode = mode;
-        this.Callback = callback;
-        this.Userdata = userdata;
-    }
-
-
-    public QueueWorkDoneCallbackInfoFFI(CallbackMode mode = default, delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> callback = default, void* userdata = default)
-    {
-        this.Mode = mode;
-        this.Callback = callback;
-        this.Userdata = userdata;
-    }
-
 }

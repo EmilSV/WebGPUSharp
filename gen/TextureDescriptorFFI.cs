@@ -7,46 +7,17 @@ public unsafe partial struct TextureDescriptorFFI
 {
     public ChainedStruct* NextInChain;
     public byte* Label;
-    public TextureUsage Usage;
-    public TextureDimension Dimension;
-    public Extent3D Size;
-    public TextureFormat Format;
-    public uint MipLevelCount;
-    public uint SampleCount;
+    public required TextureUsage Usage;
+    public TextureDimension Dimension = TextureDimension.D2;
+    public required Extent3D Size;
+    public required TextureFormat Format;
+    public uint MipLevelCount = 1;
+    public uint SampleCount = 1;
     public nuint ViewFormatCount;
     public TextureFormat* ViewFormats;
 
     public TextureDescriptorFFI()
     {
-    }
-
-
-    public TextureDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, TextureUsage usage = default, TextureDimension dimension = TextureDimension.D2, Extent3D size = default, TextureFormat format = default, uint mipLevelCount = 1, uint sampleCount = 1, nuint viewFormatCount = default, TextureFormat* viewFormats = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-        this.Usage = usage;
-        this.Dimension = dimension;
-        this.Size = size;
-        this.Format = format;
-        this.MipLevelCount = mipLevelCount;
-        this.SampleCount = sampleCount;
-        this.ViewFormatCount = viewFormatCount;
-        this.ViewFormats = viewFormats;
-    }
-
-
-    public TextureDescriptorFFI(byte* label = default, TextureUsage usage = default, TextureDimension dimension = TextureDimension.D2, Extent3D size = default, TextureFormat format = default, uint mipLevelCount = 1, uint sampleCount = 1, nuint viewFormatCount = default, TextureFormat* viewFormats = default)
-    {
-        this.Label = label;
-        this.Usage = usage;
-        this.Dimension = dimension;
-        this.Size = size;
-        this.Format = format;
-        this.MipLevelCount = mipLevelCount;
-        this.SampleCount = sampleCount;
-        this.ViewFormatCount = viewFormatCount;
-        this.ViewFormats = viewFormats;
     }
 
 }

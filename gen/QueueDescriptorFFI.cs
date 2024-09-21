@@ -12,17 +12,4 @@ public unsafe partial struct QueueDescriptorFFI
     {
     }
 
-
-    public QueueDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-    }
-
-
-    public QueueDescriptorFFI(byte* label = default)
-    {
-        this.Label = label;
-    }
-
 }

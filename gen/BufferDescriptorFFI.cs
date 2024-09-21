@@ -7,31 +7,12 @@ public unsafe partial struct BufferDescriptorFFI
 {
     public ChainedStruct* NextInChain;
     public byte* Label;
-    public BufferUsage Usage;
-    public ulong Size;
-    public WebGPUBool MappedAtCreation;
+    public required BufferUsage Usage;
+    public required ulong Size;
+    public WebGPUBool MappedAtCreation = false;
 
     public BufferDescriptorFFI()
     {
-    }
-
-
-    public BufferDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, BufferUsage usage = default, ulong size = default, WebGPUBool mappedAtCreation = false)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-        this.Usage = usage;
-        this.Size = size;
-        this.MappedAtCreation = mappedAtCreation;
-    }
-
-
-    public BufferDescriptorFFI(byte* label = default, BufferUsage usage = default, ulong size = default, WebGPUBool mappedAtCreation = false)
-    {
-        this.Label = label;
-        this.Usage = usage;
-        this.Size = size;
-        this.MappedAtCreation = mappedAtCreation;
     }
 
 }

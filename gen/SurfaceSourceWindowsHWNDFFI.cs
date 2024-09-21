@@ -13,12 +13,4 @@ public unsafe partial struct SurfaceSourceWindowsHWNDFFI
     {
     }
 
-
-    public SurfaceSourceWindowsHWNDFFI(ChainedStruct chain = default, void* hinstance = default, void* hwnd = default)
-    {
-        this.Chain = chain;
-        this.Hinstance = hinstance;
-        this.Hwnd = hwnd;
-    }
-
 }

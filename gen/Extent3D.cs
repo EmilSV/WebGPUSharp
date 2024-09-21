@@ -13,12 +13,4 @@ public partial struct Extent3D
     {
     }
 
-
-    public Extent3D(uint width = default, uint height = default, uint depthOrArrayLayers = default)
-    {
-        this.Width = width;
-        this.Height = height;
-        this.DepthOrArrayLayers = depthOrArrayLayers;
-    }
-
 }

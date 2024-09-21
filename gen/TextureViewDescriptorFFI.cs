@@ -9,41 +9,14 @@ public unsafe partial struct TextureViewDescriptorFFI
     public byte* Label;
     public TextureFormat Format;
     public TextureViewDimension Dimension;
-    public uint BaseMipLevel;
+    public uint BaseMipLevel = 0;
     public uint MipLevelCount;
-    public uint BaseArrayLayer;
+    public uint BaseArrayLayer = 0;
     public uint ArrayLayerCount;
-    public TextureAspect Aspect;
+    public TextureAspect Aspect = TextureAspect.All;
 
     public TextureViewDescriptorFFI()
     {
-    }
-
-
-    public TextureViewDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, TextureFormat format = default, TextureViewDimension dimension = default, uint baseMipLevel = 0, uint mipLevelCount = default, uint baseArrayLayer = 0, uint arrayLayerCount = default, TextureAspect aspect = TextureAspect.All)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-        this.Format = format;
-        this.Dimension = dimension;
-        this.BaseMipLevel = baseMipLevel;
-        this.MipLevelCount = mipLevelCount;
-        this.BaseArrayLayer = baseArrayLayer;
-        this.ArrayLayerCount = arrayLayerCount;
-        this.Aspect = aspect;
-    }
-
-
-    public TextureViewDescriptorFFI(byte* label = default, TextureFormat format = default, TextureViewDimension dimension = default, uint baseMipLevel = 0, uint mipLevelCount = default, uint baseArrayLayer = 0, uint arrayLayerCount = default, TextureAspect aspect = TextureAspect.All)
-    {
-        this.Label = label;
-        this.Format = format;
-        this.Dimension = dimension;
-        this.BaseMipLevel = baseMipLevel;
-        this.MipLevelCount = mipLevelCount;
-        this.BaseArrayLayer = baseArrayLayer;
-        this.ArrayLayerCount = arrayLayerCount;
-        this.Aspect = aspect;
     }
 
 }

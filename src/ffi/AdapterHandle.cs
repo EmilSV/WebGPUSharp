@@ -117,25 +117,25 @@ public unsafe readonly partial struct AdapterHandle :
             var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
             var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
 
-            DeviceDescriptorFFI deviceDescriptor = new(
-                nextInChain: default,
-                label: deviceDescriptorLabelPtr,
-                requiredFeatures: requiredFeaturesPtr,
-                requiredFeatureCount: (uint)descriptor.RequiredFeatures.Length,
-                requiredLimits: requiredLimitsPtr,
-                defaultQueue: new(
-                    label: queueLabelPtr
-                ),
-                deviceLostCallbackInfo: new(
-                    mode: descriptor.DeviceLostCallbackMode,
-                    callback: deviceLostCallbackFuncPtrAndId.funcPtr,
-                    userdata: (void*)deviceLostCallbackFuncPtrAndId.id
-                ),
-                uncapturedErrorCallbackInfo: new(
-                    callback: uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                    userdata: (void*)uncapturedErrorCallbackFuncPtrAndId.id
-                )
-            );
+            DeviceDescriptorFFI deviceDescriptor = new()
+            {
+                Label = deviceDescriptorLabelPtr,
+                RequiredFeatures = requiredFeaturesPtr,
+                RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
+                RequiredLimits = requiredLimitsPtr,
+                DefaultQueue = {
+                    Label = queueLabelPtr
+                },
+                DeviceLostCallbackInfo = {
+                    Mode = descriptor.DeviceLostCallbackMode,
+                    Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
+                    Userdata = (void*)deviceLostCallbackFuncPtrAndId.id
+                },
+                UncapturedErrorCallbackInfo = {
+                    Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
+                    Userdata = (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                }
+            };
             return RequestDeviceAsync(&deviceDescriptor);
         }
     }
@@ -209,7 +209,7 @@ public unsafe readonly partial struct AdapterHandle :
             }
         });
     }
-    
+
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedDelegate(
       RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)

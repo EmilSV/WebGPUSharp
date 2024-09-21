@@ -19,31 +19,4 @@ public unsafe partial struct AdapterInfoFFI
     {
     }
 
-
-    public AdapterInfoFFI(ChainedStructOut* nextInChain = default, byte* vendor = default, byte* architecture = default, byte* device = default, byte* description = default, BackendType backendType = default, AdapterType adapterType = default, uint vendorID = default, uint deviceID = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Vendor = vendor;
-        this.Architecture = architecture;
-        this.Device = device;
-        this.Description = description;
-        this.BackendType = backendType;
-        this.AdapterType = adapterType;
-        this.VendorID = vendorID;
-        this.DeviceID = deviceID;
-    }
-
-
-    public AdapterInfoFFI(byte* vendor = default, byte* architecture = default, byte* device = default, byte* description = default, BackendType backendType = default, AdapterType adapterType = default, uint vendorID = default, uint deviceID = default)
-    {
-        this.Vendor = vendor;
-        this.Architecture = architecture;
-        this.Device = device;
-        this.Description = description;
-        this.BackendType = backendType;
-        this.AdapterType = adapterType;
-        this.VendorID = vendorID;
-        this.DeviceID = deviceID;
-    }
-
 }

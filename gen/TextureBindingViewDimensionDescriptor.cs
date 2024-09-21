@@ -12,11 +12,4 @@ public partial struct TextureBindingViewDimensionDescriptor
     {
     }
 
-
-    public TextureBindingViewDimensionDescriptor(ChainedStruct chain = default, TextureViewDimension textureBindingViewDimension = default)
-    {
-        this.Chain = chain;
-        this.TextureBindingViewDimension = textureBindingViewDimension;
-    }
-
 }

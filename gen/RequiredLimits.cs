@@ -12,17 +12,4 @@ public unsafe partial struct RequiredLimits
     {
     }
 
-
-    public RequiredLimits(ChainedStruct* nextInChain = default, Limits limits = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Limits = limits;
-    }
-
-
-    public RequiredLimits(Limits limits = default)
-    {
-        this.Limits = limits;
-    }
-
 }

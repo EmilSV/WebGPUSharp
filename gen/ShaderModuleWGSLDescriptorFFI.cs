@@ -11,10 +11,4 @@ public unsafe partial struct ShaderModuleWGSLDescriptorFFI
     {
     }
 
-
-    public ShaderModuleWGSLDescriptorFFI(ShaderSourceWGSLFFI value = default)
-    {
-        this.Value = value;
-    }
-
 }

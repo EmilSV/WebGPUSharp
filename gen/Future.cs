@@ -11,10 +11,4 @@ public partial struct Future
     {
     }
 
-
-    public Future(ulong id = default)
-    {
-        this.Id = id;
-    }
-
 }

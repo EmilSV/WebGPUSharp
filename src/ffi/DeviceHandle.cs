@@ -236,11 +236,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         {
-            QuerySetDescriptorFFI descriptorFFI = new(
-                label: labelPtr,
-                type: descriptor.Type,
-                count: descriptor.Count
-            );
+            QuerySetDescriptorFFI descriptorFFI = new()
+            {
+                Label = labelPtr,
+                Type = descriptor.Type,
+                Count = descriptor.Count
+            };
             return WebGPU_FFI.DeviceCreateQuerySet(this, &descriptorFFI);
         }
     }
@@ -260,15 +261,16 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         fixed (TextureFormat* colorFormatsPtr = descriptor.ColorFormats)
         {
-            RenderBundleEncoderDescriptorFFI descriptorFFI = new(
-                label: labelPtr,
-                colorFormatCount: (nuint)descriptor.ColorFormats.Length,
-                colorFormats: colorFormatsPtr,
-                depthStencilFormat: descriptor.DepthStencilFormat,
-                sampleCount: descriptor.SampleCount,
-                depthReadOnly: descriptor.DepthReadOnly,
-                stencilReadOnly: descriptor.StencilReadOnly
-            );
+            RenderBundleEncoderDescriptorFFI descriptorFFI = new()
+            {
+                Label = labelPtr,
+                ColorFormatCount = (nuint)descriptor.ColorFormats.Length,
+                ColorFormats = colorFormatsPtr,
+                DepthStencilFormat = descriptor.DepthStencilFormat,
+                SampleCount = descriptor.SampleCount,
+                DepthReadOnly = descriptor.DepthReadOnly,
+                StencilReadOnly = descriptor.StencilReadOnly
+            };
 
             return CreateRenderBundleEncoder(descriptorFFI);
         }
@@ -535,17 +537,23 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (byte* codePtr = ToRefCstrUtf8(code, allocator))
         {
 
-            ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new(
-                value: new(new ChainedStruct(
-                    next: null,
-                    sType: SType.ShaderSourceWGSL
-                ))
-            );
+            ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
+            {
+                Value = new()
+                {
+                    Chain = new()
+                    {
+                        Next = null,
+                        SType = SType.ShaderSourceWGSL
+                    },
+                }
+            };
 
-            ShaderModuleDescriptorFFI shaderModuleDescriptor = new(
-                nextInChain: &shaderModuleWGSLDescriptor.Value.Chain,
-                label: labelPtr
-            );
+            ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
+            {
+                NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
+                Label = labelPtr
+            };
 
             return WebGPU_FFI.DeviceCreateShaderModule(this, &shaderModuleDescriptor);
         }

@@ -13,19 +13,4 @@ public unsafe partial struct ComputePassDescriptorFFI
     {
     }
 
-
-    public ComputePassDescriptorFFI(ChainedStruct* nextInChain = default, byte* label = default, ComputePassTimestampWritesFFI* timestampWrites = default)
-    {
-        this.NextInChain = nextInChain;
-        this.Label = label;
-        this.TimestampWrites = timestampWrites;
-    }
-
-
-    public ComputePassDescriptorFFI(byte* label = default, ComputePassTimestampWritesFFI* timestampWrites = default)
-    {
-        this.Label = label;
-        this.TimestampWrites = timestampWrites;
-    }
-
 }
