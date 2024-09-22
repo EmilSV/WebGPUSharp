@@ -5,10 +5,10 @@ namespace WebGpuSharp;
 
 public partial struct Color
 {
-    public double R;
-    public double G;
-    public double B;
-    public double A;
+    public required double R;
+    public required double G;
+    public required double B;
+    public required double A;
 
     public Color()
     {

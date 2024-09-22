@@ -5,9 +5,9 @@ namespace WebGpuSharp;
 
 public partial struct Origin3D
 {
-    public uint X;
-    public uint Y;
-    public uint Z;
+    public uint X = 0;
+    public uint Y = 0;
+    public uint Z = 0;
 
     public Origin3D()
     {
