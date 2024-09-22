@@ -9,7 +9,7 @@ public unsafe partial struct ConstantEntry : IWebGpuFFIConvertibleAlloc<Constant
     public required string Key;
     public required double Value;
 
-    
+
     public ConstantEntry()
     {
     }
@@ -23,9 +23,10 @@ public unsafe partial struct ConstantEntry : IWebGpuFFIConvertibleAlloc<Constant
     static void IWebGpuFFIConvertibleAlloc<ConstantEntry, ConstantEntryFFI>.UnsafeConvertToFFI(
         in ConstantEntry input, WebGpuAllocatorHandle allocator, out ConstantEntryFFI dest)
     {
-        dest = new(
-            key: WebGPUMarshal.ToFFI(input.Key, allocator),
-            value: input.Value
-        );
+        dest = new()
+        {
+            Key = WebGPUMarshal.ToFFI(input.Key, allocator),
+            Value = input.Value
+        };
     }
 }

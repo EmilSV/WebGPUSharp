@@ -21,11 +21,12 @@ public struct ImageCopyTexture :
         var ownedTextureHandle = input.Texture.UnsafeGetCurrentOwnedTextureHandle();
         allocator.AddHandleToDispose(ownedTextureHandle);
 
-        dest = new ImageCopyTextureFFI(
-            texture: ownedTextureHandle,
-            mipLevel: input.MipLevel,
-            origin: input.Origin,
-            aspect: input.Aspect
-        );
+        dest = new()
+        {
+            Texture = ownedTextureHandle,
+            MipLevel = input.MipLevel,
+            Origin = input.Origin,
+            Aspect = input.Aspect
+        };
     }
 }

@@ -11,10 +11,11 @@ public struct ImageCopyBuffer : IWebGpuFFIConvertible<ImageCopyBuffer, ImageCopy
     static void IWebGpuFFIConvertible<ImageCopyBuffer, ImageCopyBufferFFI>.UnsafeConvertToFFI(
         in ImageCopyBuffer input, out ImageCopyBufferFFI dest)
     {
-        dest = new(
-            layout: input.Layout,
-            buffer: (BufferHandle)input.Buffer
-        );
+        dest = new()
+        {
+            Layout = input.Layout,
+            Buffer = (BufferHandle)input.Buffer
+        };
     }
 
     static void IWebGpuFFIConvertibleAlloc<ImageCopyBuffer, ImageCopyBufferFFI>.UnsafeConvertToFFI(

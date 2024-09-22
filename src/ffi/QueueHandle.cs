@@ -216,12 +216,13 @@ public readonly unsafe partial struct QueueHandle :
        where T : unmanaged
     {
         using var destinationTextureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
-        ImageCopyTextureFFI destinationFFI = new(
-            texture: destinationTextureHandle,
-            mipLevel: destination.MipLevel,
-            origin: destination.Origin,
-            aspect: destination.Aspect
-        );
+        ImageCopyTextureFFI destinationFFI = new()
+        {
+            Texture = destinationTextureHandle,
+            MipLevel = destination.MipLevel,
+            Origin = destination.Origin,
+            Aspect = destination.Aspect
+        };
         WriteTexture(destinationFFI, data, dataLayout, writeSize);
     }
 

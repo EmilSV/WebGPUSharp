@@ -90,11 +90,12 @@ public unsafe sealed class ColorTargetStateList :
             {
                 throw new IndexOutOfRangeException(nameof(index));
             }
-            _itemsColorTargetState[index] = new ColorTargetStateFFI(
-                format: value.Format,
-                blend: value.Blend.HasValue ? (BlendState*)1 : null,
-                writeMask: value.WriteMask
-            );
+            _itemsColorTargetState[index] = new()
+            {
+                Format = value.Format,
+                Blend = value.Blend.HasValue ? (BlendState*)1 : null,
+                WriteMask = value.WriteMask
+            };
 
             if (value.Blend.HasValue)
             {

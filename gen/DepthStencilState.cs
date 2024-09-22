@@ -11,8 +11,8 @@ public unsafe partial struct DepthStencilState
     public CompareFunction DepthCompare;
     public StencilFaceState StencilFront;
     public StencilFaceState StencilBack;
-    public uint StencilReadMask = 4294967295;
-    public uint StencilWriteMask = 4294967295;
+    public uint StencilReadMask = 0xFFFFFFFF;
+    public uint StencilWriteMask = 0xFFFFFFFF;
     public int DepthBias = 0;
     public float DepthBiasSlopeScale = 0;
     public float DepthBiasClamp = 0;

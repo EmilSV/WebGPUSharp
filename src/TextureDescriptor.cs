@@ -7,17 +7,12 @@ public unsafe ref partial struct TextureDescriptor
 {
     public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
 
-    internal TextureDescriptorFFI _unmanagedDescriptor = new(
-        label: default,
-        usage: default,
-        dimension: TextureDimension.D2,
-        size: default,
-        format: default,
-        mipLevelCount: 1,
-        sampleCount: 1,
-        viewFormatCount: default,
-        viewFormats: default
-    );
+    internal TextureDescriptorFFI _unmanagedDescriptor = new()
+    {
+        Usage = default,
+        Size = default,
+        Format = default,
+    };
     public WGPURefText Label;
     required public TextureUsage Usage
     {

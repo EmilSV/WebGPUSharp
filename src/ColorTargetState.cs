@@ -28,18 +28,21 @@ public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<Color
         {
             var blendStatePtr = allocator.Alloc<BlendState>(1);
             *blendStatePtr = input.Blend.Value;
-            dest = new ColorTargetStateFFI(
-                format: input.Format,
-                blend: blendStatePtr,
-                writeMask: input.WriteMask
-            );
+            dest = new()
+            {
+                Format = input.Format,
+                Blend = blendStatePtr,
+                WriteMask = input.WriteMask
+            };
         }
         else
         {
-            dest = new ColorTargetStateFFI(
-                input.Format,
-                null,
-                input.WriteMask);
+            dest = new()
+            {
+                Format = input.Format,
+                Blend = null,
+                WriteMask = input.WriteMask
+            };
         }
     }
 }

@@ -8,7 +8,7 @@ public unsafe partial struct ColorTargetStateFFI
     public ChainedStruct* NextInChain;
     public required TextureFormat Format;
     public BlendState* Blend;
-    public ColorWriteMask WriteMask = 15;
+    public ColorWriteMask WriteMask = ColorWriteMask.All;
 
     public ColorTargetStateFFI()
     {

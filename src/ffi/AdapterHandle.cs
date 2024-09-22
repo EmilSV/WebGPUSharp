@@ -155,25 +155,29 @@ public unsafe readonly partial struct AdapterHandle :
                 var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
                 var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
 
-                DeviceDescriptorFFI deviceDescriptor = new(
-                    nextInChain: default,
-                    label: deviceDescriptorLabelPtr,
-                    requiredFeatures: requiredFeaturesPtr,
-                    requiredFeatureCount: (uint)descriptor.RequiredFeatures.Length,
-                    requiredLimits: requiredLimitsPtr,
-                    defaultQueue: new(
-                        label: queueLabelPtr
-                    ),
-                    deviceLostCallbackInfo: new(
-                        mode: descriptor.DeviceLostCallbackMode,
-                        callback: deviceLostCallbackFuncPtrAndId.funcPtr,
-                        userdata: (void*)deviceLostCallbackFuncPtrAndId.id
-                    ),
-                    uncapturedErrorCallbackInfo: new(
-                        callback: uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                        userdata: (void*)uncapturedErrorCallbackFuncPtrAndId.id
-                    )
-                );
+                DeviceDescriptorFFI deviceDescriptor = new()
+                {
+                    NextInChain = default,
+                    Label = deviceDescriptorLabelPtr,
+                    RequiredFeatures = requiredFeaturesPtr,
+                    RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
+                    RequiredLimits = requiredLimitsPtr,
+                    DefaultQueue = new()
+                    {
+                        Label = queueLabelPtr
+                    },
+                    DeviceLostCallbackInfo = new()
+                    {
+                        Mode = descriptor.DeviceLostCallbackMode,
+                        Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
+                        Userdata = (void*)deviceLostCallbackFuncPtrAndId.id
+                    },
+                    UncapturedErrorCallbackInfo =  new()
+                    {
+                        Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
+                        Userdata = (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                    }
+                };
 
                 handle = CallbackUserDataHandle.Alloc(callback);
                 WebGPU_FFI.AdapterRequestDevice(

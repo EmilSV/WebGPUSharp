@@ -82,10 +82,11 @@ public readonly unsafe partial struct InstanceHandle :
             fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
             fixed (ChainedStruct* nextPtr = &next)
             {
-                var surfaceDescriptor = new SurfaceDescriptorFFI(
-                    nextInChain: nextPtr,
-                    label: labelPtr
-                );
+                SurfaceDescriptorFFI surfaceDescriptor = new()
+                {
+                    NextInChain = nextPtr,
+                    Label = labelPtr
+                };
                 return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
             }
         }

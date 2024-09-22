@@ -49,7 +49,7 @@ IDisposable, IWebGpuHandle<RenderBundleEncoderHandle, RenderBundleEncoder>
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
         {
-            RenderBundleDescriptorFFI descriptorFFI = new RenderBundleDescriptorFFI(labelPtr);
+            RenderBundleDescriptorFFI descriptorFFI = new() { Label = labelPtr };
             return WebGPU_FFI.RenderBundleEncoderFinish(this, &descriptorFFI);
         }
     }

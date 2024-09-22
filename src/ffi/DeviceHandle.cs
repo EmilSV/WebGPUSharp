@@ -50,11 +50,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (BindGroupLayoutEntry* entriesPtr = descriptor.Entries)
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         {
-            return CreateBindGroupLayout(new BindGroupLayoutDescriptorFFI(
-                label: labelPtr,
-                entries: entriesPtr,
-                entryCount: (nuint)descriptor.Entries.Length
-            ));
+            return CreateBindGroupLayout(new BindGroupLayoutDescriptorFFI()
+            {
+                Label = labelPtr,
+                Entries = entriesPtr,
+                EntryCount = (nuint)descriptor.Entries.Length
+            });
         }
     }
 
@@ -85,7 +86,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         {
-            CommandEncoderDescriptorFFI commandEncoderDescriptor = new(label: LabelPtr);
+            CommandEncoderDescriptorFFI commandEncoderDescriptor = new()
+            {
+                Label = LabelPtr
+            };
             return WebGPU_FFI.DeviceCreateCommandEncoder(this, &commandEncoderDescriptor);
         }
     }
@@ -110,16 +114,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                 out nuint constantEntryCount
             );
 
-            ComputePipelineDescriptorFFI descriptorFFI = new(
-                label: LabelPtr,
-                layout: (PipelineLayoutHandle)descriptor.Layout,
-                compute: new(
-                    module: (ShaderModuleHandle)descriptor.Compute.Module,
-                    entryPoint: EntryPointPtr,
-                    constants: constantEntryPtr,
-                    constantCount: constantEntryCount
-                )
-            );
+            ComputePipelineDescriptorFFI descriptorFFI = new()
+            {
+                Label = LabelPtr,
+                Layout = (PipelineLayoutHandle)descriptor.Layout,
+                Compute = new()
+                {
+                    Module = (ShaderModuleHandle)descriptor.Compute.Module,
+                    EntryPoint = EntryPointPtr,
+                    Constants = constantEntryPtr,
+                    ConstantCount = constantEntryCount
+                }
+            };
 
             return WebGPU_FFI.DeviceCreateComputePipeline(this, &descriptorFFI);
         }
@@ -146,16 +152,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                 out nuint constantEntryCount
             );
 
-            ComputePipelineDescriptorFFI descriptorFFI = new(
-                label: LabelPtr,
-                layout: (PipelineLayoutHandle)descriptor.Layout,
-                compute: new(
-                    module: (ShaderModuleHandle)descriptor.Compute.Module,
-                    entryPoint: EntryPointPtr,
-                    constants: constantEntryPtr,
-                    constantCount: constantEntryCount
-                )
-            );
+            ComputePipelineDescriptorFFI descriptorFFI = new()
+            {
+                Label = LabelPtr,
+                Layout = (PipelineLayoutHandle)descriptor.Layout,
+                Compute = new()
+                {
+                    Module = (ShaderModuleHandle)descriptor.Compute.Module,
+                    EntryPoint = EntryPointPtr,
+                    Constants = constantEntryPtr,
+                    ConstantCount = constantEntryCount
+                }
+            };
 
             DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptorFFI, callback);
         }
@@ -182,16 +190,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                 out nuint constantEntryCount
             );
 
-            ComputePipelineDescriptorFFI descriptorFFI = new(
-                label: LabelPtr,
-                layout: (PipelineLayoutHandle)descriptor.Layout,
-                compute: new(
-                    module: (ShaderModuleHandle)descriptor.Compute.Module,
-                    entryPoint: EntryPointPtr,
-                    constants: constantEntryPtr,
-                    constantCount: constantEntryCount
-                )
-            );
+            ComputePipelineDescriptorFFI descriptorFFI = new()
+            {
+                Label = LabelPtr,
+                Layout = (PipelineLayoutHandle)descriptor.Layout,
+                Compute = new()
+                {
+                    Module = (ShaderModuleHandle)descriptor.Compute.Module,
+                    EntryPoint = EntryPointPtr,
+                    Constants = constantEntryPtr,
+                    ConstantCount = constantEntryCount
+                }
+            };
 
             return DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptorFFI);
         }

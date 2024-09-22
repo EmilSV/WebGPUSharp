@@ -26,17 +26,18 @@ public readonly unsafe partial struct CommandEncoderHandle :
             var ownedViewHandle = depthStencilAttachment.View.UnsafeGetCurrentTextureViewOwnedHandle();
             allocator.AddHandleToDispose(ownedViewHandle);
 
-            depthStencilAttachmentFFI = new(
-                view: ownedViewHandle,
-                depthLoadOp: depthStencilAttachment.DepthLoadOp,
-                depthStoreOp: depthStencilAttachment.DepthStoreOp,
-                depthClearValue: depthStencilAttachment.DepthClearValue,
-                depthReadOnly: depthStencilAttachment.DepthReadOnly,
-                stencilLoadOp: depthStencilAttachment.StencilLoadOp,
-                stencilStoreOp: depthStencilAttachment.StencilStoreOp,
-                stencilClearValue: depthStencilAttachment.StencilClearValue,
-                stencilReadOnly: depthStencilAttachment.StencilReadOnly
-            );
+            depthStencilAttachmentFFI = new()
+            {
+                View = ownedViewHandle,
+                DepthLoadOp = depthStencilAttachment.DepthLoadOp,
+                DepthStoreOp = depthStencilAttachment.DepthStoreOp,
+                DepthClearValue = depthStencilAttachment.DepthClearValue,
+                DepthReadOnly = depthStencilAttachment.DepthReadOnly,
+                StencilLoadOp = depthStencilAttachment.StencilLoadOp,
+                StencilStoreOp = depthStencilAttachment.StencilStoreOp,
+                StencilClearValue = depthStencilAttachment.StencilClearValue,
+                StencilReadOnly = depthStencilAttachment.StencilReadOnly
+            };
             depthStencilAttachmentPtr = &depthStencilAttachmentFFI;
         }
 
@@ -56,14 +57,15 @@ public readonly unsafe partial struct CommandEncoderHandle :
             }
 
 
-            RenderPassDescriptorFFI descriptorFFI = new(
-                label: labelPtr,
-                colorAttachmentCount: colorAttachmentsCount,
-                colorAttachments: colorAttachmentsPtr,
-                depthStencilAttachment: depthStencilAttachmentPtr,
-                occlusionQuerySet: ToFFI<QuerySet, QuerySetHandle>(descriptor.OcclusionQuerySet),
-                timestampWrites: timestampWritesFFIPtr
-            );
+            RenderPassDescriptorFFI descriptorFFI = new()
+            {
+                Label = labelPtr,
+                ColorAttachmentCount = colorAttachmentsCount,
+                ColorAttachments = colorAttachmentsPtr,
+                DepthStencilAttachment = depthStencilAttachmentPtr,
+                OcclusionQuerySet = ToFFI<QuerySet, QuerySetHandle>(descriptor.OcclusionQuerySet),
+                TimestampWrites = timestampWritesFFIPtr
+            };
             return BeginRenderPass(in descriptorFFI);
         }
     }
@@ -136,12 +138,13 @@ public readonly unsafe partial struct CommandEncoderHandle :
         );
 
         using var textureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
-        ImageCopyTextureFFI destinationFFI = new(
-            texture: textureHandle,
-            mipLevel: destination.MipLevel,
-            origin: destination.Origin,
-            aspect: destination.Aspect
-        );
+        ImageCopyTextureFFI destinationFFI = new()
+        {
+            Texture = textureHandle,
+            MipLevel = destination.MipLevel,
+            Origin = destination.Origin,
+            Aspect = destination.Aspect
+        };
 
 
         fixed (Extent3D* copySizePtr = &copySize)
@@ -173,12 +176,13 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
     {
         using var ownedTextureHandle = source.Texture.UnsafeGetCurrentOwnedTextureHandle();
-        ImageCopyTextureFFI sourceFFI = new(
-            texture: ownedTextureHandle,
-            mipLevel: source.MipLevel,
-            origin: source.Origin,
-            aspect: source.Aspect
-        );
+        ImageCopyTextureFFI sourceFFI = new()
+        {
+            Texture = ownedTextureHandle,
+            MipLevel = source.MipLevel,
+            Origin = source.Origin,
+            Aspect = source.Aspect
+        };
 
         ToFFI(
             input: destination,
@@ -231,20 +235,22 @@ public readonly unsafe partial struct CommandEncoderHandle :
         in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
     {
         using var sourceTextureHandle = source.Texture.UnsafeGetCurrentOwnedTextureHandle();
-        ImageCopyTextureFFI sourceFFI = new(
-            texture: sourceTextureHandle,
-            mipLevel: source.MipLevel,
-            origin: source.Origin,
-            aspect: source.Aspect
-        );
+        ImageCopyTextureFFI sourceFFI = new()
+        {
+            Texture = sourceTextureHandle,
+            MipLevel = source.MipLevel,
+            Origin = source.Origin,
+            Aspect = source.Aspect
+        };
 
         using var destinationTextureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
-        ImageCopyTextureFFI destinationFFI = new(
-            texture: destinationTextureHandle,
-            mipLevel: destination.MipLevel,
-            origin: destination.Origin,
-            aspect: destination.Aspect
-        );
+        ImageCopyTextureFFI destinationFFI = new()
+        {
+            Texture = destinationTextureHandle,
+            MipLevel = destination.MipLevel,
+            Origin = destination.Origin,
+            Aspect = destination.Aspect
+        };
 
         fixed (Extent3D* copySizePtr = &copySize)
         {
@@ -263,9 +269,10 @@ public readonly unsafe partial struct CommandEncoderHandle :
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
         {
-            CommandBufferDescriptorFFI commandBufferDescriptor = new(
-                label: labelPtr
-            );
+            CommandBufferDescriptorFFI commandBufferDescriptor = new()
+            {
+                Label = labelPtr
+            };
 
             return WebGPU_FFI.CommandEncoderFinish(this, &commandBufferDescriptor);
         }
