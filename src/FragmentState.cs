@@ -17,11 +17,8 @@ public partial struct FragmentState :
         WebGpuAllocatorHandle allocator,
         out FragmentStateFFI dest)
     {
-        ToFFI(input.Targets, out ColorTargetStateFFI* target, out dest.TargetCount);
-        dest = new FragmentStateFFI()
-        {
-            Targets = target
-        };
+        dest = default;
+        ToFFI(input.Targets, out dest.Targets, out dest.TargetCount);
         ToFFI(input.Module, out dest.Module);
         ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
