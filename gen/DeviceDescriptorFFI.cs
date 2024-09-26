@@ -8,8 +8,24 @@ public unsafe partial struct DeviceDescriptorFFI
     public ChainedStruct* NextInChain;
     public byte* Label;
     public nuint RequiredFeatureCount;
+    /// <summary>
+    /// Specifies thefeaturesthat are required by the device request.
+    /// The request will fail if the adapter cannot provide these features.
+    /// Exactly the specified set of features, and no more or less, will be allowed in validation
+    /// of API calls on the resulting device.
+    /// </summary>
     public FeatureName* RequiredFeatures;
+    /// <summary>
+    /// Specifies thelimitsthat are required by the device request.
+    /// The request will fail if the adapter cannot provide these limits.
+    /// Each key must be the name of a member ofsupported limits.
+    /// API calls on the resulting device perform validation according to the exact limits of the
+    /// device (not the adapter; see#limits).
+    /// </summary>
     public RequiredLimits* RequiredLimits;
+    /// <summary>
+    /// The descriptor for the default <see cref="FFI.Queue"/>.
+    /// </summary>
     public QueueDescriptorFFI DefaultQueue;
     public DeviceLostCallbackInfoFFI DeviceLostCallbackInfo;
     public UncapturedErrorCallbackInfoFFI UncapturedErrorCallbackInfo;

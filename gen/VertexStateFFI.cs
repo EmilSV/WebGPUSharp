@@ -11,6 +11,10 @@ public unsafe partial struct VertexStateFFI
     public nuint ConstantCount;
     public ConstantEntryFFI* Constants;
     public nuint BufferCount;
+    /// <summary>
+    /// A list of <see cref="FFI.VertexBufferLayout"/>s, each defining the layout of vertex attribute data in a
+    /// vertex buffer used by this pipeline.
+    /// </summary>
     public VertexBufferLayoutFFI* Buffers;
 
     public VertexStateFFI()
