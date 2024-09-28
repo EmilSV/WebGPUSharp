@@ -547,21 +547,20 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (byte* codePtr = ToRefCstrUtf8(code, allocator))
         {
 
-            ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
+            ShaderSourceWGSLFFI shaderSourceWGSL = new()
             {
-                Value = new()
+                Chain = new()
                 {
-                    Chain = new()
-                    {
-                        Next = null,
-                        SType = SType.ShaderSourceWGSL
-                    },
-                }
+                    Next = null,
+                    SType = SType.ShaderSourceWGSL
+                },
+                Code = codePtr
             };
+
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
-                NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
+                NextInChain = &shaderSourceWGSL.Chain,
                 Label = labelPtr
             };
 
