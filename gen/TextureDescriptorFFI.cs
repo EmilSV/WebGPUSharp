@@ -28,20 +28,30 @@ public unsafe partial struct TextureDescriptorFFI
     /// </summary>
     public uint MipLevelCount = 1;
     /// <summary>
-    /// The sample count of the texture. A <see cref="FFI.TextureDescriptor.SampleCount"/>&gt; `1` indicates
+    /// The sample count of the texture. A  <see cref="FFI.TextureDescriptor.SampleCount"/> &gt; `1` indicates
     /// a multisampled texture.
     /// </summary>
     public uint SampleCount = 1;
     public nuint ViewFormatCount;
     /// <summary>
-    /// Specifies what view <see cref="FFI.TextureViewDescriptor.Format"/>values will be allowed when calling <see cref="FFI.Texture.CreateView"/>on this texture (in addition to the texture's actual <see cref="FFI.TextureDescriptor.Format"/>).<remarks>
+    /// Specifies what view  <see cref="FFI.TextureViewDescriptor.Format"/> values will be allowed when calling
+    ///  <see cref="FFI.Texture.CreateView"/> on this texture (in addition to the texture's actual
+    ///  <see cref="FFI.TextureDescriptor.Format"/>).
+    /// <remarks>
+    /// 
     /// Adding a format to this list may have a significant performance impact, so it is best
     /// to avoid adding formats unnecessarily.
     /// The actual performance impact is highly dependent on the target system; developers must
     /// test various systems to find out the impact on their particular application.
-    /// For example, on some systems any texture with a <see cref="FFI.TextureDescriptor.Format"/>or <see cref="FFI.TextureDescriptor.ViewFormats"/>entry including <see cref="TextureFormat."rgba8unorm-srgb""/>will perform less optimally than a <see cref="TextureFormat."rgba8unorm""/>texture which does not.
-    /// Similar caveats exist for other formats and pairs of formats on other systems.
-    /// </remarks>Formats in this list must betexture view format compatiblewith the texture format.
+    /// For example, on some systems any texture with a  <see cref="FFI.TextureDescriptor.Format"/> or
+    ///  <see cref="FFI.TextureDescriptor.ViewFormats"/> entry including
+    ///  <see cref="TextureFormat."rgba8unorm-srgb""/> will perform less optimally than a
+    ///  <see cref="TextureFormat."rgba8unorm""/> texture which does not.
+    /// Similar caveats exist for other formats and pairs of formats on other systems.
+    /// 
+    /// </remarks>
+    /// Formats in this list must be texture view format compatible with the texture format.
+    /// 
     /// </summary>
     public TextureFormat* ViewFormats;
 

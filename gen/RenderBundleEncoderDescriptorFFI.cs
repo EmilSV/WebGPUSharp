@@ -12,15 +12,17 @@ public unsafe partial struct RenderBundleEncoderDescriptorFFI
     public TextureFormat DepthStencilFormat;
     public uint SampleCount;
     /// <summary>
-    /// If `true`, indicates that the render bundle does not modify the depth component of the <see cref="FFI.RenderPassDepthStencilAttachment"/>of any render pass the render bundle is executed
+    /// If `true`, indicates that the render bundle does not modify the depth component of the
+    ///  <see cref="FFI.RenderPassDepthStencilAttachment"/> of any render pass the render bundle is executed
     /// in.
-    /// Seeread-only depth-stencil.
+    /// See read-only depth-stencil.
     /// </summary>
     public WebGPUBool DepthReadOnly = false;
     /// <summary>
-    /// If `true`, indicates that the render bundle does not modify the stencil component of the <see cref="FFI.RenderPassDepthStencilAttachment"/>of any render pass the render bundle is executed
+    /// If `true`, indicates that the render bundle does not modify the stencil component of the
+    ///  <see cref="FFI.RenderPassDepthStencilAttachment"/> of any render pass the render bundle is executed
     /// in.
-    /// Seeread-only depth-stencil.
+    /// See read-only depth-stencil.
     /// </summary>
     public WebGPUBool StencilReadOnly = false;
 

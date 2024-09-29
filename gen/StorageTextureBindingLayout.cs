@@ -11,11 +11,11 @@ public unsafe partial struct StorageTextureBindingLayout
     /// </summary>
     public StorageTextureAccess Access = StorageTextureAccess.WriteOnly;
     /// <summary>
-    /// The required <see cref="FFI.TextureViewDescriptor.Format"/>of texture views bound to this binding.
+    /// The required  <see cref="FFI.TextureViewDescriptor.Format"/> of texture views bound to this binding.
     /// </summary>
     public required TextureFormat Format;
     /// <summary>
-    /// Indicates the required <see cref="FFI.TextureViewDescriptor.Dimension"/>for texture views bound to
+    /// Indicates the required  <see cref="FFI.TextureViewDescriptor.Dimension"/> for texture views bound to
     /// this binding.
     /// </summary>
     public TextureViewDimension ViewDimension = TextureViewDimension.D2;

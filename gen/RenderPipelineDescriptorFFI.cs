@@ -9,11 +9,11 @@ public unsafe partial struct RenderPipelineDescriptorFFI
     public byte* Label;
     public PipelineLayoutHandle Layout;
     /// <summary>
-    /// Describes the vertex shader entry point of thepipelineand its input buffer layouts.
+    /// Describes the vertex shader entry point of the pipeline and its input buffer layouts.
     /// </summary>
     public required VertexStateFFI Vertex;
     /// <summary>
-    /// Describes the primitive-related properties of thepipeline.
+    /// Describes the primitive-related properties of the pipeline.
     /// </summary>
     public PrimitiveState Primitive;
     /// <summary>
@@ -21,12 +21,12 @@ public unsafe partial struct RenderPipelineDescriptorFFI
     /// </summary>
     public DepthStencilState* DepthStencil;
     /// <summary>
-    /// Describes the multi-sampling properties of thepipeline.
+    /// Describes the multi-sampling properties of the pipeline.
     /// </summary>
     public MultisampleState Multisample;
     /// <summary>
-    /// Describes the fragment shader entry point of thepipelineand its output colors. If
-    /// notprovided, the#no-color-outputmode is enabled.
+    /// Describes the fragment shader entry point of the pipeline and its output colors. If
+    /// not provided, the #no-color-output mode is enabled.
     /// </summary>
     public FragmentStateFFI* Fragment;
 

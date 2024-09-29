@@ -9,7 +9,7 @@ public unsafe partial struct ComputePipelineDescriptorFFI
     public byte* Label;
     public PipelineLayoutHandle Layout;
     /// <summary>
-    /// Describes the compute shader entry point of thepipeline.
+    /// Describes the compute shader entry point of the pipeline.
     /// </summary>
     public required ProgrammableStageDescriptorFFI Compute;
 
