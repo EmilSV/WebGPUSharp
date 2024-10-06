@@ -17,8 +17,8 @@ public unsafe partial struct BufferDescriptorFFI
     public required ulong Size;
     /// <summary>
     /// If `true` creates the buffer in an already mapped state, allowing
-    ///  <see cref="FFI.Buffer.GetMappedRange"/> to be called immediately. It is valid to set
-    ///  <see cref="FFI.BufferDescriptor.MappedAtCreation"/> to `true` even if  <see cref="FFI.BufferDescriptor.Usage"/>
+    ///  <see cref="WebGpuSharp.Buffer.GetMappedRange"/> to be called immediately. It is valid to set
+    ///  <see cref="WebGpuSharp.BufferDescriptor.MappedAtCreation"/> to `true` even if  <see cref="WebGpuSharp.BufferDescriptor.Usage"/>
     /// does not contain  <see cref="BufferUsage.MAP_READ"/> or  <see cref="BufferUsage.MAP_WRITE"/>. This can be
     /// used to set the buffer's initial data.
     /// Guarantees that even if the buffer creation eventually fails, it will still appear as if the

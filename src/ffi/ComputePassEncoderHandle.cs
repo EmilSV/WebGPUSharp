@@ -5,38 +5,12 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct ComputePassEncoderHandle :
     IDisposable, IWebGpuHandle<ComputePassEncoderHandle>
 {
-    public void DispatchWorkgroups(uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ)
-    {
-        WebGPU_FFI.ComputePassEncoderDispatchWorkgroups(
-            computePassEncoder: this,
-            workgroupCountX: workgroupCountX,
-            workgroupCountY: workgroupCountY,
-            workgroupCountZ: workgroupCountZ
-        );
-    }
-
-    public void DispatchWorkgroupsIndirect(BufferHandle indirectBuffer, ulong indirectOffset)
-    {
-        WebGPU_FFI.ComputePassEncoderDispatchWorkgroupsIndirect(
-            computePassEncoder: this,
-            indirectBuffer: indirectBuffer,
-            indirectOffset: indirectOffset
-        );
-    }
-
     public void DispatchWorkgroupsIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.ComputePassEncoderDispatchWorkgroupsIndirect(
             computePassEncoder: this,
             indirectBuffer: (BufferHandle)indirectBuffer,
             indirectOffset: indirectOffset
-        );
-    }
-
-    public void End()
-    {
-        WebGPU_FFI.ComputePassEncoderEnd(
-            computePassEncoder: this
         );
     }
 
@@ -52,13 +26,6 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
-    public void PopDebugGroup()
-    {
-        WebGPU_FFI.ComputePassEncoderPopDebugGroup(
-            computePassEncoder: this
-        );
-    }
-
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -69,18 +36,6 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
                 groupLabel: groupLabelPtr
             );
         }
-    }
-
-    public void SetBindGroup(
-        uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets)
-    {
-        WebGPU_FFI.ComputePassEncoderSetBindGroup(
-            computePassEncoder: this,
-            groupIndex: groupIndex,
-            group: group,
-            dynamicOffsetCount: dynamicOffsetCount,
-            dynamicOffsets: dynamicOffsets
-        );
     }
 
     public void SetBindGroup(
@@ -139,16 +94,6 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
             );
         }
     }
-
-    public void SetPipeline(ComputePipelineHandle pipeline)
-    {
-        WebGPU_FFI.ComputePassEncoderSetPipeline(
-            computePassEncoder: this,
-            pipeline: pipeline
-        );
-    }
-
-
 
     public void SetPipeline(ComputePipeline pipeline)
     {

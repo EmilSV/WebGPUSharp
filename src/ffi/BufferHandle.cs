@@ -7,36 +7,6 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct BufferHandle :
     IDisposable, IWebGpuHandle<BufferHandle, Buffer>
 {
-    public void Destroy()
-    {
-        WebGPU_FFI.BufferDestroy(this);
-    }
-
-    public void* GetConstMappedRange(nuint offset, nuint size)
-    {
-        return WebGPU_FFI.BufferGetConstMappedRange(this, offset, size);
-    }
-
-    public BufferMapState GetMapState()
-    {
-        return WebGPU_FFI.BufferGetMapState(this);
-    }
-
-    public void* GetMappedRange(nuint offset, nuint size)
-    {
-        return WebGPU_FFI.BufferGetMappedRange(this, offset, size);
-    }
-
-    public ulong GetSize()
-    {
-        return WebGPU_FFI.BufferGetSize(this);
-    }
-
-    public BufferUsage GetUsage()
-    {
-        return WebGPU_FFI.BufferGetUsage(this);
-    }
-
     public void MapAsync(
         MapMode mode,
         nuint offset,
@@ -96,11 +66,6 @@ public unsafe readonly partial struct BufferHandle :
             return Task.FromResult(BufferMapAsyncStatus.Unknown);
         }
         return taskCompletionSource.Task;
-    }
-
-    public void Unmap()
-    {
-        WebGPU_FFI.BufferUnmap(this);
     }
 
     public void Dispose()

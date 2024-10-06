@@ -69,12 +69,7 @@ public unsafe readonly partial struct AdapterHandle :
         WebGPU_FFI.AdapterGetProperties(this, &properties._unmanagedDescriptor);
         return properties;
     }
-
-    public readonly bool HasFeature(FeatureName feature)
-    {
-        return WebGPU_FFI.AdapterHasFeature(this, feature);
-    }
-
+    
     private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;

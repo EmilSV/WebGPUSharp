@@ -47,51 +47,6 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
-    public void Destroy()
-    {
-        WebGPU_FFI.TextureDestroy(this);
-    }
-
-    public uint GetDepthOrArrayLayers()
-    {
-        return WebGPU_FFI.TextureGetDepthOrArrayLayers(this);
-    }
-
-    public TextureDimension GetDimension()
-    {
-        return WebGPU_FFI.TextureGetDimension(this);
-    }
-
-    public TextureFormat GetFormat()
-    {
-        return WebGPU_FFI.TextureGetFormat(this);
-    }
-
-    public uint GetHeight()
-    {
-        return WebGPU_FFI.TextureGetHeight(this);
-    }
-
-    public uint GetMipLevelCount()
-    {
-        return WebGPU_FFI.TextureGetMipLevelCount(this);
-    }
-
-    public uint GetSampleCount()
-    {
-        return WebGPU_FFI.TextureGetSampleCount(this);
-    }
-
-    public TextureUsage GetUsage()
-    {
-        return WebGPU_FFI.TextureGetUsage(this);
-    }
-
-    public uint GetWidth()
-    {
-        return WebGPU_FFI.TextureGetWidth(this);
-    }
-
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

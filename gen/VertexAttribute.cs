@@ -15,8 +15,8 @@ public partial struct VertexAttribute
     public required ulong Offset;
     /// <summary>
     /// The numeric location associated with this attribute, which will correspond with a
-    ///  <a href="https://gpuweb.github.io/gpuweb/wgsl/#input-output-locations">"@location" attribute</a>
-    /// declared in the  <see cref="FFI.RenderPipelineDescriptor.Vertex"/>.ProgrammableStage.Module.
+    ///  <seealso href="https://gpuweb.github.io/gpuweb/wgsl/#input-output-locations">"@location" attribute</seealso>
+    /// declared in the  <see cref="WebGpuSharp.RenderPipelineDescriptor.Vertex"/>.ProgrammableStage.Module.
     /// </summary>
     public required uint ShaderLocation;
 

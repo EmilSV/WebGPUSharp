@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct BindGroupLayoutHandle : IEquatable<BindGroupLayoutHandle>
+public readonly unsafe partial struct BindGroupLayoutHandle : IEquatable<BindGroupLayoutHandle>
 {
     private readonly nuint _ptr;
     public static BindGroupLayoutHandle Null
@@ -23,4 +23,8 @@ public readonly partial struct BindGroupLayoutHandle : IEquatable<BindGroupLayou
     public bool Equals(BindGroupLayoutHandle other) => _ptr == other._ptr;
     public override bool Equals(object? other) => other is BindGroupLayoutHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
     public override int GetHashCode() => _ptr.GetHashCode();
+    public void SetLabel(byte* label) => WebGPU_FFI.BindGroupLayoutSetLabel(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.BindGroupLayoutSetLabel2(this, label);
+    public void AddRef() => WebGPU_FFI.BindGroupLayoutAddRef(this);
+    public void Release() => WebGPU_FFI.BindGroupLayoutRelease(this);
 }

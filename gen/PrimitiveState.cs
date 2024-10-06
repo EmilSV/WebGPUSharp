@@ -12,9 +12,9 @@ public unsafe partial struct PrimitiveState
     public PrimitiveTopology Topology = PrimitiveTopology.TriangleList;
     /// <summary>
     /// For pipelines with strip topologies
-    /// ( <see cref="PrimitiveTopology."line-strip""/> or  <see cref="PrimitiveTopology."triangle-strip""/>),
+    /// ( <see cref="PrimitiveTopology.Line-strip"/> or  <see cref="PrimitiveTopology.Triangle-strip"/>),
     /// this determines the index buffer format and primitive restart value
-    /// ( <see cref="IndexFormat."uint16""/>/`0xFFFF` or  <see cref="IndexFormat."uint32""/>/`0xFFFFFFFF`).
+    /// ( <see cref="IndexFormat.Uint16"/>/`0xFFFF` or  <see cref="IndexFormat.Uint32"/>/`0xFFFFFFFF`).
     /// It is not allowed on pipelines with non-strip topologies.
     /// Note: Some implementations require knowledge of the primitive restart value to compile
     /// pipeline state objects.
@@ -35,7 +35,7 @@ public unsafe partial struct PrimitiveState
     public CullMode CullMode = CullMode.None;
     /// <summary>
     /// If true, indicates that depth clipping is disabled.
-    /// Requires the  <see cref="FeatureName."depth-clip-control""/> feature to be enabled.
+    /// Requires the  <see cref="FeatureName.Depth-clip-control"/> feature to be enabled.
     /// </summary>
     public WebGPUBool UnclippedDepth = false;
 

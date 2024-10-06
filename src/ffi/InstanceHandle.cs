@@ -51,12 +51,6 @@ public readonly unsafe partial struct InstanceHandle :
         return RequestAdapterAsync(optionFFI);
     }
 
-
-    public void ProcessEvents()
-    {
-        WebGPU_FFI.InstanceProcessEvents(this);
-    }
-
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)

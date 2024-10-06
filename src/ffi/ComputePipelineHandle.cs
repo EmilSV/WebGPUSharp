@@ -31,12 +31,6 @@ public unsafe readonly partial struct ComputePipelineHandle :
         return new ComputePipelineHandle(pointer);
     }
 
-
-    public BindGroupLayoutHandle GetBindGroupLayout(uint groupIndex)
-    {
-        return WebGPU_FFI.ComputePipelineGetBindGroupLayout(this, groupIndex);
-    }
-
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();

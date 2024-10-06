@@ -11,7 +11,7 @@ public unsafe partial struct TextureBindingLayout
     /// </summary>
     public TextureSampleType SampleType = TextureSampleType.Float;
     /// <summary>
-    /// Indicates the required  <see cref="FFI.TextureViewDescriptor.Dimension"/> for texture views bound to
+    /// Indicates the required  <see cref="WebGpuSharp.TextureViewDescriptor.Dimension"/> for texture views bound to
     /// this binding.
     /// </summary>
     public TextureViewDimension ViewDimension = TextureViewDimension.D2;

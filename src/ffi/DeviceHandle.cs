@@ -444,11 +444,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
-    public void Destroy()
-    {
-        WebGPU_FFI.DeviceDestroy(this);
-    }
-
     public nuint GetEnumerateFeaturesCount()
     {
         return WebGPU_FFI.DeviceEnumerateFeatures(this, null);
@@ -491,17 +486,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
-    public QueueHandle GetQueue()
-    {
-        return WebGPU_FFI.DeviceGetQueue(this);
-    }
-
-    public WebGPUBool HasFeature(FeatureName feature)
-    {
-        return WebGPU_FFI.DeviceHasFeature(this, feature);
-    }
-
-
     public void PopErrorScope(DevicePopErrorScopeDelegate callback)
     {
         DevicePopErrorScopeHandler.DevicePopErrorScope(this, callback);
@@ -512,12 +496,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         return DevicePopErrorScopeHandler.DevicePopErrorScope(this);
     }
-
-    public void PushErrorScope(ErrorFilter errorFilter)
-    {
-        WebGPU_FFI.DevicePushErrorScope(this, errorFilter);
-    }
-
 
     public void SetLabel(WGPURefText label)
     {

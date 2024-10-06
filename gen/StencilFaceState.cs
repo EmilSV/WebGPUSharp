@@ -7,7 +7,7 @@ public partial struct StencilFaceState
 {
     /// <summary>
     /// The  <see cref="CompareFunction"/> used when testing fragments against
-    ///  <see cref="FFI.RenderPassDescriptor.DepthStencilAttachment"/> stencil values.
+    ///  <see cref="WebGpuSharp.RenderPassDescriptor.DepthStencilAttachment"/> stencil values.
     /// </summary>
     public CompareFunction Compare = CompareFunction.Always;
     /// <summary>

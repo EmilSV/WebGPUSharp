@@ -25,7 +25,7 @@ public unsafe partial struct DeviceDescriptorFFI
     /// </summary>
     public RequiredLimits* RequiredLimits;
     /// <summary>
-    /// The descriptor for the default  <see cref="FFI.Queue"/>.
+    /// The descriptor for the default  <see cref="WebGpuSharp.Queue"/>.
     /// </summary>
     public QueueDescriptorFFI DefaultQueue;
     public DeviceLostCallbackInfoFFI DeviceLostCallbackInfo;

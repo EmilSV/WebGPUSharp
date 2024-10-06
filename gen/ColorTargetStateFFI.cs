@@ -8,7 +8,7 @@ public unsafe partial struct ColorTargetStateFFI
     public ChainedStruct* NextInChain;
     /// <summary>
     /// The  <see cref="TextureFormat"/> of this color target. The pipeline will only be compatible with
-    ///  <see cref="FFI.RenderPassEncoder"/>s which use a  <see cref="FFI.TextureView"/> of this format in the
+    ///  <see cref="WebGpuSharp.RenderPassEncoder"/>s which use a  <see cref="WebGpuSharp.TextureView"/> of this format in the
     /// corresponding color attachment.
     /// </summary>
     public required TextureFormat Format;

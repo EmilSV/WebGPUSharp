@@ -10,7 +10,7 @@ public unsafe partial struct ImageCopyTextureFFI
     /// </summary>
     public required TextureHandle Texture;
     /// <summary>
-    /// Mip-map level of the  <see cref="FFI.ImageCopyTexture.Texture"/> to copy to/from.
+    /// Mip-map level of the  <see cref="WebGpuSharp.ImageCopyTexture.Texture"/> to copy to/from.
     /// </summary>
     public uint MipLevel = 0;
     /// <summary>
@@ -19,7 +19,7 @@ public unsafe partial struct ImageCopyTextureFFI
     /// </summary>
     public Origin3D Origin;
     /// <summary>
-    /// Defines which aspects of the  <see cref="FFI.ImageCopyTexture.Texture"/> to copy to/from.
+    /// Defines which aspects of the  <see cref="WebGpuSharp.ImageCopyTexture.Texture"/> to copy to/from.
     /// </summary>
     public TextureAspect Aspect = TextureAspect.All;
 

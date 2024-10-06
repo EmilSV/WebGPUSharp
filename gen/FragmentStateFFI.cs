@@ -12,7 +12,7 @@ public unsafe partial struct FragmentStateFFI
     public ConstantEntryFFI* Constants;
     public nuint TargetCount;
     /// <summary>
-    /// A list of  <see cref="FFI.ColorTargetState"/> defining the formats and behaviors of the color targets
+    /// A list of  <see cref="WebGpuSharp.ColorTargetState"/> defining the formats and behaviors of the color targets
     /// this pipeline writes to.
     /// </summary>
     public required ColorTargetStateFFI* Targets;

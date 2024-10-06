@@ -42,14 +42,14 @@ public unsafe partial struct SamplerDescriptorFFI
     public CompareFunction Compare;
     /// <summary>
     /// Specifies the maximum anisotropy value clamp used by the sampler. Anisotropic filtering is
-    /// enabled when  <see cref="FFI.SamplerDescriptor.MaxAnisotropy"/> is &gt; 1 and the implementation supports it.
+    /// enabled when  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/> is &gt; 1 and the implementation supports it.
     /// Anisotropic filtering improves the image quality of textures sampled at oblique viewing
-    /// angles. Higher  <see cref="FFI.SamplerDescriptor.MaxAnisotropy"/> values indicate the maximum ratio of
+    /// angles. Higher  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/> values indicate the maximum ratio of
     /// anisotropy supported when filtering.
     /// <remarks>
     /// 
-    /// Most implementations support  <see cref="FFI.SamplerDescriptor.MaxAnisotropy"/> values in range
-    /// between 1 and 16, inclusive. The used value of  <see cref="FFI.SamplerDescriptor.MaxAnisotropy"/>
+    /// Most implementations support  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/> values in range
+    /// between 1 and 16, inclusive. The used value of  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/>
     /// will be clamped to the maximum value that the platform supports.
     /// The precise filtering behavior is implementation-dependent.
     /// 

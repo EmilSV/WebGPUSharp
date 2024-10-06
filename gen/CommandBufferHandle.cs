@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct CommandBufferHandle : IEquatable<CommandBufferHandle>
+public readonly unsafe partial struct CommandBufferHandle : IEquatable<CommandBufferHandle>
 {
     private readonly nuint _ptr;
     public static CommandBufferHandle Null
@@ -23,4 +23,8 @@ public readonly partial struct CommandBufferHandle : IEquatable<CommandBufferHan
     public bool Equals(CommandBufferHandle other) => _ptr == other._ptr;
     public override bool Equals(object? other) => other is CommandBufferHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
     public override int GetHashCode() => _ptr.GetHashCode();
+    public void SetLabel(byte* label) => WebGPU_FFI.CommandBufferSetLabel(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandBufferSetLabel2(this, label);
+    public void AddRef() => WebGPU_FFI.CommandBufferAddRef(this);
+    public void Release() => WebGPU_FFI.CommandBufferRelease(this);
 }

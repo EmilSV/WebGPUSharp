@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct ComputePipelineHandle : IEquatable<ComputePipelineHandle>
+public readonly unsafe partial struct ComputePipelineHandle : IEquatable<ComputePipelineHandle>
 {
     private readonly nuint _ptr;
     public static ComputePipelineHandle Null
@@ -23,4 +23,9 @@ public readonly partial struct ComputePipelineHandle : IEquatable<ComputePipelin
     public bool Equals(ComputePipelineHandle other) => _ptr == other._ptr;
     public override bool Equals(object? other) => other is ComputePipelineHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
     public override int GetHashCode() => _ptr.GetHashCode();
+    public BindGroupLayoutHandle GetBindGroupLayout(uint groupIndex) => WebGPU_FFI.ComputePipelineGetBindGroupLayout(this, groupIndex);
+    public void SetLabel(byte* label) => WebGPU_FFI.ComputePipelineSetLabel(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.ComputePipelineSetLabel2(this, label);
+    public void AddRef() => WebGPU_FFI.ComputePipelineAddRef(this);
+    public void Release() => WebGPU_FFI.ComputePipelineRelease(this);
 }

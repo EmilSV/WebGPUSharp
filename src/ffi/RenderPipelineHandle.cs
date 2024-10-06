@@ -5,11 +5,6 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct RenderPipelineHandle :
     IDisposable, IWebGpuHandle<RenderPipelineHandle, RenderPipeline>
 {
-    public BindGroupLayoutHandle GetBindGroupLayout(uint groupIndex)
-    {
-        return WebGPU_FFI.RenderPipelineGetBindGroupLayout(this, groupIndex);
-    }
-
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();

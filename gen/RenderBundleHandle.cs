@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct RenderBundleHandle : IEquatable<RenderBundleHandle>
+public readonly unsafe partial struct RenderBundleHandle : IEquatable<RenderBundleHandle>
 {
     private readonly nuint _ptr;
     public static RenderBundleHandle Null
@@ -23,4 +23,8 @@ public readonly partial struct RenderBundleHandle : IEquatable<RenderBundleHandl
     public bool Equals(RenderBundleHandle other) => _ptr == other._ptr;
     public override bool Equals(object? other) => other is RenderBundleHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
     public override int GetHashCode() => _ptr.GetHashCode();
+    public void SetLabel(byte* label) => WebGPU_FFI.RenderBundleSetLabel(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderBundleSetLabel2(this, label);
+    public void AddRef() => WebGPU_FFI.RenderBundleAddRef(this);
+    public void Release() => WebGPU_FFI.RenderBundleRelease(this);
 }

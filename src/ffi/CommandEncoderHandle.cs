@@ -78,16 +78,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void ClearBuffer(BufferHandle buffer, ulong offset, ulong size)
-    {
-        WebGPU_FFI.CommandEncoderClearBuffer(
-            commandEncoder: this,
-            buffer: buffer,
-            offset: offset,
-            size: size
-        );
-    }
-
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
     {
         ClearBuffer(
@@ -96,24 +86,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
             size: size
         );
     }
-
-
-    public void CopyBufferToBuffer(
-        BufferHandle source, ulong sourceOffset,
-        BufferHandle destination, ulong destinationOffset,
-        ulong size
-    )
-    {
-        WebGPU_FFI.CommandEncoderCopyBufferToBuffer(
-            commandEncoder: this,
-            source: source,
-            sourceOffset: sourceOffset,
-            destination: destination,
-            destinationOffset: destinationOffset,
-            size: size
-        );
-    }
-
 
     public void CopyBufferToBuffer(
         Buffer source, ulong sourceOffset,
@@ -287,11 +259,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void PopDebugGroup()
-    {
-        WebGPU_FFI.CommandEncoderPopDebugGroup(this);
-    }
-
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -300,21 +267,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
             WebGPU_FFI.CommandEncoderPushDebugGroup(this, groupLabelPtr);
         }
     }
-
-    public void ResolveQuerySet(
-        QuerySetHandle querySet, uint firstQuery, uint queryCount,
-        BufferHandle destination, ulong destinationOffset)
-    {
-        WebGPU_FFI.CommandEncoderResolveQuerySet(
-            commandEncoder: this,
-            querySet: querySet,
-            firstQuery: firstQuery,
-            queryCount: queryCount,
-            destination: destination,
-            destinationOffset: destinationOffset
-        );
-    }
-
 
     public void ResolveQuerySet(
         QuerySet querySet, uint firstQuery, uint queryCount,
@@ -337,15 +289,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
         {
             WebGPU_FFI.CommandEncoderSetLabel(this, labelPtr);
         }
-    }
-
-    public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex)
-    {
-        WebGPU_FFI.CommandEncoderWriteTimestamp(
-           commandEncoder: this,
-           querySet: querySet,
-           queryIndex: queryIndex
-       );
     }
 
     public void WriteTimestamp(QuerySet querySet, uint queryIndex)

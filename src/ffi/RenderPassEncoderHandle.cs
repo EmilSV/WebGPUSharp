@@ -6,49 +6,6 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct RenderPassEncoderHandle :
     IDisposable, IWebGpuHandle<RenderPassEncoderHandle>
 {
-
-    public void BeginOcclusionQuery(uint queryIndex)
-    {
-        WebGPU_FFI.RenderPassEncoderBeginOcclusionQuery(this, queryIndex);
-    }
-
-    public readonly void Draw(
-        uint vertexCount, uint instanceCount,
-        uint firstVertex, uint firstInstance)
-    {
-        WebGPU_FFI.RenderPassEncoderDraw(
-            renderPassEncoder: this,
-            vertexCount: vertexCount,
-            instanceCount: instanceCount,
-            firstVertex: firstVertex,
-            firstInstance: firstInstance
-        );
-    }
-
-    public void DrawIndexed(
-        uint indexCount, uint instanceCount,
-        uint firstIndex, int baseVertex, uint firstInstance)
-    {
-        WebGPU_FFI.RenderPassEncoderDrawIndexed(
-            renderPassEncoder: this,
-            indexCount: indexCount,
-            instanceCount: instanceCount,
-            firstIndex: firstIndex,
-            baseVertex: baseVertex,
-            firstInstance: firstInstance
-        );
-    }
-
-    public void DrawIndexedIndirect(
-        BufferHandle indirectBuffer, ulong indirectOffset)
-    {
-        WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(
-            renderPassEncoder: this,
-            indirectBuffer: indirectBuffer,
-            indirectOffset: indirectOffset
-        );
-    }
-
     public void DrawIndexedIndirect(
         Buffer indirectBuffer, ulong indirectOffset)
     {
@@ -60,17 +17,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     public void DrawIndirect(
-        BufferHandle indirectBuffer, ulong indirectOffset)
-    {
-        WebGPU_FFI.RenderPassEncoderDrawIndirect(
-            renderPassEncoder: this,
-            indirectBuffer: indirectBuffer,
-            indirectOffset: indirectOffset
-        );
-    }
-
-
-    public void DrawIndirect(
         Buffer indirectBuffer, ulong indirectOffset)
 
     {
@@ -80,17 +26,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
             indirectOffset: indirectOffset
         );
     }
-
-    public readonly void End()
-    {
-        WebGPU_FFI.RenderPassEncoderEnd(this);
-    }
-
-    public void EndOcclusionQuery()
-    {
-        WebGPU_FFI.RenderPassEncoderEndOcclusionQuery(this);
-    }
-
 
     public void ExecuteBundle(RenderBundleHandle bundle)
     {
@@ -144,11 +79,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
                 markerLabel: markerLabelPtr
             );
         }
-    }
-
-    public void PopDebugGroup()
-    {
-        WebGPU_FFI.RenderPassEncoderPopDebugGroup(this);
     }
 
     public void PushDebugGroup(WGPURefText groupLabel)
@@ -225,19 +155,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
-
-    public readonly void SetIndexBuffer(
-        BufferHandle buffer, IndexFormat format, ulong offset, ulong size)
-    {
-        WebGPU_FFI.RenderPassEncoderSetIndexBuffer(
-            renderPassEncoder: this,
-            buffer: buffer,
-            format: format,
-            offset: offset,
-            size: size
-        );
-    }
-
     public readonly void SetIndexBuffer(
         Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {
@@ -264,40 +181,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     public readonly void SetPipeline(RenderPipeline pipeline) =>
         SetPipeline(ToFFI<RenderPipeline, RenderPipelineHandle>(pipeline));
-
-    public readonly void SetPipeline(RenderPipelineHandle pipeline) =>
-        WebGPU_FFI.RenderPassEncoderSetPipeline(this, pipeline);
-
-    public readonly void SetScissorRect(uint x, uint y, uint width, uint height)
-    {
-        WebGPU_FFI.RenderPassEncoderSetScissorRect(
-            renderPassEncoder: this,
-            x: x,
-            y: y,
-            width: width,
-            height: height
-        );
-    }
-
-    public readonly void SetStencilReference(uint reference)
-    {
-        WebGPU_FFI.RenderPassEncoderSetStencilReference(
-            renderPassEncoder: this,
-            reference: reference
-        );
-    }
-
-    public readonly void SetVertexBuffer(
-        uint slot, BufferHandle buffer, ulong offset, ulong size)
-    {
-        WebGPU_FFI.RenderPassEncoderSetVertexBuffer(
-            renderPassEncoder: this,
-            slot: slot,
-            buffer: buffer,
-            offset: offset,
-            size: size
-        );
-    }
 
     public readonly void SetVertexBuffer(
         uint slot, Buffer buffer, ulong offset, ulong size)

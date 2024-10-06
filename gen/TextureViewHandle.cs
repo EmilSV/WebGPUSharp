@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
-public readonly partial struct TextureViewHandle : IEquatable<TextureViewHandle>
+public readonly unsafe partial struct TextureViewHandle : IEquatable<TextureViewHandle>
 {
     private readonly nuint _ptr;
     public static TextureViewHandle Null
@@ -23,4 +23,8 @@ public readonly partial struct TextureViewHandle : IEquatable<TextureViewHandle>
     public bool Equals(TextureViewHandle other) => _ptr == other._ptr;
     public override bool Equals(object? other) => other is TextureViewHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
     public override int GetHashCode() => _ptr.GetHashCode();
+    public void SetLabel(byte* label) => WebGPU_FFI.TextureViewSetLabel(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.TextureViewSetLabel2(this, label);
+    public void AddRef() => WebGPU_FFI.TextureViewAddRef(this);
+    public void Release() => WebGPU_FFI.TextureViewRelease(this);
 }

@@ -35,6 +35,12 @@ public unsafe static partial class WebGPU_FFI
     public static extern Status AdapterGetProperties(FFI.AdapterHandle adapter, FFI.AdapterPropertiesFFI* properties);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterHasFeature", CallingConvention = CallingConvention.Cdecl)]
     public static extern WebGPUBool AdapterHasFeature(FFI.AdapterHandle adapter, FeatureName feature);
+    /// <summary>
+    /// Requests a device from the adapter.
+    /// This is a one-time action: if a device is returned successfully,
+    /// the adapter becomes {{adapter/state/"consumed"}}.
+    /// </summary>
+    /// <param name="descriptor">Description of the  <see cref="WebGpuSharp.Device"/> to request.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterRequestDevice", CallingConvention = CallingConvention.Cdecl)]
     public static extern void AdapterRequestDevice(FFI.AdapterHandle adapter, FFI.DeviceDescriptorFFI* descriptor, delegate* unmanaged[Cdecl]<RequestDeviceStatus, FFI.DeviceHandle, byte*, void*, void> callback, void* userdata);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -57,24 +63,55 @@ public unsafe static partial class WebGPU_FFI
     public static extern void BindGroupLayoutAddRef(FFI.BindGroupLayoutHandle bindGroupLayout);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBindGroupLayoutRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BindGroupLayoutRelease(FFI.BindGroupLayoutHandle bindGroupLayout);
+    /// <summary>
+    /// Destroys the  <see cref="WebGpuSharp.Buffer"/>.
+    /// Note: It is valid to destroy a buffer multiple times.
+    /// Note: Since no further operations can be enqueued using this buffer, implementations can
+    /// free resource allocations, including mapped memory that was just unmapped.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferDestroy", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferDestroy(FFI.BufferHandle buffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferGetConstMappedRange", CallingConvention = CallingConvention.Cdecl)]
     public static extern void* BufferGetConstMappedRange(FFI.BufferHandle buffer, nuint offset, nuint size);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferGetMapState", CallingConvention = CallingConvention.Cdecl)]
     public static extern BufferMapState BufferGetMapState(FFI.BufferHandle buffer);
+    /// <summary>
+    /// Returns an ArrayBuffer with the contents of the  <see cref="WebGpuSharp.Buffer"/> in the given mapped range.
+    /// </summary>
+    /// <param name="offset">Offset in bytes into the buffer to return buffer contents from.</param>
+    /// <param name="size">Size in bytes of the ArrayBuffer to return.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferGetMappedRange", CallingConvention = CallingConvention.Cdecl)]
     public static extern void* BufferGetMappedRange(FFI.BufferHandle buffer, nuint offset, nuint size);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferGetSize", CallingConvention = CallingConvention.Cdecl)]
     public static extern ulong BufferGetSize(FFI.BufferHandle buffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferGetUsage", CallingConvention = CallingConvention.Cdecl)]
     public static extern BufferUsage BufferGetUsage(FFI.BufferHandle buffer);
+    /// <summary>
+    /// Maps the given range of the  <see cref="WebGpuSharp.Buffer"/> and resolves the returned Promise when the
+    ///  <see cref="WebGpuSharp.Buffer"/>'s content is ready to be accessed with  <see cref="WebGpuSharp.Buffer.GetMappedRange"/>.
+    /// The resolution of the returned Promise **only** indicates that the buffer has been mapped.
+    /// It does not guarantee the completion of any other operations visible to the content timeline,
+    /// and in particular does not imply that any other Promise returned from
+    ///  <see cref="WebGpuSharp.Queue.OnSubmittedWorkDone"/> or  <see cref="WebGpuSharp.Buffer.MapAsync"/> on other  <see cref="WebGpuSharp.Buffer"/>s
+    /// have resolved.
+    /// The resolution of the Promise returned from  <see cref="WebGpuSharp.Queue.OnSubmittedWorkDone"/>
+    /// **does** imply the completion of
+    ///  <see cref="WebGpuSharp.Buffer.MapAsync"/> calls made prior to that call,
+    /// on  <see cref="WebGpuSharp.Buffer"/>s last used exclusively on that queue.
+    /// </summary>
+    /// <param name="mode">Whether the buffer should be mapped for reading or writing.</param>
+    /// <param name="offset">Offset in bytes into the buffer to the start of the range to map.</param>
+    /// <param name="size">Size in bytes of the range to map.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferMapAsync", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferMapAsync(FFI.BufferHandle buffer, MapMode mode, nuint offset, nuint size, delegate* unmanaged[Cdecl]<BufferMapAsyncStatus, void*, void> callback, void* userdata);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferSetLabel", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferSetLabel(FFI.BufferHandle buffer, byte* label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferSetLabel2", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferSetLabel2(FFI.BufferHandle buffer, FFI.StringViewFFI label);
+    /// <summary>
+    /// Unmaps the mapped range of the  <see cref="WebGpuSharp.Buffer"/> and makes its contents available for use by the
+    /// GPU again.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferUnmap", CallingConvention = CallingConvention.Cdecl)]
     public static extern void BufferUnmap(FFI.BufferHandle buffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuBufferAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -91,18 +128,69 @@ public unsafe static partial class WebGPU_FFI
     public static extern void CommandBufferRelease(FFI.CommandBufferHandle commandBuffer);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderBeginComputePass", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.ComputePassEncoderHandle CommandEncoderBeginComputePass(FFI.CommandEncoderHandle commandEncoder, FFI.ComputePassDescriptorFFI* descriptor);
+    /// <summary>
+    /// Begins encoding a render pass described by <paramref name="descriptor"/>.
+    /// </summary>
+    /// <param name="descriptor">Description of the  <see cref="WebGpuSharp.RenderPassEncoder"/> to create.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderBeginRenderPass", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.RenderPassEncoderHandle CommandEncoderBeginRenderPass(FFI.CommandEncoderHandle commandEncoder, FFI.RenderPassDescriptorFFI* descriptor);
+    /// <summary>
+    /// Encode a command into the  <see cref="WebGpuSharp.CommandEncoder"/> that fills a sub-region of a
+    ///  <see cref="WebGpuSharp.Buffer"/> with zeros.
+    /// </summary>
+    /// <param name="buffer">The  <see cref="WebGpuSharp.Buffer"/> to clear.</param>
+    /// <param name="offset">Offset in bytes into <paramref name="buffer"/> where the sub-region to clear begins.</param>
+    /// <param name="size">Size in bytes of the sub-region to clear. Defaults to the size of the buffer minus <paramref name="offset"/>.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderClearBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderClearBuffer(FFI.CommandEncoderHandle commandEncoder, FFI.BufferHandle buffer, ulong offset, ulong size);
+    /// <summary>
+    /// Encode a command into the  <see cref="WebGpuSharp.CommandEncoder"/> that copies data from a sub-region of a
+    ///  <see cref="WebGpuSharp.Buffer"/> to a sub-region of another  <see cref="WebGpuSharp.Buffer"/>.
+    /// </summary>
+    /// <param name="source">The  <see cref="WebGpuSharp.Buffer"/> to copy from.</param>
+    /// <param name="sourceOffset">Offset in bytes into <paramref name="source"/> to begin copying from.</param>
+    /// <param name="destination">The  <see cref="WebGpuSharp.Buffer"/> to copy to.</param>
+    /// <param name="destinationOffset">Offset in bytes into <paramref name="destination"/> to place the copied data.</param>
+    /// <param name="size">Bytes to copy.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderCopyBufferToBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderCopyBufferToBuffer(FFI.CommandEncoderHandle commandEncoder, FFI.BufferHandle source, ulong sourceOffset, FFI.BufferHandle destination, ulong destinationOffset, ulong size);
+    /// <summary>
+    /// Encode a command into the  <see cref="WebGpuSharp.CommandEncoder"/> that copies data from a sub-region of a
+    ///  <see cref="WebGpuSharp.Buffer"/> to a sub-region of one or multiple continuous texture subresources.
+    /// </summary>
+    /// <param name="source">Combined with <paramref name="copySize"/>, defines the region of the source buffer.</param>
+    /// <param name="destination">
+    /// Combined with <paramref name="copySize"/>, defines the region of the destination texture subresource.
+    /// <paramref name="copySize"/>:
+    /// </param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderCopyBufferToTexture", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderCopyBufferToTexture(FFI.CommandEncoderHandle commandEncoder, FFI.ImageCopyBufferFFI* source, FFI.ImageCopyTextureFFI* destination, Extent3D* copySize);
+    /// <summary>
+    /// Encode a command into the  <see cref="WebGpuSharp.CommandEncoder"/> that copies data from a sub-region of one or
+    /// multiple continuous texture subresources to a sub-region of a  <see cref="WebGpuSharp.Buffer"/>.
+    /// </summary>
+    /// <param name="source">Combined with <paramref name="copySize"/>, defines the region of the source texture subresources.</param>
+    /// <param name="destination">
+    /// Combined with <paramref name="copySize"/>, defines the region of the destination buffer.
+    /// <paramref name="copySize"/>:
+    /// </param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderCopyTextureToBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderCopyTextureToBuffer(FFI.CommandEncoderHandle commandEncoder, FFI.ImageCopyTextureFFI* source, FFI.ImageCopyBufferFFI* destination, Extent3D* copySize);
+    /// <summary>
+    /// Encode a command into the  <see cref="WebGpuSharp.CommandEncoder"/> that copies data from a sub-region of one
+    /// or multiple contiguous texture subresources to another sub-region of one or
+    /// multiple continuous texture subresources.
+    /// </summary>
+    /// <param name="source">Combined with <paramref name="copySize"/>, defines the region of the source texture subresources.</param>
+    /// <param name="destination">
+    /// Combined with <paramref name="copySize"/>, defines the region of the destination texture subresources.
+    /// <paramref name="copySize"/>:
+    /// </param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderCopyTextureToTexture", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderCopyTextureToTexture(FFI.CommandEncoderHandle commandEncoder, FFI.ImageCopyTextureFFI* source, FFI.ImageCopyTextureFFI* destination, Extent3D* copySize);
+    /// <summary>
+    /// Completes recording of the commands sequence and returns a corresponding  <see cref="WebGpuSharp.CommandBuffer"/>.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderFinish", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.CommandBufferHandle CommandEncoderFinish(FFI.CommandEncoderHandle commandEncoder, FFI.CommandBufferDescriptorFFI* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
@@ -115,6 +203,9 @@ public unsafe static partial class WebGPU_FFI
     public static extern void CommandEncoderPushDebugGroup(FFI.CommandEncoderHandle commandEncoder, byte* groupLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderPushDebugGroup2", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderPushDebugGroup2(FFI.CommandEncoderHandle commandEncoder, FFI.StringViewFFI groupLabel);
+    /// <summary>
+    /// Resolves query results from a  <see cref="WebGpuSharp.QuerySet"/> out into a range of a  <see cref="WebGpuSharp.Buffer"/>.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderResolveQuerySet", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderResolveQuerySet(FFI.CommandEncoderHandle commandEncoder, FFI.QuerySetHandle querySet, uint firstQuery, uint queryCount, FFI.BufferHandle destination, ulong destinationOffset);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderSetLabel", CallingConvention = CallingConvention.Cdecl)]
@@ -127,10 +218,30 @@ public unsafe static partial class WebGPU_FFI
     public static extern void CommandEncoderAddRef(FFI.CommandEncoderHandle commandEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderRelease(FFI.CommandEncoderHandle commandEncoder);
+    /// <summary>
+    /// Dispatch work to be performed with the current  <see cref="WebGpuSharp.ComputePipeline"/>.
+    /// See #computing-operations for the detailed specification.
+    /// </summary>
+    /// <param name="workgroupCountX">X dimension of the grid of workgroups to dispatch.</param>
+    /// <param name="workgroupCountY">Y dimension of the grid of workgroups to dispatch.</param>
+    /// <param name="workgroupCountZ">Z dimension of the grid of workgroups to dispatch.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderDispatchWorkgroups", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderDispatchWorkgroups(FFI.ComputePassEncoderHandle computePassEncoder, uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ);
+    /// <summary>
+    /// Dispatch work to be performed with the current  <see cref="WebGpuSharp.ComputePipeline"/> using parameters read
+    /// from a  <see cref="WebGpuSharp.Buffer"/>.
+    /// See #computing-operations for the detailed specification.
+    /// packed block of **three 32-bit unsigned integer values (12 bytes total)**,
+    /// given in the same order as the arguments for  <see cref="WebGpuSharp.ComputePassEncoder.DispatchWorkgroups"/>.
+    /// For example:
+    /// </summary>
+    /// <param name="indirectBuffer">Buffer containing the indirect dispatch parameters.</param>
+    /// <param name="indirectOffset">Offset in bytes into <paramref name="indirectBuffer"/> where the dispatch data begins.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderDispatchWorkgroupsIndirect", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderDispatchWorkgroupsIndirect(FFI.ComputePassEncoderHandle computePassEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset);
+    /// <summary>
+    /// Completes recording of the compute pass commands sequence.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderEnd", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderEnd(FFI.ComputePassEncoderHandle computePassEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
@@ -149,6 +260,10 @@ public unsafe static partial class WebGPU_FFI
     public static extern void ComputePassEncoderSetLabel(FFI.ComputePassEncoderHandle computePassEncoder, byte* label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderSetLabel2", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderSetLabel2(FFI.ComputePassEncoderHandle computePassEncoder, FFI.StringViewFFI label);
+    /// <summary>
+    /// Sets the current  <see cref="WebGpuSharp.ComputePipeline"/>.
+    /// </summary>
+    /// <param name="pipeline">The compute pipeline to use for subsequent dispatch commands.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderSetPipeline", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ComputePassEncoderSetPipeline(FFI.ComputePassEncoderHandle computePassEncoder, FFI.ComputePipelineHandle pipeline);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuComputePassEncoderAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -241,6 +356,9 @@ public unsafe static partial class WebGPU_FFI
     public static extern void PipelineLayoutAddRef(FFI.PipelineLayoutHandle pipelineLayout);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuPipelineLayoutRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void PipelineLayoutRelease(FFI.PipelineLayoutHandle pipelineLayout);
+    /// <summary>
+    /// Destroys the  <see cref="WebGpuSharp.QuerySet"/>.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQuerySetDestroy", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QuerySetDestroy(FFI.QuerySetHandle querySet);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQuerySetGetCount", CallingConvention = CallingConvention.Cdecl)]
@@ -259,10 +377,35 @@ public unsafe static partial class WebGPU_FFI
     public static extern void QueueSetLabel(FFI.QueueHandle queue, byte* label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueSetLabel2", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QueueSetLabel2(FFI.QueueHandle queue, FFI.StringViewFFI label);
+    /// <summary>
+    /// Schedules the execution of the command buffers by the GPU on this queue.
+    /// Submitted command buffers cannot be used again.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueSubmit", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QueueSubmit(FFI.QueueHandle queue, nuint commandCount, FFI.CommandBufferHandle* commands);
+    /// <summary>
+    /// Issues a write operation of the provided data into a  <see cref="WebGpuSharp.Buffer"/>.
+    /// </summary>
+    /// <param name="buffer">The buffer to write to.</param>
+    /// <param name="bufferOffset">Offset in bytes into <paramref name="buffer"/> to begin writing at.</param>
+    /// <param name="data">Data to write into <paramref name="buffer"/>.</param>
+    /// <param name="dataOffset">
+    /// Offset in into <paramref name="data"/> to begin writing from. Given in elements if
+    /// <paramref name="data"/> is a `TypedArray` and bytes otherwise.
+    /// </param>
+    /// <param name="size">
+    /// Size of content to write from <paramref name="data"/> to <paramref name="buffer"/>. Given in elements if
+    /// <paramref name="data"/> is a `TypedArray` and bytes otherwise.
+    /// </param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueWriteBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QueueWriteBuffer(FFI.QueueHandle queue, FFI.BufferHandle buffer, ulong bufferOffset, void* data, nuint size);
+    /// <summary>
+    /// Issues a write operation of the provided data into a  <see cref="WebGpuSharp.Texture"/>.
+    /// </summary>
+    /// <param name="destination">The texture subresource and origin to write to.</param>
+    /// <param name="data">Data to write into <paramref name="destination"/>.</param>
+    /// <param name="dataLayout">Layout of the content in <paramref name="data"/>.</param>
+    /// <param name="size">Extents of the content to write from <paramref name="data"/> to <paramref name="destination"/>.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueWriteTexture", CallingConvention = CallingConvention.Cdecl)]
     public static extern void QueueWriteTexture(FFI.QueueHandle queue, FFI.ImageCopyTextureFFI* destination, void* data, nuint dataSize, TextureDataLayout* dataLayout, Extent3D* writeSize);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuQueueAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -285,6 +428,9 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderBundleEncoderDrawIndexedIndirect(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderDrawIndirect", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderDrawIndirect(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset);
+    /// <summary>
+    /// Completes recording of the render bundle commands sequence.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderFinish", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.RenderBundleHandle RenderBundleEncoderFinish(FFI.RenderBundleEncoderHandle renderBundleEncoder, FFI.RenderBundleDescriptorFFI* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
@@ -313,6 +459,9 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderBundleEncoderAddRef(FFI.RenderBundleEncoderHandle renderBundleEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderRelease(FFI.RenderBundleEncoderHandle renderBundleEncoder);
+    /// <summary>
+    /// </summary>
+    /// <param name="queryIndex">The index of the query in the query set.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderBeginOcclusionQuery", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderBeginOcclusionQuery(FFI.RenderPassEncoderHandle renderPassEncoder, uint queryIndex);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderDraw", CallingConvention = CallingConvention.Cdecl)]
@@ -323,10 +472,24 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderPassEncoderDrawIndexedIndirect(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderDrawIndirect", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderDrawIndirect(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.BufferHandle indirectBuffer, ulong indirectOffset);
+    /// <summary>
+    /// Completes recording of the render pass commands sequence.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderEnd", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderEnd(FFI.RenderPassEncoderHandle renderPassEncoder);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderEndOcclusionQuery", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderEndOcclusionQuery(FFI.RenderPassEncoderHandle renderPassEncoder);
+    /// <summary>
+    /// Executes the commands previously recorded into the given  <see cref="WebGpuSharp.RenderBundle"/>s as part of
+    /// this render pass.
+    /// When a  <see cref="WebGpuSharp.RenderBundle"/> is executed, it does not inherit the render pass's pipeline, bind
+    /// groups, or vertex and index buffers. After a  <see cref="WebGpuSharp.RenderBundle"/> has executed, the render
+    /// pass's pipeline, bind group, and vertex/index buffer state is cleared
+    /// (to the initial, empty values).
+    /// Note: The state is cleared, not restored to the previous state.
+    /// This occurs even if zero  <see cref="WebGpuSharp.RenderBundle">GPURenderBundles</see> are executed.
+    /// </summary>
+    /// <param name="bundles">List of render bundles to execute.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderExecuteBundles", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderExecuteBundles(FFI.RenderPassEncoderHandle renderPassEncoder, nuint bundleCount, FFI.RenderBundleHandle* bundles);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderInsertDebugMarker", CallingConvention = CallingConvention.Cdecl)]
@@ -345,6 +508,11 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderPassEncoderPushDebugGroup2(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.StringViewFFI groupLabel);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetBindGroup", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetBindGroup(FFI.RenderPassEncoderHandle renderPassEncoder, uint groupIndex, FFI.BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets);
+    /// <summary>
+    /// Sets the constant blend color and alpha values used with  <see cref="BlendFactor.Constant"/>
+    /// and  <see cref="BlendFactor.One-minus-constant"/>  <see cref="BlendFactor"/>s.
+    /// </summary>
+    /// <param name="color">The color to use when blending.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetBlendConstant", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetBlendConstant(FFI.RenderPassEncoderHandle renderPassEncoder, Color* color);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetIndexBuffer", CallingConvention = CallingConvention.Cdecl)]
@@ -355,12 +523,36 @@ public unsafe static partial class WebGPU_FFI
     public static extern void RenderPassEncoderSetLabel2(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.StringViewFFI label);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetPipeline", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetPipeline(FFI.RenderPassEncoderHandle renderPassEncoder, FFI.RenderPipelineHandle pipeline);
+    /// <summary>
+    /// Sets the scissor rectangle used during the rasterization stage.
+    /// After transformation into viewport coordinates any fragments which fall outside the scissor
+    /// rectangle will be discarded.
+    /// </summary>
+    /// <param name="x">Minimum X value of the scissor rectangle in pixels.</param>
+    /// <param name="y">Minimum Y value of the scissor rectangle in pixels.</param>
+    /// <param name="width">Width of the scissor rectangle in pixels.</param>
+    /// <param name="height">Height of the scissor rectangle in pixels.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetScissorRect", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetScissorRect(FFI.RenderPassEncoderHandle renderPassEncoder, uint x, uint y, uint width, uint height);
+    /// <summary>
+    /// Sets the {{RenderState/stencilReference}} value used during stencil tests with
+    /// the  <see cref="StencilOperation.Replace"/>  <see cref="StencilOperation"/>.
+    /// </summary>
+    /// <param name="reference">The new stencil reference value.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetStencilReference", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetStencilReference(FFI.RenderPassEncoderHandle renderPassEncoder, uint reference);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetVertexBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetVertexBuffer(FFI.RenderPassEncoderHandle renderPassEncoder, uint slot, FFI.BufferHandle buffer, ulong offset, ulong size);
+    /// <summary>
+    /// Sets the viewport used during the rasterization stage to linearly map from
+    /// normalized device coordinates to viewport coordinates.
+    /// </summary>
+    /// <param name="x">Minimum X value of the viewport in pixels.</param>
+    /// <param name="y">Minimum Y value of the viewport in pixels.</param>
+    /// <param name="width">Width of the viewport in pixels.</param>
+    /// <param name="height">Height of the viewport in pixels.</param>
+    /// <param name="minDepth">Minimum depth value of the viewport.</param>
+    /// <param name="maxDepth">Maximum depth value of the viewport.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetViewport", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetViewport(FFI.RenderPassEncoderHandle renderPassEncoder, float x, float y, float width, float height, float minDepth, float maxDepth);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderAddRef", CallingConvention = CallingConvention.Cdecl)]
@@ -385,6 +577,11 @@ public unsafe static partial class WebGPU_FFI
     public static extern void SamplerAddRef(FFI.SamplerHandle sampler);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSamplerRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SamplerRelease(FFI.SamplerHandle sampler);
+    /// <summary>
+    /// Returns any messages generated during the  <see cref="WebGpuSharp.ShaderModule"/>'s compilation.
+    /// The locations, order, and contents of messages are implementation-defined
+    /// In particular, messages may not be ordered by  <see cref="WebGpuSharp.CompilationMessage.LineNum"/>.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuShaderModuleGetCompilationInfo", CallingConvention = CallingConvention.Cdecl)]
     public static extern void ShaderModuleGetCompilationInfo(FFI.ShaderModuleHandle shaderModule, delegate* unmanaged[Cdecl]<CompilationInfoRequestStatus, FFI.CompilationInfoFFI*, void*, void> callback, void* userdata);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuShaderModuleSetLabel", CallingConvention = CallingConvention.Cdecl)]
@@ -415,8 +612,15 @@ public unsafe static partial class WebGPU_FFI
     public static extern void SurfaceAddRef(FFI.SurfaceHandle surface);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceRelease", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SurfaceRelease(FFI.SurfaceHandle surface);
+    /// <summary>
+    /// Creates a  <see cref="WebGpuSharp.TextureView"/>.
+    /// </summary>
+    /// <param name="descriptor">Description of the  <see cref="WebGpuSharp.TextureView"/> to create.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureCreateView", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.TextureViewHandle TextureCreateView(FFI.TextureHandle texture, FFI.TextureViewDescriptorFFI* descriptor);
+    /// <summary>
+    /// Destroys the  <see cref="WebGpuSharp.Texture"/>.
+    /// </summary>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureDestroy", CallingConvention = CallingConvention.Cdecl)]
     public static extern void TextureDestroy(FFI.TextureHandle texture);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuTextureGetDepthOrArrayLayers", CallingConvention = CallingConvention.Cdecl)]

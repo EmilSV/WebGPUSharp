@@ -7,9 +7,9 @@ public unsafe partial struct BindGroupLayoutEntry
 {
     public ChainedStruct* NextInChain;
     /// <summary>
-    /// A unique identifier for a resource binding within the  <see cref="FFI.BindGroupLayout"/>, corresponding
-    /// to a  <see cref="FFI.BindGroupEntry.Binding">GPUBindGroupEntry.binding</see> and a @binding
-    /// attribute in the  <see cref="FFI.ShaderModule"/>.
+    /// A unique identifier for a resource binding within the  <see cref="WebGpuSharp.BindGroupLayout"/>, corresponding
+    /// to a  <see cref="WebGpuSharp.BindGroupEntry.Binding">GPUBindGroupEntry.binding</see> and a @binding
+    /// attribute in the  <see cref="WebGpuSharp.ShaderModule"/>.
     /// </summary>
     public required uint Binding;
     /// <summary>
@@ -25,17 +25,17 @@ public unsafe partial struct BindGroupLayoutEntry
     public BufferBindingLayout Buffer;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is  <see cref="FFI.Sampler"/>.
+    /// is  <see cref="WebGpuSharp.Sampler"/>.
     /// </summary>
     public SamplerBindingLayout Sampler;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is  <see cref="FFI.TextureView"/>.
+    /// is  <see cref="WebGpuSharp.TextureView"/>.
     /// </summary>
     public TextureBindingLayout Texture;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is  <see cref="FFI.TextureView"/>.
+    /// is  <see cref="WebGpuSharp.TextureView"/>.
     /// </summary>
     public StorageTextureBindingLayout StorageTexture;
 
