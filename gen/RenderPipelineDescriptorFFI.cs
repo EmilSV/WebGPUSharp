@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct RenderPipelineDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label;
     public PipelineLayoutHandle Layout;
     /// <summary>
     /// Describes the vertex shader entry point of the pipeline and its input buffer layouts.

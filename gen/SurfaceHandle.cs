@@ -26,7 +26,6 @@ public readonly unsafe partial struct SurfaceHandle : IEquatable<SurfaceHandle>
     public void Configure(SurfaceConfigurationFFI* config) => WebGPU_FFI.SurfaceConfigure(this, config);
     public Status GetCapabilities(AdapterHandle adapter, SurfaceCapabilitiesFFI* capabilities) => WebGPU_FFI.SurfaceGetCapabilities(this, adapter, capabilities);
     public void GetCurrentTexture(SurfaceTextureFFI* surfaceTexture) => WebGPU_FFI.SurfaceGetCurrentTexture(this, surfaceTexture);
-    public TextureFormat GetPreferredFormat(AdapterHandle adapter) => WebGPU_FFI.SurfaceGetPreferredFormat(this, adapter);
     public void Present() => WebGPU_FFI.SurfacePresent(this);
     public void SetLabel(byte* label) => WebGPU_FFI.SurfaceSetLabel(this, label);
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.SurfaceSetLabel2(this, label);

@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct TextureViewDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label;
     /// <summary>
     /// The format of the texture view. Must be either the  <see cref="WebGpuSharp.TextureDescriptor.Format"/> of the
     /// texture or one of the  <see cref="WebGpuSharp.TextureDescriptor.ViewFormats"/> specified during its creation.
@@ -38,6 +38,15 @@ public unsafe partial struct TextureViewDescriptorFFI
     /// Which  <see cref="TextureAspect">aspect(s)</see> of the texture are accessible to the texture view.
     /// </summary>
     public TextureAspect Aspect = TextureAspect.All;
+    /// <summary>
+    /// The allowed  <see cref="TextureUsage">usage(s)</see> for the texture view. Must be a subset of the
+    ///  <see cref="WebGpuSharp.Texture.Usage"/> flags of the texture. If 0, defaults to the full set of
+    ///  <see cref="WebGpuSharp.Texture.Usage"/> flags of the texture.
+    /// Note: If the view's  <see cref="WebGpuSharp.TextureViewDescriptor.Format"/> doesn't support all of the
+    /// texture's  <see cref="WebGpuSharp.TextureDescriptor.Usage"/>s, the default will fail,
+    /// and the view's  <see cref="WebGpuSharp.TextureViewDescriptor.Usage"/> must be specified explicitly.
+    /// </summary>
+    public TextureUsage Usage = TextureUsage.None;
 
     public TextureViewDescriptorFFI()
     {

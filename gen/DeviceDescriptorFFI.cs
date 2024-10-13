@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct DeviceDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label;
     public nuint RequiredFeatureCount;
     /// <summary>
     /// Specifies the features that are required by the device request.
@@ -18,7 +18,7 @@ public unsafe partial struct DeviceDescriptorFFI
     /// <summary>
     /// Specifies the limits that are required by the device request.
     /// The request will fail if the adapter cannot provide these limits.
-    /// Each key must be the name of a member of supported limits.
+    /// Each key with a non-`undefined` value must be the name of a member of supported limits.
     /// API calls on the resulting device perform validation according to the exact limits of the
     /// device (not the adapter; see #limits).
     /// 

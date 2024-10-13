@@ -7,7 +7,7 @@ public unsafe partial struct VertexStateFFI
 {
     public ChainedStruct* NextInChain;
     public ShaderModuleHandle Module;
-    public byte* EntryPoint;
+    public StringViewFFI EntryPoint;
     public nuint ConstantCount;
     public ConstantEntryFFI* Constants;
     public nuint BufferCount;

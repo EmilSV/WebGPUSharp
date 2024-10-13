@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct RenderBundleEncoderDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label;
     public nuint ColorFormatCount;
     public TextureFormat* ColorFormats;
     public TextureFormat DepthStencilFormat;

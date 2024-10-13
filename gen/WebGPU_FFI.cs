@@ -12,13 +12,12 @@ public unsafe static partial class WebGPU_FFI
     public const ulong LIMIT_U64_UNDEFINED = ulong.MaxValue;
     public const uint MIP_LEVEL_COUNT_UNDEFINED = uint.MaxValue;
     public const uint QUERY_SET_INDEX_UNDEFINED = uint.MaxValue;
+    public static readonly nuint STRLEN = nuint.MaxValue;
     public static readonly nuint WHOLE_MAP_SIZE = nuint.MaxValue;
     public const ulong WHOLE_SIZE = ulong.MaxValue;
 
     [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterInfoFreeMembers", CallingConvention = CallingConvention.Cdecl)]
     public static extern void AdapterInfoFreeMembers(FFI.AdapterInfoFFI value);
-    [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterPropertiesFreeMembers", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void AdapterPropertiesFreeMembers(FFI.AdapterPropertiesFFI value);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCreateInstance", CallingConvention = CallingConvention.Cdecl)]
     public static extern FFI.InstanceHandle CreateInstance(InstanceDescriptor* descriptor);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuGetInstanceFeatures", CallingConvention = CallingConvention.Cdecl)]
@@ -31,8 +30,6 @@ public unsafe static partial class WebGPU_FFI
     public static extern Status AdapterGetInfo(FFI.AdapterHandle adapter, FFI.AdapterInfoFFI* info);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterGetLimits", CallingConvention = CallingConvention.Cdecl)]
     public static extern Status AdapterGetLimits(FFI.AdapterHandle adapter, SupportedLimits* limits);
-    [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterGetProperties", CallingConvention = CallingConvention.Cdecl)]
-    public static extern Status AdapterGetProperties(FFI.AdapterHandle adapter, FFI.AdapterPropertiesFFI* properties);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuAdapterHasFeature", CallingConvention = CallingConvention.Cdecl)]
     public static extern WebGPUBool AdapterHasFeature(FFI.AdapterHandle adapter, FeatureName feature);
     /// <summary>
@@ -598,8 +595,6 @@ public unsafe static partial class WebGPU_FFI
     public static extern Status SurfaceGetCapabilities(FFI.SurfaceHandle surface, FFI.AdapterHandle adapter, FFI.SurfaceCapabilitiesFFI* capabilities);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceGetCurrentTexture", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SurfaceGetCurrentTexture(FFI.SurfaceHandle surface, FFI.SurfaceTextureFFI* surfaceTexture);
-    [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceGetPreferredFormat", CallingConvention = CallingConvention.Cdecl)]
-    public static extern TextureFormat SurfaceGetPreferredFormat(FFI.SurfaceHandle surface, FFI.AdapterHandle adapter);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfacePresent", CallingConvention = CallingConvention.Cdecl)]
     public static extern void SurfacePresent(FFI.SurfaceHandle surface);
     [DllImport("webgpu_dawn", EntryPoint = "wgpuSurfaceSetLabel", CallingConvention = CallingConvention.Cdecl)]

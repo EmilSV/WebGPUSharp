@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct BindGroupDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label;
     /// <summary>
     /// The  <see cref="WebGpuSharp.BindGroupLayout"/> the entries of this bind group will conform to.
     /// </summary>
