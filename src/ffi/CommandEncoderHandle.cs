@@ -40,8 +40,8 @@ public readonly unsafe partial struct CommandEncoderHandle :
             };
             depthStencilAttachmentPtr = &depthStencilAttachmentFFI;
         }
-
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
             RenderPassTimestampWritesFFI timestampWritesFFI;
             RenderPassTimestampWritesFFI* timestampWritesFFIPtr;
@@ -59,7 +59,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
             RenderPassDescriptorFFI descriptorFFI = new()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, (uint)labelSpan.Length),
                 ColorAttachmentCount = colorAttachmentsCount,
                 ColorAttachments = colorAttachmentsPtr,
                 DepthStencilAttachment = depthStencilAttachmentPtr,
@@ -239,11 +239,12 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public CommandBufferHandle Finish(in CommandBufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
             CommandBufferDescriptorFFI commandBufferDescriptor = new()
             {
-                Label = labelPtr
+                Label = new(labelPtr, (uint)labelSpan.Length)
             };
 
             return WebGPU_FFI.CommandEncoderFinish(this, &commandBufferDescriptor);

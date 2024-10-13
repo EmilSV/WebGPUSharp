@@ -1,6 +1,10 @@
+using System.Buffers;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Unicode;
 using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
@@ -150,25 +154,21 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void ToFFI(string? input, WebGpuAllocatorHandle allocator, out byte* dest)
+    public static unsafe void ToFFI(string? input, WebGpuAllocatorHandle allocator, out StringViewFFI dest)
     {
         dest = ToFFI(input, allocator);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe byte* ToFFI(string? input, WebGpuAllocatorHandle allocator)
+    public static unsafe StringViewFFI ToFFI(string? input, WebGpuAllocatorHandle allocator)
     {
         if (input is null)
         {
-            return null;
+            return default;
         }
 
-        var newSize = Encoding.UTF8.GetByteCount(input) + 1;
-        var result = allocator.Alloc<byte>((nuint)newSize);
-        var resultSpan = new Span<byte>(result, newSize);
-        Encoding.UTF8.GetBytes(input, new Span<byte>(result, newSize));
-        resultSpan[^1] = 0;
-        return result;
+        var resultSpan = ToUtf8Span(input, allocator);
+        return new((byte*)Unsafe.AsPointer(ref Unsafe.AsRef(in MemoryMarshal.AsRef<char>(resultSpan))), (uint)resultSpan.Length);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -262,6 +262,62 @@ public unsafe static partial class WebGPUMarshal
     {
         return new(text, allocator);
     }
+
+
+    public static unsafe ReadOnlySpan<byte> ToUtf8Span(WGPURefText text, WebGpuAllocatorHandle allocator)
+    {
+        int length = text.Length;
+        if (length == 0)
+        {
+            return [];
+        }
+
+        if (text.Is16BitSize)
+        {
+            ref var refChar = ref Unsafe.AsRef(in text._reference);
+            ReadOnlySpan<char> charTextSpan = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<byte, char>(ref refChar), length);
+            return ToUtf8Span(charTextSpan, allocator);
+        }
+        else
+        {
+            return MemoryMarshal.CreateReadOnlySpan(in text._reference, length);
+        }
+    }
+
+    public static unsafe ReadOnlySpan<byte> ToUtf8Span(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator)
+    {
+        int utf16Length = text.Length;
+        Span<byte> resultSpan = allocator.AllocAsSpan<byte>((nuint)(utf16Length + utf16Length / 2));
+        OperationStatus status;
+        int totalCharsRead = 0;
+        int totalBytesWritten = 0;
+        for (; ; )
+        {
+            status = Utf8.FromUtf16(
+                source: text[totalCharsRead..],
+                destination: resultSpan[totalBytesWritten..],
+                charsRead: out int charsRead,
+                bytesWritten: out int bytesWritten,
+                replaceInvalidSequences: false,
+                isFinalBlock: true
+            );
+            totalCharsRead += charsRead;
+            totalBytesWritten += bytesWritten;
+            if (status == OperationStatus.DestinationTooSmall)
+            {
+                int charRemaining = text.Length - totalCharsRead;
+                allocator.ReallocSpan(ref resultSpan, (nuint)(charRemaining + charRemaining / 2));
+            }
+            else
+            {
+                break;
+            }
+        }
+        Debug.Assert(status == OperationStatus.Done);
+        return resultSpan[..totalBytesWritten];
+    }
+
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T GetBorrowHandle<T>(BaseWebGpuSafeHandle<T>? safeHandle)

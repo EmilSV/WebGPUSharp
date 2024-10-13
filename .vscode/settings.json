@@ -5,6 +5,7 @@
         "GPUFFI",
         "mipmap",
         "Multisample",
+        "Realloc",
         "SPIRV",
         "TFFI",
         "Uncaptured",

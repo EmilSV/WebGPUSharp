@@ -22,8 +22,10 @@ internal unsafe static class LoadShaderModuleFromFileHandler
             return ShaderModuleHandle.Null;
         }
 
-        fixed (byte* dataPtr = data)
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        var dataSpan = ToUtf8Span(data, allocator);
+        fixed (byte* dataPtr = dataSpan)
+        fixed (byte* labelPtr = labelSpan)
         {
             ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
             {
@@ -34,13 +36,13 @@ internal unsafe static class LoadShaderModuleFromFileHandler
                         Next = null,
                         SType = SType.ShaderSourceWGSL
                     },
-                    Code = dataPtr
+                    Code = new(dataPtr, dataSpan.Length)
                 }
             };
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
             };
             return WebGPU_FFI.DeviceCreateShaderModule(device, &shaderModuleDescriptor);

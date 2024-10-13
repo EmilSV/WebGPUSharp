@@ -73,13 +73,14 @@ public readonly unsafe partial struct InstanceHandle :
         {
             using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
             ref var next = ref descriptor._next;
-            fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+            var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+            fixed (byte* labelPtr = labelSpan)
             fixed (ChainedStruct* nextPtr = &next)
             {
                 SurfaceDescriptorFFI surfaceDescriptor = new()
                 {
                     NextInChain = nextPtr,
-                    Label = labelPtr
+                    Label = new(labelPtr, (uint)labelSpan.Length)
                 };
                 return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
             }

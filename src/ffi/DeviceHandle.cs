@@ -24,10 +24,11 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             dest: out BindGroupEntryFFI* entriesPtr,
             outCount: out nuint entriesCount
         );
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         {
             BindGroupDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = labelPtr;
+            descriptorFFI.Label = new(labelPtr, labelSpan.Length);
             ToFFI(descriptor.Layout, out descriptorFFI.Layout);
             descriptorFFI.EntryCount = entriesCount;
             descriptorFFI.Entries = entriesPtr;
@@ -46,13 +47,13 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
         fixed (BindGroupLayoutEntry* entriesPtr = descriptor.Entries)
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         {
             return CreateBindGroupLayout(new BindGroupLayoutDescriptorFFI()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 Entries = entriesPtr,
                 EntryCount = (nuint)descriptor.Entries.Length
             });
@@ -62,10 +63,11 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BufferHandle CreateBuffer(ref BufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         fixed (BufferDescriptorFFI* descriptorPtr = &descriptor._unmanagedDescriptor)
         {
-            descriptorPtr->Label = LabelPtr;
+            descriptorPtr->Label = new(labelPtr, labelSpan.Length);
             return WebGPU_FFI.DeviceCreateBuffer(this, descriptorPtr);
         }
     }
@@ -74,9 +76,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BufferHandle CreateBuffer(BufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         {
-            descriptor._unmanagedDescriptor.Label = LabelPtr;
+            descriptor._unmanagedDescriptor.Label = new(labelPtr, labelSpan.Length);
             return WebGPU_FFI.DeviceCreateBuffer(this, &descriptor._unmanagedDescriptor);
         }
     }
@@ -84,11 +87,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public CommandEncoderHandle CreateCommandEncoder(in CommandEncoderDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
             CommandEncoderDescriptorFFI commandEncoderDescriptor = new()
             {
-                Label = LabelPtr
+                Label = new(labelPtr, labelSpan.Length)
             };
             return WebGPU_FFI.DeviceCreateCommandEncoder(this, &commandEncoderDescriptor);
         }
@@ -105,8 +109,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public ComputePipelineHandle CreateComputePipeline(in ComputePipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* EntryPointPtr = ToRefCstrUtf8(descriptor.Compute.EntryPoint, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        var entryPointSpan = ToUtf8Span(descriptor.Compute.EntryPoint, allocator);
+        fixed (byte* labelPtr = labelSpan)
+        fixed (byte* entryPointPtr = entryPointSpan)
         {
             ToFFI(
                 descriptor.Compute.Constants, allocator,
@@ -116,12 +122,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
-                Label = LabelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 Layout = (PipelineLayoutHandle)descriptor.Layout,
                 Compute = new()
                 {
                     Module = (ShaderModuleHandle)descriptor.Compute.Module,
-                    EntryPoint = EntryPointPtr,
+                    EntryPoint = new(entryPointPtr, entryPointSpan.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
@@ -143,8 +149,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         CreateComputePipelineAsyncDelegate<ComputePipelineHandle> callback)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* EntryPointPtr = ToRefCstrUtf8(descriptor.Compute.EntryPoint, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        var entryPointSpan = ToUtf8Span(descriptor.Compute.EntryPoint, allocator);
+        fixed (byte* labelPtr = labelSpan)
+        fixed (byte* entryPointPtr = entryPointSpan)
         {
             ToFFI(
                 descriptor.Compute.Constants, allocator,
@@ -154,12 +162,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
-                Label = LabelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 Layout = (PipelineLayoutHandle)descriptor.Layout,
                 Compute = new()
                 {
                     Module = (ShaderModuleHandle)descriptor.Compute.Module,
-                    EntryPoint = EntryPointPtr,
+                    EntryPoint = new(entryPointPtr, entryPointSpan.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
@@ -181,8 +189,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         in ComputePipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* LabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* EntryPointPtr = ToRefCstrUtf8(descriptor.Compute.EntryPoint, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        var entryPointSpan = ToUtf8Span(descriptor.Compute.EntryPoint, allocator);
+        fixed (byte* labelPtr = labelSpan)
+        fixed (byte* entryPointPtr = entryPointSpan)
         {
             ToFFI(
                 descriptor.Compute.Constants, allocator,
@@ -192,12 +202,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
-                Label = LabelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 Layout = (PipelineLayoutHandle)descriptor.Layout,
                 Compute = new()
                 {
                     Module = (ShaderModuleHandle)descriptor.Compute.Module,
-                    EntryPoint = EntryPointPtr,
+                    EntryPoint = new(entryPointPtr, entryPointSpan.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
@@ -218,10 +228,11 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         {
             PipelineLayoutDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = labelPtr;
+            descriptorFFI.Label = new(labelPtr, labelSpan.Length);
             ToFFI(
                 descriptor.BindGroupLayouts,
                 allocator,
@@ -244,11 +255,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public QuerySetHandle CreateQuerySet(in QuerySetDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
             QuerySetDescriptorFFI descriptorFFI = new()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 Type = descriptor.Type,
                 Count = descriptor.Count
             };
@@ -268,12 +280,13 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public RenderBundleEncoderHandle CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         fixed (TextureFormat* colorFormatsPtr = descriptor.ColorFormats)
         {
             RenderBundleEncoderDescriptorFFI descriptorFFI = new()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, labelSpan.Length),
                 ColorFormatCount = (nuint)descriptor.ColorFormats.Length,
                 ColorFormats = colorFormatsPtr,
                 DepthStencilFormat = descriptor.DepthStencilFormat,
@@ -297,11 +310,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public RenderPipelineHandle CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = labelPtr;
+            descriptorFFI.Label = new(labelPtr, labelSpan.Length);
             ToFFI(descriptor.Layout, out descriptorFFI.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
@@ -326,11 +340,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
 
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
         fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = labelPtr;
+            descriptorFFI.Label = new(labelPtr, labelSpan.Length);
             ToFFI(descriptor.Layout, out descriptorFFI.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
@@ -351,11 +366,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = labelPtr;
+            descriptorFFI.Label = new(labelPtr, labelSpan.Length);
             ToFFI(descriptor.Layout, out descriptorFFI.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
@@ -372,9 +388,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         SamplerDescriptorFFI descriptorFFI = descriptor._unsafeDescriptor;
 
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            descriptorFFI.Label = labelPtr;
+            descriptorFFI.Label = new(labelPtr, labelSpan.Length);
             return WebGPU_FFI.DeviceCreateSampler(this, &descriptorFFI);
         }
     }
@@ -382,9 +399,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public SamplerHandle CreateSampler(SamplerDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            descriptor._unsafeDescriptor.Label = labelPtr;
+            descriptor._unsafeDescriptor.Label = new(labelPtr, labelSpan.Length);
             return WebGPU_FFI.DeviceCreateSampler(this, &descriptor._unsafeDescriptor);
         }
     }
@@ -417,11 +435,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public TextureHandle CreateTexture(ref TextureDescriptor textureDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(textureDescriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(textureDescriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         fixed (TextureFormat* viewFormatsPtr = textureDescriptor.ViewFormats)
         fixed (TextureDescriptorFFI* textureDescriptorPtr = &textureDescriptor._unmanagedDescriptor)
         {
-            textureDescriptorPtr->Label = labelPtr;
+            textureDescriptorPtr->Label = new(labelPtr, labelSpan.Length);
             textureDescriptorPtr->ViewFormatCount = (uint)textureDescriptor.ViewFormats.Length;
             textureDescriptorPtr->ViewFormats = viewFormatsPtr;
 
@@ -433,10 +452,11 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public TextureHandle CreateTexture(TextureDescriptor textureDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(textureDescriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(textureDescriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         fixed (TextureFormat* viewFormatsPtr = textureDescriptor.ViewFormats)
         {
-            textureDescriptor._unmanagedDescriptor.Label = labelPtr;
+            textureDescriptor._unmanagedDescriptor.Label = new(labelPtr, labelSpan.Length);
             textureDescriptor._unmanagedDescriptor.ViewFormatCount = (uint)textureDescriptor.ViewFormats.Length;
             textureDescriptor._unmanagedDescriptor.ViewFormats = viewFormatsPtr;
 
@@ -521,8 +541,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     private ShaderModuleHandle CreateShaderModuleWgsl(in ShaderModuleDescriptor descriptor, WGPURefText code)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* codePtr = ToRefCstrUtf8(code, allocator))
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
+        var codeSpan = ToUtf8Span(code, allocator);
+        fixed (byte* labelPtr = labelSpan)
+        fixed (byte* codePtr = codeSpan)
         {
 
             ShaderSourceWGSLFFI shaderSourceWGSL = new()
@@ -532,14 +554,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                     Next = null,
                     SType = SType.ShaderSourceWGSL
                 },
-                Code = codePtr
+                Code = new(codePtr, codeSpan.Length)
             };
 
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
                 NextInChain = &shaderSourceWGSL.Chain,
-                Label = labelPtr
+                Label = new(labelPtr, labelSpan.Length)
             };
 
             return WebGPU_FFI.DeviceCreateShaderModule(this, &shaderModuleDescriptor);

@@ -37,24 +37,28 @@ public unsafe class ConstantEntryCollectionMarshal :
 
     public static void MarshalTo(in ConstantEntry item, ref ConstantEntryFFI ffiItem, ref Cache cache)
     {
+        StringViewFFI key;
         if (cache.keyAsUtf8 == null || cache.dirty)
         {
             int newUtf8Size = Encoding.UTF8.GetByteCount(item.Key);
-            int allocSize = Math.Max(newUtf8Size + 1, MinKeyAsUtf8Length);
+            int allocSize = Math.Max(newUtf8Size, MinKeyAsUtf8Length);
             byte[]? utf8Bytes = cache.keyAsUtf8;
             if (utf8Bytes == null || utf8Bytes.Length < allocSize)
             {
                 utf8Bytes = GC.AllocateUninitializedArray<byte>(allocSize, pinned: true);
                 cache.keyAsUtf8 = utf8Bytes;
             }
-            utf8Bytes[newUtf8Size] = 0;
-
+            key = new((byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]), (uint)cache.keyAsUtf8.Length);
             cache.dirty = false;
+        }
+        else
+        {
+            key = new((byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]), (uint)cache.keyAsUtf8.Length);
         }
 
         ffiItem = new()
         {
-            Key = (byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]),
+            Key = key,
             Value = item.Value
         };
     }

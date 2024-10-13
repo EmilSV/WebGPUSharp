@@ -176,7 +176,7 @@ internal unsafe class WebGpuAllocator
         _currentBuffer = _buffers[_currentBufferIndex] = GetBuffer(newSize);
         _currentBufferOffset = 0;
     }
-
+    
     private void ReallocBuffer(void* ptr, long newSize)
     {
         Debug.Assert(ptr == (void*)_currentBuffer.Buffer);
@@ -220,6 +220,7 @@ internal unsafe class WebGpuAllocator
         return result;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void* Realloc(void* ptr, nuint newSize)
     {
         Debug.Assert(ptr != null);
@@ -280,8 +281,9 @@ internal unsafe class WebGpuAllocator
         return result;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T* Realloc<T>(T* ptr, nuint newSize)
-        where T : unmanaged
+    where T : unmanaged
     {
         return (T*)Realloc((void*)ptr, newSize * (uint)sizeof(T));
     }

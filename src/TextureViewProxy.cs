@@ -110,9 +110,10 @@ public unsafe class TextureViewProxy : ITextureViewSource
         _descriptor.Format = texture.GetFormat();
 
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(Label, allocator))
+        var labelSpan = WebGPUMarshal.ToUtf8Span(Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            _descriptor.Label = labelPtr;
+            _descriptor.Label = new(labelPtr, (uint)labelSpan.Length);
             _textureView = texture.CreateView(_descriptor);
         }
 

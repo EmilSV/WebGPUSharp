@@ -27,9 +27,10 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public RenderBundleHandle Finish(in RenderBundleDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
+        var labelSpan = ToUtf8Span(descriptor.label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            RenderBundleDescriptorFFI descriptorFFI = new() { Label = labelPtr };
+            RenderBundleDescriptorFFI descriptorFFI = new() { Label = new(labelPtr, (uint)labelSpan.Length) };
             return WebGPU_FFI.RenderBundleEncoderFinish(this, &descriptorFFI);
         }
     }

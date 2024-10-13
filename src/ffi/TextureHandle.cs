@@ -19,10 +19,11 @@ public readonly unsafe partial struct TextureHandle :
     public TextureViewHandle CreateView(TextureViewDescriptor textureViewDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(textureViewDescriptor.Label, allocator))
+        var labelSpan = ToUtf8Span(textureViewDescriptor.Label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
             TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor;
-            textureViewDescriptorPtr->Label = labelPtr;
+            textureViewDescriptorPtr->Label = new(labelPtr, (uint)labelSpan.Length);
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }
@@ -31,10 +32,11 @@ public readonly unsafe partial struct TextureHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
+        var labelSpan = ToUtf8Span(textureViewDescriptor.Label, allocator);
         fixed (TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor)
-        fixed (byte* labelPtr = ToRefCstrUtf8(textureViewDescriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         {
-            textureViewDescriptorPtr->Label = labelPtr;
+            textureViewDescriptorPtr->Label = new(labelPtr, (uint)labelSpan.Length);
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }

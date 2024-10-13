@@ -18,32 +18,41 @@ public readonly ref struct WebGpuAllocatorHandle
         return new WebGpuAllocatorHandle(WebGpuAllocator.Rent());
     }
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe T* Alloc<T>(nuint amount)
         where T : unmanaged
     {
         return _allocator.Alloc<T>(amount);
     }
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe Span<T> AllocAsSpan<T>(nuint amount)
         where T : unmanaged
     {
         return new Span<T>(_allocator.Alloc<T>(amount), (int)amount);
     }
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe T* Realloc<T>(T* ptr, nuint amount)
         where T : unmanaged
     {
         return _allocator.Realloc<T>(ptr, amount);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void ReallocSpan<T>(ref Span<T> span, nuint amount)
-        where T : unmanaged
+    where T : unmanaged
     {
         var ptr = Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
         ptr = _allocator.Realloc<T>((T*)ptr, amount);
         span = new Span<T>(ptr, (int)amount);
     }
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void AddHandleToDispose<THandle>(THandle handle)
         where THandle : unmanaged, IWebGpuHandle<THandle>
     {
