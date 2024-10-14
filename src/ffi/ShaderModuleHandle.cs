@@ -12,6 +12,16 @@ public readonly partial struct ShaderModuleHandle :
         ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callback);
     }
 
+    public Task GetCompilationInfoAsync(CompilationInfoCallback callback)
+    {
+        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callback);
+    }
+
+    public Task<T> GetCompilationInfoAsync<T>(CompilationInfoCallback<T> callback)
+    {
+        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callback);
+    }
+
 
     public static ref nuint AsPointer(ref ShaderModuleHandle handle)
     {
