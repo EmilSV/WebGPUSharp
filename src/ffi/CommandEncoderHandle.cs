@@ -239,7 +239,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public CommandBufferHandle Finish(in CommandBufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var labelSpan = ToUtf8Span(descriptor.label, allocator);
+        var labelSpan = ToUtf8Span(descriptor.Label, allocator);
         fixed (byte* labelPtr = labelSpan)
         {
             CommandBufferDescriptorFFI commandBufferDescriptor = new()
