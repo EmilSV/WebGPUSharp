@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using Microsoft.Win32.SafeHandles;
 using WebGpuSharp.FFI;
 using static WebGpuSharp.FFI.WebGPUMarshal;
@@ -98,7 +99,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
 
         int index = 0;
         int count = (int)fileLength;
-        uint allocSize = (uint)count + 1;
+        uint allocSize = (uint)count;
         byte* bufferPtr = null;
         try
         {
@@ -115,9 +116,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
                 index += n;
                 count -= n;
             }
-
-            bytes[^1] = 0;
-
+            
             return new(bytes, ResultType.Success);
         }
         catch (Exception)
