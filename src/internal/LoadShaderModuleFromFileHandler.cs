@@ -23,7 +23,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
         }
 
         var labelSpan = ToUtf8Span(label, allocator);
-        var dataSpan = ToUtf8Span(data, allocator);
+        var dataSpan = data;
         fixed (byte* dataPtr = dataSpan)
         fixed (byte* labelPtr = labelSpan)
         {
