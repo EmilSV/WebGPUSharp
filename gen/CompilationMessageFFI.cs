@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct CompilationMessageFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Message;
+    public StringViewFFI Message;
     public CompilationMessageType Type;
     public ulong LineNum;
     public ulong LinePos;
