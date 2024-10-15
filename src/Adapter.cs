@@ -30,9 +30,6 @@ public sealed class Adapter : BaseWebGpuSafeHandle<Adapter, AdapterHandle>
     public bool GetLimits(out SupportedLimits limits) => _handle.GetLimits(out limits);
     public SupportedLimits? GetLimits() => _handle.GetLimits();
 
-    public void GetProperties(out AdapterProperties properties) => _handle.GetProperties(out properties);
-    public AdapterProperties GetProperties() => _handle.GetProperties();
-
     public bool HasFeature(FeatureName feature) => _handle.HasFeature(feature);
 
     public Task<Device?> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
