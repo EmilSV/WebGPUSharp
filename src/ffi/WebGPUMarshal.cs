@@ -257,13 +257,6 @@ public unsafe static partial class WebGPUMarshal
         handle = safeHandle.GetHandle();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static WGPURefCStrUTF8 ToRefCstrUtf8(WGPURefText text, WebGpuAllocatorHandle allocator)
-    {
-        return new(text, allocator);
-    }
-
-
     public static unsafe ReadOnlySpan<byte> ToUtf8Span(WGPURefText text, WebGpuAllocatorHandle allocator)
     {
         int length = text.Length;

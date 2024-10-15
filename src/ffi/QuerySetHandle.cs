@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -14,7 +15,8 @@ public unsafe readonly partial struct QuerySetHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
             WebGPU_FFI.QuerySetSetLabel(this, labelPtr);
         }

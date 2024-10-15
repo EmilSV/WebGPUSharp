@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -16,10 +17,10 @@ public readonly unsafe partial struct BindGroupHandle :
     public readonly void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-
-        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            WebGPU_FFI.BindGroupSetLabel(this, labelPtr);
+            WebGPU_FFI.BindGroupSetLabel2(this, new(labelPtr, labelSpan.Length));
         }
     }
 

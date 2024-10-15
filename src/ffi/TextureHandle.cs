@@ -52,9 +52,10 @@ public readonly unsafe partial struct TextureHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            WebGPU_FFI.TextureSetLabel(this, labelPtr);
+            WebGPU_FFI.TextureSetLabel2(this, new(labelPtr, labelSpan.Length));
         }
     }
 

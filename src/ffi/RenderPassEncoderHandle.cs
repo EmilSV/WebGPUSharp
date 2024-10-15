@@ -72,11 +72,12 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* markerLabelPtr = ToRefCstrUtf8(markerLabel, allocator))
+        var markerLabelSpan = ToUtf8Span(markerLabel, allocator);
+        fixed (byte* markerLabelPtr = markerLabelSpan)
         {
-            WebGPU_FFI.RenderPassEncoderInsertDebugMarker(
+            WebGPU_FFI.RenderPassEncoderInsertDebugMarker2(
                 renderPassEncoder: this,
-                markerLabel: markerLabelPtr
+                markerLabel: new(markerLabelPtr, markerLabelSpan.Length)
             );
         }
     }
@@ -84,11 +85,12 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* groupLabelPtr = ToRefCstrUtf8(groupLabel, allocator))
+        var groupLabelSpan = ToUtf8Span(groupLabel, allocator);
+        fixed (byte* groupLabelPtr = groupLabelSpan)
         {
-            WebGPU_FFI.RenderPassEncoderPushDebugGroup(
+            WebGPU_FFI.RenderPassEncoderPushDebugGroup2(
                 renderPassEncoder: this,
-                groupLabel: groupLabelPtr
+                groupLabel: new(groupLabelPtr, groupLabelSpan.Length)
             );
         }
     }
@@ -124,7 +126,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
                 renderPassEncoder: this,
                 groupIndex: groupIndex,
                 group: group,
-                dynamicOffsetCount: (uint)dynamicOffsets.Length,
+                dynamicOffsetCount: (nuint)dynamicOffsets.Length,
                 dynamicOffsets: dynamicOffsetsPtr
             );
         }
@@ -170,11 +172,12 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            WebGPU_FFI.RenderPassEncoderSetLabel(
+            WebGPU_FFI.RenderPassEncoderSetLabel2(
                 renderPassEncoder: this,
-                label: labelPtr
+                label: new(labelPtr, (uint)labelSpan.Length)
             );
         }
     }

@@ -50,15 +50,6 @@ public readonly ref struct WGPURefText
         _lengthInfo = length | SIGNED_BIT;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public ref readonly byte GetPinnableReference()
-    {
-        ref readonly byte ret = ref Unsafe.NullRef<byte>();
-        if (Length != 0) ret = ref _reference;
-        return ref ret;
-    }
-
     public bool TryGetCharSpan(out ReadOnlySpan<char> outSpan)
     {
         if (Is16BitSize)

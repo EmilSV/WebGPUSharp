@@ -25,7 +25,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             outCount: out nuint entriesCount
         );
         var labelSpan = ToUtf8Span(descriptor.Label, allocator);
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         {
             BindGroupDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = new(labelPtr, labelSpan.Length);
@@ -77,7 +77,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         var labelSpan = ToUtf8Span(descriptor.Label, allocator);
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         {
             descriptor._unmanagedDescriptor.Label = new(labelPtr, labelSpan.Length);
             return WebGPU_FFI.DeviceCreateBuffer(this, &descriptor._unmanagedDescriptor);
@@ -229,7 +229,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         var labelSpan = ToUtf8Span(descriptor.Label, allocator);
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         {
             PipelineLayoutDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = new(labelPtr, labelSpan.Length);
@@ -311,7 +311,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         var labelSpan = ToUtf8Span(descriptor.Label, allocator);
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
@@ -341,7 +341,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
         var labelSpan = ToUtf8Span(descriptor.Label, allocator);
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
+        fixed (byte* labelPtr = labelSpan)
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
@@ -520,9 +520,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            WebGPU_FFI.DeviceSetLabel(this, labelPtr);
+            WebGPU_FFI.DeviceSetLabel2(this, new(labelPtr, labelSpan.Length));
         }
     }
 

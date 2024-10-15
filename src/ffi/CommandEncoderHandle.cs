@@ -254,18 +254,20 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* markerLabelPtr = ToRefCstrUtf8(markerLabel, allocator))
+        var markerLabelSpan = ToUtf8Span(markerLabel, allocator);
+        fixed (byte* markerLabelPtr = markerLabelSpan)
         {
-            WebGPU_FFI.CommandEncoderInsertDebugMarker(this, markerLabelPtr);
+            WebGPU_FFI.CommandEncoderInsertDebugMarker2(this, new(markerLabelPtr, markerLabelSpan.Length));
         }
     }
 
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* groupLabelPtr = ToRefCstrUtf8(groupLabel, allocator))
+        var groupLabelSpan = ToUtf8Span(groupLabel, allocator);
+        fixed (byte* groupLabelPtr = groupLabelSpan)
         {
-            WebGPU_FFI.CommandEncoderPushDebugGroup(this, groupLabelPtr);
+            WebGPU_FFI.CommandEncoderPushDebugGroup2(this, new(groupLabelPtr, groupLabelSpan.Length));
         }
     }
 
@@ -286,9 +288,10 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        var labelSpan = ToUtf8Span(label, allocator);
+        fixed (byte* labelPtr = labelSpan)
         {
-            WebGPU_FFI.CommandEncoderSetLabel(this, labelPtr);
+            WebGPU_FFI.CommandEncoderSetLabel2(this, new(labelPtr, labelSpan.Length));
         }
     }
 
