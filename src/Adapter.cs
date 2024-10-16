@@ -27,6 +27,7 @@ public sealed class Adapter : BaseWebGpuSafeHandle<Adapter, AdapterHandle>
     public nuint EnumerateFeatures(Span<FeatureName> output) => _handle.EnumerateFeatures(output);
     public FeatureName[] GetFeatures() => _handle.GetFeatures();
 
+    public AdapterInfo? GetInfo() => _handle.GetInfo();
     public bool GetLimits(out SupportedLimits limits) => _handle.GetLimits(out limits);
     public SupportedLimits? GetLimits() => _handle.GetLimits();
 

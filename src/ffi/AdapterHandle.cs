@@ -55,6 +55,15 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+    public readonly AdapterInfo? GetInfo()
+    {
+        AdapterInfoFFI adapterInfoFFI = default;
+        WebGPU_FFI.AdapterGetInfo(this, &adapterInfoFFI);
+        var outAdapterInfo = new AdapterInfo(adapterInfoFFI);
+        WebGPU_FFI.AdapterInfoFreeMembers(adapterInfoFFI);
+        return outAdapterInfo;
+    }
+
     private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
