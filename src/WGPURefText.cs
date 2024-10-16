@@ -8,10 +8,17 @@ namespace WebGpuSharp;
 
 public readonly ref struct WGPURefText
 {
+    public enum Encoding
+    {
+        Empty,
+        Utf8,
+        Utf16
+    }
+
     private const int SIGNED_BIT = 1 << 31;
     private const int SIGNED_BIT_MASK = ~SIGNED_BIT;
 
-    internal readonly ref readonly byte _reference;
+    private readonly ref readonly byte _reference;
     private readonly int _lengthInfo;
 
     public int Length
@@ -45,18 +52,13 @@ public readonly ref struct WGPURefText
         if (length != 0)
         {
             _reference = ref Unsafe.As<char, byte>(ref MemoryMarshal.GetReference(text));
+            _lengthInfo = length | SIGNED_BIT;
+        }
+        else
+        {
+            _lengthInfo = 0;
         }
         Debug.Assert((length & SIGNED_BIT_MASK) == length);
-        _lengthInfo = length | SIGNED_BIT;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public ref readonly byte GetPinnableReference()
-    {
-        ref readonly byte ret = ref Unsafe.NullRef<byte>();
-        if (Length != 0) ret = ref _reference;
-        return ref ret;
     }
 
     public bool TryGetCharSpan(out ReadOnlySpan<char> outSpan)
@@ -86,6 +88,32 @@ public readonly ref struct WGPURefText
         {
             outSpan = default;
             return false;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Encoding OutputToMatchingEncoding(out ReadOnlySpan<byte> outUft8Span, out ReadOnlySpan<char> outUft16Span)
+    {
+        var length = Length;
+        if (length == 0)
+        {
+            outUft8Span = default;
+            outUft16Span = default;
+            return Encoding.Empty;
+        }
+
+        ref var refFirstChar = ref Unsafe.AsRef(in _reference);
+        if (Is16BitSize)
+        {
+            outUft16Span = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<byte, char>(ref refFirstChar), length);
+            outUft8Span = default;
+            return Encoding.Utf16;
+        }
+        else
+        {
+            outUft8Span = MemoryMarshal.CreateReadOnlySpan(ref refFirstChar, length);
+            outUft16Span = default;
+            return Encoding.Utf8;
         }
     }
 
@@ -123,7 +151,4 @@ public readonly ref struct WGPURefText
     {
         return new WGPURefText(value);
     }
-
-
-
 }

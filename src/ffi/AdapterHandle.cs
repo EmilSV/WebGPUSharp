@@ -89,8 +89,11 @@ public unsafe readonly partial struct AdapterHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        fixed (byte* deviceDescriptorLabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* queueLabelPtr = ToRefCstrUtf8(descriptor.DefaultQueue.Label, allocator))
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
+        var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: true);
+
+        fixed (byte* deviceDescriptorLabelPtr = labelUtf8Span)
+        fixed (byte* queueLabelPtr = queueLabelUtf8Span)
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
         fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
         {
@@ -127,8 +130,11 @@ public unsafe readonly partial struct AdapterHandle :
         CallbackUserDataHandle handle = default;
         try
         {
-            fixed (byte* deviceDescriptorLabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-            fixed (byte* queueLabelPtr = ToRefCstrUtf8(descriptor.DefaultQueue.Label, allocator))
+            var deviceDescriptorLabelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
+            var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: true);
+
+            fixed (byte* deviceDescriptorLabelPtr = deviceDescriptorLabelUtf8Span)
+            fixed (byte* queueLabelPtr = queueLabelUtf8Span)
             fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
             fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
             {
@@ -152,7 +158,7 @@ public unsafe readonly partial struct AdapterHandle :
                         Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
                         Userdata = (void*)deviceLostCallbackFuncPtrAndId.id
                     },
-                    UncapturedErrorCallbackInfo =  new()
+                    UncapturedErrorCallbackInfo = new()
                     {
                         Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
                         Userdata = (void*)uncapturedErrorCallbackFuncPtrAndId.id
