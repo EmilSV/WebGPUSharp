@@ -45,6 +45,9 @@ public sealed unsafe partial class Device : BaseWebGpuSafeHandle<Device, DeviceH
     public ShaderModule? CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
         _handle.CreateShaderModule(descriptor).ToSafeHandle(true);
 
+    public ShaderModule? CreateShaderModuleWGSL(in ShaderModuleWGSLDescriptor descriptor) =>
+        CreateShaderModule(new ShaderModuleDescriptor(in descriptor));
+
     public SupportedLimits GetLimits() => _handle.GetLimits();
     public void GetLimits(ref SupportedLimits supportedLimits) => _handle.GetLimits(ref supportedLimits);
 

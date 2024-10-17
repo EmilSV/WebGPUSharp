@@ -4,22 +4,20 @@ namespace WebGpuSharp;
 
 public ref partial struct ShaderModuleDescriptor
 {
-    internal ref SType _next;
+    internal ref readonly SType _next;
     public WGPURefText Label;
-    // public Span<ShaderModuleCompilationHint> Hints;
 
     public ShaderModuleDescriptor(
-        ref ShaderModuleWGSLDescriptor next
+        in ShaderModuleWGSLDescriptor next
     )
     {
-        next._chainType = SType.ShaderSourceWGSL;
         _next = ref next._chainType;
         unsafe
         {
 #pragma warning disable CS8500
             fixed (ShaderModuleWGSLDescriptor* ptr = &next)
             {
-                Debug.Assert(ptr == Unsafe.AsPointer(ref _next));
+                Debug.Assert(ptr == Unsafe.AsPointer(ref Unsafe.AsRef(in _next)));
             }
 #pragma warning restore  CS8500
         }
@@ -39,7 +37,7 @@ public ref partial struct ShaderModuleDescriptor
     {
         Debug.Assert(IsWgslNext());
 #pragma warning disable CS8500
-        return ref *(ShaderModuleWGSLDescriptor*)Unsafe.AsPointer(ref _next);
+        return ref *(ShaderModuleWGSLDescriptor*)Unsafe.AsPointer(ref Unsafe.AsRef(in _next));
 #pragma warning restore CS8500
     }
 }

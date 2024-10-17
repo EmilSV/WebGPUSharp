@@ -47,6 +47,11 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
+    public TextureViewHandle CreateView()
+    {
+        return WebGPU_FFI.TextureCreateView(this, null);
+    }
+
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

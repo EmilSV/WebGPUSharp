@@ -9,7 +9,7 @@ public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<Color
 {
     public TextureFormat Format;
     public BlendState? Blend;
-    public ColorWriteMask WriteMask;
+    public ColorWriteMask WriteMask = ColorWriteMask.All;
 
     public ColorTargetState(
         TextureFormat format = default,

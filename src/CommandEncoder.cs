@@ -118,6 +118,14 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         return commandBufferHandle.ToSafeHandle();
     }
 
+    public CommandBuffer Finish()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        var commandBufferHandle = _pooledHandle.handle.Finish();
+        PooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
+        return commandBufferHandle.ToSafeHandle();
+    }
+
     public bool Equals(CommandEncoder other)
     {
         _pooledHandle.VerifyToken(_localToken);

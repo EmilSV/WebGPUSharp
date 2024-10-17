@@ -250,6 +250,11 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    public CommandBufferHandle Finish()
+    {
+        return WebGPU_FFI.CommandEncoderFinish(this, null);
+    }
+
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

@@ -28,9 +28,12 @@ public sealed class Texture :
         return _handle.CreateView(textureViewDescriptor).ToSafeHandle(false);
     }
 
+    public TextureView? CreateView()
+    {
+        return _handle.CreateView().ToSafeHandle(false);
+    }
+
     public void Destroy() => _handle.Destroy();
-
-
 
     public uint GetDepthOrArrayLayers() => _handle.GetDepthOrArrayLayers();
     public TextureDimension GetDimension() => _handle.GetDimension();

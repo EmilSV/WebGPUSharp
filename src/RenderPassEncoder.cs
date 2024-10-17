@@ -34,16 +34,18 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
     }
 
     public void Draw(
-        uint vertexCount, uint instanceCount,
-        uint firstVertex, uint firstInstance)
+        uint vertexCount, uint instanceCount = 1,
+        uint firstVertex = 0, uint firstInstance = 0)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.Draw(vertexCount, instanceCount, firstVertex, firstInstance);
     }
 
+
+
     public void DrawIndexed(
-        uint indexCount, uint instanceCount,
-        uint firstIndex, int baseVertex, uint firstInstance)
+        uint indexCount, uint instanceCount = 1,
+        uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0)
 
     {
         _pooledHandle.VerifyToken(_localToken);
