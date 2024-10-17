@@ -26,7 +26,6 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     public nuint EnumerateFeatures(FeatureName* features) => WebGPU_FFI.AdapterEnumerateFeatures(this, features);
     public Status GetInfo(AdapterInfoFFI* info) => WebGPU_FFI.AdapterGetInfo(this, info);
     public Status GetLimits(SupportedLimits* limits) => WebGPU_FFI.AdapterGetLimits(this, limits);
-    public Status GetProperties(AdapterPropertiesFFI* properties) => WebGPU_FFI.AdapterGetProperties(this, properties);
     public WebGPUBool HasFeature(FeatureName feature) => WebGPU_FFI.AdapterHasFeature(this, feature);
     /// <summary>
     /// Requests a device from the adapter.

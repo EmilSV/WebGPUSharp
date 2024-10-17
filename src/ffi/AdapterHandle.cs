@@ -55,21 +55,15 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly void GetProperties(out AdapterProperties properties)
+    public readonly AdapterInfo? GetInfo()
     {
-        fixed (AdapterPropertiesFFI* propertiesPtr = &properties._unmanagedDescriptor)
-        {
-            WebGPU_FFI.AdapterGetProperties(this, propertiesPtr);
-        }
+        AdapterInfoFFI adapterInfoFFI = default;
+        WebGPU_FFI.AdapterGetInfo(this, &adapterInfoFFI);
+        var outAdapterInfo = new AdapterInfo(adapterInfoFFI);
+        WebGPU_FFI.AdapterInfoFreeMembers(adapterInfoFFI);
+        return outAdapterInfo;
     }
 
-    public readonly AdapterProperties GetProperties()
-    {
-        AdapterProperties properties;
-        WebGPU_FFI.AdapterGetProperties(this, &properties._unmanagedDescriptor);
-        return properties;
-    }
-    
     private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
@@ -104,8 +98,11 @@ public unsafe readonly partial struct AdapterHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        fixed (byte* deviceDescriptorLabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-        fixed (byte* queueLabelPtr = ToRefCstrUtf8(descriptor.DefaultQueue.Label, allocator))
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
+        var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: true);
+
+        fixed (byte* deviceDescriptorLabelPtr = labelUtf8Span)
+        fixed (byte* queueLabelPtr = queueLabelUtf8Span)
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
         fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
         {
@@ -142,8 +139,11 @@ public unsafe readonly partial struct AdapterHandle :
         CallbackUserDataHandle handle = default;
         try
         {
-            fixed (byte* deviceDescriptorLabelPtr = ToRefCstrUtf8(descriptor.Label, allocator))
-            fixed (byte* queueLabelPtr = ToRefCstrUtf8(descriptor.DefaultQueue.Label, allocator))
+            var deviceDescriptorLabelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
+            var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: true);
+
+            fixed (byte* deviceDescriptorLabelPtr = deviceDescriptorLabelUtf8Span)
+            fixed (byte* queueLabelPtr = queueLabelUtf8Span)
             fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
             fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
             {
@@ -167,7 +167,7 @@ public unsafe readonly partial struct AdapterHandle :
                         Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
                         Userdata = (void*)deviceLostCallbackFuncPtrAndId.id
                     },
-                    UncapturedErrorCallbackInfo =  new()
+                    UncapturedErrorCallbackInfo = new()
                     {
                         Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
                         Userdata = (void*)uncapturedErrorCallbackFuncPtrAndId.id

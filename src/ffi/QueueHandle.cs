@@ -11,9 +11,12 @@ public readonly unsafe partial struct QueueHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
+
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.QueueSetLabel(this, labelPtr);
+            WebGPU_FFI.QueueSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

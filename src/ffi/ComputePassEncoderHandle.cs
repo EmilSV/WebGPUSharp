@@ -17,11 +17,12 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* markerLabelPtr = WebGPUMarshal.ToRefCstrUtf8(markerLabel, allocator))
+        var markerLabelUtf8Span = WebGPUMarshal.ToUtf8Span(markerLabel, allocator, false);
+        fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
-            WebGPU_FFI.ComputePassEncoderInsertDebugMarker(
+            WebGPU_FFI.ComputePassEncoderInsertDebugMarker2(
                 computePassEncoder: this,
-                markerLabel: markerLabelPtr
+                markerLabel: new(markerLabelPtr, markerLabelUtf8Span.Length)
             );
         }
     }
@@ -29,11 +30,12 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* groupLabelPtr = WebGPUMarshal.ToRefCstrUtf8(groupLabel, allocator))
+        var groupLabelUtf8Span = WebGPUMarshal.ToUtf8Span(groupLabel, allocator, false);
+        fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
-            WebGPU_FFI.ComputePassEncoderPushDebugGroup(
+            WebGPU_FFI.ComputePassEncoderPushDebugGroup2(
                 computePassEncoder: this,
-                groupLabel: groupLabelPtr
+                groupLabel: new(groupLabelPtr, groupLabelUtf8Span.Length)
             );
         }
     }
@@ -86,11 +88,12 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.ComputePassEncoderSetLabel(
+            WebGPU_FFI.ComputePassEncoderSetLabel2(
                 computePassEncoder: this,
-                label: labelPtr
+                label: new(labelPtr, labelUtf8Span.Length)
             );
         }
     }

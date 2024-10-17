@@ -27,7 +27,8 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public RenderBundleHandle Finish(in RenderBundleDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(descriptor.label, allocator))
+        var labelUtf8Span = ToUtf8Span(descriptor.label, allocator, addNullTerminator: true);
+        fixed (byte* labelPtr = labelUtf8Span)
         {
             RenderBundleDescriptorFFI descriptorFFI = new() { Label = labelPtr };
             return WebGPU_FFI.RenderBundleEncoderFinish(this, &descriptorFFI);
@@ -37,18 +38,24 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public void InsertDebugMarker(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
+
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.RenderBundleEncoderInsertDebugMarker(this, labelPtr);
+            WebGPU_FFI.RenderBundleEncoderInsertDebugMarker2(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* groupLabelPtr = ToRefCstrUtf8(groupLabel, allocator))
+
+        var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
+
+        fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
-            WebGPU_FFI.RenderBundleEncoderPushDebugGroup(this, groupLabelPtr);
+            WebGPU_FFI.RenderBundleEncoderPushDebugGroup2(this, new(groupLabelPtr, groupLabelUtf8Span.Length));
         }
     }
 
@@ -76,9 +83,12 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
+
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.RenderBundleEncoderSetLabel(this, labelPtr);
+            WebGPU_FFI.RenderBundleEncoderSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

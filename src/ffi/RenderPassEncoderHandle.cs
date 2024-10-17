@@ -72,11 +72,12 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* markerLabelPtr = ToRefCstrUtf8(markerLabel, allocator))
+        var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
+        fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
-            WebGPU_FFI.RenderPassEncoderInsertDebugMarker(
+            WebGPU_FFI.RenderPassEncoderInsertDebugMarker2(
                 renderPassEncoder: this,
-                markerLabel: markerLabelPtr
+                markerLabel: new(markerLabelPtr, markerLabelUtf8Span.Length)
             );
         }
     }
@@ -84,11 +85,12 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* groupLabelPtr = ToRefCstrUtf8(groupLabel, allocator))
+        var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
+        fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
-            WebGPU_FFI.RenderPassEncoderPushDebugGroup(
+            WebGPU_FFI.RenderPassEncoderPushDebugGroup2(
                 renderPassEncoder: this,
-                groupLabel: groupLabelPtr
+                groupLabel: new(groupLabelPtr, groupLabelUtf8Span.Length)
             );
         }
     }
@@ -170,11 +172,12 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.RenderPassEncoderSetLabel(
+            WebGPU_FFI.RenderPassEncoderSetLabel2(
                 renderPassEncoder: this,
-                label: labelPtr
+                label: new(labelPtr, labelUtf8Span.Length)
             );
         }
     }

@@ -6,8 +6,8 @@ namespace WebGpuSharp;
 public partial struct StencilFaceState
 {
     /// <summary>
-    /// The  <see cref="CompareFunction"/> used when testing fragments against
-    ///  <see cref="WebGpuSharp.RenderPassDescriptor.DepthStencilAttachment"/> stencil values.
+    /// The  <see cref="CompareFunction"/> used when testing the {{RenderState/stencilReference}} value
+    /// against the fragment's  <see cref="WebGpuSharp.RenderPassDescriptor.DepthStencilAttachment"/> stencil values.
     /// </summary>
     public CompareFunction Compare = CompareFunction.Always;
     /// <summary>

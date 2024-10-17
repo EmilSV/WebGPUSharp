@@ -9,9 +9,12 @@ public unsafe readonly partial struct PipelineLayoutHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        fixed (byte* labelPtr = WebGPUMarshal.ToRefCstrUtf8(label, allocator))
+
+        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.PipelineLayoutSetLabel(this, labelPtr);
+            WebGPU_FFI.PipelineLayoutSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

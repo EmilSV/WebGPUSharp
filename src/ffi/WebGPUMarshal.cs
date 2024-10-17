@@ -1,6 +1,10 @@
+using System.Buffers;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Unicode;
 using WebGpuSharp.Internal;
 
 namespace WebGpuSharp.FFI;
@@ -258,9 +262,90 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static WGPURefCStrUTF8 ToRefCstrUtf8(WGPURefText text, WebGpuAllocatorHandle allocator)
+    public static unsafe ReadOnlySpan<byte> ToUtf8Span(WGPURefText text, WebGpuAllocatorHandle allocator, bool addNullTerminator)
     {
-        return new(text, allocator);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static ReadOnlySpan<byte> TryAddNullTerminator(ReadOnlySpan<byte> utf8Span, WebGpuAllocatorHandle allocator, bool addNullTerminator)
+        {
+            if (addNullTerminator)
+            {
+                if (utf8Span[^1] == 0)
+                {
+                    return utf8Span;
+                }
+
+                int newSize = utf8Span.Length + 1;
+                byte* result = allocator.Alloc<byte>((nuint)newSize);
+                Span<byte> resultSpan = new(result, newSize);
+                utf8Span.CopyTo(resultSpan);
+                resultSpan[^1] = 0;
+                return resultSpan[..^1];
+            }
+            else
+            {
+                if (utf8Span[^1] == 0)
+                {
+                    return utf8Span[..^1];
+                }
+
+                return utf8Span;
+            }
+        }
+
+        var encoding = text.OutputToMatchingEncoding(out ReadOnlySpan<byte> utf8Span, out ReadOnlySpan<char> utf16Span);
+        return encoding switch
+        {
+            WGPURefText.Encoding.Empty => [],
+            WGPURefText.Encoding.Utf8 => TryAddNullTerminator(utf8Span, allocator, addNullTerminator),
+            WGPURefText.Encoding.Utf16 => ToUtf8Span(utf16Span, allocator, addNullTerminator),
+            _ => throw new ArgumentOutOfRangeException(nameof(text), encoding, null),
+        };
+    }
+
+    public static unsafe ReadOnlySpan<byte> ToUtf8Span(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator, bool addNullTerminator)
+    {
+        if (text.IsEmpty)
+        {
+            return [];
+        }
+
+        int utf16Length = text.Length;
+        nuint allocSize = (nuint)(utf16Length + utf16Length / 2 + (addNullTerminator ? 1 : 0));
+        Span<byte> resultSpan = allocator.AllocAsSpan<byte>(allocSize);
+        OperationStatus status;
+        int totalCharsRead = 0;
+        int totalBytesWritten = 0;
+        for (; ; )
+        {
+            status = Utf8.FromUtf16(
+                source: text[totalCharsRead..],
+                destination: resultSpan[totalBytesWritten..],
+                charsRead: out int charsRead,
+                bytesWritten: out int bytesWritten,
+                replaceInvalidSequences: false,
+                isFinalBlock: true
+            );
+            totalCharsRead += charsRead;
+            totalBytesWritten += bytesWritten;
+            if (status == OperationStatus.DestinationTooSmall)
+            {
+                int charRemaining = text.Length - totalCharsRead;
+                allocSize = (nuint)(charRemaining + charRemaining / 2 + (addNullTerminator ? 1 : 0));
+                allocator.ReallocSpan(ref resultSpan, allocSize);
+            }
+            else
+            {
+                break;
+            }
+        }
+        if (addNullTerminator)
+        {
+            resultSpan[totalBytesWritten] = 0;
+            totalBytesWritten++;
+        }
+
+        Debug.Assert(status == OperationStatus.Done);
+        return resultSpan[..totalBytesWritten];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -22,8 +22,10 @@ internal unsafe static class LoadShaderModuleFromFileHandler
             return ShaderModuleHandle.Null;
         }
 
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: true);
+
         fixed (byte* dataPtr = data)
-        fixed (byte* labelPtr = ToRefCstrUtf8(label, allocator))
+        fixed (byte* labelPtr = labelUtf8Span)
         {
             ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
             {
