@@ -11,15 +11,7 @@ public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<Color
     public BlendState? Blend;
     public ColorWriteMask WriteMask = ColorWriteMask.All;
 
-    public ColorTargetState(
-        TextureFormat format = default,
-        BlendState? blend = default,
-        ColorWriteMask writeMask = default)
-    {
-        this.Format = format;
-        this.Blend = blend;
-        this.WriteMask = writeMask;
-    }
+    public ColorTargetState() { }
 
     static void IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>.UnsafeConvertToFFI(
         in ColorTargetState input, WebGpuAllocatorHandle allocator, out ColorTargetStateFFI dest)

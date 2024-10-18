@@ -76,11 +76,12 @@ public unsafe sealed class ColorTargetStateList :
 
             ref var colorTargetState = ref _itemsColorTargetState[index];
 
-            return new ColorTargetState(
-                format: colorTargetState.Format,
-                blend: colorTargetState.Blend != null ? _itemsBlendState[index] : default,
-                writeMask: colorTargetState.WriteMask
-            );
+            return new()
+            {
+                Format = colorTargetState.Format,
+                Blend = colorTargetState.Blend != null ? _itemsBlendState[index] : default,
+                WriteMask = colorTargetState.WriteMask
+            };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set
