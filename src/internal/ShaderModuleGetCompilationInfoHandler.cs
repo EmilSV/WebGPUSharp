@@ -10,7 +10,13 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     public static void GetCompilationInfo(ShaderModuleHandle handle, CompilationInfoCallback callback)
     {
         CallbackUserDataHandle callbackHandle = CallbackUserDataHandle.Alloc(callback);
-        WebGPU_FFI.ShaderModuleGetCompilationInfo(handle, &OnCallback, (void*)callbackHandle);
+        WebGPU_FFI.ShaderModuleGetCompilationInfo2(handle, new()
+        {
+            Mode = CallbackMode.AllowSpontaneous,
+            Callback = &OnCallback,
+            Userdata1 = (void*)callbackHandle,
+            Userdata2 = null
+        });
     }
 
 
@@ -51,9 +57,9 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
         return tcs.Task;
     }
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     public static void OnCallback(
-        CompilationInfoRequestStatus status, CompilationInfoFFI* compilationInfo, void* userdata)
+        CompilationInfoRequestStatus status, CompilationInfoFFI* compilationInfo, void* userdata, void* _)
     {
         using CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         CompilationInfoCallback? callback = null;
@@ -63,6 +69,6 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
             return;
         }
 
-        callback(status, new CompilationInfo(in (*compilationInfo)));
+        callback(status, new CompilationInfo(in *compilationInfo));
     }
 }
