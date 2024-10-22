@@ -17,8 +17,6 @@ public unsafe partial struct FragmentStateFFI
     /// </summary>
     public required ColorTargetStateFFI* Targets;
 
-    public FragmentStateFFI()
-    {
-    }
+    public FragmentStateFFI() { }
 
 }

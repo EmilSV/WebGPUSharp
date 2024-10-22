@@ -9,8 +9,6 @@ public partial struct Origin3D
     public uint Y = 0;
     public uint Z = 0;
 
-    public Origin3D()
-    {
-    }
+    public Origin3D() { }
 
 }

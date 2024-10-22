@@ -22,8 +22,6 @@ public unsafe partial struct ColorTargetStateFFI
     /// </summary>
     public ColorWriteMask WriteMask = ColorWriteMask.All;
 
-    public ColorTargetStateFFI()
-    {
-    }
+    public ColorTargetStateFFI() { }
 
 }

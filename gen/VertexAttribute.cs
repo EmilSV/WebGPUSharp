@@ -20,8 +20,6 @@ public partial struct VertexAttribute
     /// </summary>
     public required uint ShaderLocation;
 
-    public VertexAttribute()
-    {
-    }
+    public VertexAttribute() { }
 
 }

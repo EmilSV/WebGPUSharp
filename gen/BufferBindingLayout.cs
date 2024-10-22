@@ -33,8 +33,6 @@ public unsafe partial struct BufferBindingLayout
     /// </summary>
     public ulong MinBindingSize = 0;
 
-    public BufferBindingLayout()
-    {
-    }
+    public BufferBindingLayout() { }
 
 }

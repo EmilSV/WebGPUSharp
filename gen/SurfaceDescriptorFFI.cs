@@ -8,8 +8,6 @@ public unsafe partial struct SurfaceDescriptorFFI
     public ChainedStruct* NextInChain;
     public byte* Label;
 
-    public SurfaceDescriptorFFI()
-    {
-    }
+    public SurfaceDescriptorFFI() { }
 
 }

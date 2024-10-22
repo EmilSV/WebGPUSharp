@@ -9,8 +9,6 @@ public unsafe partial struct SurfaceTextureFFI
     public WebGPUBool Suboptimal;
     public SurfaceGetCurrentTextureStatus Status;
 
-    public SurfaceTextureFFI()
-    {
-    }
+    public SurfaceTextureFFI() { }
 
 }

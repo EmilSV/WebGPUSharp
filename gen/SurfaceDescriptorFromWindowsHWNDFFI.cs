@@ -7,8 +7,6 @@ public unsafe partial struct SurfaceDescriptorFromWindowsHWNDFFI
 {
     public SurfaceSourceWindowsHWNDFFI Value;
 
-    public SurfaceDescriptorFromWindowsHWNDFFI()
-    {
-    }
+    public SurfaceDescriptorFromWindowsHWNDFFI() { }
 
 }

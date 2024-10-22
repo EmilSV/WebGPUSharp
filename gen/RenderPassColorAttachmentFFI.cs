@@ -43,8 +43,6 @@ public unsafe partial struct RenderPassColorAttachmentFFI
     /// </summary>
     public Color ClearValue;
 
-    public RenderPassColorAttachmentFFI()
-    {
-    }
+    public RenderPassColorAttachmentFFI() { }
 
 }

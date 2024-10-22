@@ -8,8 +8,6 @@ public unsafe partial struct CommandEncoderDescriptorFFI
     public ChainedStruct* NextInChain;
     public byte* Label;
 
-    public CommandEncoderDescriptorFFI()
-    {
-    }
+    public CommandEncoderDescriptorFFI() { }
 
 }

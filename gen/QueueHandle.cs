@@ -12,24 +12,49 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     }
 
     public QueueHandle(nuint ptr) => _ptr = ptr;
+
     public static explicit operator nuint(QueueHandle handle) => handle._ptr;
+
     public static bool operator ==(QueueHandle left, QueueHandle right) => left._ptr == right._ptr;
+
     public static bool operator !=(QueueHandle left, QueueHandle right) => left._ptr != right._ptr;
+
     public static bool operator ==(QueueHandle left, QueueHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
+
     public static bool operator !=(QueueHandle left, QueueHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
+
     public static bool operator ==(QueueHandle left, nuint right) => left._ptr == right;
+
     public static bool operator !=(QueueHandle left, nuint right) => left._ptr != right;
+
     public nuint GetAddress() => _ptr;
+
     public bool Equals(QueueHandle other) => _ptr == other._ptr;
+
     public override bool Equals(object? other) => other is QueueHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
+
     public override int GetHashCode() => _ptr.GetHashCode();
+
+    public void CopyExternalTextureForBrowser(ImageCopyExternalTextureFFI* source, ImageCopyTextureFFI* destination, Extent3D* copySize, CopyTextureForBrowserOptionsFFI* options) => WebGPU_FFI.QueueCopyExternalTextureForBrowser(this, source, destination, copySize, options);
+
+    public void CopyTextureForBrowser(ImageCopyTextureFFI* source, ImageCopyTextureFFI* destination, Extent3D* copySize, CopyTextureForBrowserOptionsFFI* options) => WebGPU_FFI.QueueCopyTextureForBrowser(this, source, destination, copySize, options);
+
+    public void OnSubmittedWorkDone(delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> callback, void* userdata) => WebGPU_FFI.QueueOnSubmittedWorkDone(this, callback, userdata);
+
+    public Future OnSubmittedWorkDone(QueueWorkDoneCallbackInfo2FFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDone2(this, callbackInfo);
+
+    public Future OnSubmittedWorkDoneF(QueueWorkDoneCallbackInfoFFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDoneF(this, callbackInfo);
+
     public void SetLabel(byte* label) => WebGPU_FFI.QueueSetLabel(this, label);
+
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel2(this, label);
+
     /// <summary>
     /// Schedules the execution of the command buffers by the GPU on this queue.
     /// Submitted command buffers cannot be used again.
     /// </summary>
     public void Submit(nuint commandCount, CommandBufferHandle* commands) => WebGPU_FFI.QueueSubmit(this, commandCount, commands);
+
     /// <summary>
     /// Issues a write operation of the provided data into a  <see cref="WebGpuSharp.Buffer"/>.
     /// </summary>
@@ -45,6 +70,7 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// <paramref name="data"/> is a `TypedArray` and bytes otherwise.
     /// </param>
     public void WriteBuffer(BufferHandle buffer, ulong bufferOffset, void* data, nuint size) => WebGPU_FFI.QueueWriteBuffer(this, buffer, bufferOffset, data, size);
+
     /// <summary>
     /// Issues a write operation of the provided data into a  <see cref="WebGpuSharp.Texture"/>.
     /// </summary>
@@ -53,6 +79,9 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// <param name="dataLayout">Layout of the content in <paramref name="data"/>.</param>
     /// <param name="size">Extents of the content to write from <paramref name="data"/> to <paramref name="destination"/>.</param>
     public void WriteTexture(ImageCopyTextureFFI* destination, void* data, nuint dataSize, TextureDataLayout* dataLayout, Extent3D* writeSize) => WebGPU_FFI.QueueWriteTexture(this, destination, data, dataSize, dataLayout, writeSize);
+
     public void AddRef() => WebGPU_FFI.QueueAddRef(this);
+
     public void Release() => WebGPU_FFI.QueueRelease(this);
+
 }

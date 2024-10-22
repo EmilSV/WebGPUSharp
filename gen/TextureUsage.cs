@@ -12,4 +12,6 @@ public enum TextureUsage : ulong
     TextureBinding = 4,
     StorageBinding = 8,
     RenderAttachment = 16,
+    TransientAttachment = 32,
+    StorageAttachment = 64,
 }

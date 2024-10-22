@@ -21,8 +21,6 @@ public partial struct Extent3D
     /// </summary>
     public uint DepthOrArrayLayers = 1;
 
-    public Extent3D()
-    {
-    }
+    public Extent3D() { }
 
 }

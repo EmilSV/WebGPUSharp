@@ -14,8 +14,6 @@ public partial struct BlendState
     /// </summary>
     public required BlendComponent Alpha;
 
-    public BlendState()
-    {
-    }
+    public BlendState() { }
 
 }

@@ -10,8 +10,6 @@ public unsafe partial struct RequestAdapterCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<RequestAdapterStatus, AdapterHandle, byte*, void*, void> Callback;
     public void* Userdata;
 
-    public RequestAdapterCallbackInfoFFI()
-    {
-    }
+    public RequestAdapterCallbackInfoFFI() { }
 
 }

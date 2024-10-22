@@ -8,8 +8,6 @@ public partial struct FutureWaitInfo
     public Future Future;
     public WebGPUBool Completed;
 
-    public FutureWaitInfo()
-    {
-    }
+    public FutureWaitInfo() { }
 
 }

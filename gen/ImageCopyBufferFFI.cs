@@ -12,8 +12,6 @@ public unsafe partial struct ImageCopyBufferFFI
     /// </summary>
     public required BufferHandle Buffer;
 
-    public ImageCopyBufferFFI()
-    {
-    }
+    public ImageCopyBufferFFI() { }
 
 }

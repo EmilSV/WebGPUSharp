@@ -8,8 +8,6 @@ public unsafe partial struct RequiredLimits
     public ChainedStruct* NextInChain;
     public Limits Limits;
 
-    public RequiredLimits()
-    {
-    }
+    public RequiredLimits() { }
 
 }

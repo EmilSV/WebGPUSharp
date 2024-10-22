@@ -11,8 +11,6 @@ public unsafe partial struct CreateComputePipelineAsyncCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public CreateComputePipelineAsyncCallbackInfo2FFI()
-    {
-    }
+    public CreateComputePipelineAsyncCallbackInfo2FFI() { }
 
 }

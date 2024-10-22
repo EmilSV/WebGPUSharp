@@ -38,8 +38,6 @@ public partial struct Limits
     public uint MaxComputeWorkgroupSizeZ;
     public uint MaxComputeWorkgroupsPerDimension;
 
-    public Limits()
-    {
-    }
+    public Limits() { }
 
 }

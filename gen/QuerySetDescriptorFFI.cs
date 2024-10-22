@@ -16,8 +16,6 @@ public unsafe partial struct QuerySetDescriptorFFI
     /// </summary>
     public required uint Count;
 
-    public QuerySetDescriptorFFI()
-    {
-    }
+    public QuerySetDescriptorFFI() { }
 
 }

@@ -11,8 +11,6 @@ public unsafe partial struct RequestDeviceCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public RequestDeviceCallbackInfo2FFI()
-    {
-    }
+    public RequestDeviceCallbackInfo2FFI() { }
 
 }

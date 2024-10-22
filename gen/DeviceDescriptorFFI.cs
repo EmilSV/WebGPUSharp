@@ -28,13 +28,13 @@ public unsafe partial struct DeviceDescriptorFFI
     /// The descriptor for the default  <see cref="WebGpuSharp.Queue"/>.
     /// </summary>
     public QueueDescriptorFFI DefaultQueue;
+    public delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> DeviceLostCallback;
+    public void* DeviceLostUserdata;
     public DeviceLostCallbackInfoFFI DeviceLostCallbackInfo;
     public UncapturedErrorCallbackInfoFFI UncapturedErrorCallbackInfo;
     public DeviceLostCallbackInfo2FFI DeviceLostCallbackInfo2;
     public UncapturedErrorCallbackInfo2FFI UncapturedErrorCallbackInfo2;
 
-    public DeviceDescriptorFFI()
-    {
-    }
+    public DeviceDescriptorFFI() { }
 
 }

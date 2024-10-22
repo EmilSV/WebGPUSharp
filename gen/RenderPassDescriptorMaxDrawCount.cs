@@ -7,8 +7,6 @@ public partial struct RenderPassDescriptorMaxDrawCount
 {
     public RenderPassMaxDrawCount Value;
 
-    public RenderPassDescriptorMaxDrawCount()
-    {
-    }
+    public RenderPassDescriptorMaxDrawCount() { }
 
 }

@@ -10,8 +10,6 @@ public unsafe partial struct BufferMapCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<BufferMapAsyncStatus, void*, void> Callback;
     public void* Userdata;
 
-    public BufferMapCallbackInfoFFI()
-    {
-    }
+    public BufferMapCallbackInfoFFI() { }
 
 }

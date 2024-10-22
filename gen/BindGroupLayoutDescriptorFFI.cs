@@ -13,8 +13,6 @@ public unsafe partial struct BindGroupLayoutDescriptorFFI
     /// </summary>
     public required BindGroupLayoutEntry* Entries;
 
-    public BindGroupLayoutDescriptorFFI()
-    {
-    }
+    public BindGroupLayoutDescriptorFFI() { }
 
 }

@@ -8,8 +8,6 @@ public unsafe partial struct SurfaceSourceAndroidNativeWindowFFI
     public ChainedStruct Chain;
     public void* Window;
 
-    public SurfaceSourceAndroidNativeWindowFFI()
-    {
-    }
+    public SurfaceSourceAndroidNativeWindowFFI() { }
 
 }

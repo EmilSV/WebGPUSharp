@@ -10,8 +10,6 @@ public unsafe partial struct TextureDataLayout
     public uint BytesPerRow;
     public uint RowsPerImage;
 
-    public TextureDataLayout()
-    {
-    }
+    public TextureDataLayout() { }
 
 }

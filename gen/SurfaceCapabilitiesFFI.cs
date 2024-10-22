@@ -14,8 +14,6 @@ public unsafe partial struct SurfaceCapabilitiesFFI
     public nuint AlphaModeCount;
     public CompositeAlphaMode* AlphaModes;
 
-    public SurfaceCapabilitiesFFI()
-    {
-    }
+    public SurfaceCapabilitiesFFI() { }
 
 }

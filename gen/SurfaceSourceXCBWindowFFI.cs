@@ -9,8 +9,6 @@ public unsafe partial struct SurfaceSourceXCBWindowFFI
     public void* Connection;
     public uint Window;
 
-    public SurfaceSourceXCBWindowFFI()
-    {
-    }
+    public SurfaceSourceXCBWindowFFI() { }
 
 }

@@ -11,8 +11,6 @@ public unsafe partial struct QueueWorkDoneCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public QueueWorkDoneCallbackInfo2FFI()
-    {
-    }
+    public QueueWorkDoneCallbackInfo2FFI() { }
 
 }

@@ -21,8 +21,6 @@ public unsafe partial struct ComputePassTimestampWritesFFI
     /// </summary>
     public uint EndOfPassWriteIndex;
 
-    public ComputePassTimestampWritesFFI()
-    {
-    }
+    public ComputePassTimestampWritesFFI() { }
 
 }

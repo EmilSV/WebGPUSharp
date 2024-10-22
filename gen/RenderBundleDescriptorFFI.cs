@@ -8,8 +8,6 @@ public unsafe partial struct RenderBundleDescriptorFFI
     public ChainedStruct* NextInChain;
     public byte* Label;
 
-    public RenderBundleDescriptorFFI()
-    {
-    }
+    public RenderBundleDescriptorFFI() { }
 
 }

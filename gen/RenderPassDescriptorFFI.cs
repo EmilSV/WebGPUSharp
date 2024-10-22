@@ -31,8 +31,6 @@ public unsafe partial struct RenderPassDescriptorFFI
     /// </summary>
     public RenderPassTimestampWritesFFI* TimestampWrites;
 
-    public RenderPassDescriptorFFI()
-    {
-    }
+    public RenderPassDescriptorFFI() { }
 
 }

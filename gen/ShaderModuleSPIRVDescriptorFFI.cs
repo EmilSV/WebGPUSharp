@@ -7,8 +7,6 @@ public unsafe partial struct ShaderModuleSPIRVDescriptorFFI
 {
     public ShaderSourceSPIRVFFI Value;
 
-    public ShaderModuleSPIRVDescriptorFFI()
-    {
-    }
+    public ShaderModuleSPIRVDescriptorFFI() { }
 
 }

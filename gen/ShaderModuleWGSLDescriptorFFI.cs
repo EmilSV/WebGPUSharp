@@ -7,8 +7,6 @@ public unsafe partial struct ShaderModuleWGSLDescriptorFFI
 {
     public ShaderSourceWGSLFFI Value;
 
-    public ShaderModuleWGSLDescriptorFFI()
-    {
-    }
+    public ShaderModuleWGSLDescriptorFFI() { }
 
 }

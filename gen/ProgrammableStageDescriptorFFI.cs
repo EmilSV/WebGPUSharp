@@ -11,8 +11,6 @@ public unsafe partial struct ProgrammableStageDescriptorFFI
     public nuint ConstantCount;
     public ConstantEntryFFI* Constants;
 
-    public ProgrammableStageDescriptorFFI()
-    {
-    }
+    public ProgrammableStageDescriptorFFI() { }
 
 }

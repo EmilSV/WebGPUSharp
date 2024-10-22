@@ -8,8 +8,6 @@ public unsafe partial struct ChainedStructOut
     public ChainedStructOut* Next;
     public SType SType;
 
-    public ChainedStructOut()
-    {
-    }
+    public ChainedStructOut() { }
 
 }

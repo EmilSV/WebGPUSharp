@@ -39,8 +39,6 @@ public unsafe partial struct BindGroupLayoutEntry
     /// </summary>
     public StorageTextureBindingLayout StorageTexture;
 
-    public BindGroupLayoutEntry()
-    {
-    }
+    public BindGroupLayoutEntry() { }
 
 }

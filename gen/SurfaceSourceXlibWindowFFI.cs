@@ -9,8 +9,6 @@ public unsafe partial struct SurfaceSourceXlibWindowFFI
     public void* Display;
     public ulong Window;
 
-    public SurfaceSourceXlibWindowFFI()
-    {
-    }
+    public SurfaceSourceXlibWindowFFI() { }
 
 }

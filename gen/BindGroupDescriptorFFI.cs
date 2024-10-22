@@ -18,8 +18,6 @@ public unsafe partial struct BindGroupDescriptorFFI
     /// </summary>
     public required BindGroupEntryFFI* Entries;
 
-    public BindGroupDescriptorFFI()
-    {
-    }
+    public BindGroupDescriptorFFI() { }
 
 }

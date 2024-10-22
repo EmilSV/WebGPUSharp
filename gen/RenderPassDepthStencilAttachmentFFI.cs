@@ -58,8 +58,6 @@ public unsafe partial struct RenderPassDepthStencilAttachmentFFI
     /// </summary>
     public WebGPUBool StencilReadOnly = false;
 
-    public RenderPassDepthStencilAttachmentFFI()
-    {
-    }
+    public RenderPassDepthStencilAttachmentFFI() { }
 
 }

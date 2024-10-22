@@ -17,8 +17,6 @@ public unsafe partial struct VertexStateFFI
     /// </summary>
     public VertexBufferLayoutFFI* Buffers;
 
-    public VertexStateFFI()
-    {
-    }
+    public VertexStateFFI() { }
 
 }

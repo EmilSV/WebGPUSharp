@@ -7,8 +7,6 @@ public unsafe partial struct SurfaceDescriptorFromXlibWindowFFI
 {
     public SurfaceSourceXlibWindowFFI Value;
 
-    public SurfaceDescriptorFromXlibWindowFFI()
-    {
-    }
+    public SurfaceDescriptorFromXlibWindowFFI() { }
 
 }

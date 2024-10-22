@@ -23,8 +23,6 @@ public unsafe partial struct MultisampleState
     /// </summary>
     public WebGPUBool AlphaToCoverageEnabled = false;
 
-    public MultisampleState()
-    {
-    }
+    public MultisampleState() { }
 
 }

@@ -55,8 +55,6 @@ public unsafe partial struct TextureDescriptorFFI
     /// </summary>
     public TextureFormat* ViewFormats;
 
-    public TextureDescriptorFFI()
-    {
-    }
+    public TextureDescriptorFFI() { }
 
 }

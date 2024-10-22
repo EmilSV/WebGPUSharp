@@ -9,8 +9,6 @@ public unsafe partial struct ConstantEntryFFI
     public byte* Key;
     public double Value;
 
-    public ConstantEntryFFI()
-    {
-    }
+    public ConstantEntryFFI() { }
 
 }

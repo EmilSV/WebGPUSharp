@@ -8,8 +8,6 @@ public unsafe partial struct StringViewFFI
     public byte* Data;
     public nuint Length;
 
-    public StringViewFFI()
-    {
-    }
+    public StringViewFFI() { }
 
 }

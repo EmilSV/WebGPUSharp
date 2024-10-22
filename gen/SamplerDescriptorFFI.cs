@@ -57,8 +57,6 @@ public unsafe partial struct SamplerDescriptorFFI
     /// </summary>
     public ushort MaxAnisotropy = 1;
 
-    public SamplerDescriptorFFI()
-    {
-    }
+    public SamplerDescriptorFFI() { }
 
 }

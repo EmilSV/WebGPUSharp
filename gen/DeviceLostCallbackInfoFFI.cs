@@ -10,8 +10,6 @@ public unsafe partial struct DeviceLostCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<DeviceHandle*, DeviceLostReason, byte*, void*, void> Callback;
     public void* Userdata;
 
-    public DeviceLostCallbackInfoFFI()
-    {
-    }
+    public DeviceLostCallbackInfoFFI() { }
 
 }

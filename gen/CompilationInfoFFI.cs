@@ -9,8 +9,6 @@ public unsafe partial struct CompilationInfoFFI
     public nuint MessageCount;
     public CompilationMessageFFI* Messages;
 
-    public CompilationInfoFFI()
-    {
-    }
+    public CompilationInfoFFI() { }
 
 }

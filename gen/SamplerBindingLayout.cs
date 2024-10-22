@@ -11,8 +11,6 @@ public unsafe partial struct SamplerBindingLayout
     /// </summary>
     public SamplerBindingType Type = SamplerBindingType.Filtering;
 
-    public SamplerBindingLayout()
-    {
-    }
+    public SamplerBindingLayout() { }
 
 }

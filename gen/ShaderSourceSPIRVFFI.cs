@@ -9,8 +9,6 @@ public unsafe partial struct ShaderSourceSPIRVFFI
     public uint CodeSize;
     public uint* Code;
 
-    public ShaderSourceSPIRVFFI()
-    {
-    }
+    public ShaderSourceSPIRVFFI() { }
 
 }

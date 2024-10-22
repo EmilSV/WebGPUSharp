@@ -11,8 +11,6 @@ public unsafe partial struct PopErrorScopeCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> OldCallback;
     public void* Userdata;
 
-    public PopErrorScopeCallbackInfoFFI()
-    {
-    }
+    public PopErrorScopeCallbackInfoFFI() { }
 
 }

@@ -8,8 +8,6 @@ public unsafe partial struct InstanceDescriptor
     public ChainedStruct* NextInChain;
     public InstanceFeatures Features;
 
-    public InstanceDescriptor()
-    {
-    }
+    public InstanceDescriptor() { }
 
 }

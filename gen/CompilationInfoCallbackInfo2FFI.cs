@@ -11,8 +11,6 @@ public unsafe partial struct CompilationInfoCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public CompilationInfoCallbackInfo2FFI()
-    {
-    }
+    public CompilationInfoCallbackInfo2FFI() { }
 
 }

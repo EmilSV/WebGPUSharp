@@ -26,8 +26,6 @@ public partial struct StencilFaceState
     /// </summary>
     public StencilOperation PassOp = StencilOperation.Keep;
 
-    public StencilFaceState()
-    {
-    }
+    public StencilFaceState() { }
 
 }

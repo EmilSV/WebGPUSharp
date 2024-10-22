@@ -8,8 +8,6 @@ public unsafe partial struct ShaderSourceWGSLFFI
     public ChainedStruct Chain;
     public byte* Code;
 
-    public ShaderSourceWGSLFFI()
-    {
-    }
+    public ShaderSourceWGSLFFI() { }
 
 }

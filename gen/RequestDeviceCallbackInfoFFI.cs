@@ -10,8 +10,6 @@ public unsafe partial struct RequestDeviceCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, byte*, void*, void> Callback;
     public void* Userdata;
 
-    public RequestDeviceCallbackInfoFFI()
-    {
-    }
+    public RequestDeviceCallbackInfoFFI() { }
 
 }

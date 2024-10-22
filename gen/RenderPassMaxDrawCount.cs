@@ -8,8 +8,6 @@ public partial struct RenderPassMaxDrawCount
     public ChainedStruct Chain;
     public ulong MaxDrawCount;
 
-    public RenderPassMaxDrawCount()
-    {
-    }
+    public RenderPassMaxDrawCount() { }
 
 }

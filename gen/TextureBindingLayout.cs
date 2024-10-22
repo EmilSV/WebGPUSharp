@@ -20,8 +20,6 @@ public unsafe partial struct TextureBindingLayout
     /// </summary>
     public WebGPUBool Multisampled = false;
 
-    public TextureBindingLayout()
-    {
-    }
+    public TextureBindingLayout() { }
 
 }

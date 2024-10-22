@@ -26,8 +26,6 @@ public unsafe partial struct BufferDescriptorFFI
     /// </summary>
     public WebGPUBool MappedAtCreation = false;
 
-    public BufferDescriptorFFI()
-    {
-    }
+    public BufferDescriptorFFI() { }
 
 }

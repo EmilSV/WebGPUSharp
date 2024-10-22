@@ -20,8 +20,6 @@ public unsafe partial struct StorageTextureBindingLayout
     /// </summary>
     public TextureViewDimension ViewDimension = TextureViewDimension.D2;
 
-    public StorageTextureBindingLayout()
-    {
-    }
+    public StorageTextureBindingLayout() { }
 
 }

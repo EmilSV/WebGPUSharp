@@ -7,8 +7,6 @@ public unsafe partial struct SurfaceDescriptorFromMetalLayerFFI
 {
     public SurfaceSourceMetalLayerFFI Value;
 
-    public SurfaceDescriptorFromMetalLayerFFI()
-    {
-    }
+    public SurfaceDescriptorFromMetalLayerFFI() { }
 
 }

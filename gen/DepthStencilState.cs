@@ -52,8 +52,6 @@ public unsafe partial struct DepthStencilState
     /// </summary>
     public float DepthBiasClamp = 0;
 
-    public DepthStencilState()
-    {
-    }
+    public DepthStencilState() { }
 
 }

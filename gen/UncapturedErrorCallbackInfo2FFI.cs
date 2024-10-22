@@ -10,8 +10,6 @@ public unsafe partial struct UncapturedErrorCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public UncapturedErrorCallbackInfo2FFI()
-    {
-    }
+    public UncapturedErrorCallbackInfo2FFI() { }
 
 }

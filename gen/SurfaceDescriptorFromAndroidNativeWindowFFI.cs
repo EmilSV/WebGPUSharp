@@ -7,8 +7,6 @@ public unsafe partial struct SurfaceDescriptorFromAndroidNativeWindowFFI
 {
     public SurfaceSourceAndroidNativeWindowFFI Value;
 
-    public SurfaceDescriptorFromAndroidNativeWindowFFI()
-    {
-    }
+    public SurfaceDescriptorFromAndroidNativeWindowFFI() { }
 
 }

@@ -10,8 +10,6 @@ public unsafe partial struct QueueWorkDoneCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> Callback;
     public void* Userdata;
 
-    public QueueWorkDoneCallbackInfoFFI()
-    {
-    }
+    public QueueWorkDoneCallbackInfoFFI() { }
 
 }

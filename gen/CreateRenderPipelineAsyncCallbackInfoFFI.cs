@@ -10,8 +10,6 @@ public unsafe partial struct CreateRenderPipelineAsyncCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<CreatePipelineAsyncStatus, RenderPipelineHandle, byte*, void*, void> Callback;
     public void* Userdata;
 
-    public CreateRenderPipelineAsyncCallbackInfoFFI()
-    {
-    }
+    public CreateRenderPipelineAsyncCallbackInfoFFI() { }
 
 }

@@ -8,8 +8,6 @@ public unsafe partial struct SurfaceSourceMetalLayerFFI
     public ChainedStruct Chain;
     public void* Layer;
 
-    public SurfaceSourceMetalLayerFFI()
-    {
-    }
+    public SurfaceSourceMetalLayerFFI() { }
 
 }

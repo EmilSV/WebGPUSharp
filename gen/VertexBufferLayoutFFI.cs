@@ -19,8 +19,6 @@ public unsafe partial struct VertexBufferLayoutFFI
     /// </summary>
     public required VertexAttribute* Attributes;
 
-    public VertexBufferLayoutFFI()
-    {
-    }
+    public VertexBufferLayoutFFI() { }
 
 }

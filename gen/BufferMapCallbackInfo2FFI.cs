@@ -11,8 +11,6 @@ public unsafe partial struct BufferMapCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public BufferMapCallbackInfo2FFI()
-    {
-    }
+    public BufferMapCallbackInfo2FFI() { }
 
 }

@@ -26,4 +26,7 @@ public enum TextureAspect
     /// The GPUTextureAspect.set of aspects is =aspect.depth=.
     /// </summary>
     DepthOnly = 3,
+    Plane0Only = 327680,
+    Plane1Only = 327681,
+    Plane2Only = 327682,
 }

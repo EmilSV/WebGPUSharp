@@ -16,8 +16,6 @@ public unsafe partial struct SurfaceConfigurationFFI
     public uint Height;
     public PresentMode PresentMode;
 
-    public SurfaceConfigurationFFI()
-    {
-    }
+    public SurfaceConfigurationFFI() { }
 
 }

@@ -12,8 +12,6 @@ public unsafe partial struct ComputePassDescriptorFFI
     /// </summary>
     public ComputePassTimestampWritesFFI* TimestampWrites;
 
-    public ComputePassDescriptorFFI()
-    {
-    }
+    public ComputePassDescriptorFFI() { }
 
 }

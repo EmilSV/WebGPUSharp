@@ -8,8 +8,6 @@ public unsafe partial struct QueueDescriptorFFI
     public ChainedStruct* NextInChain;
     public byte* Label;
 
-    public QueueDescriptorFFI()
-    {
-    }
+    public QueueDescriptorFFI() { }
 
 }

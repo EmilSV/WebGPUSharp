@@ -23,8 +23,6 @@ public unsafe partial struct ImageCopyTextureFFI
     /// </summary>
     public TextureAspect Aspect = TextureAspect.All;
 
-    public ImageCopyTextureFFI()
-    {
-    }
+    public ImageCopyTextureFFI() { }
 
 }

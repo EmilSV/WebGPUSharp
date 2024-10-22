@@ -14,9 +14,8 @@ public unsafe partial struct AdapterInfoFFI
     public AdapterType AdapterType;
     public uint VendorID;
     public uint DeviceID;
+    public WebGPUBool CompatibilityMode;
 
-    public AdapterInfoFFI()
-    {
-    }
+    public AdapterInfoFFI() { }
 
 }

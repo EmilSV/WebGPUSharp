@@ -18,8 +18,6 @@ public unsafe partial struct BindGroupEntryFFI
     public SamplerHandle Sampler;
     public TextureViewHandle TextureView;
 
-    public BindGroupEntryFFI()
-    {
-    }
+    public BindGroupEntryFFI() { }
 
 }

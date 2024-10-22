@@ -22,8 +22,6 @@ public partial struct Color
     /// </summary>
     public required double A;
 
-    public Color()
-    {
-    }
+    public Color() { }
 
 }

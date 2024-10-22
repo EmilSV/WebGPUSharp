@@ -30,8 +30,6 @@ public unsafe partial struct RenderPipelineDescriptorFFI
     /// </summary>
     public FragmentStateFFI* Fragment;
 
-    public RenderPipelineDescriptorFFI()
-    {
-    }
+    public RenderPipelineDescriptorFFI() { }
 
 }

@@ -9,8 +9,6 @@ public unsafe partial struct SurfaceSourceWindowsHWNDFFI
     public void* Hinstance;
     public void* Hwnd;
 
-    public SurfaceSourceWindowsHWNDFFI()
-    {
-    }
+    public SurfaceSourceWindowsHWNDFFI() { }
 
 }

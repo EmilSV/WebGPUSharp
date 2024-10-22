@@ -11,8 +11,6 @@ public unsafe partial struct RequestAdapterCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public RequestAdapterCallbackInfo2FFI()
-    {
-    }
+    public RequestAdapterCallbackInfo2FFI() { }
 
 }

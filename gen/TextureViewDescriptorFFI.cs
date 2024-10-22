@@ -39,8 +39,6 @@ public unsafe partial struct TextureViewDescriptorFFI
     /// </summary>
     public TextureAspect Aspect = TextureAspect.All;
 
-    public TextureViewDescriptorFFI()
-    {
-    }
+    public TextureViewDescriptorFFI() { }
 
 }

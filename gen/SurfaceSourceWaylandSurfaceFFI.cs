@@ -9,8 +9,6 @@ public unsafe partial struct SurfaceSourceWaylandSurfaceFFI
     public void* Display;
     public void* Surface;
 
-    public SurfaceSourceWaylandSurfaceFFI()
-    {
-    }
+    public SurfaceSourceWaylandSurfaceFFI() { }
 
 }

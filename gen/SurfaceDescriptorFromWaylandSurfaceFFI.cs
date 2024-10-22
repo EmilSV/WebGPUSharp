@@ -7,8 +7,6 @@ public unsafe partial struct SurfaceDescriptorFromWaylandSurfaceFFI
 {
     public SurfaceSourceWaylandSurfaceFFI Value;
 
-    public SurfaceDescriptorFromWaylandSurfaceFFI()
-    {
-    }
+    public SurfaceDescriptorFromWaylandSurfaceFFI() { }
 
 }

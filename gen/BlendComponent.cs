@@ -19,8 +19,6 @@ public partial struct BlendComponent
     /// </summary>
     public BlendFactor DstFactor = BlendFactor.Zero;
 
-    public BlendComponent()
-    {
-    }
+    public BlendComponent() { }
 
 }

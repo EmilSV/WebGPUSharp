@@ -9,8 +9,6 @@ public unsafe partial struct InstanceFeatures
     public WebGPUBool TimedWaitAnyEnable;
     public nuint TimedWaitAnyMaxCount;
 
-    public InstanceFeatures()
-    {
-    }
+    public InstanceFeatures() { }
 
 }

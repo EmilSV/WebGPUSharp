@@ -7,8 +7,6 @@ public unsafe partial struct SurfaceDescriptorFromXcbWindowFFI
 {
     public SurfaceSourceXCBWindowFFI Value;
 
-    public SurfaceDescriptorFromXcbWindowFFI()
-    {
-    }
+    public SurfaceDescriptorFromXcbWindowFFI() { }
 
 }

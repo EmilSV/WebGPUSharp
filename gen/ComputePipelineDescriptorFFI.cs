@@ -13,8 +13,6 @@ public unsafe partial struct ComputePipelineDescriptorFFI
     /// </summary>
     public required ProgrammableStageDescriptorFFI Compute;
 
-    public ComputePipelineDescriptorFFI()
-    {
-    }
+    public ComputePipelineDescriptorFFI() { }
 
 }

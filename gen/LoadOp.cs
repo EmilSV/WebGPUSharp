@@ -20,4 +20,5 @@ public enum LoadOp
     /// initial value doesn't matter (e.g. the render target will be cleared using a skybox).
     /// </summary>
     Clear = 2,
+    ExpandResolveTexture = 327683,
 }

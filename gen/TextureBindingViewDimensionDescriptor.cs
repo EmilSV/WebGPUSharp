@@ -8,8 +8,6 @@ public partial struct TextureBindingViewDimensionDescriptor
     public ChainedStruct Chain;
     public TextureViewDimension TextureBindingViewDimension;
 
-    public TextureBindingViewDimensionDescriptor()
-    {
-    }
+    public TextureBindingViewDimensionDescriptor() { }
 
 }

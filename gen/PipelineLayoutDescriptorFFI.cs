@@ -15,8 +15,6 @@ public unsafe partial struct PipelineLayoutDescriptorFFI
     /// </summary>
     public required BindGroupLayoutHandle* BindGroupLayouts;
 
-    public PipelineLayoutDescriptorFFI()
-    {
-    }
+    public PipelineLayoutDescriptorFFI() { }
 
 }

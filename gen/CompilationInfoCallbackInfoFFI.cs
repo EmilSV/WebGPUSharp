@@ -10,8 +10,6 @@ public unsafe partial struct CompilationInfoCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<CompilationInfoRequestStatus, CompilationInfoFFI*, void*, void> Callback;
     public void* Userdata;
 
-    public CompilationInfoCallbackInfoFFI()
-    {
-    }
+    public CompilationInfoCallbackInfoFFI() { }
 
 }

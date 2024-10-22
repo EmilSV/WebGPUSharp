@@ -39,8 +39,6 @@ public unsafe partial struct PrimitiveState
     /// </summary>
     public WebGPUBool UnclippedDepth = false;
 
-    public PrimitiveState()
-    {
-    }
+    public PrimitiveState() { }
 
 }

@@ -26,8 +26,6 @@ public unsafe partial struct RenderBundleEncoderDescriptorFFI
     /// </summary>
     public WebGPUBool StencilReadOnly = false;
 
-    public RenderBundleEncoderDescriptorFFI()
-    {
-    }
+    public RenderBundleEncoderDescriptorFFI() { }
 
 }

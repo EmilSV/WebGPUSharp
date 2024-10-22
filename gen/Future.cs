@@ -7,8 +7,6 @@ public partial struct Future
 {
     public ulong Id;
 
-    public Future()
-    {
-    }
+    public Future() { }
 
 }

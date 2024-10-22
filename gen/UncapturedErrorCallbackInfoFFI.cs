@@ -9,8 +9,6 @@ public unsafe partial struct UncapturedErrorCallbackInfoFFI
     public delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> Callback;
     public void* Userdata;
 
-    public UncapturedErrorCallbackInfoFFI()
-    {
-    }
+    public UncapturedErrorCallbackInfoFFI() { }
 
 }

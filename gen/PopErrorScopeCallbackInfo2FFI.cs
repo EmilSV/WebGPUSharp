@@ -11,8 +11,6 @@ public unsafe partial struct PopErrorScopeCallbackInfo2FFI
     public void* Userdata1;
     public void* Userdata2;
 
-    public PopErrorScopeCallbackInfo2FFI()
-    {
-    }
+    public PopErrorScopeCallbackInfo2FFI() { }
 
 }

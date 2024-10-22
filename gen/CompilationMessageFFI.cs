@@ -16,8 +16,6 @@ public unsafe partial struct CompilationMessageFFI
     public ulong Utf16Offset;
     public ulong Utf16Length;
 
-    public CompilationMessageFFI()
-    {
-    }
+    public CompilationMessageFFI() { }
 
 }
