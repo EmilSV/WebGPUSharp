@@ -55,6 +55,28 @@ public readonly ref struct WebGpuAllocatorHandle
         _allocator.AddDisposableHandles(DisposableHandle.FromHandle(handle));
     }
 
+    public unsafe THandle GetHandle<THandle>(WebGPUHandleWrapperBase<THandle>? safeHandle)
+        where THandle : unmanaged, IWebGpuHandle<THandle>
+    {
+        if (safeHandle == null)
+        {
+            return THandle.Null;
+        }
+
+        if (WebGPUMarshal.GetHandleWrapperSameLifetime(safeHandle))
+        {
+            return WebGPUHandleWrapperBase<THandle>.GetHandle(safeHandle);
+        }
+        else
+        {
+            var ownedHandle = WebGPUHandleWrapperBase<THandle>.GetHandle(safeHandle);
+            THandle.Reference(ownedHandle);
+            AddHandleToDispose(ownedHandle);
+            return ownedHandle;
+        }
+    }
+
+
     public void Dispose()
     {
         WebGpuAllocator.Return(_allocator);

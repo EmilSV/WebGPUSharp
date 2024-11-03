@@ -11,19 +11,15 @@ public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGr
     public ulong Offset;
     public ulong Size;
     public Sampler? Sampler;
-    public ITextureViewSource? TextureView;
+    public TextureViewBase? TextureView;
 
     public BindGroupEntry()
     {
     }
-    
+
     static void IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>.UnsafeConvertToFFI(
         in BindGroupEntry input, WebGpuAllocatorHandle allocator, out BindGroupEntryFFI dest)
     {
-        var textureViewOwnedHandle = input.TextureView?.UnsafeGetCurrentTextureViewOwnedHandle()
-            ?? TextureViewHandle.Null;
-        allocator.AddHandleToDispose(textureViewOwnedHandle);
-
         dest = new()
         {
             Binding = input.Binding,
@@ -31,7 +27,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGr
             Offset = input.Offset,
             Size = input.Size,
             Sampler = GetBorrowHandle(input.Sampler),
-            TextureView = textureViewOwnedHandle
+            TextureView = allocator.GetHandle(input.TextureView)
         };
     }
 }

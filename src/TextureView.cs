@@ -1,34 +1,43 @@
+
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
 public sealed class TextureView :
-    BaseWebGpuSafeHandle<TextureView, TextureViewHandle>,
-    ITextureViewSource
+    TextureViewBase,
+    IFromHandle<TextureView, TextureViewHandle>
 {
-    private TextureView(TextureViewHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<TextureViewHandle> _safeHandle;
+
+    protected override TextureViewHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private TextureView(TextureViewHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<TextureViewHandle>(handle);
     }
 
-    internal static TextureView? FromHandle(TextureViewHandle handle, bool isOwnedHandle)
+    static TextureView? IFromHandle<TextureView, TextureViewHandle>.FromHandle(
+        TextureViewHandle handle)
     {
-        var newTextureView = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new TextureView(handle));
-        if (isOwnedHandle)
+        if (TextureViewHandle.IsNull(handle))
         {
-            newTextureView?.AddReference(false);
+            return null;
         }
-        return newTextureView;
+
+        TextureViewHandle.Reference(handle);
+        return new(handle);
     }
 
-    TextureView? ITextureViewSource.GetCurrentTextureView()
+    static TextureView? IFromHandle<TextureView, TextureViewHandle>.FromHandleNoRefIncrement(
+        TextureViewHandle handle)
     {
-        return this;
-    }
+        if (TextureViewHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    TextureViewHandle ITextureViewSource.UnsafeGetCurrentTextureViewOwnedHandle()
-    {
-        TextureViewHandle.Reference(_handle);
-        return _handle;
+        return new(handle);
     }
 }

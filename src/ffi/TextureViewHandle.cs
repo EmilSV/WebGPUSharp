@@ -3,7 +3,8 @@ using System.Runtime.CompilerServices;
 namespace WebGpuSharp.FFI;
 
 public readonly partial struct TextureViewHandle :
-    IDisposable, IWebGpuHandle<TextureViewHandle>
+    IDisposable,
+    IWebGpuHandle<TextureViewHandle>
 {
     public static ref nuint AsPointer(ref TextureViewHandle handle)
     {
@@ -17,7 +18,7 @@ public readonly partial struct TextureViewHandle :
 
     public static bool IsNull(TextureViewHandle handle)
     {
-        return handle == null;
+        return handle._ptr == 0;
     }
 
     public static void Reference(TextureViewHandle handle)
@@ -35,14 +36,21 @@ public readonly partial struct TextureViewHandle :
         return new TextureViewHandle(pointer);
     }
 
-    public TextureView? ToSafeHandle(bool isOwnedHandle)
+    public TextureView? ToSafeHandle(bool incrementRefCount = true)
     {
-        return TextureView.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return WebGPUMarshal.ToSafeHandle<TextureView, TextureViewHandle>(this);
+        }
+        else
+        {
+            return WebGPUMarshal.ToSafeHandleNoRefIncrement<TextureView, TextureViewHandle>(this);
+        }
     }
 
     public void Dispose()
     {
-        if (_ptr != UIntPtr.Zero)
+        if (_ptr != 0)
         {
             WebGPU_FFI.TextureViewRelease(this);
         }

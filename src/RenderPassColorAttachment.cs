@@ -9,9 +9,9 @@ public struct RenderPassColorAttachment :
 {
     public const uint DEPTH_SLICE_UNDEFINED = WebGPU_FFI.DEPTH_SLICE_UNDEFINED;
 
-    public required ITextureViewSource View;
+    public required TextureViewBase View;
     public uint? DepthSlice;
-    public ITextureViewSource? ResolveTarget;
+    public TextureViewBase? ResolveTarget;
     public Color ClearValue;
     public required LoadOp LoadOp;
     public required StoreOp StoreOp;
@@ -21,22 +21,11 @@ public struct RenderPassColorAttachment :
         WebGpuAllocatorHandle allocator,
         out RenderPassColorAttachmentFFI dest)
     {
-        var ownedViewHandle = input.View.UnsafeGetCurrentTextureViewOwnedHandle();
-        var ownedResolveTargetHandle = input.ResolveTarget != null ?
-            input.ResolveTarget.UnsafeGetCurrentTextureViewOwnedHandle() :
-            TextureViewHandle.Null;
-        allocator.AddHandleToDispose(ownedViewHandle);
-
-        if (TextureViewHandle.IsNull(ownedResolveTargetHandle))
-        {
-            allocator.AddHandleToDispose(ownedResolveTargetHandle);
-        }
-
         dest = new()
         {
-            View = ownedViewHandle,
+            View = allocator.GetHandle(input.View),
             DepthSlice = input.DepthSlice ?? DEPTH_SLICE_UNDEFINED,
-            ResolveTarget = ownedResolveTargetHandle,
+            ResolveTarget = allocator.GetHandle(input.ResolveTarget),
             LoadOp = input.LoadOp,
             StoreOp = input.StoreOp,
             ClearValue = input.ClearValue

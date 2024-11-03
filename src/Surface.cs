@@ -5,8 +5,7 @@ namespace WebGpuSharp;
 
 
 public sealed class Surface :
-    BaseWebGpuSafeHandle<Surface, SurfaceHandle>,
-    ITextureSource
+    BaseWebGpuSafeHandle<Surface, SurfaceHandle>
 {
     private Surface(SurfaceHandle handle) : base(handle)
     {
@@ -58,17 +57,5 @@ public sealed class Surface :
     public void Unconfigure()
     {
         ((SurfaceHandle)this).Unconfigure();
-    }
-
-    Texture? ITextureSource.GetCurrentTexture()
-    {
-        return GetCurrentTexture().Texture;
-    }
-
-    TextureHandle ITextureSource.UnsafeGetCurrentOwnedTextureHandle()
-    {
-        SurfaceTextureFFI surfaceTextureFFI = default;
-        _handle.GetCurrentTexture(ref surfaceTextureFFI);
-        return surfaceTextureFFI.Texture;
     }
 }

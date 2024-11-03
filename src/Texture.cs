@@ -4,55 +4,41 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 public sealed class Texture :
-    BaseWebGpuSafeHandle<Texture, TextureHandle>,
-    ITextureSource
+    TextureBase,
+    IFromHandle<Texture, TextureHandle>
 {
     public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
 
-    private Texture(TextureHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<TextureHandle> _safeHandle;
+
+    private Texture(TextureHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<TextureHandle>(handle);
     }
 
-    internal static Texture? FromHandle(TextureHandle handle, bool isOwnedHandle)
+    protected override TextureHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    static Texture? IFromHandle<Texture, TextureHandle>.FromHandle(
+        TextureHandle handle)
     {
-        var newTexture = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Texture(handle));
-        if (isOwnedHandle)
+        if (TextureHandle.IsNull(handle))
         {
-            newTexture?.AddReference(false);
+            return null;
         }
-        return newTexture;
+
+        TextureHandle.Reference(handle);
+        return new(handle);
     }
 
-    public TextureView? CreateView(in TextureViewDescriptor textureViewDescriptor)
+    static Texture? IFromHandle<Texture, TextureHandle>.FromHandleNoRefIncrement(
+        TextureHandle handle)
     {
-        return _handle.CreateView(textureViewDescriptor).ToSafeHandle(false);
-    }
+        if (TextureHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    public TextureView? CreateView()
-    {
-        return _handle.CreateView().ToSafeHandle(false);
-    }
-
-    public void Destroy() => _handle.Destroy();
-
-    public uint GetDepthOrArrayLayers() => _handle.GetDepthOrArrayLayers();
-    public TextureDimension GetDimension() => _handle.GetDimension();
-    public TextureFormat GetFormat() => _handle.GetFormat();
-    public uint GetHeight() => _handle.GetHeight();
-    public uint GetMipLevelCount() => _handle.GetMipLevelCount();
-    public uint GetSampleCount() => _handle.GetSampleCount();
-    public TextureUsage GetUsage() => _handle.GetUsage();
-    public uint GetWidth() => _handle.GetWidth();
-    public void SetLabel(WGPURefText label) => _handle.SetLabel(label);
-
-    Texture? ITextureSource.GetCurrentTexture()
-    {
-        return this;
-    }
-
-    TextureHandle ITextureSource.UnsafeGetCurrentOwnedTextureHandle()
-    {
-        TextureHandle.Reference(_handle);
-        return _handle;
+        return new(handle);
     }
 }

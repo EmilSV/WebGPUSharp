@@ -364,9 +364,55 @@ public unsafe static partial class WebGPUMarshal
         return handle;
     }
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T GetBorrowHandle<T>(WebGPUHandleWrapperBase<T>? safeHandle)
+        where T : unmanaged, IWebGpuHandle<T>
+    {
+        if (safeHandle == null)
+        {
+            return T.Null;
+        }
+        return WebGPUHandleWrapperBase<T>.GetHandle(safeHandle);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T GetOwnedHandle<T>(WebGPUHandleWrapperBase<T> safeHandle)
+        where T : unmanaged, IWebGpuHandle<T>
+    {
+        if (safeHandle == null)
+        {
+            return T.Null;
+        }
+        var handle = WebGPUHandleWrapperBase<T>.GetHandle(safeHandle);
+        T.Reference(handle);
+        return handle;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RenderPassEncoderHandle GetOwnedHandle(RenderPassEncoder safeHandle)
     {
         return safeHandle.GetOwnedHandle();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TSafeHandle? ToSafeHandle<TSafeHandle, THandle>(THandle handle)
+        where TSafeHandle : IFromHandle<TSafeHandle, THandle>
+         where THandle : unmanaged, IWebGpuHandle<THandle>
+    {
+        return TSafeHandle.FromHandleNoRefIncrement(handle);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TSafeHandle? ToSafeHandleNoRefIncrement<TSafeHandle, THandle>(THandle handle)
+        where TSafeHandle : IFromHandle<TSafeHandle, THandle>
+    {
+        return TSafeHandle.FromHandleNoRefIncrement(handle);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool GetHandleWrapperSameLifetime<THandle>(WebGPUHandleWrapperBase<THandle> handleWrapper)
+    {
+        return WebGPUHandleWrapperBase<THandle>.GetHandleWrapperSameLifetime(handleWrapper);
     }
 }
