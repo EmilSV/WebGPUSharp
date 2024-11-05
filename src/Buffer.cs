@@ -86,34 +86,10 @@ public sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
         nuint offset,
         nuint size)
     {
-        TaskCompletionSource<BufferMapAsyncStatus> taskCompletionSource;
-        CallbackUserDataHandle handle = default;
         try
         {
-            unsafe
-            {
-                UnsafeBufferLock.AddStateChangeLock(this);
-                taskCompletionSource = new TaskCompletionSource<BufferMapAsyncStatus>();
-                handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
-                WebGPU_FFI.BufferMapAsync(
-                    buffer: WebGPUMarshal.GetBorrowHandle(this),
-                    mode: mode,
-                    offset: offset,
-                    size: size,
-                    callback: &OnBufferMapCallback_TaskCompletionSource,
-                    userdata: (void*)handle
-                );
-            }
-
-            return await taskCompletionSource.Task;
-        }
-        catch (Exception)
-        {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
-            throw;
+            UnsafeBufferLock.AddStateChangeLock(this);
+            return await _handle.MapAsync(mode, offset, size);
         }
         finally
         {
@@ -123,9 +99,9 @@ public sealed class Buffer : BaseWebGpuSafeHandle<Buffer, BufferHandle>
 
     public void Destroy()
     {
-        UnsafeBufferLock.AddStateChangeLock(this);
         try
         {
+            UnsafeBufferLock.AddStateChangeLock(this);
             _handle.Destroy();
         }
         finally

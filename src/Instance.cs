@@ -3,38 +3,38 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Instance : BaseWebGpuSafeHandle<Instance, InstanceHandle>
+public sealed class Instance :
+    InstanceBase,
+    IFromHandle<Instance, InstanceHandle>
 {
-    private Instance(InstanceHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<InstanceHandle> _safeHandle;
+
+    protected override InstanceHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private Instance(InstanceHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<InstanceHandle>(handle);
     }
 
-    internal static Instance? FromHandle(InstanceHandle handle, bool isOwnedHandle)
+    static Instance? IFromHandle<Instance, InstanceHandle>.FromHandle(InstanceHandle handle)
     {
-        var newInstance = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Instance(handle));
-        if (isOwnedHandle)
+        if (InstanceHandle.IsNull(handle))
         {
-            newInstance?.AddReference(false);
+            return null;
         }
 
-        return newInstance;
+        InstanceHandle.Reference(handle);
+        return new(handle);
     }
 
-    public Task<Adapter?> RequestAdapterAsync(in RequestAdapterOptions options)
+    static Instance? IFromHandle<Instance, InstanceHandle>.FromHandleNoRefIncrement(InstanceHandle handle)
     {
-        return _handle.RequestAdapterAsync(options).ContinueWith(static task =>
+        if (InstanceHandle.IsNull(handle))
         {
-            return task.Result.ToSafeHandle(true);
-        });
-    }
+            return null;
+        }
 
-    public void ProcessEvents()
-    {
-        _handle.ProcessEvents();
-    }
-
-    public Surface? CreateSurface(SurfaceDescriptor descriptor)
-    {
-        return _handle.CreateSurface(descriptor).ToSafeHandle(true);
+        return new(handle);
     }
 }

@@ -3,39 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Adapter : BaseWebGpuSafeHandle<Adapter, AdapterHandle>
+public sealed class Adapter :
+    AdapterBase,
+    IFromHandle<Adapter, AdapterHandle>
 {
-    private Adapter(AdapterHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<AdapterHandle> _safeHandle;
+
+    private Adapter(AdapterHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<AdapterHandle>(handle);
     }
 
-    internal static Adapter? FromHandle(AdapterHandle handle, bool isOwnedHandle)
-    {
-        var newAdapter = WebGpuSafeHandleCache.GetOrCreate(
-            handle: handle,
-            createFunc: static (handle) => new Adapter(handle)
-        );
+    protected override AdapterHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
 
-        if (isOwnedHandle)
+    static Adapter? IFromHandle<Adapter, AdapterHandle>.FromHandle(
+        AdapterHandle handle)
+    {
+        if (AdapterHandle.IsNull(handle))
         {
-            newAdapter?.AddReference(false);
+            return null;
         }
-        return newAdapter;
+
+        AdapterHandle.Reference(handle);
+        return new(handle);
     }
 
-    public nuint GetEnumerateFeaturesCount() => _handle.GetEnumerateFeaturesCount();
-    public nuint EnumerateFeatures(Span<FeatureName> output) => _handle.EnumerateFeatures(output);
-    public FeatureName[] GetFeatures() => _handle.GetFeatures();
+    static Adapter? IFromHandle<Adapter, AdapterHandle>.FromHandleNoRefIncrement(
+        AdapterHandle handle)
+    {
+        if (AdapterHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    public AdapterInfo? GetInfo() => _handle.GetInfo();
-    public bool GetLimits(out SupportedLimits limits) => _handle.GetLimits(out limits);
-    public SupportedLimits? GetLimits() => _handle.GetLimits();
-
-    public bool HasFeature(FeatureName feature) => _handle.HasFeature(feature);
-
-    public Task<Device?> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        _handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(true));
-
-    public void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<Device?> callback) =>
-        _handle.RequestDeviceAsync(descriptor, callback);
+        return new(handle);
+    }
 }

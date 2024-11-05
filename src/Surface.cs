@@ -3,59 +3,38 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-
 public sealed class Surface :
-    BaseWebGpuSafeHandle<Surface, SurfaceHandle>
+    SurfaceBase,
+    IFromHandle<Surface, SurfaceHandle>
 {
-    private Surface(SurfaceHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<SurfaceHandle> _safeHandle;
+
+    protected override SurfaceHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private Surface(SurfaceHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<SurfaceHandle>(handle);
     }
 
-    internal static Surface? FromHandle(SurfaceHandle handle, bool isOwnedHandle)
+    static Surface? IFromHandle<Surface, SurfaceHandle>.FromHandle(SurfaceHandle handle)
     {
-        var newSurface = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new Surface(handle));
-        if (isOwnedHandle)
-        {
-            newSurface?.AddReference(false);
-        }
-        return newSurface;
-    }
-
-    public Status GetCapabilities(Adapter adapter, SurfaceCapabilities outCapabilities)
-    {
-        return outCapabilities.SetInternalSurfaceCapabilities((SurfaceHandle)this, (AdapterHandle)adapter);
-    }
-
-    public SurfaceCapabilities? GetCapabilities(Adapter adapter)
-    {
-        SurfaceCapabilities capabilities = new();
-        var status = GetCapabilities(adapter, capabilities);
-        if (status != Status.Success)
+        if (SurfaceHandle.IsNull(handle))
         {
             return null;
         }
-        return capabilities;
+
+        SurfaceHandle.Reference(handle);
+        return new(handle);
     }
 
-    public SurfaceTexture GetCurrentTexture()
+    static Surface? IFromHandle<Surface, SurfaceHandle>.FromHandleNoRefIncrement(SurfaceHandle handle)
     {
-        SurfaceTexture surfaceTexture = default;
-        ((SurfaceHandle)this).GetCurrentTexture(ref surfaceTexture);
-        return surfaceTexture;
-    }
+        if (SurfaceHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    public void Present()
-    {
-        ((SurfaceHandle)this).Present();
-    }
-
-    public void Configure(in SurfaceConfiguration configuration)
-    {
-        ((SurfaceHandle)this).Configure(in configuration);
-    }
-
-    public void Unconfigure()
-    {
-        ((SurfaceHandle)this).Unconfigure();
+        return new(handle);
     }
 }

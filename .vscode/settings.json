@@ -8,6 +8,7 @@
         "SPIRV",
         "TFFI",
         "Uncaptured",
+        "Unconfigure",
         "Unmap",
         "WGPU",
         "WGSL",
