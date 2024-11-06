@@ -371,10 +371,11 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            for (; i >= 0; i--)
+            do
             {
+                i--;
                 buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
-            }
+            } while (i != 0);
         }
     }
 
@@ -398,10 +399,11 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            for (; i >= 0; i--)
+            do
             {
+                i--;
                 buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
-            }
+            } while (i != 0);
         }
     }
 
@@ -423,10 +425,11 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            for (; i >= 0; i--)
+            do
             {
+                i--;
                 buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
-            }
+            } while (i != 0);
         }
     }
 

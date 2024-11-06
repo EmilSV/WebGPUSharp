@@ -40,9 +40,9 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.CopyBufferToBuffer(
-            source.GetHandle(),
+            WebGPUMarshal.GetBorrowHandle(source),
             sourceOffset,
-            destination.GetHandle(),
+            WebGPUMarshal.GetBorrowHandle(destination),
             destinationOffset,
             size
         );

@@ -23,12 +23,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
         if (descriptor.DepthStencilAttachment.HasValue)
         {
             ref readonly var depthStencilAttachment = ref descriptor.DepthStencilAttachment.Value;
-            var ownedViewHandle = depthStencilAttachment.View.UnsafeGetCurrentTextureViewOwnedHandle();
-            allocator.AddHandleToDispose(ownedViewHandle);
-
             depthStencilAttachmentFFI = new()
             {
-                View = ownedViewHandle,
+                View = GetBorrowHandle(depthStencilAttachment.View),
                 DepthLoadOp = depthStencilAttachment.DepthLoadOp,
                 DepthStoreOp = depthStencilAttachment.DepthStoreOp,
                 DepthClearValue = depthStencilAttachment.DepthClearValue,
@@ -83,7 +80,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
     {
         ClearBuffer(
-            buffer: (BufferHandle)buffer,
+            buffer: GetBorrowHandle(buffer),
             offset: offset,
             size: size
         );
@@ -96,9 +93,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
     )
     {
         CopyBufferToBuffer(
-            (BufferHandle)source,
+            GetBorrowHandle(source),
             sourceOffset,
-            (BufferHandle)destination,
+            GetBorrowHandle(destination),
             destinationOffset,
             size
         );
@@ -293,7 +290,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             querySet: (QuerySetHandle)querySet,
             firstQuery: firstQuery,
             queryCount: queryCount,
-            destination: (BufferHandle)destination,
+            destination: GetBorrowHandle(destination),
             destinationOffset: destinationOffset
         );
     }

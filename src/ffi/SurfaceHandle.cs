@@ -1,4 +1,6 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
+
 
 namespace WebGpuSharp.FFI;
 
@@ -6,7 +8,7 @@ public unsafe readonly partial struct SurfaceHandle :
     IDisposable, IWebGpuHandle<SurfaceHandle, Surface>
 {
     public TextureFormat GetPreferredFormat(Adapter adapter) =>
-        GetPreferredFormat((AdapterHandle)adapter);
+        GetPreferredFormat(GetBorrowHandle(adapter));
 
 
     public void Configure(in SurfaceConfigurationFFI configuration)
@@ -96,8 +98,15 @@ public unsafe readonly partial struct SurfaceHandle :
         WebGPU_FFI.SurfaceRelease(handle);
     }
 
-    public Surface? ToSafeHandle(bool isOwnedHandle)
+    public Surface? ToSafeHandle(bool incrementRefCount)
     {
-        return Surface.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Surface, SurfaceHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Surface, SurfaceHandle>(this);
+        }
     }
 }

@@ -97,8 +97,15 @@ public readonly unsafe partial struct TextureHandle :
         WebGPU_FFI.TextureRelease(handle);
     }
 
-    public Texture? ToSafeHandle(bool isOwnedHandle)
+    public Texture? ToSafeHandle(bool incrementRefCount)
     {
-        return Texture.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Texture, TextureHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Texture, TextureHandle>(this);
+        }
     }
 }

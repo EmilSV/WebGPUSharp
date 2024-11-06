@@ -11,7 +11,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     {
         WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(
             renderPassEncoder: this,
-            indirectBuffer: (BufferHandle)indirectBuffer,
+            indirectBuffer: GetBorrowHandle(indirectBuffer),
             indirectOffset: indirectOffset
         );
     }
@@ -22,7 +22,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     {
         WebGPU_FFI.RenderPassEncoderDrawIndirect(
             renderPassEncoder: this,
-            indirectBuffer: (BufferHandle)indirectBuffer,
+            indirectBuffer: GetBorrowHandle(indirectBuffer),
             indirectOffset: indirectOffset
         );
     }
@@ -162,7 +162,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     {
         WebGPU_FFI.RenderPassEncoderSetIndexBuffer(
             renderPassEncoder: this,
-            buffer: (BufferHandle)buffer,
+            buffer: GetBorrowHandle(buffer),
             format: format,
             offset: offset,
             size: size
@@ -172,7 +172,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
             WebGPU_FFI.RenderPassEncoderSetLabel2(
@@ -188,7 +188,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public readonly void SetVertexBuffer(
         uint slot, Buffer buffer, ulong offset, ulong size)
     {
-        SetVertexBuffer(slot, (BufferHandle)buffer, offset, size);
+        SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);
     }
 
 

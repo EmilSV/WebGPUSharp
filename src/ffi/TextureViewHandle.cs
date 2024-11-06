@@ -36,7 +36,7 @@ public readonly partial struct TextureViewHandle :
         return new TextureViewHandle(pointer);
     }
 
-    public TextureView? ToSafeHandle(bool incrementRefCount = true)
+    public TextureView? ToSafeHandle(bool incrementRefCount)
     {
         if (incrementRefCount)
         {

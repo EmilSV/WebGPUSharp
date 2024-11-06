@@ -218,10 +218,9 @@ public readonly unsafe partial struct QueueHandle :
        in Extent3D writeSize)
        where T : unmanaged
     {
-        using var destinationTextureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
         ImageCopyTextureFFI destinationFFI = new()
         {
-            Texture = destinationTextureHandle,
+            Texture = GetBorrowHandle(destination.Texture),
             MipLevel = destination.MipLevel,
             Origin = destination.Origin,
             Aspect = destination.Aspect

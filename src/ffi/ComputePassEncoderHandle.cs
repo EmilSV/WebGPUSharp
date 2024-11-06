@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -9,7 +10,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     {
         WebGPU_FFI.ComputePassEncoderDispatchWorkgroupsIndirect(
             computePassEncoder: this,
-            indirectBuffer: (BufferHandle)indirectBuffer,
+            indirectBuffer: GetBorrowHandle(indirectBuffer),
             indirectOffset: indirectOffset
         );
     }

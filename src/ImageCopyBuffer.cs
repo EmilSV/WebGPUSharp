@@ -14,7 +14,7 @@ public struct ImageCopyBuffer : IWebGpuFFIConvertible<ImageCopyBuffer, ImageCopy
         dest = new()
         {
             Layout = input.Layout,
-            Buffer = (BufferHandle)input.Buffer
+            Buffer = WebGPUMarshal.GetBorrowHandle(input.Buffer)
         };
     }
 

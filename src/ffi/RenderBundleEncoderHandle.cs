@@ -6,14 +6,14 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct RenderBundleEncoderHandle :
     IDisposable, IWebGpuHandle<RenderBundleEncoderHandle, RenderBundleEncoder>
 {
-    public void DrawIndexedIndirect(Buffer indirectBuffer, ulong indirectOffset)
+    public void DrawIndexedIndirect(BufferBase indirectBuffer, ulong indirectOffset)
     {
-        WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, (BufferHandle)indirectBuffer, indirectOffset);
+        WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
     }
 
-    public void DrawIndirect(Buffer indirectBuffer, ulong indirectOffset)
+    public void DrawIndirect(BufferBase indirectBuffer, ulong indirectOffset)
     {
-        WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, (BufferHandle)indirectBuffer, indirectOffset);
+        WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
     }
 
     public RenderBundleHandle Finish(in RenderBundleDescriptorFFI descriptor)
@@ -75,9 +75,9 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
+    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
     {
-        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, (BufferHandle)buffer, format, offset, size);
+        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
     }
 
     public void SetLabel(WGPURefText label)
@@ -97,9 +97,9 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         WebGPU_FFI.RenderBundleEncoderSetPipeline(this, (RenderPipelineHandle)pipeline);
     }
 
-    public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset, ulong size)
+    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
     {
-        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, (BufferHandle)buffer, offset, size);
+        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
     }
 
     public static ref nuint AsPointer(ref RenderBundleEncoderHandle handle)

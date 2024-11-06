@@ -42,35 +42,35 @@ public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, List<T> data)
      where T : unmanaged
     {
-        _handle.WriteBuffer(buffer.GetHandle(), bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
+        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, T[] data)
          where T : unmanaged
     {
-        _handle.WriteBuffer(buffer.GetHandle(), bufferOffset, (ReadOnlySpan<T>)data);
+        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, Span<T> data)
              where T : unmanaged
     {
-        _handle.WriteBuffer(buffer.GetHandle(), bufferOffset, (ReadOnlySpan<T>)data);
+        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, ReadOnlySpan<T> data)
          where T : unmanaged
     {
-        _handle.WriteBuffer(buffer.GetHandle(), bufferOffset, data);
+        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, in T data)
          where T : unmanaged
     {
-        _handle.WriteBuffer(buffer.GetHandle(), bufferOffset, data);
+        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
