@@ -7,7 +7,7 @@ public abstract class SurfaceBase : WebGPUHandleWrapperBase<SurfaceHandle>
 {
     public Status GetCapabilities(Adapter adapter, SurfaceCapabilities outCapabilities)
     {
-        return outCapabilities.SetInternalSurfaceCapabilities(Handle, (AdapterHandle)adapter);
+        return outCapabilities.SetInternalSurfaceCapabilities(Handle, WebGPUMarshal.GetBorrowHandle(adapter));
     }
 
     public SurfaceCapabilities? GetCapabilities(Adapter adapter)

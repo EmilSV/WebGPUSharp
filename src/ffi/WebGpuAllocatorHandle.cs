@@ -63,7 +63,7 @@ public readonly ref struct WebGpuAllocatorHandle
             return THandle.Null;
         }
 
-        if (WebGPUMarshal.GetHandleWrapperSameLifetime(safeHandle))
+        if (WebGPUMarshal.IsHandleWrapperSameLifetime(safeHandle))
         {
             return WebGPUHandleWrapperBase<THandle>.GetHandle(safeHandle);
         }

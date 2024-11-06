@@ -1,6 +1,7 @@
+using System;
 using System.Buffers;
 using WebGpuSharp.FFI;
-using GPUBuffer = WebGpuSharp.Buffer;
+using GPUBuffer = WebGpuSharp.BufferBase;
 
 namespace WebGpuSharp;
 
@@ -8,6 +9,7 @@ public unsafe ref struct BufferReadWriteContext
 {
     private readonly ArrayPool<object> _pool;
     private object[]? _buffersUsedInContext;
+    private ReadOnlySpan<object?> _buffersUsedInContextSpan;
 
     internal BufferReadWriteContext(ReadOnlySpan<GPUBuffer> buffersUsedInContext, ArrayPool<object> pool)
     {
@@ -17,6 +19,7 @@ public unsafe ref struct BufferReadWriteContext
         {
             _buffersUsedInContext[i] = buffersUsedInContext[i];
         }
+        _buffersUsedInContextSpan = _buffersUsedInContext.AsSpan(0, buffersUsedInContext.Length);
     }
 
     internal void Dispose()
@@ -24,8 +27,14 @@ public unsafe ref struct BufferReadWriteContext
         if (_buffersUsedInContext != null)
         {
             _pool.Return(_buffersUsedInContext);
+            _buffersUsedInContextSpan = default;
             _buffersUsedInContext = null;
         }
+    }
+
+    public readonly bool HasBuffer(GPUBuffer buffer)
+    {
+        return _buffersUsedInContext != null && _buffersUsedInContext.Contains(buffer);
     }
 
     public readonly ReadOnlySpan<T> GetConstMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
@@ -38,9 +47,9 @@ public unsafe ref struct BufferReadWriteContext
         nuint offsetInBytes = offset * (nuint)sizeof(T);
         nuint sizeInBytes = size * (nuint)sizeof(T);
 
-        for (int i = 0; i < _buffersUsedInContext.Length; i++)
+        foreach (var item in _buffersUsedInContextSpan)
         {
-            if (_buffersUsedInContext[i] == buffer)
+            if (item == buffer)
             {
                 void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetConstMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)
@@ -52,11 +61,11 @@ public unsafe ref struct BufferReadWriteContext
             }
         }
 
-        return [];
+        throw new WebGPUNotInReadWriteContext("Buffer is not in read/write context");
     }
 
 
-    public readonly ReadOnlySpan<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
+    public readonly Span<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
     {
         if (_buffersUsedInContext == null)
         {
@@ -66,9 +75,9 @@ public unsafe ref struct BufferReadWriteContext
         nuint offsetInBytes = offset * (nuint)sizeof(T);
         nuint sizeInBytes = size * (nuint)sizeof(T);
 
-        for (int i = 0; i < _buffersUsedInContext.Length; i++)
+        foreach (var item in _buffersUsedInContextSpan)
         {
-            if (_buffersUsedInContext[i] == buffer)
+            if (item == buffer)
             {
                 void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)
@@ -76,10 +85,10 @@ public unsafe ref struct BufferReadWriteContext
                     return [];
                 }
 
-                return new ReadOnlySpan<T>(ptr, (int)size);
+                return new Span<T>(ptr, (int)size);
             }
         }
 
-        return [];
+        throw new WebGPUNotInReadWriteContext("Buffer is not in read/write context");
     }
 }

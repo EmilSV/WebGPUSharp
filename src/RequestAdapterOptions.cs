@@ -20,7 +20,7 @@ public struct RequestAdapterOptions :
     {
         dest = new()
         {
-            CompatibleSurface = WebGPUMarshal.ToFFI<Surface, SurfaceHandle>(input.CompatibleSurface),
+            CompatibleSurface = WebGPUMarshal.GetBorrowHandle(input.CompatibleSurface),
             PowerPreference = input.PowerPreference,
             BackendType = input.BackendType,
             ForceFallbackAdapter = input.ForceFallbackAdapter

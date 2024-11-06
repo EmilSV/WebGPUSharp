@@ -411,8 +411,8 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool GetHandleWrapperSameLifetime<THandle>(WebGPUHandleWrapperBase<THandle> handleWrapper)
+    public static bool IsHandleWrapperSameLifetime<THandle>(WebGPUHandleWrapperBase<THandle> handleWrapper)
     {
-        return WebGPUHandleWrapperBase<THandle>.GetHandleWrapperSameLifetime(handleWrapper);
+        return WebGPUHandleWrapperBase<THandle>.IsHandleWrapperSameLifetime(handleWrapper);
     }
 }

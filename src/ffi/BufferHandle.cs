@@ -7,67 +7,6 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct BufferHandle :
     IDisposable, IWebGpuHandle<BufferHandle, Buffer>
 {
-    public void MapAsync(
-        MapMode mode,
-        nuint offset,
-        nuint size,
-        Action<BufferMapAsyncStatus> callback)
-    {
-        CallbackUserDataHandle handle = default;
-        try
-        {
-            handle = CallbackUserDataHandle.Alloc(callback);
-            WebGPU_FFI.BufferMapAsync(
-                buffer: this,
-                mode: mode,
-                offset: offset,
-                size: size,
-                callback: &BufferHandelCallbacks.OnBufferMapCallback_Action,
-                userdata: (void*)handle
-            );
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine(ex);
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
-        }
-    }
-
-    public Task<BufferMapAsyncStatus> MapAsync(
-        MapMode mode,
-        nuint offset,
-        nuint size)
-    {
-        TaskCompletionSource<BufferMapAsyncStatus> taskCompletionSource;
-        CallbackUserDataHandle handle = default;
-        try
-        {
-            taskCompletionSource = new TaskCompletionSource<BufferMapAsyncStatus>();
-            handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
-            WebGPU_FFI.BufferMapAsync(
-                buffer: this,
-                mode: mode,
-                offset: offset,
-                size: size,
-                callback: &BufferHandelCallbacks.OnBufferMapCallback_TaskCompletionSource,
-                userdata: (void*)handle
-            );
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine(ex);
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
-            return Task.FromResult(BufferMapAsyncStatus.Unknown);
-        }
-        return taskCompletionSource.Task;
-    }
-
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)
@@ -110,56 +49,16 @@ public unsafe readonly partial struct BufferHandle :
     {
         return Buffer.FromHandle(this, isOwnedHandle);
     }
-}
 
-file static class BufferHandelCallbacks
-{
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public unsafe static void OnBufferMapCallback_Action(BufferMapAsyncStatus status, void* userdata)
+    public void SetLabel(WGPURefText label)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        Action<BufferMapAsyncStatus>? callback;
+        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        try
-        {
-            callback = (Action<BufferMapAsyncStatus>)handle.GetObject()!;
-            callback(status);
-        }
-        catch (Exception)
-        {
+        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
 
-        }
-        finally
+        fixed (byte* labelPtr = labelUtf8Span)
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
-        }
-    }
-
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public unsafe static void OnBufferMapCallback_TaskCompletionSource(
-        BufferMapAsyncStatus status, void* userdata)
-    {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        TaskCompletionSource<BufferMapAsyncStatus>? taskCompletionSource;
-
-        try
-        {
-            taskCompletionSource = (TaskCompletionSource<BufferMapAsyncStatus>)handle.GetObject()!;
-            taskCompletionSource.SetResult(status);
-        }
-        catch (Exception)
-        {
-
-        }
-        finally
-        {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            WebGPU_FFI.BufferSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 }

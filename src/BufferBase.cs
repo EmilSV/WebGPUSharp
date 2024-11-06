@@ -22,6 +22,25 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public delegate TResult ReadContextDelegate<TResult, T>(ReadOnlySpan<T> data)
         where T : unmanaged;
 
+    public delegate void ReadWriteContextDelegateWithState<T, TState>(Span<T> data, ref TState state)
+    where T : unmanaged;
+
+    public delegate TResult ReadWriteContextDelegateWithState<TResult, T, TState>(Span<T> data, ref TState state)
+        where T : unmanaged;
+
+    public delegate void ReadContextDelegateWithState<T, TState>(ReadOnlySpan<T> data, ref TState state)
+        where T : unmanaged;
+
+    public delegate TResult ReadContextDelegateWithState<TResult, T, TState>(ReadOnlySpan<T> data, ref TState state)
+        where T : unmanaged;
+
+    public delegate void ReadWriteOperationCallback(BufferReadWriteContext status);
+    public delegate T ReadWriteOperationCallback<T>(BufferReadWriteContext status);
+    public delegate T ReadWriteOperationCallbackWithData<T>(BufferReadWriteContext status, ref T userdata);
+    public delegate TReturnData ReadWriteOperationCallbackWithData<TReturnData, TUserdata>(BufferReadWriteContext status, ref TUserdata userdata);
+
+
+
     private readonly ReadWriteStateChangeLock readWriteStateChangeLock = new();
 
     public unsafe void MapAsync(
@@ -64,7 +83,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
     public void MapAsync(MapMode mode, nuint offset, Action<MapAsyncStatus> callback)
     {
-        MapAsync(mode, offset, (nuint)GetSize(), callback);
+        MapAsync(mode, offset, (nuint)GetSize() - offset, callback);
     }
 
     public void MapAsync(MapMode mode, Action<MapAsyncStatus> callback)
@@ -112,7 +131,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
     public Task<MapAsyncStatus> MapAsync(MapMode mode, nuint offset = 0)
     {
-        return MapAsync(mode, offset, (nuint)GetSize());
+        return MapAsync(mode, offset, (nuint)GetSize() - offset);
     }
 
     public void Destroy()
@@ -136,14 +155,8 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         try
         {
             void* ptr = Handle.GetConstMappedRange(offset, size);
-            if (ptr == null)
-            {
-                callback([]);
-            }
-            else
-            {
-                callback(new ReadOnlySpan<T>(ptr, (int)size));
-            }
+            var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
+            callback(span);
         }
         finally
         {
@@ -156,6 +169,138 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         GetConstMappedRange<byte>(offset, size, callback);
     }
 
+
+
+    public unsafe TResult GetConstMappedRange<TResult, T>(nuint offset, nuint size, ReadContextDelegate<TResult, T> callback)
+        where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetConstMappedRange(offset, size);
+            var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
+            return callback(span);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
+
+
+    public unsafe void GetConstMappedRange<T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<T, TState> callback, ref TState state)
+        where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetConstMappedRange(offset, size);
+            var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
+            callback(span, ref state);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
+
+    public unsafe void GetConstMappedRange<TState>(nuint offset, nuint size, ReadContextDelegateWithState<byte, TState> callback, ref TState state)
+    {
+        GetConstMappedRange<byte, TState>(offset, size, callback, ref state);
+    }
+
+    public unsafe TResult GetConstMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<TResult, T, TState> callback, ref TState state)
+        where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetConstMappedRange(offset, size);
+            var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
+            return callback(span, ref state);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
+
+    public unsafe void GetMappedRange<T>(nuint offset, nuint size, ReadWriteContextDelegate<T> callback)
+    where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetMappedRange(offset, size);
+            var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
+            callback(span);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
+
+    public unsafe void GetMappedRange(nuint offset, nuint size, ReadWriteContextDelegate<byte> callback)
+    {
+        GetMappedRange<byte>(offset, size, callback);
+    }
+
+
+
+    public unsafe TResult GetMappedRange<TResult, T>(nuint offset, nuint size, ReadWriteContextDelegate<TResult, T> callback)
+        where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetMappedRange(offset, size);
+            var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
+            return callback(span);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
+
+
+    public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<T, TState> callback, ref TState state)
+        where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetMappedRange(offset, size);
+            var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
+            callback(span, ref state);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
+
+    public unsafe void GetMappedRange<TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<byte, TState> callback, ref TState state)
+    {
+        GetMappedRange<byte, TState>(offset, size, callback, ref state);
+    }
+
+    public unsafe TResult GetMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<TResult, T, TState> callback, ref TState state)
+        where T : unmanaged
+    {
+        readWriteStateChangeLock.AddReadWriteLock();
+        try
+        {
+            void* ptr = Handle.GetMappedRange(offset, size);
+            var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
+            return callback(span, ref state);
+        }
+        finally
+        {
+            readWriteStateChangeLock.RemoveReadWriteLock();
+        }
+    }
 
     public BufferMapState GetMapState() => Handle.GetMapState();
     public ulong GetSize() => Handle.GetSize();
@@ -175,97 +320,112 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    public void SetLabel(WGPURefText label)
+    {
+        Handle.SetLabel(label);
+    }
+
     public static void DoReadWriteOperation(
-        ReadOnlySpan<Buffer> buffers,
+        ReadOnlySpan<BufferBase> buffers,
         ReadWriteOperationCallback callback
     )
     {
         try
         {
-            foreach (Buffer buffer in buffers)
+            foreach (BufferBase buffer in buffers)
             {
-                UnsafeBufferLock.AddReadWriteLock(buffer);
+                buffer.readWriteStateChangeLock.AddReadWriteLock();
             }
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             callback(context);
         }
         finally
         {
-            foreach (Buffer buffer in buffers)
+            foreach (BufferBase buffer in buffers)
             {
-                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+                buffer.readWriteStateChangeLock.RemoveReadWriteLock();
             }
         }
     }
 
     public static T DoReadWriteOperation<T>(
-        ReadOnlySpan<Buffer> buffers,
+        ReadOnlySpan<BufferBase> buffers,
         ReadWriteOperationCallback<T> callback
     )
     {
+
+        int i = 0;
         try
         {
-            foreach (Buffer buffer in buffers)
+            for (; i < buffers.Length; i++)
             {
-                UnsafeBufferLock.AddReadWriteLock(buffer);
+                buffers[i].readWriteStateChangeLock.AddReadWriteLock();
+            }
+
+            foreach (BufferBase buffer in buffers)
+            {
+                buffer.readWriteStateChangeLock.AddReadWriteLock();
             }
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             return callback(context);
         }
         finally
         {
-            foreach (Buffer buffer in buffers)
+            for (; i >= 0; i--)
             {
-                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+                buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
             }
         }
     }
 
 
     public static void DoReadWriteOperation<TUserdata>(
-        ReadOnlySpan<Buffer> buffers,
+        ReadOnlySpan<BufferBase> buffers,
         ref TUserdata state,
         ReadWriteOperationCallbackWithData<TUserdata> callback
     )
     {
+        int i = 0;
         try
         {
-            foreach (Buffer buffer in buffers)
+            for (; i < buffers.Length; i++)
             {
-                UnsafeBufferLock.AddReadWriteLock(buffer);
+                buffers[i].readWriteStateChangeLock.AddReadWriteLock();
             }
+
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             callback(context, ref state);
         }
         finally
         {
-            foreach (Buffer buffer in buffers)
+            for (; i >= 0; i--)
             {
-                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+                buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
             }
         }
     }
 
-    public static TReturnData DoReadWriteOperation<TUserdata, TReturnData>(
-        ReadOnlySpan<Buffer> buffers,
+    public static TReturnData DoReadWriteOperation<TReturnData, TUserdata>(
+        ReadOnlySpan<BufferBase> buffers,
         ref TUserdata state,
-        ReadWriteOperationCallbackWithData<TUserdata, TReturnData> callback
+        ReadWriteOperationCallbackWithData<TReturnData, TUserdata> callback
     )
     {
+        int i = 0;
         try
         {
-            foreach (Buffer buffer in buffers)
+            for (; i < buffers.Length; i++)
             {
-                UnsafeBufferLock.AddReadWriteLock(buffer);
+                buffers[i].readWriteStateChangeLock.AddReadWriteLock();
             }
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             return callback(context, ref state);
         }
         finally
         {
-            foreach (Buffer buffer in buffers)
+            for (; i >= 0; i--)
             {
-                UnsafeBufferLock.RemoveReadWriteLock(buffer);
+                buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
             }
         }
     }
@@ -361,4 +521,3 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 }
-

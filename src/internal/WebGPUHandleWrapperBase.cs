@@ -8,7 +8,7 @@ public abstract class WebGPUHandleWrapperBase<THandle>
     protected abstract bool HandleWrapperSameLifetime { get; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool GetHandleWrapperSameLifetime(WebGPUHandleWrapperBase<THandle> handleWrapper)
+    internal static bool IsHandleWrapperSameLifetime(WebGPUHandleWrapperBase<THandle> handleWrapper)
     {
         return handleWrapper.HandleWrapperSameLifetime;
     }
