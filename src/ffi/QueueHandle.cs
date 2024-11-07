@@ -256,9 +256,16 @@ public readonly unsafe partial struct QueueHandle :
         return new QueueHandle(pointer);
     }
 
-    public Queue? ToSafeHandle(bool isOwnedHandle)
+    public Queue? ToSafeHandle(bool incrementRefCount)
     {
-        return Queue.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Queue, QueueHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Queue, QueueHandle>(this);
+        }
     }
 
     public static void Reference(QueueHandle handle)

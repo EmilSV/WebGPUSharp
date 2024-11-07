@@ -156,8 +156,15 @@ public readonly unsafe partial struct InstanceHandle :
         WebGPU_FFI.InstanceRelease(handle);
     }
 
-    public Instance? ToSafeHandle(bool isOwnedHandle)
+    public Instance? ToSafeHandle(bool incrementRefCount)
     {
-        return Instance.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Instance, InstanceHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Instance, InstanceHandle>(this);
+        }
     }
 }

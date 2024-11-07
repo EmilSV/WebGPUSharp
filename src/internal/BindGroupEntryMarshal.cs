@@ -76,14 +76,7 @@ public unsafe class BindGroupEntryCollectionMarshal :
     {
         for (var i = 0; i < items.Length; i++)
         {
-            var ownedTextureViewHandle = TextureViewHandle.Null;
-            var textureViewSource = items[i].TextureView;
-            if (textureViewSource != null)
-            {
-                ownedTextureViewHandle = textureViewSource.UnsafeGetCurrentTextureViewOwnedHandle();
-            }
-            allocator.AddHandleToDispose(ownedTextureViewHandle);
-            ffiItems[i].TextureView = ownedTextureViewHandle;
+            ffiItems[i].TextureView = allocator.GetHandle(items[i].TextureView);
         }
     }
 }

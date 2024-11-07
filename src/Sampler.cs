@@ -3,25 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public unsafe sealed class Sampler : BaseWebGpuSafeHandle<Sampler, SamplerHandle>
+public unsafe sealed class Sampler :
+    SamplerBase,
+    IFromHandle<Sampler, SamplerHandle>
 {
-    private Sampler(SamplerHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<SamplerHandle> _safeHandle;
+
+    protected override SamplerHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private Sampler(SamplerHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<SamplerHandle>(handle);
     }
 
-    internal static Sampler? FromHandle(SamplerHandle handle, bool isOwnedHandle)
+    static Sampler? IFromHandle<Sampler, SamplerHandle>.FromHandle(
+        SamplerHandle handle)
     {
-        var newSampler = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new Sampler(handle));
-        if (isOwnedHandle)
+        if (SamplerHandle.IsNull(handle))
         {
-            newSampler?.AddReference(false);
+            return null;
         }
-        return newSampler;
+
+        SamplerHandle.Reference(handle);
+        return new(handle);
     }
 
-
-    public void SetLabel(WGPURefText label)
+    static Sampler? IFromHandle<Sampler, SamplerHandle>.FromHandleNoRefIncrement(
+        SamplerHandle handle)
     {
-        _handle.SetLabel(label);
+        if (SamplerHandle.IsNull(handle))
+        {
+            return null;
+        }
+
+        return new(handle);
     }
 }

@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -53,8 +54,16 @@ public unsafe readonly partial struct SamplerHandle :
         }
     }
 
-    public Sampler? ToSafeHandle(bool isOwnedHandle)
+
+    public Sampler? ToSafeHandle(bool incrementRefCount)
     {
-        return Sampler.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Sampler, SamplerHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Sampler, SamplerHandle>(this);
+        }
     }
 }

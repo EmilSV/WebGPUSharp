@@ -3,23 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class BindGroupLayout : BaseWebGpuSafeHandle<BindGroupLayout, BindGroupLayoutHandle>
+public sealed class BindGroupLayout :
+    BindGroupLayoutBase,
+    IFromHandle<BindGroupLayout, BindGroupLayoutHandle>
 {
-    private BindGroupLayout(BindGroupLayoutHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<BindGroupLayoutHandle> _safeHandle;
+
+    protected override BindGroupLayoutHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private BindGroupLayout(BindGroupLayoutHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<BindGroupLayoutHandle>(handle);
     }
 
-    internal static BindGroupLayout? FromHandle(
-            BindGroupLayoutHandle handle, bool isOwnedHandle)
+    static BindGroupLayout? IFromHandle<BindGroupLayout, BindGroupLayoutHandle>.FromHandle(
+        BindGroupLayoutHandle handle)
     {
-        var newBindGroupLayout = WebGpuSafeHandleCache.GetOrCreate(
-            handle, static (handle) => new BindGroupLayout(handle)
-        );
-        if (isOwnedHandle)
+        if (BindGroupLayoutHandle.IsNull(handle))
         {
-            newBindGroupLayout?.AddReference(false);
+            return null;
         }
-        return newBindGroupLayout;
+
+        BindGroupLayoutHandle.Reference(handle);
+        return new(handle);
     }
 
+    static BindGroupLayout? IFromHandle<BindGroupLayout, BindGroupLayoutHandle>.FromHandleNoRefIncrement(
+        BindGroupLayoutHandle handle)
+    {
+        if (BindGroupLayoutHandle.IsNull(handle))
+        {
+            return null;
+        }
+
+        return new(handle);
+    }
 }

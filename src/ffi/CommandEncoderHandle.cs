@@ -108,10 +108,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
             dest: out ImageCopyBufferFFI sourceFFI
         );
 
-        using var textureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
         ImageCopyTextureFFI destinationFFI = new()
         {
-            Texture = textureHandle,
+            Texture = GetBorrowHandle(destination.Texture),
             MipLevel = destination.MipLevel,
             Origin = destination.Origin,
             Aspect = destination.Aspect
@@ -146,10 +145,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
     public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
     {
-        using var ownedTextureHandle = source.Texture.UnsafeGetCurrentOwnedTextureHandle();
         ImageCopyTextureFFI sourceFFI = new()
         {
-            Texture = ownedTextureHandle,
+            Texture = GetBorrowHandle(source.Texture),
             MipLevel = source.MipLevel,
             Origin = source.Origin,
             Aspect = source.Aspect
@@ -205,19 +203,17 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void CopyTextureToTexture(
         in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
     {
-        using var sourceTextureHandle = source.Texture.UnsafeGetCurrentOwnedTextureHandle();
         ImageCopyTextureFFI sourceFFI = new()
         {
-            Texture = sourceTextureHandle,
+            Texture = GetBorrowHandle(source.Texture),
             MipLevel = source.MipLevel,
             Origin = source.Origin,
             Aspect = source.Aspect
         };
 
-        using var destinationTextureHandle = destination.Texture.UnsafeGetCurrentOwnedTextureHandle();
         ImageCopyTextureFFI destinationFFI = new()
         {
-            Texture = destinationTextureHandle,
+            Texture = GetBorrowHandle(destination.Texture),
             MipLevel = destination.MipLevel,
             Origin = destination.Origin,
             Aspect = destination.Aspect

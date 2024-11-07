@@ -313,9 +313,16 @@ public unsafe readonly partial struct AdapterHandle :
         return new AdapterHandle(pointer);
     }
 
-    public Adapter? ToSafeHandle(bool isOwnedHandle)
+    public Adapter? ToSafeHandle(bool incrementRefCount)
     {
-        return Adapter.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Adapter, AdapterHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Adapter, AdapterHandle>(this);
+        }
     }
 
     public static void Reference(AdapterHandle handle)

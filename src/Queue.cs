@@ -1,139 +1,42 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class Queue : BaseWebGpuSafeHandle<Queue, QueueHandle>
+public sealed class Queue :
+    QueueBase,
+    IFromHandle<Queue, QueueHandle>
 {
-    private Queue(QueueHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<QueueHandle> _safeHandle;
+
+    protected override QueueHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private Queue(QueueHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<QueueHandle>(handle);
     }
 
-    internal static Queue? FromHandle(QueueHandle handle, bool isOwnedHandle)
+    static Queue? IFromHandle<Queue, QueueHandle>.FromHandle(
+        QueueHandle handle)
     {
-        var newQueue = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new Queue(handle));
-        if (isOwnedHandle)
+        if (QueueHandle.IsNull(handle))
         {
-            newQueue?.AddReference(false);
+            return null;
         }
-        return newQueue;
+
+        QueueHandle.Reference(handle);
+        return new(handle);
     }
 
-    public void SetLabel(WGPURefText label)
+    static Queue? IFromHandle<Queue, QueueHandle>.FromHandleNoRefIncrement(
+        QueueHandle handle)
     {
-        _handle.SetLabel(label);
-    }
+        if (QueueHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Submit(ReadOnlySpan<CommandBuffer> commands)
-    {
-        _handle.Submit(commands);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Submit(CommandBuffer commands)
-    {
-        _handle.Submit(commands);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, List<T> data)
-     where T : unmanaged
-    {
-        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, T[] data)
-         where T : unmanaged
-    {
-        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, Span<T> data)
-             where T : unmanaged
-    {
-        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, ReadOnlySpan<T> data)
-         where T : unmanaged
-    {
-        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, in T data)
-         where T : unmanaged
-    {
-        _handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteTexture<T>(
-        in ImageCopyTexture destination,
-        List<T> data,
-        in TextureDataLayout dataLayout,
-        in Extent3D writeSize
-    ) where T : unmanaged
-    {
-        _handle.WriteTexture(
-            destination: destination,
-            data: (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data),
-            dataLayout: dataLayout,
-            writeSize: writeSize
-        );
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteTexture<T>(
-        in ImageCopyTexture destination,
-        T[] data,
-        in TextureDataLayout dataLayout,
-        in Extent3D writeSize
-    ) where T : unmanaged
-    {
-        _handle.WriteTexture(
-            destination: destination,
-            data: (ReadOnlySpan<T>)data,
-            dataLayout: dataLayout,
-            writeSize: writeSize
-        );
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteTexture<T>(
-        in ImageCopyTexture destination,
-        Span<T> data,
-        in TextureDataLayout dataLayout,
-        in Extent3D writeSize
-    ) where T : unmanaged
-    {
-        _handle.WriteTexture(
-            destination: destination,
-            data: (ReadOnlySpan<T>)data,
-            dataLayout: dataLayout,
-            writeSize: writeSize
-        );
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteTexture<T>(
-        in ImageCopyTexture destination,
-        ReadOnlySpan<T> data,
-        in TextureDataLayout dataLayout,
-        in Extent3D writeSize)
-        where T : unmanaged
-    {
-        _handle.WriteTexture(
-            destination: destination,
-            data: data,
-            dataLayout: dataLayout,
-            writeSize: writeSize
-        );
+        return new(handle);
     }
 }
