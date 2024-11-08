@@ -3,20 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class RenderBundle : BaseWebGpuSafeHandle<RenderBundle, RenderBundleHandle>
+public sealed class RenderBundle :
+    RenderBundleBase,
+    IFromHandle<RenderBundle, RenderBundleHandle>
 {
-    private RenderBundle(RenderBundleHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<RenderBundleHandle> _safeHandle;
+
+    protected override RenderBundleHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private RenderBundle(RenderBundleHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<RenderBundleHandle>(handle);
     }
 
-    internal static RenderBundle? FromHandle(RenderBundleHandle handle, bool isOwnedHandle)
+    static RenderBundle? IFromHandle<RenderBundle, RenderBundleHandle>.FromHandle(
+        RenderBundleHandle handle)
     {
-        var newRenderBundleEncoder = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new RenderBundle(handle));
-        if (isOwnedHandle)
+        if (RenderBundleHandle.IsNull(handle))
         {
-            newRenderBundleEncoder?.AddReference(false);
+            return null;
         }
-        return newRenderBundleEncoder;
+
+        RenderBundleHandle.Reference(handle);
+        return new(handle);
     }
 
+    static RenderBundle? IFromHandle<RenderBundle, RenderBundleHandle>.FromHandleNoRefIncrement(
+        RenderBundleHandle handle)
+    {
+        if (RenderBundleHandle.IsNull(handle))
+        {
+            return null;
+        }
+
+        return new(handle);
+    }
 }

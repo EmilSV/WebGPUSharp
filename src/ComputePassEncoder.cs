@@ -3,49 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-
 public sealed class ComputePassEncoder :
-    BaseWebGpuSafeHandle<ComputePassEncoder, ComputePassEncoderHandle>
+    ComputePassEncoderBase,
+    IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>
 {
-    private ComputePassEncoder(ComputePassEncoderHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<ComputePassEncoderHandle> _safeHandle;
+
+    protected override ComputePassEncoderHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private ComputePassEncoder(ComputePassEncoderHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<ComputePassEncoderHandle>(handle);
     }
 
-    internal static ComputePassEncoder? FromHandle(ComputePassEncoderHandle handle, bool isOwnedHandle)
+    static ComputePassEncoder? IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>.FromHandle(
+        ComputePassEncoderHandle handle)
     {
-        var newComputePassEncoder = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new ComputePassEncoder(handle));
-        if (isOwnedHandle)
+        if (ComputePassEncoderHandle.IsNull(handle))
         {
-            newComputePassEncoder?.AddReference(false);
+            return null;
         }
-        return newComputePassEncoder;
+
+        ComputePassEncoderHandle.Reference(handle);
+        return new(handle);
     }
 
-    public void DispatchWorkgroups(uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ) =>
-        _handle.DispatchWorkgroups(workgroupCountX, workgroupCountY, workgroupCountZ);
+    static ComputePassEncoder? IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>.FromHandleNoRefIncrement(
+        ComputePassEncoderHandle handle)
+    {
+        if (ComputePassEncoderHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    public void DispatchWorkgroupsIndirect(Buffer indirectBuffer, ulong indirectOffset) =>
-        _handle.DispatchWorkgroupsIndirect(indirectBuffer, indirectOffset);
-
-    public void End() => _handle.End();
-
-    public void InsertDebugMarker(WGPURefText markerLabel) =>
-        _handle.InsertDebugMarker(markerLabel);
-
-    public void PopDebugGroup() =>
-        _handle.PopDebugGroup();
-
-    public void PushDebugGroup(WGPURefText groupLabel) =>
-        _handle.PushDebugGroup(groupLabel);
-
-
-    public void SetBindGroup(
-        uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets) =>
-        _handle.SetBindGroup(groupIndex, group, dynamicOffsets);
-
-    public void SetLabel(WGPURefText label) =>
-        _handle.SetLabel(label);
-
-    public void SetPipeline(ComputePipeline pipeline) =>
-        _handle.SetPipeline(pipeline);
+        return new(handle);
+    }
 }

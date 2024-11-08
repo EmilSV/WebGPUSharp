@@ -3,36 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class QuerySet : BaseWebGpuSafeHandle<QuerySet, QuerySetHandle>
+public sealed class QuerySet :
+    QuerySetBase,
+    IFromHandle<QuerySet, QuerySetHandle>
 {
-    private QuerySet(QuerySetHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<QuerySetHandle> _safeHandle;
+
+    protected override QuerySetHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private QuerySet(QuerySetHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<QuerySetHandle>(handle);
     }
 
-    internal static QuerySet? FromHandle(QuerySetHandle handle, bool isOwnedHandle)
+    static QuerySet? IFromHandle<QuerySet, QuerySetHandle>.FromHandle(
+        QuerySetHandle handle)
     {
-        var newQuerySet = WebGpuSafeHandleCache.GetOrCreate(handle, static (handle) => new QuerySet(handle));
-        if (isOwnedHandle)
+        if (QuerySetHandle.IsNull(handle))
         {
-            newQuerySet?.AddReference(false);
+            return null;
         }
-        return newQuerySet;
+
+        QuerySetHandle.Reference(handle);
+        return new(handle);
     }
 
-    public void Destroy()
+    static QuerySet? IFromHandle<QuerySet, QuerySetHandle>.FromHandleNoRefIncrement(
+        QuerySetHandle handle)
     {
-        _handle.Destroy();
-    }
-    public uint GetCount()
-    {
-        return _handle.GetCount();
-    }
-    public QueryType GetQueryType()
-    {
-        return _handle.GetQueryType();
-    }
-    public void SetLabel(WGPURefText label)
-    {
-        _handle.SetLabel(label);
+        if (QuerySetHandle.IsNull(handle))
+        {
+            return null;
+        }
+
+        return new(handle);
     }
 }

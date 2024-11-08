@@ -3,34 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class ShaderModule : BaseWebGpuSafeHandle<ShaderModuleHandle>
+public sealed class ShaderModule :
+    ShaderModuleBase,
+    IFromHandle<ShaderModule, ShaderModuleHandle>
 {
-    private ShaderModule(ShaderModuleHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<ShaderModuleHandle> _safeHandle;
+
+    protected override ShaderModuleHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private ShaderModule(ShaderModuleHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<ShaderModuleHandle>(handle);
     }
 
-    internal static ShaderModule? FromHandle(ShaderModuleHandle handle, bool isOwnedHandle)
+    static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandle(
+        ShaderModuleHandle handle)
     {
-        var newShaderModule = WebGpuSafeHandleCache.GetOrCreate(handle, h => new ShaderModule(h));
-        if (isOwnedHandle)
+        if (ShaderModuleHandle.IsNull(handle))
         {
-            newShaderModule?.AddReference(false);
+            return null;
         }
-        return newShaderModule;
+
+        ShaderModuleHandle.Reference(handle);
+        return new(handle);
     }
 
-    public void GetCompilationInfo(CompilationInfoCallback callback)
+    static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandleNoRefIncrement(
+        ShaderModuleHandle handle)
     {
-        _handle.GetCompilationInfo(callback);
-    }
+        if (ShaderModuleHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    public Task GetCompilationInfoAsync(CompilationInfoCallback callback)
-    {
-        return _handle.GetCompilationInfoAsync(callback);
-    }
-
-    public Task<T> GetCompilationInfoAsync<T>(CompilationInfoCallback<T> callback)
-    {
-        return _handle.GetCompilationInfoAsync(callback);
+        return new(handle);
     }
 }

@@ -56,7 +56,7 @@ public readonly ref struct WebGpuAllocatorHandle
     }
 
     public unsafe THandle GetHandle<THandle>(WebGPUHandleWrapperBase<THandle>? safeHandle)
-        where THandle : unmanaged, IWebGpuHandle<THandle>
+        where THandle : unmanaged, IWebGpuHandle<THandle>, IEquatable<THandle>
     {
         if (safeHandle == null)
         {

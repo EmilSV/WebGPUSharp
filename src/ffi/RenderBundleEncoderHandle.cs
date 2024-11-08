@@ -67,7 +67,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffset)
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffset)
     {
         fixed (uint* dynamicOffsetPtr = dynamicOffset)
         {

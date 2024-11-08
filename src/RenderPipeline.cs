@@ -3,30 +3,40 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-
-public sealed class RenderPipeline : BaseWebGpuSafeHandle<RenderPipeline, RenderPipelineHandle>
+public sealed class RenderPipeline :
+    RenderPipelineBase,
+    IFromHandle<RenderPipeline, RenderPipelineHandle>
 {
-    private RenderPipeline(RenderPipelineHandle handle) : base(handle)
+    private readonly WebGpuSafeHandle<RenderPipelineHandle> _safeHandle;
+
+    protected override RenderPipelineHandle Handle => _safeHandle.Handle;
+    protected override bool HandleWrapperSameLifetime => true;
+
+    private RenderPipeline(RenderPipelineHandle handle)
     {
+        _safeHandle = new WebGpuSafeHandle<RenderPipelineHandle>(handle);
     }
 
-    internal static RenderPipeline? FromHandle(RenderPipelineHandle handle, bool isOwnedHandle)
+    static RenderPipeline? IFromHandle<RenderPipeline, RenderPipelineHandle>.FromHandle(
+        RenderPipelineHandle handle)
     {
-        var newRenderPipeline = WebGpuSafeHandleCache.GetOrCreate(handle, static handle => new RenderPipeline(handle));
-        if (isOwnedHandle)
+        if (RenderPipelineHandle.IsNull(handle))
         {
-            newRenderPipeline?.AddReference(false);
+            return null;
         }
-        return newRenderPipeline;
+
+        RenderPipelineHandle.Reference(handle);
+        return new(handle);
     }
 
-    public BindGroupLayout? GetBindGroupLayout(uint groupIndex)
+    static RenderPipeline? IFromHandle<RenderPipeline, RenderPipelineHandle>.FromHandleNoRefIncrement(
+        RenderPipelineHandle handle)
     {
-        return _handle.GetBindGroupLayout(groupIndex).ToSafeHandle(true);
-    }
+        if (RenderPipelineHandle.IsNull(handle))
+        {
+            return null;
+        }
 
-    public void SetLabel(WGPURefText label)
-    {
-        _handle.SetLabel(label);
+        return new(handle);
     }
 }
