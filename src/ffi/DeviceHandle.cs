@@ -29,7 +29,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             BindGroupDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = labelPtr;
-            ToFFI(descriptor.Layout, out descriptorFFI.Layout);
+            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             descriptorFFI.EntryCount = entriesCount;
             descriptorFFI.Entries = entriesPtr;
             return WebGPU_FFI.DeviceCreateBindGroup(this, &descriptorFFI);
@@ -132,10 +132,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
                 Label = LabelPtr,
-                Layout = (PipelineLayoutHandle)descriptor.Layout,
+                Layout = GetBorrowHandle(descriptor.Layout),
                 Compute = new()
                 {
-                    Module = (ShaderModuleHandle)descriptor.Compute.Module,
+                    Module = GetBorrowHandle(descriptor.Compute.Module),
                     EntryPoint = EntryPointPtr,
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
@@ -174,10 +174,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
                 Label = labelPtr,
-                Layout = (PipelineLayoutHandle)descriptor.Layout,
+                Layout = GetBorrowHandle(descriptor.Layout),
                 Compute = new()
                 {
-                    Module = (ShaderModuleHandle)descriptor.Compute.Module,
+                    Module = GetBorrowHandle(descriptor.Compute.Module),
                     EntryPoint = entryPointPtr,
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
@@ -216,10 +216,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
                 Label = labelPtr,
-                Layout = (PipelineLayoutHandle)descriptor.Layout,
+                Layout = GetBorrowHandle(descriptor.Layout),
                 Compute = new()
                 {
-                    Module = (ShaderModuleHandle)descriptor.Compute.Module,
+                    Module = GetBorrowHandle(descriptor.Compute.Module),
                     EntryPoint = entryPointPtr,
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
@@ -246,14 +246,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
+            var (ptr, length) = GetBorrowHandlesAsPtrAndLength<BindGroupLayoutHandle, BindGroupLayout>(
+                descriptor.BindGroupLayouts,
+                allocator
+            );
             PipelineLayoutDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = labelPtr;
-            ToFFI(
-                descriptor.BindGroupLayouts,
-                allocator,
-                out descriptorFFI.BindGroupLayouts,
-                out descriptorFFI.BindGroupLayoutCount
-            );
+            descriptorFFI.BindGroupLayouts = ptr;
+            descriptorFFI.BindGroupLayoutCount = length;
 
             return CreatePipelineLayout(descriptorFFI);
         }
@@ -337,7 +337,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = labelPtr;
-            ToFFI(descriptor.Layout, out descriptorFFI.Layout);
+            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
             descriptorFFI.DepthStencil = depthStencilPtr;
@@ -368,7 +368,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = labelPtr;
-            ToFFI(descriptor.Layout, out descriptorFFI.Layout);
+            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
             descriptorFFI.DepthStencil = depthStencilPtr;
@@ -396,7 +396,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = labelPtr;
-            ToFFI(descriptor.Layout, out descriptorFFI.Layout);
+            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
             descriptorFFI.DepthStencil = depthStencilPtr;
@@ -637,9 +637,16 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return new DeviceHandle(pointer);
     }
 
-    public Device? ToSafeHandle(bool isOwnedHandle)
+    public Device? ToSafeHandle(bool incrementRefCount)
     {
-        return Device.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<Device, DeviceHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<Device, DeviceHandle>(this);
+        }
     }
 
     public static void Reference(DeviceHandle handle)

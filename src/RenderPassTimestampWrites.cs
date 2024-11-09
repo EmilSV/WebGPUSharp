@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public struct RenderPassTimestampWrites :
     IWebGpuFFIConvertible<RenderPassTimestampWrites, RenderPassTimestampWritesFFI>
 {
-    public required QuerySet QuerySet;
+    public required QuerySetBase QuerySet;
     public uint BeginningOfPassWriteIndex;
     public uint EndOfPassWriteIndex;
 

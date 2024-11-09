@@ -357,6 +357,27 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static PtrAndLength<THandle> GetBorrowHandlesAsPtrAndLength<THandle, TWrapper>(
+        ReadOnlySpan<TWrapper> safeHandles,
+        WebGpuAllocatorHandle allocatorHandle)
+        where TWrapper : WebGPUHandleWrapperBase<THandle>
+        where THandle : unmanaged, IWebGpuHandle<THandle>, IEquatable<THandle>
+    {
+        if (safeHandles.IsEmpty)
+        {
+            return default;
+        }
+
+        var length = (nuint)safeHandles.Length;
+        THandle* handles = allocatorHandle.Alloc<THandle>(length);
+        for (int i = 0; i < safeHandles.Length; i++)
+        {
+            handles[i] = GetBorrowHandle(safeHandles[i]);
+        }
+        return new(handles, length);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RenderPassEncoderHandle GetOwnedHandle(RenderPassEncoder safeHandle)
     {
         return safeHandle.GetOwnedHandle();

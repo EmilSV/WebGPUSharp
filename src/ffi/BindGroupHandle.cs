@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -53,8 +54,15 @@ public readonly unsafe partial struct BindGroupHandle :
         WebGPU_FFI.BindGroupRelease(handle);
     }
 
-    public BindGroup? ToSafeHandle(bool isOwnedHandle)
+    public BindGroup? ToSafeHandle(bool incrementRefCount)
     {
-        return BindGroup.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<BindGroup, BindGroupHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<BindGroup, BindGroupHandle>(this);
+        }
     }
 }

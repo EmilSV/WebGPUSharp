@@ -3,6 +3,6 @@ namespace WebGpuSharp;
 public ref struct ComputePipelineDescriptor
 {
     public WGPURefText Label;
-    public PipelineLayout? Layout;
+    public PipelineLayoutBase? Layout;
     public required ProgrammableStageDescriptor Compute;
 }

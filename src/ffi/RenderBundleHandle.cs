@@ -1,4 +1,6 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
+
 namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct RenderBundleHandle :
@@ -37,8 +39,15 @@ public unsafe readonly partial struct RenderBundleHandle :
         }
     }
 
-    public RenderBundle? ToSafeHandle(bool isOwnedHandle)
+    public RenderBundle? ToSafeHandle(bool incrementRefCount)
     {
-        return RenderBundle.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<RenderBundle, RenderBundleHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<RenderBundle, RenderBundleHandle>(this);
+        }
     }
 }

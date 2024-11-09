@@ -10,7 +10,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGr
     public Buffer? Buffer;
     public ulong Offset;
     public ulong Size;
-    public Sampler? Sampler;
+    public SamplerBase? Sampler;
     public TextureViewBase? TextureView;
 
     public BindGroupEntry()

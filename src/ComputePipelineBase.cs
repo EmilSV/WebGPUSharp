@@ -8,7 +8,7 @@ public abstract class ComputePipelineBase :
 {
     public BindGroupLayout? GetBindGroupLayout(uint groupIndex)
     {
-        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(true);
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false);
     }
 
     public void SetLabel(WGPURefText label)

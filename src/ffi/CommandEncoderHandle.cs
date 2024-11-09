@@ -62,7 +62,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
                 ColorAttachmentCount = colorAttachmentsCount,
                 ColorAttachments = colorAttachmentsPtr,
                 DepthStencilAttachment = depthStencilAttachmentPtr,
-                OcclusionQuerySet = ToFFI<QuerySet, QuerySetHandle>(descriptor.OcclusionQuerySet),
+                OcclusionQuerySet = GetBorrowHandle(descriptor.OcclusionQuerySet),
                 TimestampWrites = timestampWritesFFIPtr
             };
             return BeginRenderPass(in descriptorFFI);
@@ -283,7 +283,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     {
         WebGPU_FFI.CommandEncoderResolveQuerySet(
             commandEncoder: this,
-            querySet: (QuerySetHandle)querySet,
+            querySet: GetBorrowHandle(querySet),
             firstQuery: firstQuery,
             queryCount: queryCount,
             destination: GetBorrowHandle(destination),
@@ -307,7 +307,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     {
         WebGPU_FFI.CommandEncoderWriteTimestamp(
            commandEncoder: this,
-           querySet: (QuerySetHandle)querySet,
+           querySet: GetBorrowHandle(querySet),
            queryIndex: queryIndex
        );
     }

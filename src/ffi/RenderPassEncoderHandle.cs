@@ -38,7 +38,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     public void ExecuteBundle(RenderBundle bundle)
     {
-        RenderBundleHandle handle = (RenderBundleHandle)bundle;
+        RenderBundleHandle handle = GetBorrowHandle(bundle);
         WebGPU_FFI.RenderPassEncoderExecuteBundles(
             renderPassEncoder: this,
             bundleCount: 1,
@@ -61,11 +61,11 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     public void ExecuteBundles(ReadOnlySpan<RenderBundle> bundles)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        ToFFI(bundles, allocator, out RenderBundleHandle* bundlesPtr, out nuint bundlesLength);
+        var (ptr, length) = GetBorrowHandlesAsPtrAndLength<RenderBundleHandle, RenderBundle>(bundles, allocator);
         WebGPU_FFI.RenderPassEncoderExecuteBundles(
             renderPassEncoder: this,
-            bundleCount: bundlesLength,
-            bundles: bundlesPtr
+            bundleCount: length,
+            bundles: ptr
         );
     }
 
@@ -135,17 +135,17 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     public readonly void SetBindGroup(uint groupIndex, BindGroup group)
     {
-        SetBindGroup(groupIndex, (BindGroupHandle)group);
+        SetBindGroup(groupIndex, GetBorrowHandle(group));
     }
 
     public readonly void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
     {
-        SetBindGroup(groupIndex, (BindGroupHandle)group, dynamicOffset);
+        SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffset);
     }
 
     public readonly void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
     {
-        SetBindGroup(groupIndex, (BindGroupHandle)group, dynamicOffsets);
+        SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffsets);
     }
 
 
@@ -183,7 +183,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     public readonly void SetPipeline(RenderPipeline pipeline) =>
-        SetPipeline(ToFFI<RenderPipeline, RenderPipelineHandle>(pipeline));
+        SetPipeline(GetBorrowHandle(pipeline));
 
     public readonly void SetVertexBuffer(
         uint slot, Buffer buffer, ulong offset, ulong size)

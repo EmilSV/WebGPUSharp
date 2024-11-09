@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -62,8 +63,15 @@ public readonly partial struct ShaderModuleHandle :
         }
     }
 
-    public ShaderModule? ToSafeHandle(bool isOwnedHandle)
+    public ShaderModule? ToSafeHandle(bool incrementRefCount)
     {
-        return ShaderModule.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<ShaderModule, ShaderModuleHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<ShaderModule, ShaderModuleHandle>(this);
+        }
     }
 }

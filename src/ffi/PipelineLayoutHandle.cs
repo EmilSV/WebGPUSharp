@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -56,8 +57,16 @@ public unsafe readonly partial struct PipelineLayoutHandle :
         WebGPU_FFI.PipelineLayoutRelease(handle);
     }
 
-    public PipelineLayout? ToSafeHandle(bool isOwnedHandle)
+
+    public PipelineLayout? ToSafeHandle(bool incrementRefCount)
     {
-        return PipelineLayout.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<PipelineLayout, PipelineLayoutHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<PipelineLayout, PipelineLayoutHandle>(this);
+        }
     }
 }

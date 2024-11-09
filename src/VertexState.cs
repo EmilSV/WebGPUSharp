@@ -16,7 +16,7 @@ public struct VertexState :
         in VertexState input, WebGpuAllocatorHandle allocator, out VertexStateFFI dest)
     {
         dest = default;
-        ToFFI(input.Module, out dest.Module);
+        dest.Module = GetBorrowHandle(input.Module);
         ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
         ToFFI(input.Buffers, allocator, out dest.Buffers, out dest.BufferCount);

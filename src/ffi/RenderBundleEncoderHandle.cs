@@ -71,7 +71,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     {
         fixed (uint* dynamicOffsetPtr = dynamicOffset)
         {
-            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, (BindGroupHandle)group, (nuint)dynamicOffset.Length, dynamicOffsetPtr);
+            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, GetBorrowHandle(group), (nuint)dynamicOffset.Length, dynamicOffsetPtr);
         }
     }
 
@@ -94,7 +94,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
 
     public void SetPipeline(RenderPipeline pipeline)
     {
-        WebGPU_FFI.RenderBundleEncoderSetPipeline(this, (RenderPipelineHandle)pipeline);
+        WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetBorrowHandle(pipeline));
     }
 
     public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
@@ -136,8 +136,15 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    public RenderBundleEncoder? ToSafeHandle(bool isOwnedHandle)
+    public RenderBundleEncoder? ToSafeHandle(bool incrementRefCount)
     {
-        return RenderBundleEncoder.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<RenderBundleEncoder, RenderBundleEncoderHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<RenderBundleEncoder, RenderBundleEncoderHandle>(this);
+        }
     }
 }

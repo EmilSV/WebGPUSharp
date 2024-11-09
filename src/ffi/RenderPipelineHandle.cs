@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -55,8 +56,15 @@ public unsafe readonly partial struct RenderPipelineHandle :
         }
     }
 
-    public RenderPipeline? ToSafeHandle(bool isOwnedHandle)
+    public RenderPipeline? ToSafeHandle(bool incrementRefCount)
     {
-        return RenderPipeline.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<RenderPipeline, RenderPipelineHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<RenderPipeline, RenderPipelineHandle>(this);
+        }
     }
 }

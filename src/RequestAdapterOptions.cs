@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public struct RequestAdapterOptions :
     IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>
 {
-    public required Surface CompatibleSurface;
+    public required SurfaceBase CompatibleSurface;
     public PowerPreference PowerPreference;
     public BackendType BackendType;
     public bool ForceFallbackAdapter = false;

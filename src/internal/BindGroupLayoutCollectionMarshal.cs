@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
@@ -11,7 +12,7 @@ public class BindGroupLayoutCollectionMarshal :
 
     public static void MarshalTo(in BindGroupLayout item, ref BindGroupLayoutHandle ffiItem)
     {
-        ffiItem = item.GetHandle();
+        ffiItem = GetBorrowHandle(item);
     }
 
 

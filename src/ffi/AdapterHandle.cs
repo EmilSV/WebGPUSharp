@@ -200,11 +200,11 @@ public unsafe readonly partial struct AdapterHandle :
         {
             if (DeviceHandle.IsNull(device))
             {
-                callback(default);
+                callback(null);
             }
             else
             {
-                callback(Device.FromHandle(device, true)!);
+                callback(ToSafeHandleNoRefIncrement<Device, DeviceHandle>(device));
             }
         });
     }

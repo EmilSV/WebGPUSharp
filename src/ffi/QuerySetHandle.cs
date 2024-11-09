@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -61,8 +62,16 @@ public unsafe readonly partial struct QuerySetHandle :
         }
     }
 
-    public QuerySet? ToSafeHandle(bool isOwnedHandle)
+
+    public QuerySet? ToSafeHandle(bool incrementRefCount)
     {
-        return QuerySet.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<QuerySet, QuerySetHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<QuerySet, QuerySetHandle>(this);
+        }
     }
 }

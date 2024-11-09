@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public struct ImageCopyBuffer : IWebGpuFFIConvertible<ImageCopyBuffer, ImageCopyBufferFFI>
 {
     public TextureDataLayout Layout;
-    public required Buffer Buffer;
+    public required BufferBase Buffer;
 
     static void IWebGpuFFIConvertible<ImageCopyBuffer, ImageCopyBufferFFI>.UnsafeConvertToFFI(
         in ImageCopyBuffer input, out ImageCopyBufferFFI dest)

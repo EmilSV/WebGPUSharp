@@ -25,7 +25,7 @@ public unsafe readonly partial struct SurfaceHandle :
         {
             SurfaceConfigurationFFI surfaceConfigurationFFI = new()
             {
-                Device = (DeviceHandle)configuration.Device,
+                Device = GetBorrowHandle(configuration.Device),
                 Format = configuration.Format,
                 Usage = configuration.Usage,
                 ViewFormatCount = (nuint)configuration.ViewFormats.Length,

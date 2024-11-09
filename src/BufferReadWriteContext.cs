@@ -47,7 +47,7 @@ public unsafe ref struct BufferReadWriteContext
         nuint offsetInBytes = offset * (nuint)sizeof(T);
         nuint sizeInBytes = size * (nuint)sizeof(T);
 
-        foreach (var item in _buffersUsedInContextSpan)
+        foreach (GPUBuffer? item in _buffersUsedInContextSpan)
         {
             if (item == buffer)
             {
@@ -77,7 +77,7 @@ public unsafe ref struct BufferReadWriteContext
 
         foreach (var item in _buffersUsedInContextSpan)
         {
-            if (item == buffer)
+            if ((GPUBuffer)item! == buffer)
             {
                 void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)

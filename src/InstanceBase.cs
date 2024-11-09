@@ -10,7 +10,7 @@ public abstract class InstanceBase : WebGPUHandleWrapperBase<InstanceHandle>
     {
         return Handle.RequestAdapterAsync(options).ContinueWith(static task =>
         {
-            return task.Result.ToSafeHandle(true);
+            return task.Result.ToSafeHandle(false);
         });
     }
 
@@ -21,6 +21,6 @@ public abstract class InstanceBase : WebGPUHandleWrapperBase<InstanceHandle>
 
     public Surface? CreateSurface(SurfaceDescriptor descriptor)
     {
-        return Handle.CreateSurface(descriptor).ToSafeHandle(true);
+        return Handle.CreateSurface(descriptor).ToSafeHandle(false);
     }
 }

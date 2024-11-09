@@ -7,7 +7,7 @@ namespace WebGpuSharp;
 public partial struct FragmentState :
     IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
 {
-    public required ShaderModule Module;
+    public required ShaderModuleBase Module;
     public string? EntryPoint;
     public ConstantEntryList? Constants;
     public required ColorTargetStateList Targets;
@@ -19,7 +19,7 @@ public partial struct FragmentState :
     {
         dest = default;
         ToFFI(input.Targets, out dest.Targets, out dest.TargetCount);
-        ToFFI(input.Module, out dest.Module);
+        dest.Module = GetBorrowHandle(input.Module);
         ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
     }

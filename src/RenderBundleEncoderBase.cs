@@ -19,7 +19,7 @@ public abstract class RenderBundleEncoderBase :
         Handle.DrawIndirect(indirectBuffer, indirectOffset);
 
     public RenderBundle? Finish(in RenderBundleDescriptor descriptor) =>
-        Handle.Finish(descriptor).ToSafeHandle(true);
+        Handle.Finish(descriptor).ToSafeHandle(false);
 
     public void InsertDebugMarker(WGPURefText label) =>
         Handle.InsertDebugMarker(label);

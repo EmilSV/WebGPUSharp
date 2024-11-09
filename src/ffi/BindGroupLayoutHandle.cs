@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -43,8 +44,15 @@ public readonly partial struct BindGroupLayoutHandle :
         }
     }
 
-    public BindGroupLayout? ToSafeHandle(bool isOwnedHandle)
+    public BindGroupLayout? ToSafeHandle(bool incrementRefCount)
     {
-        return BindGroupLayout.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<BindGroupLayout, BindGroupLayoutHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<BindGroupLayout, BindGroupLayoutHandle>(this);
+        }
     }
 }

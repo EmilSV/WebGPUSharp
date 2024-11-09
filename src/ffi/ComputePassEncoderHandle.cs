@@ -18,7 +18,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var markerLabelUtf8Span = WebGPUMarshal.ToUtf8Span(markerLabel, allocator, false);
+        var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, false);
         fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
             WebGPU_FFI.ComputePassEncoderInsertDebugMarker2(
@@ -31,7 +31,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var groupLabelUtf8Span = WebGPUMarshal.ToUtf8Span(groupLabel, allocator, false);
+        var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, false);
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
             WebGPU_FFI.ComputePassEncoderPushDebugGroup2(
@@ -62,7 +62,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         WebGPU_FFI.ComputePassEncoderSetBindGroup(
             computePassEncoder: this,
             groupIndex: groupIndex,
-            group: (BindGroupHandle)group,
+            group: GetBorrowHandle(group),
             dynamicOffsetCount: dynamicOffsetCount,
             dynamicOffsets: dynamicOffsets
         );
@@ -77,7 +77,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
             WebGPU_FFI.ComputePassEncoderSetBindGroup(
                 computePassEncoder: this,
                 groupIndex: groupIndex,
-                group: (BindGroupHandle)group,
+                group: GetBorrowHandle(group),
                 dynamicOffsetCount: (nuint)dynamicOffsets.Length,
                 dynamicOffsets: dynamicOffsetsPtr
             );
@@ -89,7 +89,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
             WebGPU_FFI.ComputePassEncoderSetLabel2(
@@ -103,7 +103,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     {
         WebGPU_FFI.ComputePassEncoderSetPipeline(
             computePassEncoder: this,
-            pipeline: (ComputePipelineHandle)pipeline
+            pipeline: GetBorrowHandle(pipeline)
         );
     }
 
@@ -116,9 +116,16 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
-    public ComputePassEncoder? ToSafeHandle(bool isOwnedHandle)
+    public ComputePassEncoder? ToSafeHandle(bool incrementRefCount)
     {
-        return ComputePassEncoder.FromHandle(this, isOwnedHandle);
+        if (incrementRefCount)
+        {
+            return ToSafeHandle<ComputePassEncoder, ComputePassEncoderHandle>(this);
+        }
+        else
+        {
+            return ToSafeHandleNoRefIncrement<ComputePassEncoder, ComputePassEncoderHandle>(this);
+        }
     }
 
     public static ref UIntPtr AsPointer(ref ComputePassEncoderHandle handle)
