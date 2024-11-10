@@ -1,10 +1,52 @@
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.Internal;
 
-public class ReadWriteStateChangeLock
+public sealed class ReadWriteStateChangeHandleLock
 {
+    private static class LockCreate
+    {
+        private readonly static ConcurrentQueue<UIntPtr> _handlesToRemove = new();
+        private readonly static ConcurrentDictionary<UIntPtr, GCHandle> _locks = new();
+
+        public static ReadWriteStateChangeHandleLock Get(UIntPtr handle)
+        {
+            while (_handlesToRemove.TryDequeue(out var handleToRemove))
+            {
+                if (_locks.TryRemove(handleToRemove, out var lockObjToRemove))
+                {
+                    lockObjToRemove.Free();
+                }
+            }
+
+            ReadWriteStateChangeHandleLock? outLock = null;
+
+            if (_locks.TryGetValue(handle, out var lockObj))
+            {
+                outLock = (ReadWriteStateChangeHandleLock)lockObj.Target!;
+            }
+
+            if (outLock == null)
+            {
+                outLock = new(handle);
+                _locks.TryAdd(handle, GCHandle.Alloc(outLock, GCHandleType.Weak));
+            }
+            return outLock;
+        }
+
+        public static void AddRemoveQueue(UIntPtr handle)
+        {
+            _handlesToRemove.Enqueue(handle);
+        }
+    }
+
+    public static ReadWriteStateChangeHandleLock Get(UIntPtr handle)
+    {
+        return LockCreate.Get(handle);
+    }
+
     [StructLayout(LayoutKind.Explicit)]
     private struct State
     {
@@ -19,8 +61,14 @@ public class ReadWriteStateChangeLock
     }
 
     private State _state;
-
+    private readonly UIntPtr _handle;
     private const nuint MAX_TRY_COUNT = 2048;
+
+    private ReadWriteStateChangeHandleLock(UIntPtr handle)
+    {
+        _handle = handle;
+        _state = new();
+    }
 
     public bool TryAddStateChangeLock()
     {
@@ -56,7 +104,7 @@ public class ReadWriteStateChangeLock
 
         } while (i != MAX_TRY_COUNT);
 
-        return false;
+        throw new WebGPUException("failed to change lock state");
     }
 
     public void AddStateChangeLock()
@@ -106,7 +154,7 @@ public class ReadWriteStateChangeLock
 
         } while (i != MAX_TRY_COUNT);
 
-        return false;
+        throw new WebGPUException("failed to change lock state");
     }
 
     public void AddReadWriteLock()
@@ -120,5 +168,13 @@ public class ReadWriteStateChangeLock
     public void RemoveReadWriteLock()
     {
         Interlocked.Decrement(ref _state.stateChange);
+    }
+
+    ~ReadWriteStateChangeHandleLock()
+    {
+        if (_handle != UIntPtr.Zero)
+        {
+            LockCreate.AddRemoveQueue(_handle);
+        }
     }
 }

@@ -39,9 +39,13 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public delegate T ReadWriteOperationCallbackWithData<T>(BufferReadWriteContext status, ref T userdata);
     public delegate TReturnData ReadWriteOperationCallbackWithData<TReturnData, TUserdata>(BufferReadWriteContext status, ref TUserdata userdata);
 
+    public ReadWriteStateChangeHandleLock ReadWriteStateChangeLock;
 
+    public BufferBase()
+    {
+        ReadWriteStateChangeLock = ReadWriteStateChangeHandleLock.Get(Handle.GetAddress());
+    }
 
-    private readonly ReadWriteStateChangeLock readWriteStateChangeLock = new();
 
     public unsafe void MapAsync(
        MapMode mode,
@@ -50,7 +54,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
        Action<MapAsyncStatus> callback)
     {
 
-        readWriteStateChangeLock.AddStateChangeLock();
+        ReadWriteStateChangeLock.AddStateChangeLock();
         CallbackUserDataHandle bufferBaseHandle = default;
         CallbackUserDataHandle callbackHandle = default;
         try
@@ -75,7 +79,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             bufferBaseHandle.Dispose();
             callbackHandle.Dispose();
-            readWriteStateChangeLock.RemoveStateChangeLock();
+            ReadWriteStateChangeLock.RemoveStateChangeLock();
             throw;
         }
     }
@@ -96,7 +100,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         nuint offset,
         nuint size)
     {
-        readWriteStateChangeLock.AddStateChangeLock();
+        ReadWriteStateChangeLock.AddStateChangeLock();
         TaskCompletionSource<MapAsyncStatus> taskCompletionSource = new();
         CallbackUserDataHandle bufferBaseHandle = default;
         CallbackUserDataHandle taskCompletionSourceHandle = default;
@@ -124,7 +128,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             bufferBaseHandle.Dispose();
             taskCompletionSourceHandle.Dispose();
-            readWriteStateChangeLock.RemoveStateChangeLock();
+            ReadWriteStateChangeLock.RemoveStateChangeLock();
             throw;
         }
     }
@@ -136,14 +140,14 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
     public void Destroy()
     {
-        readWriteStateChangeLock.AddStateChangeLock();
+        ReadWriteStateChangeLock.AddStateChangeLock();
         try
         {
             Handle.Destroy();
         }
         finally
         {
-            readWriteStateChangeLock.RemoveStateChangeLock();
+            ReadWriteStateChangeLock.RemoveStateChangeLock();
         }
     }
 
@@ -151,7 +155,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe void GetConstMappedRange<T>(nuint offset, nuint size, ReadContextDelegate<T> callback)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetConstMappedRange(offset, size);
@@ -160,7 +164,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -174,7 +178,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe TResult GetConstMappedRange<TResult, T>(nuint offset, nuint size, ReadContextDelegate<TResult, T> callback)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetConstMappedRange(offset, size);
@@ -183,7 +187,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -191,7 +195,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe void GetConstMappedRange<T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<T, TState> callback, ref TState state)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetConstMappedRange(offset, size);
@@ -200,7 +204,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -212,7 +216,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe TResult GetConstMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<TResult, T, TState> callback, ref TState state)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetConstMappedRange(offset, size);
@@ -221,14 +225,14 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
     public unsafe void GetMappedRange<T>(nuint offset, nuint size, ReadWriteContextDelegate<T> callback)
     where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetMappedRange(offset, size);
@@ -237,7 +241,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -251,7 +255,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe TResult GetMappedRange<TResult, T>(nuint offset, nuint size, ReadWriteContextDelegate<TResult, T> callback)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetMappedRange(offset, size);
@@ -260,7 +264,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -268,7 +272,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<T, TState> callback, ref TState state)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetMappedRange(offset, size);
@@ -277,7 +281,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -289,7 +293,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe TResult GetMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<TResult, T, TState> callback, ref TState state)
         where T : unmanaged
     {
-        readWriteStateChangeLock.AddReadWriteLock();
+        ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetMappedRange(offset, size);
@@ -298,7 +302,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         finally
         {
-            readWriteStateChangeLock.RemoveReadWriteLock();
+            ReadWriteStateChangeLock.RemoveReadWriteLock();
         }
     }
 
@@ -308,15 +312,15 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
     public void Unmap()
     {
-        readWriteStateChangeLock.AddStateChangeLock();
+        ReadWriteStateChangeLock.AddStateChangeLock();
         try
         {
             Handle.Unmap();
-            readWriteStateChangeLock.RemoveStateChangeLock();
+            ReadWriteStateChangeLock.RemoveStateChangeLock();
         }
         finally
         {
-            readWriteStateChangeLock.RemoveStateChangeLock();
+            ReadWriteStateChangeLock.RemoveStateChangeLock();
         }
     }
 
@@ -334,7 +338,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             foreach (BufferBase buffer in buffers)
             {
-                buffer.readWriteStateChangeLock.AddReadWriteLock();
+                buffer.ReadWriteStateChangeLock.AddReadWriteLock();
             }
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             callback(context);
@@ -343,7 +347,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             foreach (BufferBase buffer in buffers)
             {
-                buffer.readWriteStateChangeLock.RemoveReadWriteLock();
+                buffer.ReadWriteStateChangeLock.RemoveReadWriteLock();
             }
         }
     }
@@ -359,12 +363,12 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             for (; i < buffers.Length; i++)
             {
-                buffers[i].readWriteStateChangeLock.AddReadWriteLock();
+                buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
 
             foreach (BufferBase buffer in buffers)
             {
-                buffer.readWriteStateChangeLock.AddReadWriteLock();
+                buffer.ReadWriteStateChangeLock.AddReadWriteLock();
             }
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             return callback(context);
@@ -374,7 +378,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             do
             {
                 i--;
-                buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
+                buffers[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
             } while (i != 0);
         }
     }
@@ -391,7 +395,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             for (; i < buffers.Length; i++)
             {
-                buffers[i].readWriteStateChangeLock.AddReadWriteLock();
+                buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
 
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
@@ -402,7 +406,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             do
             {
                 i--;
-                buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
+                buffers[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
             } while (i != 0);
         }
     }
@@ -418,7 +422,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             for (; i < buffers.Length; i++)
             {
-                buffers[i].readWriteStateChangeLock.AddReadWriteLock();
+                buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
             using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
             return callback(context, ref state);
@@ -428,7 +432,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             do
             {
                 i--;
-                buffers[i].readWriteStateChangeLock.RemoveReadWriteLock();
+                buffers[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
             } while (i != 0);
         }
     }
@@ -464,7 +468,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
                     return;
                 }
 
-                bufferBase.readWriteStateChangeLock.RemoveStateChangeLock();
+                bufferBase.ReadWriteStateChangeLock.RemoveStateChangeLock();
                 taskCompletionSource.SetResult(status);
             }
             catch (Exception)
@@ -507,7 +511,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
                     return;
                 }
 
-                bufferBase.readWriteStateChangeLock.RemoveStateChangeLock();
+                bufferBase.ReadWriteStateChangeLock.RemoveStateChangeLock();
                 callback(status);
             }
             catch (Exception)
