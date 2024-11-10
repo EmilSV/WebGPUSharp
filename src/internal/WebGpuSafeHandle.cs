@@ -31,7 +31,7 @@ public sealed class WebGpuSafeHandle<THandle> : WebGpuSafeHandle
         var handleValue = Interlocked.Exchange(ref THandle.AsPointer(ref _handle), UIntPtr.Zero);
         if (handleValue != UIntPtr.Zero)
         {
-            THandle.Release(_handle);
+            THandle.Release(THandle.UnsafeFromPointer(handleValue));
             DecrementTotalActiveHandles();
             WebGpuSafeHandleCountStore<THandle>.DecrementActiveHandles();
             return true;
