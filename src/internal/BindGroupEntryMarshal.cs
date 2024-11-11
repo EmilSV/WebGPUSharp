@@ -14,12 +14,22 @@ public unsafe class BindGroupEntryCollectionMarshal :
 
     public static void MarshalTo(in BindGroupEntry item, ref BindGroupEntryFFI ffiItem)
     {
+        ulong size = 0;
+        if (item.Size.HasValue)
+        {
+            size = item.Size.Value;
+        }
+        else if (item.Buffer != null)
+        {
+            size = item.Buffer.GetSize() - item.Offset;
+        }
+
         ffiItem = new()
         {
             Binding = item.Binding,
             Buffer = GetBorrowHandle(item.Buffer),
             Offset = item.Offset,
-            Size = item.Size,
+            Size = size,
             Sampler = GetBorrowHandle(item.Sampler),
             TextureView = default
         };

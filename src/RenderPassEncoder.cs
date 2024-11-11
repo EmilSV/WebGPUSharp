@@ -179,6 +179,13 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset, size);
     }
 
+    public void SetVertexBuffer(
+     uint slot, Buffer buffer, ulong offset = 0)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset, buffer.GetSize() - offset);
+    }
+
     public void SetViewport(
         uint x, uint y, uint width, uint height,
         float minDepth, float maxDepth)

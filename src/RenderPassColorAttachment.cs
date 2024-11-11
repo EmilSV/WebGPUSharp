@@ -9,7 +9,7 @@ public struct RenderPassColorAttachment :
 {
     public const uint DEPTH_SLICE_UNDEFINED = WebGPU_FFI.DEPTH_SLICE_UNDEFINED;
 
-    public required TextureViewBase View;
+    public required TextureViewBase? View;
     public uint? DepthSlice;
     public TextureViewBase? ResolveTarget;
     public Color ClearValue;

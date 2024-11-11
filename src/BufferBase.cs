@@ -39,12 +39,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public delegate T ReadWriteOperationCallbackWithData<T>(BufferReadWriteContext status, ref T userdata);
     public delegate TReturnData ReadWriteOperationCallbackWithData<TReturnData, TUserdata>(BufferReadWriteContext status, ref TUserdata userdata);
 
-    public ReadWriteStateChangeHandleLock ReadWriteStateChangeLock;
-
-    public BufferBase()
-    {
-        ReadWriteStateChangeLock = ReadWriteStateChangeHandleLock.Get(Handle.GetAddress());
-    }
+    protected abstract ReadWriteStateChangeHandleLock ReadWriteStateChangeLock { get; }
 
 
     public unsafe void MapAsync(
@@ -158,7 +153,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetConstMappedRange(offset, size);
+            void* ptr = Handle.GetConstMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
             callback(span);
         }
@@ -181,7 +176,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetConstMappedRange(offset, size);
+            void* ptr = Handle.GetConstMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
             return callback(span);
         }
@@ -198,7 +193,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetConstMappedRange(offset, size);
+            void* ptr = Handle.GetConstMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
             callback(span, ref state);
         }
@@ -219,7 +214,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetConstMappedRange(offset, size);
+            void* ptr = Handle.GetConstMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
             return callback(span, ref state);
         }
@@ -235,7 +230,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetMappedRange(offset, size);
+            void* ptr = Handle.GetMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
             callback(span);
         }
@@ -258,7 +253,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetMappedRange(offset, size);
+            void* ptr = Handle.GetMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
             return callback(span);
         }
@@ -268,6 +263,16 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    public unsafe void GetMappedRange<T>(ReadWriteContextDelegate<T> callback)
+        where T : unmanaged
+    {
+        GetMappedRange<T>(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
+    }
+
+    public void GetMappedRange(ReadWriteContextDelegate<byte> callback)
+    {
+        GetMappedRange<byte>(callback);
+    }
 
     public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<T, TState> callback, ref TState state)
         where T : unmanaged
@@ -275,7 +280,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetMappedRange(offset, size);
+            void* ptr = Handle.GetMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
             callback(span, ref state);
         }
@@ -296,7 +301,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
-            void* ptr = Handle.GetMappedRange(offset, size);
+            void* ptr = Handle.GetMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
             return callback(span, ref state);
         }
