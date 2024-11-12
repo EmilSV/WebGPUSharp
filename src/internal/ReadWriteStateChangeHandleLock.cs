@@ -167,7 +167,7 @@ public sealed class ReadWriteStateChangeHandleLock
 
     public void RemoveReadWriteLock()
     {
-        Interlocked.Decrement(ref _state.stateChange);
+        Interlocked.Decrement(ref _state.readWrite);
     }
 
     ~ReadWriteStateChangeHandleLock()
