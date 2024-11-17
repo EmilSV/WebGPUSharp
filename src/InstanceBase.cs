@@ -6,11 +6,11 @@ namespace WebGpuSharp;
 
 public abstract class InstanceBase : WebGPUHandleWrapperBase<InstanceHandle>
 {
-    public Task<Adapter?> RequestAdapterAsync(in RequestAdapterOptions options)
+    public Task<Adapter> RequestAdapterAsync(in RequestAdapterOptions options)
     {
         return Handle.RequestAdapterAsync(options).ContinueWith(static task =>
         {
-            return task.Result.ToSafeHandle(false);
+            return task.Result.ToSafeHandle(false)!;
         });
     }
 

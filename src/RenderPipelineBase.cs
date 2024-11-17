@@ -6,9 +6,9 @@ namespace WebGpuSharp;
 
 public abstract class RenderPipelineBase : WebGPUHandleWrapperBase<RenderPipelineHandle>
 {
-    public BindGroupLayout? GetBindGroupLayout(uint groupIndex)
+    public BindGroupLayout GetBindGroupLayout(uint groupIndex)
     {
-        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false);
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false)!;
     }
 
     public void SetLabel(WGPURefText label)

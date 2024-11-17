@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -13,8 +13,7 @@
     <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-x64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
   </PropertyGroup>
   <ItemGroup>
-    <Content Condition="'$(_WebGpuSharp_NativeRuntime)' != ''"
-      Include="runtimes/$(_WebGpuSharp_NativeRuntime)/native/$(_WebGpuSharp_NativeLibName)">
+    <Content Condition="'$(_WebGpuSharp_NativeRuntime)' != ''" Include="runtimes/$(_WebGpuSharp_NativeRuntime)/native/$(_WebGpuSharp_NativeLibName)">
       <Link>%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Visible>False</Visible>

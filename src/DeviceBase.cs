@@ -6,8 +6,8 @@ namespace WebGpuSharp;
 
 public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
 {
-    public Queue? GetQueue() =>
-        Handle.GetQueue().ToSafeHandle(false);
+    public Queue GetQueue() =>
+        Handle.GetQueue().ToSafeHandle(false)!;
 
     public CommandEncoder CreateCommandEncoder(in CommandEncoderDescriptor descriptor) =>
         Handle.CreateCommandEncoder(descriptor).ToSafeHandle();
@@ -16,20 +16,20 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
         Handle.CreateBuffer(descriptor).ToSafeHandle(false);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Buffer? CreateBuffer(BufferDescriptor descriptor) =>
-        Handle.CreateBuffer(descriptor).ToSafeHandle(false);
+    public Buffer CreateBuffer(BufferDescriptor descriptor) =>
+        Handle.CreateBuffer(descriptor).ToSafeHandle(false)!;
 
-    public ShaderModule? CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
-        Handle.CreateShaderModule(descriptor).ToSafeHandle(false);
+    public ShaderModule CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
+        Handle.CreateShaderModule(descriptor).ToSafeHandle(false)!;
 
-    public ShaderModule? CreateShaderModuleWGSL(in ShaderModuleWGSLDescriptor descriptor) =>
+    public ShaderModule CreateShaderModuleWGSL(in ShaderModuleWGSLDescriptor descriptor) =>
         CreateShaderModule(new ShaderModuleDescriptor(in descriptor));
 
     public SupportedLimits GetLimits() => Handle.GetLimits();
     public void GetLimits(ref SupportedLimits supportedLimits) => Handle.GetLimits(ref supportedLimits);
 
-    public Texture? CreateTexture(in TextureDescriptor textureDescriptor) =>
-        Handle.CreateTexture(textureDescriptor).ToSafeHandle(false);
+    public Texture CreateTexture(in TextureDescriptor textureDescriptor) =>
+        Handle.CreateTexture(textureDescriptor).ToSafeHandle(false)!;
 
     public Sampler? CreateSampler(ref SamplerDescriptor descriptor)
     {
@@ -62,8 +62,8 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
         return Handle.LoadShaderModuleFromFile(path, label).ToSafeHandle(false);
     }
 
-    public BindGroup? CreateBindGroup(in BindGroupDescriptor descriptor)
+    public BindGroup CreateBindGroup(in BindGroupDescriptor descriptor)
     {
-        return Handle.CreateBindGroup(descriptor).ToSafeHandle(false);
+        return Handle.CreateBindGroup(descriptor).ToSafeHandle(false)!;
     }
 }
