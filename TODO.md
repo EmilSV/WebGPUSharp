@@ -1,1 +1,0 @@
-make get buffer as spans via callbacks and while the callback is running the buffers used cannot be destroyed or unmapped 
