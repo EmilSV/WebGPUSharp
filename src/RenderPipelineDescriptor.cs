@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public ref struct RenderPipelineDescriptor
 {
     public WGPURefText Label;
-    public required PipelineLayoutBase Layout;
+    public required PipelineLayoutBase? Layout;
     public required ref readonly VertexState Vertex;
     public PrimitiveState Primitive = new();
     public WGPUNullableRef<DepthStencilState> DepthStencil;

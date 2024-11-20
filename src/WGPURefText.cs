@@ -105,8 +105,8 @@ public readonly ref struct WGPURefText
         ref var refFirstChar = ref Unsafe.AsRef(in _reference);
         if (Is16BitSize)
         {
-            outUft16Span = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<byte, char>(ref refFirstChar), length);
             outUft8Span = default;
+            outUft16Span = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<byte, char>(ref refFirstChar), length);
             return Encoding.Utf16;
         }
         else
