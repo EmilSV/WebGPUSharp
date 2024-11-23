@@ -19,7 +19,10 @@ public unsafe ref partial struct TextureViewDescriptor
     public const uint ARRAY_LAYER_COUNT_UNDEFINED = WebGPU_FFI.ARRAY_LAYER_COUNT_UNDEFINED;
     public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
 
-    internal TextureViewDescriptorFFI _unsafeDescriptor = new();
+    internal TextureViewDescriptorFFI _unsafeDescriptor = new(){
+        ArrayLayerCount = ARRAY_LAYER_COUNT_UNDEFINED,
+        MipLevelCount = MIP_LEVEL_COUNT_UNDEFINED
+    };
     public WGPURefText Label;
 
     public TextureViewDescriptor()

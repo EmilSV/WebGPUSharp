@@ -52,9 +52,9 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
         return Handle.CreatePipelineLayout(descriptor).ToSafeHandle(false);
     }
 
-    public RenderPipeline? CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
+    public RenderPipeline CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
     {
-        return Handle.CreateRenderPipeline(descriptor).ToSafeHandle(false);
+        return Handle.CreateRenderPipeline(descriptor).ToSafeHandle(false)!;
     }
 
     public ShaderModule? LoadShaderModuleFromFile(string path, WGPURefText label = default)
