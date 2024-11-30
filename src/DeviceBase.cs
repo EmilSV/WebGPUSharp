@@ -42,14 +42,14 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
         return Handle.CreateSampler(descriptor).ToSafeHandle(false);
     }
 
-    public BindGroupLayout? CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
+    public BindGroupLayout CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
     {
-        return Handle.CreateBindGroupLayout(descriptor).ToSafeHandle(false);
+        return Handle.CreateBindGroupLayout(descriptor).ToSafeHandle(false)!;
     }
 
-    public PipelineLayout? CreatePipelineLayout(in PipelineLayoutDescriptor descriptor)
+    public PipelineLayout CreatePipelineLayout(in PipelineLayoutDescriptor descriptor)
     {
-        return Handle.CreatePipelineLayout(descriptor).ToSafeHandle(false);
+        return Handle.CreatePipelineLayout(descriptor).ToSafeHandle(false)!;
     }
 
     public RenderPipeline CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
