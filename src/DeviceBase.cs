@@ -9,6 +9,9 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
     public Queue GetQueue() =>
         Handle.GetQueue().ToSafeHandle(false)!;
 
+    public CommandEncoder CreateCommandEncoder() =>
+        Handle.CreateCommandEncoder(new CommandEncoderDescriptor()).ToSafeHandle();
+
     public CommandEncoder CreateCommandEncoder(in CommandEncoderDescriptor descriptor) =>
         Handle.CreateCommandEncoder(descriptor).ToSafeHandle();
 
