@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedFenceSyncFDExportInfo
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public int Handle;
 
     public SharedFenceSyncFDExportInfo() { }

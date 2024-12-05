@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct AdapterPropertiesD3D
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public uint ShaderModel;
 
     public AdapterPropertiesD3D() { }

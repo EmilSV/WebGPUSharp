@@ -7,7 +7,7 @@ public unsafe partial struct SharedTextureMemoryProperties
 {
     public ChainedStructOut* NextInChain;
     public TextureUsage Usage;
-    public Extent3D Size = new();
+    public Extent3D Size;
     public TextureFormat Format;
 
     public SharedTextureMemoryProperties() { }

@@ -18,7 +18,7 @@ public unsafe partial struct TextureDescriptorFFI
     /// <summary>
     /// The width, height, and depth or layer count of the texture.
     /// </summary>
-    public required Extent3D Size = new();
+    public required Extent3D Size;
     /// <summary>
     /// The format of the texture.
     /// </summary>

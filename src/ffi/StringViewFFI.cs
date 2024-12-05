@@ -15,4 +15,8 @@ public unsafe partial struct StringViewFFI
         Length = (nuint)length;
     }
 
+    public ReadOnlySpan<byte> AsSpan()
+    {
+        return new(Data, (int)Length);
+    }
 }

@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct DrmFormatCapabilitiesFFI
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public nuint PropertiesCount;
     public DrmFormatProperties* Properties;
 

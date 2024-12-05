@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceSourceAndroidNativeWindowFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public void* Window;
 
     public SurfaceSourceAndroidNativeWindowFFI() { }

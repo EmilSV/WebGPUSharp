@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnTextureInternalUsageDescriptor
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public TextureUsage InternalUsage;
 
     public DawnTextureInternalUsageDescriptor() { }

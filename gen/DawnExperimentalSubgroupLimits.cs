@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnExperimentalSubgroupLimits
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public uint MinSubgroupSize;
     public uint MaxSubgroupSize;
 

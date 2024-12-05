@@ -43,7 +43,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.RenderBundleEncoderInsertDebugMarker2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.RenderBundleEncoderInsertDebugMarker(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 
@@ -55,7 +55,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
 
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
-            WebGPU_FFI.RenderBundleEncoderPushDebugGroup2(this, new(groupLabelPtr, groupLabelUtf8Span.Length));
+            WebGPU_FFI.RenderBundleEncoderPushDebugGroup(this, new(groupLabelPtr, groupLabelUtf8Span.Length));
         }
     }
 
@@ -88,7 +88,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.RenderBundleEncoderSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.RenderBundleEncoderSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnWireWGSLControl
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public WebGPUBool EnableExperimental = new();
     public WebGPUBool EnableUnsafe = new();
     public WebGPUBool EnableTesting = new();

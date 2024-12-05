@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct AdapterPropertiesVk
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public uint DriverVersion;
 
     public AdapterPropertiesVk() { }

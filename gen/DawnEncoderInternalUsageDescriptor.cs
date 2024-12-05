@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnEncoderInternalUsageDescriptor
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public WebGPUBool UseInternalUsages = new();
 
     public DawnEncoderInternalUsageDescriptor() { }

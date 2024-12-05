@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedTextureMemoryIOSurfaceDescriptorFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public void* IoSurface;
 
     public SharedTextureMemoryIOSurfaceDescriptorFFI() { }

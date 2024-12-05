@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct RenderPassMaxDrawCount
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public ulong MaxDrawCount;
 
     public RenderPassMaxDrawCount() { }

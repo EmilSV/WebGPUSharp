@@ -5,8 +5,8 @@ namespace WebGpuSharp;
 
 public partial struct SharedTextureMemoryD3DSwapchainBeginState
 {
-    public ChainedStruct Chain = new();
-    public WebGPUBool IsSwapchain = new();
+    public ChainedStruct Chain;
+    public WebGPUBool IsSwapchain;
 
     public SharedTextureMemoryD3DSwapchainBeginState() { }
 

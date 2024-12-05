@@ -11,7 +11,7 @@ public unsafe partial struct RenderPipelineDescriptorFFI
     /// <summary>
     /// Describes the vertex shader entry point of the pipeline and its input buffer layouts.
     /// </summary>
-    public required VertexStateFFI Vertex = new();
+    public required VertexStateFFI Vertex;
     /// <summary>
     /// Describes the primitive-related properties of the pipeline.
     /// </summary>

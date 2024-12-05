@@ -5,8 +5,8 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedTextureMemoryDmaBufDescriptorFFI
 {
-    public ChainedStruct Chain = new();
-    public Extent3D Size = new();
+    public ChainedStruct Chain;
+    public Extent3D Size;
     public uint DrmFormat;
     public ulong DrmModifier;
     public nuint PlaneCount;

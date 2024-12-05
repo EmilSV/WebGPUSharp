@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedTextureMemoryVkDedicatedAllocationDescriptor
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public WebGPUBool DedicatedAllocation = new();
 
     public SharedTextureMemoryVkDedicatedAllocationDescriptor() { }

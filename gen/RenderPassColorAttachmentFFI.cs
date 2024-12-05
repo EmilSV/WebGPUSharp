@@ -41,7 +41,7 @@ public unsafe partial struct RenderPassColorAttachmentFFI
     /// They are converted to a texel value of texture format matching the render attachment.
     /// If conversion fails, a validation error is generated.
     /// </summary>
-    public Color ClearValue = new();
+    public Color ClearValue;
 
     public RenderPassColorAttachmentFFI() { }
 

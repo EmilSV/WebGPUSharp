@@ -37,7 +37,7 @@ public unsafe partial struct BindGroupLayoutEntry
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is  <see cref="WebGpuSharp.TextureView"/>.
     /// </summary>
-    public StorageTextureBindingLayout StorageTexture = new();
+    public StorageTextureBindingLayout StorageTexture;
 
     public BindGroupLayoutEntry() { }
 

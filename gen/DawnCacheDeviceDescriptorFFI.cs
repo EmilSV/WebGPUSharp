@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct DawnCacheDeviceDescriptorFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public StringViewFFI IsolationKey = new();
     public DawnLoadCacheDataFunctionFFI LoadDataFunction = new();
     public DawnStoreCacheDataFunctionFFI StoreDataFunction = new();

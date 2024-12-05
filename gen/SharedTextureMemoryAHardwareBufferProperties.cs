@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedTextureMemoryAHardwareBufferProperties
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public YCbCrVkDescriptor YCbCrInfo = new();
 
     public SharedTextureMemoryAHardwareBufferProperties() { }

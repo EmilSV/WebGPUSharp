@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceSourceXlibWindowFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public void* Display;
     public ulong Window;
 

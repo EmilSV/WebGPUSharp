@@ -16,7 +16,7 @@ public readonly unsafe partial struct QueueHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.QueueSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.QueueSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

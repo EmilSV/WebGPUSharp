@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct YCbCrVkDescriptor
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public uint VkFormat;
     public uint VkYCbCrModel;
     public uint VkYCbCrRange;

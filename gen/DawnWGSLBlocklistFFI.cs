@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct DawnWGSLBlocklistFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public nuint BlocklistedFeatureCount;
     public byte** BlocklistedFeatures;
 

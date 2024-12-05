@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedFenceMTLSharedEventExportInfoFFI
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public void* SharedEvent;
 
     public SharedFenceMTLSharedEventExportInfoFFI() { }

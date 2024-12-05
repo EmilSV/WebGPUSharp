@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnShaderModuleSPIRVOptionsDescriptor
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public WebGPUBool AllowNonUniformDerivatives = new();
 
     public DawnShaderModuleSPIRVOptionsDescriptor() { }

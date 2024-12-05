@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceSourceWaylandSurfaceFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public void* Display;
     public void* Surface;
 

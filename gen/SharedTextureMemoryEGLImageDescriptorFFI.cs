@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedTextureMemoryEGLImageDescriptorFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public void* Image;
 
     public SharedTextureMemoryEGLImageDescriptorFFI() { }

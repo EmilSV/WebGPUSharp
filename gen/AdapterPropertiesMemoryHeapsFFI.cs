@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct AdapterPropertiesMemoryHeapsFFI
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public nuint HeapCount;
     public MemoryHeapInfo* HeapInfo;
 

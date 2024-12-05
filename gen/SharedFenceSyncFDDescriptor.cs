@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedFenceSyncFDDescriptor
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public int Handle;
 
     public SharedFenceSyncFDDescriptor() { }

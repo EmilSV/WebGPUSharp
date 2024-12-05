@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedTextureMemoryOpaqueFDDescriptorFFI
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public void* VkImageCreateInfo;
     public int MemoryFD;
     public uint MemoryTypeIndex;

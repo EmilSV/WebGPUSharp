@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnExperimentalImmediateDataLimits
 {
-    public ChainedStructOut Chain = new();
+    public ChainedStructOut Chain;
     public uint MaxImmediateDataRangeByteSize;
 
     public DawnExperimentalImmediateDataLimits() { }

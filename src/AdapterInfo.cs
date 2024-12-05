@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Text;
 using WebGpuSharp.FFI;
 
@@ -17,14 +16,14 @@ public class AdapterInfo
 
     unsafe internal AdapterInfo(AdapterInfoFFI adapterInfoFFI)
     {
-        static string? GetString(byte* ptr)
+        static string? GetString(StringViewFFI stringView)
         {
-            if (ptr == null)
+            if (stringView.Data == null || stringView.Length == 0)
             {
                 return null;
             }
 
-            return Encoding.UTF8.GetString(MemoryMarshal.CreateReadOnlySpanFromNullTerminated(ptr));
+            return Encoding.UTF8.GetString(stringView.AsSpan());
         }
 
         Vendor = GetString(adapterInfoFFI.Vendor);

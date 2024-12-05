@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct ColorTargetStateExpandResolveTextureDawn
 {
-    public ChainedStruct Chain = new();
+    public ChainedStruct Chain;
     public WebGPUBool Enabled = new();
 
     public ColorTargetStateExpandResolveTextureDawn() { }
