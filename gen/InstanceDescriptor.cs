@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public unsafe partial struct InstanceDescriptor
 {
     public ChainedStruct* NextInChain;
-    public InstanceFeatures Features;
+    public InstanceFeatures Features = new();
 
     public InstanceDescriptor() { }
 

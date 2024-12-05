@@ -64,9 +64,7 @@ public readonly unsafe partial struct TextureHandle : IEquatable<TextureHandle>
 
     public uint GetWidth() => WebGPU_FFI.TextureGetWidth(this);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.TextureSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.TextureSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.TextureSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.TextureAddRef(this);
 

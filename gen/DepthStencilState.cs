@@ -24,11 +24,11 @@ public unsafe partial struct DepthStencilState
     /// <summary>
     /// Defines how stencil comparisons and operations are performed for front-facing primitives.
     /// </summary>
-    public StencilFaceState StencilFront;
+    public StencilFaceState StencilFront = new();
     /// <summary>
     /// Defines how stencil comparisons and operations are performed for back-facing primitives.
     /// </summary>
-    public StencilFaceState StencilBack;
+    public StencilFaceState StencilBack = new();
     /// <summary>
     /// Bitmask controlling which  <see cref="WebGpuSharp.RenderPassDescriptor.DepthStencilAttachment"/> stencil value
     /// bits are read when performing stencil comparison tests.

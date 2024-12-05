@@ -6,8 +6,8 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct SharedTextureMemoryBeginAccessDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public WebGPUBool ConcurrentRead;
-    public WebGPUBool Initialized;
+    public WebGPUBool ConcurrentRead = new();
+    public WebGPUBool Initialized = new();
     public nuint FenceCount;
     public SharedFenceHandle* Fences;
     public ulong* SignaledValues;

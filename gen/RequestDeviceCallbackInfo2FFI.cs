@@ -7,7 +7,7 @@ public unsafe partial struct RequestDeviceCallbackInfo2FFI
 {
     public ChainedStruct* NextInChain;
     public CallbackMode Mode;
-    public delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, byte*, void*, void*, void> Callback;
+    public delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, StringViewFFI, void*, void*, void> Callback;
     public void* Userdata1;
     public void* Userdata2;
 

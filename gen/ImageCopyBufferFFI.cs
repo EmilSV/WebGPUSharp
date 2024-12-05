@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct ImageCopyBufferFFI
 {
-    public TextureDataLayout Layout;
+    public TextureDataLayout Layout = new();
     /// <summary>
     /// A buffer which either contains image data to be copied or will store the image data being
     /// copied, depending on the method it is being passed to.

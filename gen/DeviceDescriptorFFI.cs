@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct DeviceDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label = new();
     public nuint RequiredFeatureCount;
     /// <summary>
     /// Specifies the features that are required by the device request.
@@ -27,13 +27,9 @@ public unsafe partial struct DeviceDescriptorFFI
     /// <summary>
     /// The descriptor for the default  <see cref="WebGpuSharp.Queue"/>.
     /// </summary>
-    public QueueDescriptorFFI DefaultQueue;
-    public delegate* unmanaged[Cdecl]<DeviceLostReason, byte*, void*, void> DeviceLostCallback;
-    public void* DeviceLostUserdata;
-    public DeviceLostCallbackInfoFFI DeviceLostCallbackInfo;
-    public UncapturedErrorCallbackInfoFFI UncapturedErrorCallbackInfo;
-    public DeviceLostCallbackInfo2FFI DeviceLostCallbackInfo2;
-    public UncapturedErrorCallbackInfo2FFI UncapturedErrorCallbackInfo2;
+    public QueueDescriptorFFI DefaultQueue = new();
+    public DeviceLostCallbackInfo2FFI DeviceLostCallbackInfo2 = new();
+    public UncapturedErrorCallbackInfo2FFI UncapturedErrorCallbackInfo2 = new();
 
     public DeviceDescriptorFFI() { }
 

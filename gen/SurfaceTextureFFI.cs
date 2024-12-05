@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct SurfaceTextureFFI
 {
     public TextureHandle Texture;
-    public WebGPUBool Suboptimal;
+    public WebGPUBool Suboptimal = new();
     public SurfaceGetCurrentTextureStatus Status;
 
     public SurfaceTextureFFI() { }

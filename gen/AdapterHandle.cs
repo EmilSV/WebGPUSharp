@@ -37,7 +37,7 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
 
     public DeviceHandle CreateDevice(DeviceDescriptorFFI* descriptor) => WebGPU_FFI.AdapterCreateDevice(this, descriptor);
 
-    public nuint EnumerateFeatures(FeatureName* features) => WebGPU_FFI.AdapterEnumerateFeatures(this, features);
+    public void GetFeatures(SupportedFeaturesFFI* features) => WebGPU_FFI.AdapterGetFeatures(this, features);
 
     public Status GetFormatCapabilities(TextureFormat format, FormatCapabilities* capabilities) => WebGPU_FFI.AdapterGetFormatCapabilities(this, format, capabilities);
 
@@ -55,7 +55,7 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// the adapter becomes {{adapter/state/"consumed"}}.
     /// </summary>
     /// <param name="descriptor">Description of the  <see cref="WebGpuSharp.Device"/> to request.</param>
-    public void RequestDevice(DeviceDescriptorFFI* descriptor, delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, byte*, void*, void> callback, void* userdata) => WebGPU_FFI.AdapterRequestDevice(this, descriptor, callback, userdata);
+    public void RequestDevice(DeviceDescriptorFFI* descriptor, delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, StringViewFFI, void*, void> callback, void* userdata) => WebGPU_FFI.AdapterRequestDevice(this, descriptor, callback, userdata);
 
     public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfo2FFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice2(this, options, callbackInfo);
 

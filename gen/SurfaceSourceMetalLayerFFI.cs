@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceSourceMetalLayerFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public void* Layer;
 
     public SurfaceSourceMetalLayerFFI() { }

@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct YCbCrVkDescriptor
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public uint VkFormat;
     public uint VkYCbCrModel;
     public uint VkYCbCrRange;
@@ -16,7 +16,7 @@ public partial struct YCbCrVkDescriptor
     public uint VkXChromaOffset;
     public uint VkYChromaOffset;
     public FilterMode VkChromaFilter;
-    public WebGPUBool ForceExplicitReconstruction;
+    public WebGPUBool ForceExplicitReconstruction = new();
     public ulong ExternalFormat;
 
     public YCbCrVkDescriptor() { }

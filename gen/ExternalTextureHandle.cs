@@ -41,9 +41,7 @@ public readonly unsafe partial struct ExternalTextureHandle : IEquatable<Externa
 
     public void Refresh() => WebGPU_FFI.ExternalTextureRefresh(this);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.ExternalTextureSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.ExternalTextureSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.ExternalTextureSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.ExternalTextureAddRef(this);
 

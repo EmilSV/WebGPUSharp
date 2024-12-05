@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromWindowsSwapChainPanelFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public void* SwapChainPanel;
 
     public SurfaceDescriptorFromWindowsSwapChainPanelFFI() { }

@@ -35,9 +35,7 @@ public readonly unsafe partial struct CommandBufferHandle : IEquatable<CommandBu
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void SetLabel(byte* label) => WebGPU_FFI.CommandBufferSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandBufferSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandBufferSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.CommandBufferAddRef(this);
 

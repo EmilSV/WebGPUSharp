@@ -10,7 +10,7 @@ public unsafe partial struct RequestAdapterOptionsFFI
     public PowerPreference PowerPreference;
     public BackendType BackendType;
     public WebGPUBool ForceFallbackAdapter = false;
-    public WebGPUBool CompatibilityMode;
+    public WebGPUBool CompatibilityMode = new();
 
     public RequestAdapterOptionsFFI() { }
 

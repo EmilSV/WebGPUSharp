@@ -102,28 +102,20 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
     /// </summary>
     public CommandBufferHandle Finish(CommandBufferDescriptorFFI* descriptor) => WebGPU_FFI.CommandEncoderFinish(this, descriptor);
 
-    public void InjectValidationError(byte* message) => WebGPU_FFI.CommandEncoderInjectValidationError(this, message);
+    public void InjectValidationError(StringViewFFI message) => WebGPU_FFI.CommandEncoderInjectValidationError(this, message);
 
-    public void InjectValidationError(StringViewFFI message) => WebGPU_FFI.CommandEncoderInjectValidationError2(this, message);
-
-    public void InsertDebugMarker(byte* markerLabel) => WebGPU_FFI.CommandEncoderInsertDebugMarker(this, markerLabel);
-
-    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.CommandEncoderInsertDebugMarker2(this, markerLabel);
+    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.CommandEncoderInsertDebugMarker(this, markerLabel);
 
     public void PopDebugGroup() => WebGPU_FFI.CommandEncoderPopDebugGroup(this);
 
-    public void PushDebugGroup(byte* groupLabel) => WebGPU_FFI.CommandEncoderPushDebugGroup(this, groupLabel);
-
-    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.CommandEncoderPushDebugGroup2(this, groupLabel);
+    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.CommandEncoderPushDebugGroup(this, groupLabel);
 
     /// <summary>
     /// Resolves query results from a  <see cref="WebGpuSharp.QuerySet"/> out into a range of a  <see cref="WebGpuSharp.Buffer"/>.
     /// </summary>
     public void ResolveQuerySet(QuerySetHandle querySet, uint firstQuery, uint queryCount, BufferHandle destination, ulong destinationOffset) => WebGPU_FFI.CommandEncoderResolveQuerySet(this, querySet, firstQuery, queryCount, destination, destinationOffset);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.CommandEncoderSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandEncoderSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandEncoderSetLabel(this, label);
 
     public void WriteBuffer(BufferHandle buffer, ulong bufferOffset, byte* data, ulong size) => WebGPU_FFI.CommandEncoderWriteBuffer(this, buffer, bufferOffset, data, size);
 

@@ -80,9 +80,7 @@ public readonly unsafe partial struct BufferHandle : IEquatable<BufferHandle>
 
     public Future MapAsyncF(MapMode mode, nuint offset, nuint size, BufferMapCallbackInfoFFI callbackInfo) => WebGPU_FFI.BufferMapAsyncF(this, mode, offset, size, callbackInfo);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.BufferSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.BufferSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.BufferSetLabel(this, label);
 
     /// <summary>
     /// Unmaps the mapped range of the  <see cref="WebGpuSharp.Buffer"/> and makes its contents available for use by the

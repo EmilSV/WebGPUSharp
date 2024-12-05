@@ -17,7 +17,7 @@ public unsafe partial struct ImageCopyTextureFFI
     /// Defines the origin of the copy - the minimum corner of the texture sub-region to copy to/from.
     /// Together with `copySize`, defines the full copy sub-region.
     /// </summary>
-    public Origin3D Origin;
+    public Origin3D Origin = new();
     /// <summary>
     /// Defines which aspects of the  <see cref="WebGpuSharp.ImageCopyTexture.Texture"/> to copy to/from.
     /// </summary>

@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct ShaderModuleWGSLDescriptorFFI
 {
-    public ShaderSourceWGSLFFI Value;
+    public ShaderSourceWGSLFFI Value = new();
 
     public ShaderModuleWGSLDescriptorFFI() { }
 

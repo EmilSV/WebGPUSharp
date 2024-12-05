@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnAdapterPropertiesPowerPreference
 {
-    public ChainedStructOut Chain;
+    public ChainedStructOut Chain = new();
     public PowerPreference PowerPreference;
 
     public DawnAdapterPropertiesPowerPreference() { }

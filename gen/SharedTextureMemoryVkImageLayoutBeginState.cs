@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedTextureMemoryVkImageLayoutBeginState
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public int OldLayout;
     public int NewLayout;
 

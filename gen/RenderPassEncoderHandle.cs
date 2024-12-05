@@ -68,9 +68,7 @@ public readonly unsafe partial struct RenderPassEncoderHandle : IEquatable<Rende
     /// <param name="bundles">List of render bundles to execute.</param>
     public void ExecuteBundles(nuint bundleCount, RenderBundleHandle* bundles) => WebGPU_FFI.RenderPassEncoderExecuteBundles(this, bundleCount, bundles);
 
-    public void InsertDebugMarker(byte* markerLabel) => WebGPU_FFI.RenderPassEncoderInsertDebugMarker(this, markerLabel);
-
-    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderPassEncoderInsertDebugMarker2(this, markerLabel);
+    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderPassEncoderInsertDebugMarker(this, markerLabel);
 
     public void MultiDrawIndexedIndirect(BufferHandle indirectBuffer, ulong indirectOffset, uint maxDrawCount, BufferHandle drawCountBuffer, ulong drawCountBufferOffset) => WebGPU_FFI.RenderPassEncoderMultiDrawIndexedIndirect(this, indirectBuffer, indirectOffset, maxDrawCount, drawCountBuffer, drawCountBufferOffset);
 
@@ -80,9 +78,7 @@ public readonly unsafe partial struct RenderPassEncoderHandle : IEquatable<Rende
 
     public void PopDebugGroup() => WebGPU_FFI.RenderPassEncoderPopDebugGroup(this);
 
-    public void PushDebugGroup(byte* groupLabel) => WebGPU_FFI.RenderPassEncoderPushDebugGroup(this, groupLabel);
-
-    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderPassEncoderPushDebugGroup2(this, groupLabel);
+    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderPassEncoderPushDebugGroup(this, groupLabel);
 
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.RenderPassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
@@ -95,9 +91,7 @@ public readonly unsafe partial struct RenderPassEncoderHandle : IEquatable<Rende
 
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, ulong offset, ulong size) => WebGPU_FFI.RenderPassEncoderSetIndexBuffer(this, buffer, format, offset, size);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.RenderPassEncoderSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderPassEncoderSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderPassEncoderSetLabel(this, label);
 
     public void SetPipeline(RenderPipelineHandle pipeline) => WebGPU_FFI.RenderPassEncoderSetPipeline(this, pipeline);
 

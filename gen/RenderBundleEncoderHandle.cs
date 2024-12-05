@@ -48,23 +48,17 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
     /// </summary>
     public RenderBundleHandle Finish(RenderBundleDescriptorFFI* descriptor) => WebGPU_FFI.RenderBundleEncoderFinish(this, descriptor);
 
-    public void InsertDebugMarker(byte* markerLabel) => WebGPU_FFI.RenderBundleEncoderInsertDebugMarker(this, markerLabel);
-
-    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderBundleEncoderInsertDebugMarker2(this, markerLabel);
+    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderBundleEncoderInsertDebugMarker(this, markerLabel);
 
     public void PopDebugGroup() => WebGPU_FFI.RenderBundleEncoderPopDebugGroup(this);
 
-    public void PushDebugGroup(byte* groupLabel) => WebGPU_FFI.RenderBundleEncoderPushDebugGroup(this, groupLabel);
-
-    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderBundleEncoderPushDebugGroup2(this, groupLabel);
+    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderBundleEncoderPushDebugGroup(this, groupLabel);
 
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, ulong offset, ulong size) => WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, buffer, format, offset, size);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.RenderBundleEncoderSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderBundleEncoderSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderBundleEncoderSetLabel(this, label);
 
     public void SetPipeline(RenderPipelineHandle pipeline) => WebGPU_FFI.RenderBundleEncoderSetPipeline(this, pipeline);
 

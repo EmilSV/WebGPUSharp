@@ -35,9 +35,7 @@ public readonly unsafe partial struct BindGroupHandle : IEquatable<BindGroupHand
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void SetLabel(byte* label) => WebGPU_FFI.BindGroupSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.BindGroupSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.BindGroupSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.BindGroupAddRef(this);
 

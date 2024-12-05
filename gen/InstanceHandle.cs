@@ -43,7 +43,7 @@ public readonly unsafe partial struct InstanceHandle : IEquatable<InstanceHandle
 
     public void ProcessEvents() => WebGPU_FFI.InstanceProcessEvents(this);
 
-    public void RequestAdapter(RequestAdapterOptionsFFI* options, delegate* unmanaged[Cdecl]<RequestAdapterStatus, AdapterHandle, byte*, void*, void> callback, void* userdata) => WebGPU_FFI.InstanceRequestAdapter(this, options, callback, userdata);
+    public void RequestAdapter(RequestAdapterOptionsFFI* options, delegate* unmanaged[Cdecl]<RequestAdapterStatus, AdapterHandle, StringViewFFI, void*, void> callback, void* userdata) => WebGPU_FFI.InstanceRequestAdapter(this, options, callback, userdata);
 
     public Future RequestAdapter(RequestAdapterOptionsFFI* options, RequestAdapterCallbackInfo2FFI callbackInfo) => WebGPU_FFI.InstanceRequestAdapter2(this, options, callbackInfo);
 

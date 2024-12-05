@@ -5,9 +5,9 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedTextureMemoryDXGISharedHandleDescriptorFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public void* Handle;
-    public WebGPUBool UseKeyedMutex;
+    public WebGPUBool UseKeyedMutex = new();
 
     public SharedTextureMemoryDXGISharedHandleDescriptorFFI() { }
 

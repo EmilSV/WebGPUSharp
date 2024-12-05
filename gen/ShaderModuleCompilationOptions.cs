@@ -5,8 +5,8 @@ namespace WebGpuSharp;
 
 public partial struct ShaderModuleCompilationOptions
 {
-    public ChainedStruct Chain;
-    public WebGPUBool StrictMath;
+    public ChainedStruct Chain = new();
+    public WebGPUBool StrictMath = new();
 
     public ShaderModuleCompilationOptions() { }
 

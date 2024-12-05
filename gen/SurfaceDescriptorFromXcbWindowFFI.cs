@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromXcbWindowFFI
 {
-    public SurfaceSourceXCBWindowFFI Value;
+    public SurfaceSourceXCBWindowFFI Value = new();
 
     public SurfaceDescriptorFromXcbWindowFFI() { }
 

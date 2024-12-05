@@ -5,8 +5,8 @@ namespace WebGpuSharp;
 
 public partial struct DawnBufferDescriptorErrorInfoFromWireClient
 {
-    public ChainedStruct Chain;
-    public WebGPUBool OutOfMemory;
+    public ChainedStruct Chain = new();
+    public WebGPUBool OutOfMemory = new();
 
     public DawnBufferDescriptorErrorInfoFromWireClient() { }
 

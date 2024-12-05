@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct RenderPassDescriptorExpandResolveRect
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public uint X;
     public uint Y;
     public uint Width;

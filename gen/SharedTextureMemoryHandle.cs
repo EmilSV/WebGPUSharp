@@ -45,9 +45,7 @@ public readonly unsafe partial struct SharedTextureMemoryHandle : IEquatable<Sha
 
     public WebGPUBool IsDeviceLost() => WebGPU_FFI.SharedTextureMemoryIsDeviceLost(this);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.SharedTextureMemorySetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.SharedTextureMemorySetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.SharedTextureMemorySetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.SharedTextureMemoryAddRef(this);
 

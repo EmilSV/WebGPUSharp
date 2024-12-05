@@ -37,9 +37,7 @@ public readonly unsafe partial struct RenderPipelineHandle : IEquatable<RenderPi
 
     public BindGroupLayoutHandle GetBindGroupLayout(uint groupIndex) => WebGPU_FFI.RenderPipelineGetBindGroupLayout(this, groupIndex);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.RenderPipelineSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderPipelineSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderPipelineSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.RenderPipelineAddRef(this);
 

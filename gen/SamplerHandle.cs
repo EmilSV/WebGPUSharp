@@ -35,9 +35,7 @@ public readonly unsafe partial struct SamplerHandle : IEquatable<SamplerHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void SetLabel(byte* label) => WebGPU_FFI.SamplerSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.SamplerSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.SamplerSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.SamplerAddRef(this);
 

@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct StaticSamplerBindingLayoutFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public SamplerHandle Sampler;
     public uint SampledTextureBinding;
 

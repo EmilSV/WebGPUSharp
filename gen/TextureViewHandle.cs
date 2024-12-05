@@ -35,9 +35,7 @@ public readonly unsafe partial struct TextureViewHandle : IEquatable<TextureView
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void SetLabel(byte* label) => WebGPU_FFI.TextureViewSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.TextureViewSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.TextureViewSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.TextureViewAddRef(this);
 

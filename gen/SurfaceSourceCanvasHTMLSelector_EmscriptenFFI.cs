@@ -5,8 +5,8 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceSourceCanvasHTMLSelector_EmscriptenFFI
 {
-    public ChainedStruct Chain;
-    public byte* Selector;
+    public ChainedStruct Chain = new();
+    public StringViewFFI Selector = new();
 
     public SurfaceSourceCanvasHTMLSelector_EmscriptenFFI() { }
 

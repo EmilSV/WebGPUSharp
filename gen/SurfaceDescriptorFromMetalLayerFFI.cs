@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromMetalLayerFFI
 {
-    public SurfaceSourceMetalLayerFFI Value;
+    public SurfaceSourceMetalLayerFFI Value = new();
 
     public SurfaceDescriptorFromMetalLayerFFI() { }
 

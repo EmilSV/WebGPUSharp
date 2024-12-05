@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct BufferDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label = new();
     /// <summary>
     /// The allowed usages for the buffer.
     /// </summary>

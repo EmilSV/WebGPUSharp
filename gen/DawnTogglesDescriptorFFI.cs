@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct DawnTogglesDescriptorFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public nuint EnabledToggleCount;
     public byte** EnabledToggles;
     public nuint DisabledToggleCount;

@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedTextureMemoryZirconHandleDescriptor
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public uint MemoryFD;
     public ulong AllocationSize;
 

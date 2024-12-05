@@ -7,7 +7,7 @@ public unsafe partial struct CreateComputePipelineAsyncCallbackInfoFFI
 {
     public ChainedStruct* NextInChain;
     public CallbackMode Mode;
-    public delegate* unmanaged[Cdecl]<CreatePipelineAsyncStatus, ComputePipelineHandle, byte*, void*, void> Callback;
+    public delegate* unmanaged[Cdecl]<CreatePipelineAsyncStatus, ComputePipelineHandle, StringViewFFI, void*, void> Callback;
     public void* Userdata;
 
     public CreateComputePipelineAsyncCallbackInfoFFI() { }

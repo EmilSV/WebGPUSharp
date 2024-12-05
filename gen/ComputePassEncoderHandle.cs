@@ -61,21 +61,15 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     /// </summary>
     public void End() => WebGPU_FFI.ComputePassEncoderEnd(this);
 
-    public void InsertDebugMarker(byte* markerLabel) => WebGPU_FFI.ComputePassEncoderInsertDebugMarker(this, markerLabel);
-
-    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.ComputePassEncoderInsertDebugMarker2(this, markerLabel);
+    public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.ComputePassEncoderInsertDebugMarker(this, markerLabel);
 
     public void PopDebugGroup() => WebGPU_FFI.ComputePassEncoderPopDebugGroup(this);
 
-    public void PushDebugGroup(byte* groupLabel) => WebGPU_FFI.ComputePassEncoderPushDebugGroup(this, groupLabel);
-
-    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.ComputePassEncoderPushDebugGroup2(this, groupLabel);
+    public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.ComputePassEncoderPushDebugGroup(this, groupLabel);
 
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.ComputePassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.ComputePassEncoderSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.ComputePassEncoderSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.ComputePassEncoderSetLabel(this, label);
 
     /// <summary>
     /// Sets the current  <see cref="WebGpuSharp.ComputePipeline"/>.

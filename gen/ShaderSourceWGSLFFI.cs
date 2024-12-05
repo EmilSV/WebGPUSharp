@@ -5,8 +5,8 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct ShaderSourceWGSLFFI
 {
-    public ChainedStruct Chain;
-    public byte* Code;
+    public ChainedStruct Chain = new();
+    public StringViewFFI Code = new();
 
     public ShaderSourceWGSLFFI() { }
 

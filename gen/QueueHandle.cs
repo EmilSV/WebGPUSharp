@@ -45,9 +45,7 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
 
     public Future OnSubmittedWorkDoneF(QueueWorkDoneCallbackInfoFFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDoneF(this, callbackInfo);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.QueueSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel(this, label);
 
     /// <summary>
     /// Schedules the execution of the command buffers by the GPU on this queue.

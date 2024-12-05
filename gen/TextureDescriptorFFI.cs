@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct TextureDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label = new();
     /// <summary>
     /// The allowed usages for the texture.
     /// </summary>
@@ -18,7 +18,7 @@ public unsafe partial struct TextureDescriptorFFI
     /// <summary>
     /// The width, height, and depth or layer count of the texture.
     /// </summary>
-    public required Extent3D Size;
+    public required Extent3D Size = new();
     /// <summary>
     /// The format of the texture.
     /// </summary>

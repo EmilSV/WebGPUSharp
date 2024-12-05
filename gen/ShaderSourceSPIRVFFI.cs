@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct ShaderSourceSPIRVFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public uint CodeSize;
     public uint* Code;
 

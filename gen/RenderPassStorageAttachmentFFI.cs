@@ -10,7 +10,7 @@ public unsafe partial struct RenderPassStorageAttachmentFFI
     public TextureViewHandle Storage;
     public LoadOp LoadOp;
     public StoreOp StoreOp;
-    public Color ClearValue;
+    public Color ClearValue = new();
 
     public RenderPassStorageAttachmentFFI() { }
 

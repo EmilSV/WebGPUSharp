@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceDescriptorFromWaylandSurfaceFFI
 {
-    public SurfaceSourceWaylandSurfaceFFI Value;
+    public SurfaceSourceWaylandSurfaceFFI Value = new();
 
     public SurfaceDescriptorFromWaylandSurfaceFFI() { }
 

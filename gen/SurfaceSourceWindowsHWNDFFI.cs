@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceSourceWindowsHWNDFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public void* Hinstance;
     public void* Hwnd;
 

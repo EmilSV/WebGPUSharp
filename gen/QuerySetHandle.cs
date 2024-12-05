@@ -42,9 +42,7 @@ public readonly unsafe partial struct QuerySetHandle : IEquatable<QuerySetHandle
 
     public uint GetCount() => WebGPU_FFI.QuerySetGetCount(this);
 
-    public void SetLabel(byte* label) => WebGPU_FFI.QuerySetSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.QuerySetSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.QuerySetSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.QuerySetAddRef(this);
 

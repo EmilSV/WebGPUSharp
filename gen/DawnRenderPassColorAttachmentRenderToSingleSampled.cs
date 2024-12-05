@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct DawnRenderPassColorAttachmentRenderToSingleSampled
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public uint ImplicitSampleCount;
 
     public DawnRenderPassColorAttachmentRenderToSingleSampled() { }

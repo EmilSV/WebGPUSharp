@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct SharedFenceVkSemaphoreZirconHandleExportInfo
 {
-    public ChainedStructOut Chain;
+    public ChainedStructOut Chain = new();
     public uint Handle;
 
     public SharedFenceVkSemaphoreZirconHandleExportInfo() { }

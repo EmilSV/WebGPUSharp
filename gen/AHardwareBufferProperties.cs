@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct AHardwareBufferProperties
 {
-    public YCbCrVkDescriptor YCbCrInfo;
+    public YCbCrVkDescriptor YCbCrInfo = new();
 
     public AHardwareBufferProperties() { }
 

@@ -35,9 +35,7 @@ public readonly unsafe partial struct PipelineLayoutHandle : IEquatable<Pipeline
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void SetLabel(byte* label) => WebGPU_FFI.PipelineLayoutSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.PipelineLayoutSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.PipelineLayoutSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.PipelineLayoutAddRef(this);
 

@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct RenderPassDescriptorMaxDrawCount
 {
-    public RenderPassMaxDrawCount Value;
+    public RenderPassMaxDrawCount Value = new();
 
     public RenderPassDescriptorMaxDrawCount() { }
 

@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct ExternalTextureBindingEntryFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public ExternalTextureHandle ExternalTexture;
 
     public ExternalTextureBindingEntryFFI() { }

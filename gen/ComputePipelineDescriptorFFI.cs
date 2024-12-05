@@ -6,12 +6,12 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct ComputePipelineDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label = new();
     public PipelineLayoutHandle Layout;
     /// <summary>
     /// Describes the compute shader entry point of the pipeline.
     /// </summary>
-    public required ProgrammableStageDescriptorFFI Compute;
+    public required ProgrammableStageDescriptorFFI Compute = new();
 
     public ComputePipelineDescriptorFFI() { }
 

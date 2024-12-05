@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct SharedBufferMemoryEndAccessStateFFI
 {
     public ChainedStructOut* NextInChain;
-    public WebGPUBool Initialized;
+    public WebGPUBool Initialized = new();
     public nuint FenceCount;
     public SharedFenceHandle* Fences;
     public ulong* SignaledValues;

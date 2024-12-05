@@ -35,9 +35,7 @@ public readonly unsafe partial struct RenderBundleHandle : IEquatable<RenderBund
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void SetLabel(byte* label) => WebGPU_FFI.RenderBundleSetLabel(this, label);
-
-    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderBundleSetLabel2(this, label);
+    public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderBundleSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.RenderBundleAddRef(this);
 

@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct CommandBufferDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label = new();
 
     public CommandBufferDescriptorFFI() { }
 

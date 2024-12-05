@@ -5,8 +5,8 @@ namespace WebGpuSharp;
 
 public partial struct FutureWaitInfo
 {
-    public Future Future;
-    public WebGPUBool Completed;
+    public Future Future = new();
+    public WebGPUBool Completed = new();
 
     public FutureWaitInfo() { }
 

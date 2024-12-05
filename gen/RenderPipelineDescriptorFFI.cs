@@ -6,16 +6,16 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct RenderPipelineDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public byte* Label;
+    public StringViewFFI Label = new();
     public PipelineLayoutHandle Layout;
     /// <summary>
     /// Describes the vertex shader entry point of the pipeline and its input buffer layouts.
     /// </summary>
-    public required VertexStateFFI Vertex;
+    public required VertexStateFFI Vertex = new();
     /// <summary>
     /// Describes the primitive-related properties of the pipeline.
     /// </summary>
-    public PrimitiveState Primitive;
+    public PrimitiveState Primitive = new();
     /// <summary>
     /// Describes the optional depth-stencil properties, including the testing, operations, and bias.
     /// </summary>
@@ -23,7 +23,7 @@ public unsafe partial struct RenderPipelineDescriptorFFI
     /// <summary>
     /// Describes the multi-sampling properties of the pipeline.
     /// </summary>
-    public MultisampleState Multisample;
+    public MultisampleState Multisample = new();
     /// <summary>
     /// Describes the fragment shader entry point of the pipeline and its output colors. If
     /// not provided, the #no-color-output mode is enabled.

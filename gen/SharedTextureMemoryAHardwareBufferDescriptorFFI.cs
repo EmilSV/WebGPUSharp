@@ -5,9 +5,9 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SharedTextureMemoryAHardwareBufferDescriptorFFI
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public void* Handle;
-    public WebGPUBool UseExternalFormat;
+    public WebGPUBool UseExternalFormat = new();
 
     public SharedTextureMemoryAHardwareBufferDescriptorFFI() { }
 

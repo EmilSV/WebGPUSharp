@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct ExternalTextureBindingLayout
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
 
     public ExternalTextureBindingLayout() { }
 

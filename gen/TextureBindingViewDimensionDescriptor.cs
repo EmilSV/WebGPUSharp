@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public partial struct TextureBindingViewDimensionDescriptor
 {
-    public ChainedStruct Chain;
+    public ChainedStruct Chain = new();
     public TextureViewDimension TextureBindingViewDimension;
 
     public TextureBindingViewDimensionDescriptor() { }

@@ -5,8 +5,8 @@ namespace WebGpuSharp;
 
 public enum VertexStepMode
 {
-    Undefined = 0,
-    VertexBufferNotUsed = 1,
+    VertexBufferNotUsed = 0,
+    Undefined = 1,
     /// <summary>
     /// The address is advanced by  <see cref="WebGpuSharp.VertexBufferLayout.ArrayStride"/> for each vertex,
     /// and reset between instances.
