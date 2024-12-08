@@ -19,12 +19,12 @@ public readonly unsafe partial struct TextureHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = ToUtf8Span(textureViewDescriptor.Label, allocator, addNullTerminator: true);
+        var labelUtf8Span = ToUtf8Span(textureViewDescriptor.Label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
             TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor;
-            textureViewDescriptorPtr->Label = labelPtr;
+            textureViewDescriptorPtr->Label = new(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }
@@ -33,12 +33,12 @@ public readonly unsafe partial struct TextureHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = ToUtf8Span(textureViewDescriptor.Label, allocator, addNullTerminator: true);
+        var labelUtf8Span = ToUtf8Span(textureViewDescriptor.Label, allocator, addNullTerminator: false);
 
         fixed (TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor)
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            textureViewDescriptorPtr->Label = labelPtr;
+            textureViewDescriptorPtr->Label = new(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }
@@ -62,7 +62,7 @@ public readonly unsafe partial struct TextureHandle :
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.TextureSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.TextureSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

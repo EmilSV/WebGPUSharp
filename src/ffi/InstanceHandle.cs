@@ -2,6 +2,8 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Unicode;
 using WebGpuSharp.Internal;
 using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
@@ -82,17 +84,17 @@ public readonly unsafe partial struct InstanceHandle :
                 SurfaceDescriptorFFI surfaceDescriptor = new()
                 {
                     NextInChain = nextPtr,
-                    Label = labelPtr
+                    Label = new(labelPtr, labelUtf8Span.Length)
                 };
                 return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
             }
         }
     }
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnAdapterRequestEnded(
         RequestAdapterStatus status, AdapterHandle adapter,
-        byte* message, void* userdata)
+        StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<AdapterHandle>? taskCompletionSource = null;
@@ -107,7 +109,7 @@ public readonly unsafe partial struct InstanceHandle :
             }
             else
             {
-                string? messageStr = Marshal.PtrToStringAnsi((IntPtr)message);
+                string? messageStr = Encoding.UTF8.GetString(message.AsSpan());
                 Console.Error.WriteLine($"Failed to request adapter: {messageStr ?? "Failed to get error message"}");
                 taskCompletionSource.SetResult(AdapterHandle.Null);
             }

@@ -154,28 +154,6 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void ToFFI(string? input, WebGpuAllocatorHandle allocator, out byte* dest)
-    {
-        dest = ToFFI(input, allocator);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe byte* ToFFI(string? input, WebGpuAllocatorHandle allocator)
-    {
-        if (input is null)
-        {
-            return null;
-        }
-
-        var newSize = Encoding.UTF8.GetByteCount(input) + 1;
-        var result = allocator.Alloc<byte>((nuint)newSize);
-        var resultSpan = new Span<byte>(result, newSize);
-        Encoding.UTF8.GetBytes(input, new Span<byte>(result, newSize));
-        resultSpan[^1] = 0;
-        return result;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ToFFI<T, TTo>(
         T? input, WebGpuAllocatorHandle allocator,
         out TTo* dest, out nuint outCount
@@ -286,7 +264,7 @@ public unsafe static partial class WebGPUMarshal
         };
     }
 
-    public static unsafe ReadOnlySpan<byte> ToUtf8Span(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator, bool addNullTerminator)
+    public static unsafe Span<byte> ToUtf8Span(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator, bool addNullTerminator)
     {
         if (text.IsEmpty)
         {
@@ -330,6 +308,17 @@ public unsafe static partial class WebGPUMarshal
 
         Debug.Assert(status == OperationStatus.Done);
         return resultSpan[..totalBytesWritten];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe StringViewFFI ToStringViewFFI(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator)
+    {
+        var utf8Span = ToUtf8Span(text, allocator, addNullTerminator: false);
+        return new StringViewFFI
+        {
+            Data = (byte*)Unsafe.AsPointer(ref utf8Span.GetPinnableReference()),
+            Length = (uint)utf8Span.Length,
+        };
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

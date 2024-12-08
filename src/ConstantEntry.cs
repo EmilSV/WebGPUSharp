@@ -1,5 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -25,7 +26,7 @@ public unsafe partial struct ConstantEntry : IWebGpuFFIConvertibleAlloc<Constant
     {
         dest = new()
         {
-            Key = WebGPUMarshal.ToFFI(input.Key, allocator),
+            Key = ToStringViewFFI(input.Key, allocator),
             Value = input.Value
         };
     }

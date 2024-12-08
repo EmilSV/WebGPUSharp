@@ -10,11 +10,11 @@ public unsafe readonly partial struct RenderPipelineHandle :
     {
         using var allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.RenderPipelineSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.RenderPipelineSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

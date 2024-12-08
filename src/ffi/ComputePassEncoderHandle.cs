@@ -21,7 +21,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, false);
         fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
-            WebGPU_FFI.ComputePassEncoderInsertDebugMarker2(
+            WebGPU_FFI.ComputePassEncoderInsertDebugMarker(
                 computePassEncoder: this,
                 markerLabel: new(markerLabelPtr, markerLabelUtf8Span.Length)
             );
@@ -34,7 +34,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, false);
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
-            WebGPU_FFI.ComputePassEncoderPushDebugGroup2(
+            WebGPU_FFI.ComputePassEncoderPushDebugGroup(
                 computePassEncoder: this,
                 groupLabel: new(groupLabelPtr, groupLabelUtf8Span.Length)
             );
@@ -92,7 +92,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.ComputePassEncoderSetLabel2(
+            WebGPU_FFI.ComputePassEncoderSetLabel(
                 computePassEncoder: this,
                 label: new(labelPtr, labelUtf8Span.Length)
             );

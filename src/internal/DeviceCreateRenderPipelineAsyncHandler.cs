@@ -43,10 +43,10 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     }
 
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackTask(
             CreatePipelineAsyncStatus status, RenderPipelineHandle renderPipelineHandle,
-            byte* message, void* userdata)
+            StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<RenderPipelineHandle>? taskCompletionSource = null;
@@ -54,10 +54,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         {
 
             taskCompletionSource = (TaskCompletionSource<RenderPipelineHandle>?)handle.GetObject();
-            ReadOnlySpan<byte> messageSpan = message != null ?
-                MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message) :
-                ReadOnlySpan<byte>.Empty;
-
+            ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (status != CreatePipelineAsyncStatus.Success)
             {
                 taskCompletionSource?.SetResult(RenderPipelineHandle.Null);
@@ -90,7 +87,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     private static void OnCallbackDelegate(
         CreatePipelineAsyncStatus status, RenderPipelineHandle renderPipelineHandle,
-        byte* message, void* userdata)
+        StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>? callback = null;
@@ -98,10 +95,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         {
 
             callback = (CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>?)handle.GetObject();
-            ReadOnlySpan<byte> messageSpan = message != null ?
-                MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message) :
-                ReadOnlySpan<byte>.Empty;
-
+            ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
                 callback.Invoke(status, renderPipelineHandle, messageSpan);

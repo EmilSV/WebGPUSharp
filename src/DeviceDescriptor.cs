@@ -8,7 +8,7 @@ public ref partial struct DeviceDescriptor
     public Span<FeatureName> RequiredFeatures;
     public WGPUNullableRef<RequiredLimits> RequiredLimits;
     public QueueDescriptor DefaultQueue;
-    public CallbackMode DeviceLostCallbackMode = CallbackMode.WaitAnyOnly;
+    public CallbackMode DeviceLostCallbackMode = CallbackMode.AllowProcessEvents;
     public DeviceLostCallbackDelegate? DeviceLostCallback;
     public UncapturedErrorDelegate? UncapturedErrorCallback;
 }

@@ -22,7 +22,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
             return ShaderModuleHandle.Null;
         }
 
-        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: true);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
 
         fixed (byte* dataPtr = data)
         fixed (byte* labelPtr = labelUtf8Span)
@@ -36,13 +36,13 @@ internal unsafe static class LoadShaderModuleFromFileHandler
                         Next = null,
                         SType = SType.ShaderSourceWGSL
                     },
-                    Code = dataPtr
+                    Code = new(dataPtr, data.Length)
                 }
             };
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, labelUtf8Span.Length),
                 NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
             };
             return WebGPU_FFI.DeviceCreateShaderModule(device, &shaderModuleDescriptor);

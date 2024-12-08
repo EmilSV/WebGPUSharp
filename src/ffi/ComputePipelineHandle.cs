@@ -34,10 +34,10 @@ public unsafe readonly partial struct ComputePipelineHandle :
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, false);
+        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.ComputePipelineSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.ComputePipelineSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

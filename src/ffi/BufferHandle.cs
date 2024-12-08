@@ -65,7 +65,7 @@ public unsafe readonly partial struct BufferHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.BufferSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.BufferSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 }

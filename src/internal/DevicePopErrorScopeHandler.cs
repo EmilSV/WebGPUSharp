@@ -23,8 +23,8 @@ internal unsafe static class DevicePopErrorScopeHandler
     }
 
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    private static void OnDevicePopErrorScopeDelegate(ErrorType errorType, byte* message, void* userdata)
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnDevicePopErrorScopeDelegate(ErrorType errorType, StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         DevicePopErrorScopeDelegate? callback = null;
@@ -32,9 +32,7 @@ internal unsafe static class DevicePopErrorScopeHandler
         {
 
             callback = (DevicePopErrorScopeDelegate?)handle.GetObject();
-            ReadOnlySpan<byte> messageSpan = message != null ?
-                MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message) :
-                ReadOnlySpan<byte>.Empty;
+            ReadOnlySpan<byte> messageSpan = message.AsSpan();
 
             if (callback != null)
             {
@@ -57,8 +55,8 @@ internal unsafe static class DevicePopErrorScopeHandler
             }
         }
     }
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    private static void OnDevicePopErrorScopeTask(ErrorType errorType, byte* message, void* userdata)
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnDevicePopErrorScopeTask(ErrorType errorType, StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<(ErrorType errorType, string message)>? callback = null;
@@ -66,10 +64,7 @@ internal unsafe static class DevicePopErrorScopeHandler
         {
 
             callback = (TaskCompletionSource<(ErrorType errorType, string message)>?)handle.GetObject();
-            ReadOnlySpan<byte> messageSpan = message != null ?
-                MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message) :
-                ReadOnlySpan<byte>.Empty;
-
+            ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
                 callback.SetResult((errorType, Encoding.UTF8.GetString(messageSpan)));

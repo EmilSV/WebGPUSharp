@@ -4,8 +4,7 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
-public struct VertexState :
-    IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
+public struct VertexState : IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
 {
     public required ShaderModule Module;
     public string? EntryPoint;
@@ -17,7 +16,7 @@ public struct VertexState :
     {
         dest = default;
         dest.Module = GetBorrowHandle(input.Module);
-        ToFFI(input.EntryPoint, allocator, out dest.EntryPoint);
+        dest.EntryPoint = ToStringViewFFI(input.EntryPoint ?? "", allocator);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
         ToFFI(input.Buffers, allocator, out dest.Buffers, out dest.BufferCount);
     }

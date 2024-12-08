@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using WebGpuSharp.Internal;
 using static WebGpuSharp.FFI.WebGPUMarshal;
 
@@ -10,27 +11,26 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct AdapterHandle :
     IDisposable, IWebGpuHandle<AdapterHandle, Adapter>
 {
-    public readonly nuint GetEnumerateFeaturesCount()
-    {
-        return WebGPU_FFI.AdapterEnumerateFeatures(this, null);
-    }
-
-    public readonly nuint EnumerateFeatures(Span<FeatureName> output)
-    {
-        Debug.Assert((nuint)output.Length >= GetEnumerateFeaturesCount());
-
-        fixed (FeatureName* outputPtr = output)
-        {
-            return WebGPU_FFI.AdapterEnumerateFeatures(this, outputPtr);
-        }
-    }
-
     public readonly FeatureName[] GetFeatures()
     {
-        nuint count = GetEnumerateFeaturesCount();
-        FeatureName[] features = new FeatureName[count];
-        EnumerateFeatures(features);
-        return features;
+        bool gotFeatures = false;
+        SupportedFeaturesFFI supportedFeaturesFFI;
+        Unsafe.SkipInit(out supportedFeaturesFFI);
+        try
+        {
+            WebGPU_FFI.AdapterGetFeatures(this, &supportedFeaturesFFI);
+            gotFeatures = true;
+            FeatureName[] features = new FeatureName[supportedFeaturesFFI.FeatureCount];
+            features.CopyTo(new Span<FeatureName>(supportedFeaturesFFI.Features, (int)supportedFeaturesFFI.FeatureCount));
+            return features;
+        }
+        finally
+        {
+            if (gotFeatures)
+            {
+                WebGPU_FFI.SupportedFeaturesFreeMembers(supportedFeaturesFFI);
+            }
+        }
     }
 
     public readonly bool GetLimits(out SupportedLimits limits)
@@ -98,8 +98,8 @@ public unsafe readonly partial struct AdapterHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
-        var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: true);
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
+        var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: false);
 
         fixed (byte* deviceDescriptorLabelPtr = labelUtf8Span)
         fixed (byte* queueLabelPtr = queueLabelUtf8Span)
@@ -111,21 +111,21 @@ public unsafe readonly partial struct AdapterHandle :
 
             DeviceDescriptorFFI deviceDescriptor = new()
             {
-                Label = deviceDescriptorLabelPtr,
+                Label = new(deviceDescriptorLabelPtr, labelUtf8Span.Length),
                 RequiredFeatures = requiredFeaturesPtr,
                 RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
                 RequiredLimits = requiredLimitsPtr,
                 DefaultQueue = {
-                    Label = queueLabelPtr
+                    Label = new(queueLabelPtr, queueLabelUtf8Span.Length)
                 },
-                DeviceLostCallbackInfo = {
+                DeviceLostCallbackInfo2 = {
                     Mode = descriptor.DeviceLostCallbackMode,
                     Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
-                    Userdata = (void*)deviceLostCallbackFuncPtrAndId.id
+                    Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id,
                 },
-                UncapturedErrorCallbackInfo = {
+                UncapturedErrorCallbackInfo2 = {
                     Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                    Userdata = (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                    Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id
                 }
             };
             return RequestDeviceAsync(&deviceDescriptor);
@@ -139,8 +139,8 @@ public unsafe readonly partial struct AdapterHandle :
         CallbackUserDataHandle handle = default;
         try
         {
-            var deviceDescriptorLabelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
-            var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: true);
+            var deviceDescriptorLabelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
+            var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: false);
 
             fixed (byte* deviceDescriptorLabelPtr = deviceDescriptorLabelUtf8Span)
             fixed (byte* queueLabelPtr = queueLabelUtf8Span)
@@ -153,24 +153,24 @@ public unsafe readonly partial struct AdapterHandle :
                 DeviceDescriptorFFI deviceDescriptor = new()
                 {
                     NextInChain = default,
-                    Label = deviceDescriptorLabelPtr,
+                    Label = new(deviceDescriptorLabelPtr, deviceDescriptorLabelUtf8Span.Length),
                     RequiredFeatures = requiredFeaturesPtr,
                     RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
                     RequiredLimits = requiredLimitsPtr,
                     DefaultQueue = new()
                     {
-                        Label = queueLabelPtr
+                        Label = new(queueLabelPtr, queueLabelUtf8Span.Length)
                     },
-                    DeviceLostCallbackInfo = new()
+                    DeviceLostCallbackInfo2 = new()
                     {
                         Mode = descriptor.DeviceLostCallbackMode,
                         Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
-                        Userdata = (void*)deviceLostCallbackFuncPtrAndId.id
+                        Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id
                     },
-                    UncapturedErrorCallbackInfo = new()
+                    UncapturedErrorCallbackInfo2 = new()
                     {
                         Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                        Userdata = (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                        Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id
                     }
                 };
 
@@ -211,7 +211,7 @@ public unsafe readonly partial struct AdapterHandle :
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedDelegate(
-      RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
+      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         Action<DeviceHandle>? callback = null;
@@ -226,7 +226,7 @@ public unsafe readonly partial struct AdapterHandle :
             }
             else
             {
-                string? messageStr = Marshal.PtrToStringAnsi((IntPtr)message);
+                string? messageStr = Encoding.UTF8.GetString(message.AsSpan());
                 Console.WriteLine($"Could not get WebGPU device: {messageStr ?? "Failed to get error message"}");
                 callback(default);
             }
@@ -250,7 +250,7 @@ public unsafe readonly partial struct AdapterHandle :
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
-      RequestDeviceStatus status, DeviceHandle device, byte* message, void* userdata)
+      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<DeviceHandle>? taskCompletionSource = null;
@@ -265,7 +265,7 @@ public unsafe readonly partial struct AdapterHandle :
             }
             else
             {
-                string? messageStr = Marshal.PtrToStringAnsi((IntPtr)message);
+                string? messageStr = Encoding.UTF8.GetString(message.AsSpan());
                 Console.WriteLine($"Could not get WebGPU device: {messageStr ?? "Failed to get error message"}");
                 taskCompletionSource.SetResult(DeviceHandle.Null);
             }
@@ -341,7 +341,7 @@ file static class DeviceLostCallbackHandler
 {
     public unsafe struct FuncPtrAndId
     {
-        public delegate* unmanaged[Cdecl]<DeviceHandle*, DeviceLostReason, byte*, void*, void> funcPtr;
+        public delegate* unmanaged[Cdecl]<DeviceHandle*, DeviceLostReason, StringViewFFI, void*, void*, void> funcPtr;
         public nuint id;
     }
 
@@ -362,12 +362,12 @@ file static class DeviceLostCallbackHandler
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void DeviceLostCallback(
-      DeviceHandle* device, DeviceLostReason lostReason, byte* message, void* id)
+      DeviceHandle* device, DeviceLostReason lostReason, StringViewFFI message, void* id, void* _)
     {
         nuint callbackId = (nuint)id;
         if (deviceLostCallbacks.TryGetValue(callbackId, out var callback))
         {
-            callback(lostReason, MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message));
+            callback(lostReason, message.AsSpan());
         }
     }
 }
@@ -376,7 +376,7 @@ file static class UncapturedErrorDelegateHandler
 {
     public unsafe struct FuncPtrAndId
     {
-        public delegate* unmanaged[Cdecl]<ErrorType, byte*, void*, void> funcPtr;
+        public delegate* unmanaged[Cdecl]<DeviceHandle*, ErrorType, StringViewFFI, void*, void*, void> funcPtr;
         public nuint id;
     }
 
@@ -399,12 +399,12 @@ file static class UncapturedErrorDelegateHandler
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void UncapturedErrorCallback(
-        ErrorType type, byte* message, void* id)
+       DeviceHandle* _1, ErrorType type, StringViewFFI message, void* id, void* _)
     {
         nuint callbackId = (nuint)id;
         if (uncapturedErrorCallbacks.TryGetValue(callbackId, out var callback))
         {
-            callback(type, MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message));
+            callback(type, message.AsSpan());
         }
     }
 }

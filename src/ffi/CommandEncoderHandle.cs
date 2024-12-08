@@ -38,7 +38,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             depthStencilAttachmentPtr = &depthStencilAttachmentFFI;
         }
 
-        var labelUtf8Span = ToUtf8Span(descriptor.label, allocator, addNullTerminator: true);
+        var labelUtf8Span = ToUtf8Span(descriptor.label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
@@ -58,7 +58,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
             RenderPassDescriptorFFI descriptorFFI = new()
             {
-                Label = labelPtr,
+                Label = new(labelPtr, labelUtf8Span.Length),
                 ColorAttachmentCount = colorAttachmentsCount,
                 ColorAttachments = colorAttachmentsPtr,
                 DepthStencilAttachment = depthStencilAttachmentPtr,
@@ -235,13 +235,13 @@ public readonly unsafe partial struct CommandEncoderHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
             CommandBufferDescriptorFFI commandBufferDescriptor = new()
             {
-                Label = labelPtr
+                Label = new(labelPtr, labelUtf8Span.Length)
             };
 
             return WebGPU_FFI.CommandEncoderFinish(this, &commandBufferDescriptor);
@@ -261,7 +261,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
-            WebGPU_FFI.CommandEncoderInsertDebugMarker2(this, new(markerLabelPtr, markerLabelUtf8Span.Length));
+            WebGPU_FFI.CommandEncoderInsertDebugMarker(this, new(markerLabelPtr, markerLabelUtf8Span.Length));
         }
     }
 
@@ -273,7 +273,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
-            WebGPU_FFI.CommandEncoderPushDebugGroup2(this, new(groupLabelPtr, groupLabelUtf8Span.Length));
+            WebGPU_FFI.CommandEncoderPushDebugGroup(this, new(groupLabelPtr, groupLabelUtf8Span.Length));
         }
     }
 
@@ -299,7 +299,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.CommandEncoderSetLabel2(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.CommandEncoderSetLabel(this, new(labelPtr, labelUtf8Span.Length));
         }
     }
 

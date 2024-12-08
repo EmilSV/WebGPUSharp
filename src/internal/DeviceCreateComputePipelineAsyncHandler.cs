@@ -46,7 +46,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     private static void OnCallbackTask(
             CreatePipelineAsyncStatus status, ComputePipelineHandle computePipelineHandle,
-            byte* message, void* userdata)
+            StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<ComputePipelineHandle>? taskCompletionSource = null;
@@ -54,9 +54,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         {
 
             taskCompletionSource = (TaskCompletionSource<ComputePipelineHandle>?)handle.GetObject();
-            ReadOnlySpan<byte> messageSpan = message != null ?
-                MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message) :
-                ReadOnlySpan<byte>.Empty;
+            ReadOnlySpan<byte> messageSpan = message.AsSpan();
 
             if (status != CreatePipelineAsyncStatus.Success)
             {
@@ -90,7 +88,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     private static void OnCallbackDelegate(
         CreatePipelineAsyncStatus status, ComputePipelineHandle computePipelineHandle,
-        byte* message, void* userdata)
+        StringViewFFI message, void* userdata)
     {
         CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         CreateComputePipelineAsyncDelegate<ComputePipelineHandle>? callback = null;
@@ -98,10 +96,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         {
 
             callback = (CreateComputePipelineAsyncDelegate<ComputePipelineHandle>?)handle.GetObject();
-            ReadOnlySpan<byte> messageSpan = message != null ?
-                MemoryMarshal.CreateReadOnlySpanFromNullTerminated(message) :
-                ReadOnlySpan<byte>.Empty;
-
+            ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
                 callback.Invoke(status, computePipelineHandle, messageSpan);

@@ -448,7 +448,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     {
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
         public static void OnBufferMapCallback_TaskCompletionSource(
-            MapAsyncStatus status, byte* _, void* userdata1, void* userdata2)
+            MapAsyncStatus status, StringViewFFI _, void* userdata1, void* userdata2)
         {
             try
             {
@@ -491,7 +491,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
         public static void OnBufferMapCallback_Action(
-            MapAsyncStatus status, byte* _, void* userdata1, void* userdata2)
+            MapAsyncStatus status, StringViewFFI _, void* userdata1, void* userdata2)
         {
             try
             {

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using WebGpuSharp.FFI;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
@@ -18,11 +19,16 @@ public unsafe class ConstantEntryCollectionMarshal :
 
     public static void MarshalTemporaryTo(in ConstantEntry item, ref ConstantEntryFFI ffiItem, WebGpuAllocatorHandle allocator)
     {
-        ffiItem = new()
+        var keyUtf8Span = ToUtf8Span(item.Key, allocator, addNullTerminator: false);
+
+        fixed (byte* keyPtr = keyUtf8Span)
         {
-            Key = WebGPUMarshal.ToFFI(item.Key, allocator),
-            Value = item.Value
-        };
+            ffiItem = new()
+            {
+                Key = new(keyPtr, keyUtf8Span.Length),
+                Value = item.Value
+            };
+        }
     }
 
     public static void MarshalTemporaryTo(ReadOnlySpan<ConstantEntry> items, Span<ConstantEntryFFI> ffiItems, WebGpuAllocatorHandle allocator)
@@ -54,7 +60,7 @@ public unsafe class ConstantEntryCollectionMarshal :
 
         ffiItem = new()
         {
-            Key = (byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]),
+            Key = new((byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]), cache.keyAsUtf8.Length),
             Value = item.Value
         };
     }

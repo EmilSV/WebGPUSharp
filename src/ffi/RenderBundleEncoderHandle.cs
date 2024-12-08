@@ -30,7 +30,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         var labelUtf8Span = ToUtf8Span(descriptor.label, allocator, addNullTerminator: true);
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            RenderBundleDescriptorFFI descriptorFFI = new() { Label = labelPtr };
+            RenderBundleDescriptorFFI descriptorFFI = new() { Label = new(labelPtr, labelUtf8Span.Length) };
             return WebGPU_FFI.RenderBundleEncoderFinish(this, &descriptorFFI);
         }
     }

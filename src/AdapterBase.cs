@@ -5,14 +5,12 @@ namespace WebGpuSharp;
 
 public abstract class AdapterBase : WebGPUHandleWrapperBase<AdapterHandle>
 {
-    public nuint GetEnumerateFeaturesCount() => Handle.GetEnumerateFeaturesCount();
-    public nuint EnumerateFeatures(Span<FeatureName> output) => Handle.EnumerateFeatures(output);
-    public FeatureName[] GetFeatures() => Handle.GetFeatures();
 
     public AdapterInfo GetInfo() => Handle.GetInfo()!;
     public bool GetLimits(out SupportedLimits limits) => Handle.GetLimits(out limits);
     public SupportedLimits? GetLimits() => Handle.GetLimits();
 
+    public FeatureName[] GetFeatures() => Handle.GetFeatures();
     public bool HasFeature(FeatureName feature) => Handle.HasFeature(feature);
 
     public Task<Device> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
