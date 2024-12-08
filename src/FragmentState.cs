@@ -20,7 +20,7 @@ public partial struct FragmentState :
         dest = default;
         ToFFI(input.Targets, out dest.Targets, out dest.TargetCount);
         dest.Module = GetBorrowHandle(input.Module);
-        dest.EntryPoint = ToStringViewFFI(input.EntryPoint ?? "", allocator);
+        dest.EntryPoint = ToStringViewFFI(input.EntryPoint, allocator);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
     }
 }

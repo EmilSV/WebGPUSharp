@@ -19,4 +19,6 @@ public unsafe partial struct StringViewFFI
     {
         return new(Data, (int)Length);
     }
+
+    public readonly static StringViewFFI NullValue = new(null, WebGPU_FFI.STRLEN);
 }

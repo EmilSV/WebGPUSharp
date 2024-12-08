@@ -28,6 +28,9 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
     public ShaderModule CreateShaderModuleWGSL(in ShaderModuleWGSLDescriptor descriptor) =>
         CreateShaderModule(new ShaderModuleDescriptor(in descriptor));
 
+    public ShaderModule CreateShaderModuleWGSL(WGPURefText label, in ShaderModuleWGSLDescriptor descriptor) =>
+    CreateShaderModule(new ShaderModuleDescriptor(in descriptor) { Label = label });
+
     public SupportedLimits GetLimits() => Handle.GetLimits();
     public void GetLimits(ref SupportedLimits supportedLimits) => Handle.GetLimits(ref supportedLimits);
 

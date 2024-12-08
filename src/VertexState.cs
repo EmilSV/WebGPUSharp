@@ -16,7 +16,7 @@ public struct VertexState : IWebGpuFFIConvertibleAlloc<VertexState, VertexStateF
     {
         dest = default;
         dest.Module = GetBorrowHandle(input.Module);
-        dest.EntryPoint = ToStringViewFFI(input.EntryPoint ?? "", allocator);
+        dest.EntryPoint = ToStringViewFFI(input.EntryPoint, allocator);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
         ToFFI(input.Buffers, allocator, out dest.Buffers, out dest.BufferCount);
     }

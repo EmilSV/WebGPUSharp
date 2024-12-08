@@ -18,7 +18,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, false);
+        var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
         fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
             WebGPU_FFI.ComputePassEncoderInsertDebugMarker(
@@ -31,7 +31,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, false);
+        var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
             WebGPU_FFI.ComputePassEncoderPushDebugGroup(

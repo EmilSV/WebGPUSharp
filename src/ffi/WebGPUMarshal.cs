@@ -311,6 +311,19 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe StringViewFFI ToStringViewFFI(string? text, WebGpuAllocatorHandle allocator)
+    {
+        if (text == null)
+        {
+            return ToStringViewFFI(ReadOnlySpan<char>.Empty, allocator);
+        }
+        else
+        {
+            return ToStringViewFFI(text.AsSpan(), allocator);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe StringViewFFI ToStringViewFFI(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator)
     {
         var utf8Span = ToUtf8Span(text, allocator, addNullTerminator: false);
@@ -319,6 +332,17 @@ public unsafe static partial class WebGPUMarshal
             Data = (byte*)Unsafe.AsPointer(ref utf8Span.GetPinnableReference()),
             Length = (uint)utf8Span.Length,
         };
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe StringViewFFI ToStringViewFFI(byte* bytes, nuint length)
+    {
+        if (bytes == null)
+        {
+            return StringViewFFI.NullValue;
+        }
+
+        return new(bytes, length);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
