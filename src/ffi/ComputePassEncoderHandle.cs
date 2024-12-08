@@ -23,7 +23,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         {
             WebGPU_FFI.ComputePassEncoderInsertDebugMarker(
                 computePassEncoder: this,
-                markerLabel: new(markerLabelPtr, markerLabelUtf8Span.Length)
+                markerLabel: StringViewFFI.CreateExplicitlySized(markerLabelPtr, markerLabelUtf8Span.Length)
             );
         }
     }
@@ -36,7 +36,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         {
             WebGPU_FFI.ComputePassEncoderPushDebugGroup(
                 computePassEncoder: this,
-                groupLabel: new(groupLabelPtr, groupLabelUtf8Span.Length)
+                groupLabel: StringViewFFI.CreateExplicitlySized(groupLabelPtr, groupLabelUtf8Span.Length)
             );
         }
     }
@@ -94,7 +94,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         {
             WebGPU_FFI.ComputePassEncoderSetLabel(
                 computePassEncoder: this,
-                label: new(labelPtr, labelUtf8Span.Length)
+                label: StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length)
             );
         }
     }

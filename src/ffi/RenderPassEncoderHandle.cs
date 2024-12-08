@@ -77,7 +77,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         {
             WebGPU_FFI.RenderPassEncoderInsertDebugMarker(
                 renderPassEncoder: this,
-                markerLabel: new(markerLabelPtr, markerLabelUtf8Span.Length)
+                markerLabel: StringViewFFI.CreateExplicitlySized(markerLabelPtr, markerLabelUtf8Span.Length)
             );
         }
     }
@@ -90,7 +90,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         {
             WebGPU_FFI.RenderPassEncoderPushDebugGroup(
                 renderPassEncoder: this,
-                groupLabel: new(groupLabelPtr, groupLabelUtf8Span.Length)
+                groupLabel: StringViewFFI.CreateExplicitlySized(groupLabelPtr, groupLabelUtf8Span.Length)
             );
         }
     }
@@ -177,7 +177,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         {
             WebGPU_FFI.RenderPassEncoderSetLabel(
                 renderPassEncoder: this,
-                label: new(labelPtr, labelUtf8Span.Length)
+                label: StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length)
             );
         }
     }

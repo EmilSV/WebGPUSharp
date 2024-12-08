@@ -36,13 +36,13 @@ internal unsafe static class LoadShaderModuleFromFileHandler
                         Next = null,
                         SType = SType.ShaderSourceWGSL
                     },
-                    Code = new(dataPtr, data.Length)
+                    Code = StringViewFFI.CreateExplicitlySized(dataPtr, data.Length)
                 }
             };
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
-                Label = new(labelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
                 NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
             };
             return WebGPU_FFI.DeviceCreateShaderModule(device, &shaderModuleDescriptor);

@@ -15,7 +15,7 @@ public unsafe readonly partial struct PipelineLayoutHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.PipelineLayoutSetLabel(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.PipelineLayoutSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
 

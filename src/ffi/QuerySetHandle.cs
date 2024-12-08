@@ -20,7 +20,7 @@ public unsafe readonly partial struct QuerySetHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.QuerySetSetLabel(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.QuerySetSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
 

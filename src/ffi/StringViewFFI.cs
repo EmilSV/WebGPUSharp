@@ -3,16 +3,10 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct StringViewFFI
 {
-    public StringViewFFI(byte* data, nuint length)
+    private StringViewFFI(byte* data, nuint length)
     {
         Data = data;
         Length = length;
-    }
-
-    public StringViewFFI(byte* data, int length)
-    {
-        Data = data;
-        Length = (nuint)length;
     }
 
     public ReadOnlySpan<byte> AsSpan()
@@ -20,5 +14,27 @@ public unsafe partial struct StringViewFFI
         return new(Data, (int)Length);
     }
 
-    public readonly static StringViewFFI NullValue = new(null, WebGPU_FFI.STRLEN);
+    public static readonly nuint STRLEN = WebGPU_FFI.STRLEN;
+    public readonly static StringViewFFI NullValue = new(null, STRLEN);
+    public readonly static StringViewFFI EmptyString = new(null, 0);
+
+    public static StringViewFFI CreateExplicitlySized(byte* data, int length)
+    {
+        return CreateExplicitlySized(data, (nuint)length);
+    }
+
+    public static StringViewFFI CreateExplicitlySized(byte* data, nuint length)
+    {
+        if (data == null)
+        {
+            return NullValue;
+        }
+
+        return new(data, length);
+    }
+
+    public static StringViewFFI CreateNullTerminated(byte* data)
+    {
+        return new(data, STRLEN);
+    }
 }

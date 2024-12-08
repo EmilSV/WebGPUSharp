@@ -24,7 +24,7 @@ public readonly unsafe partial struct TextureHandle :
         fixed (byte* labelPtr = labelUtf8Span)
         {
             TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor;
-            textureViewDescriptorPtr->Label = new(labelPtr, labelUtf8Span.Length);
+            textureViewDescriptorPtr->Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }
@@ -38,7 +38,7 @@ public readonly unsafe partial struct TextureHandle :
         fixed (TextureViewDescriptorFFI* textureViewDescriptorPtr = &textureViewDescriptor._unsafeDescriptor)
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            textureViewDescriptorPtr->Label = new(labelPtr, labelUtf8Span.Length);
+            textureViewDescriptorPtr->Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.TextureCreateView(this, textureViewDescriptorPtr);
         }
     }
@@ -62,7 +62,7 @@ public readonly unsafe partial struct TextureHandle :
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.TextureSetLabel(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.TextureSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
 

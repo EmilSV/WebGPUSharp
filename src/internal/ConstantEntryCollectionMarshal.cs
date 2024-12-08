@@ -25,7 +25,7 @@ public unsafe class ConstantEntryCollectionMarshal :
         {
             ffiItem = new()
             {
-                Key = new(keyPtr, keyUtf8Span.Length),
+                Key = StringViewFFI.CreateExplicitlySized(keyPtr, keyUtf8Span.Length),
                 Value = item.Value
             };
         }
@@ -60,7 +60,7 @@ public unsafe class ConstantEntryCollectionMarshal :
 
         ffiItem = new()
         {
-            Key = new((byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]), cache.keyAsUtf8.Length),
+            Key = StringViewFFI.CreateExplicitlySized((byte*)Unsafe.AsPointer(ref cache.keyAsUtf8![0]), cache.keyAsUtf8.Length),
             Value = item.Value
         };
     }

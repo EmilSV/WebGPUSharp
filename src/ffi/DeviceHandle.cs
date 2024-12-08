@@ -28,7 +28,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (byte* labelPtr = labelUtf8Span)
         {
             BindGroupDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             descriptorFFI.EntryCount = entriesCount;
             descriptorFFI.Entries = entriesPtr;
@@ -55,7 +55,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             return CreateBindGroupLayout(new BindGroupLayoutDescriptorFFI()
             {
-                Label = new(labelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
                 Entries = entriesPtr,
                 EntryCount = (nuint)descriptor.Entries.Length
             });
@@ -71,7 +71,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (byte* labelPtr = labelUtf8Span)
         fixed (BufferDescriptorFFI* descriptorPtr = &descriptor._unmanagedDescriptor)
         {
-            descriptorPtr->Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorPtr->Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.DeviceCreateBuffer(this, descriptorPtr);
         }
     }
@@ -85,7 +85,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         fixed (byte* LabelPtr = labelUtf8Span)
         {
-            descriptor._unmanagedDescriptor.Label = new(LabelPtr, labelUtf8Span.Length);
+            descriptor._unmanagedDescriptor.Label = StringViewFFI.CreateExplicitlySized(LabelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.DeviceCreateBuffer(this, &descriptor._unmanagedDescriptor);
         }
     }
@@ -100,7 +100,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             CommandEncoderDescriptorFFI commandEncoderDescriptor = new()
             {
-                Label = new(LabelPtr, labelUtf8Span.Length)
+                Label = StringViewFFI.CreateExplicitlySized(LabelPtr, labelUtf8Span.Length)
             };
             return WebGPU_FFI.DeviceCreateCommandEncoder(this, &commandEncoderDescriptor);
         }
@@ -131,12 +131,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
-                Label = new(LabelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(LabelPtr, labelUtf8Span.Length),
                 Layout = GetBorrowHandle(descriptor.Layout),
                 Compute = new()
                 {
                     Module = GetBorrowHandle(descriptor.Compute.Module),
-                    EntryPoint = new(EntryPointPtr, entryPointUtf8Span.Length),
+                    EntryPoint = StringViewFFI.CreateExplicitlySized(EntryPointPtr, entryPointUtf8Span.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
@@ -173,12 +173,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
-                Label = new(labelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
                 Layout = GetBorrowHandle(descriptor.Layout),
                 Compute = new()
                 {
                     Module = GetBorrowHandle(descriptor.Compute.Module),
-                    EntryPoint = new(entryPointPtr, entryPointUtf8Span.Length),
+                    EntryPoint = StringViewFFI.CreateExplicitlySized(entryPointPtr, entryPointUtf8Span.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
@@ -215,12 +215,12 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
-                Label = new(labelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
                 Layout = GetBorrowHandle(descriptor.Layout),
                 Compute = new()
                 {
                     Module = GetBorrowHandle(descriptor.Compute.Module),
-                    EntryPoint = new(entryPointPtr, entryPointUtf8Span.Length),
+                    EntryPoint = StringViewFFI.CreateExplicitlySized(entryPointPtr, entryPointUtf8Span.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
@@ -251,7 +251,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                 allocator
             );
             PipelineLayoutDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.BindGroupLayouts = ptr;
             descriptorFFI.BindGroupLayoutCount = length;
 
@@ -277,7 +277,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             QuerySetDescriptorFFI descriptorFFI = new()
             {
-                Label = new(labelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
                 Type = descriptor.Type,
                 Count = descriptor.Count
             };
@@ -305,7 +305,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderBundleEncoderDescriptorFFI descriptorFFI = new()
             {
-                Label = new(labelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
                 ColorFormatCount = (nuint)descriptor.ColorFormats.Length,
                 ColorFormats = colorFormatsPtr,
                 DepthStencilFormat = descriptor.DepthStencilFormat,
@@ -336,7 +336,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
@@ -367,7 +367,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
@@ -395,7 +395,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
@@ -416,7 +416,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            descriptorFFI.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.DeviceCreateSampler(this, &descriptorFFI);
         }
     }
@@ -429,7 +429,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            descriptor._unsafeDescriptor.Label = new(labelPtr, labelUtf8Span.Length);
+            descriptor._unsafeDescriptor.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             return WebGPU_FFI.DeviceCreateSampler(this, &descriptor._unsafeDescriptor);
         }
     }
@@ -469,7 +469,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (TextureFormat* viewFormatsPtr = textureDescriptor.ViewFormats)
         fixed (TextureDescriptorFFI* textureDescriptorPtr = &textureDescriptor._unmanagedDescriptor)
         {
-            textureDescriptorPtr->Label = new(labelPtr, labelUtf8Span.Length);
+            textureDescriptorPtr->Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             textureDescriptorPtr->ViewFormatCount = (uint)textureDescriptor.ViewFormats.Length;
             textureDescriptorPtr->ViewFormats = viewFormatsPtr;
 
@@ -487,7 +487,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         fixed (byte* labelPtr = labelUtf8Span)
         fixed (TextureFormat* viewFormatsPtr = textureDescriptor.ViewFormats)
         {
-            textureDescriptor._unmanagedDescriptor.Label = new(labelPtr, labelUtf8Span.Length);
+            textureDescriptor._unmanagedDescriptor.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             textureDescriptor._unmanagedDescriptor.ViewFormatCount = (uint)textureDescriptor.ViewFormats.Length;
             textureDescriptor._unmanagedDescriptor.ViewFormats = viewFormatsPtr;
 
@@ -553,7 +553,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.DeviceSetLabel(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.DeviceSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
 
@@ -575,14 +575,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
                     Next = null,
                     SType = SType.ShaderSourceWGSL
                 },
-                Code = new(codePtr, codeUtf8Span.Length)
+                Code = StringViewFFI.CreateExplicitlySized(codePtr, codeUtf8Span.Length)
             };
 
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
                 NextInChain = &shaderSourceWGSL.Chain,
-                Label = new(labelPtr, labelUtf8Span.Length)
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length)
             };
 
             return WebGPU_FFI.DeviceCreateShaderModule(this, &shaderModuleDescriptor);

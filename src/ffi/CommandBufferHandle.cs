@@ -45,7 +45,7 @@ public readonly unsafe partial struct CommandBufferHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.CommandBufferSetLabel(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.CommandBufferSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
 

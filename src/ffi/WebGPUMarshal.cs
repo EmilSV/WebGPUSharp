@@ -327,22 +327,10 @@ public unsafe static partial class WebGPUMarshal
     public static unsafe StringViewFFI ToStringViewFFI(ReadOnlySpan<char> text, WebGpuAllocatorHandle allocator)
     {
         var utf8Span = ToUtf8Span(text, allocator, addNullTerminator: false);
-        return new StringViewFFI
-        {
-            Data = (byte*)Unsafe.AsPointer(ref utf8Span.GetPinnableReference()),
-            Length = (uint)utf8Span.Length,
-        };
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe StringViewFFI ToStringViewFFI(byte* bytes, nuint length)
-    {
-        if (bytes == null)
-        {
-            return StringViewFFI.NullValue;
-        }
-
-        return new(bytes, length);
+        return StringViewFFI.CreateExplicitlySized(
+            data: (byte*)Unsafe.AsPointer(ref utf8Span.GetPinnableReference()),
+            length: (nuint)utf8Span.Length
+        );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

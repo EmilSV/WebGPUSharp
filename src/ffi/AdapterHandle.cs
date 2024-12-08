@@ -111,12 +111,12 @@ public unsafe readonly partial struct AdapterHandle :
 
             DeviceDescriptorFFI deviceDescriptor = new()
             {
-                Label = new(deviceDescriptorLabelPtr, labelUtf8Span.Length),
+                Label = StringViewFFI.CreateExplicitlySized(deviceDescriptorLabelPtr, labelUtf8Span.Length),
                 RequiredFeatures = requiredFeaturesPtr,
                 RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
                 RequiredLimits = requiredLimitsPtr,
                 DefaultQueue = {
-                    Label = new(queueLabelPtr, queueLabelUtf8Span.Length)
+                    Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)
                 },
                 DeviceLostCallbackInfo2 = {
                     Mode = descriptor.DeviceLostCallbackMode,
@@ -153,13 +153,13 @@ public unsafe readonly partial struct AdapterHandle :
                 DeviceDescriptorFFI deviceDescriptor = new()
                 {
                     NextInChain = default,
-                    Label = new(deviceDescriptorLabelPtr, deviceDescriptorLabelUtf8Span.Length),
+                    Label = StringViewFFI.CreateExplicitlySized(deviceDescriptorLabelPtr, deviceDescriptorLabelUtf8Span.Length),
                     RequiredFeatures = requiredFeaturesPtr,
                     RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
                     RequiredLimits = requiredLimitsPtr,
                     DefaultQueue = new()
                     {
-                        Label = new(queueLabelPtr, queueLabelUtf8Span.Length)
+                        Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)
                     },
                     DeviceLostCallbackInfo2 = new()
                     {

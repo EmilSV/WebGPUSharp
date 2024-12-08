@@ -84,7 +84,7 @@ public readonly unsafe partial struct InstanceHandle :
                 SurfaceDescriptorFFI surfaceDescriptor = new()
                 {
                     NextInChain = nextPtr,
-                    Label = new(labelPtr, labelUtf8Span.Length)
+                    Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length)
                 };
                 return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
             }

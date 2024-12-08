@@ -20,7 +20,7 @@ public readonly unsafe partial struct BindGroupHandle :
         var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            WebGPU_FFI.BindGroupSetLabel(this, new(labelPtr, labelUtf8Span.Length));
+            WebGPU_FFI.BindGroupSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
 
