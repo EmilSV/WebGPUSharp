@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct ExternalTextureDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     public TextureViewHandle Plane0;
     public TextureViewHandle Plane1;
     public Origin2D CropOrigin = new();

@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct RenderPassDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     public nuint ColorAttachmentCount;
     /// <summary>
     /// The set of  <see cref="WebGpuSharp.RenderPassColorAttachment"/> values in this sequence defines which

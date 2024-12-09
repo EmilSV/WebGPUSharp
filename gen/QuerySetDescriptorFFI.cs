@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct QuerySetDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
     /// The type of queries managed by  <see cref="WebGpuSharp.QuerySet"/>.
     /// </summary>

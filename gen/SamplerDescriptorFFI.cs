@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct SamplerDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     public AddressMode AddressModeU = AddressMode.ClampToEdge;
     public AddressMode AddressModeV = AddressMode.ClampToEdge;
     /// <summary>

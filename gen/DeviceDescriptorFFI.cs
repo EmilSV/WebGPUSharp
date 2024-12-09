@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct DeviceDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     public nuint RequiredFeatureCount;
     /// <summary>
     /// Specifies the features that are required by the device request.

@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct PipelineLayoutDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     public nuint BindGroupLayoutCount;
     /// <summary>
     /// A list of  <see cref="WebGpuSharp.BindGroupLayout"/>s the pipeline will use. Each element corresponds to a

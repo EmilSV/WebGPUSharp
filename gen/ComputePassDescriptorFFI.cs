@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct ComputePassDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
     /// Defines which timestamp values will be written for this pass, and where to write them to.
     /// </summary>

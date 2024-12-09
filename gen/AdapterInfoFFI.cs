@@ -6,10 +6,10 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct AdapterInfoFFI
 {
     public ChainedStructOut* NextInChain;
-    public StringViewFFI Vendor = new();
-    public StringViewFFI Architecture = new();
-    public StringViewFFI Device = new();
-    public StringViewFFI Description = new();
+    public StringViewFFI Vendor = StringViewFFI.NullValue;
+    public StringViewFFI Architecture = StringViewFFI.NullValue;
+    public StringViewFFI Device = StringViewFFI.NullValue;
+    public StringViewFFI Description = StringViewFFI.NullValue;
     public BackendType BackendType;
     public AdapterType AdapterType;
     public uint VendorID;

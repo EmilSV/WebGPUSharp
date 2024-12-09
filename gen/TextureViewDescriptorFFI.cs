@@ -6,7 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct TextureViewDescriptorFFI
 {
     public ChainedStruct* NextInChain;
-    public StringViewFFI Label = new();
+    public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
     /// The format of the texture view. Must be either the  <see cref="WebGpuSharp.TextureDescriptor.Format"/> of the
     /// texture or one of the  <see cref="WebGpuSharp.TextureDescriptor.ViewFormats"/> specified during its creation.

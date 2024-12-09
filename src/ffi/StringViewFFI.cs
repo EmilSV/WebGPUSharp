@@ -15,7 +15,6 @@ public unsafe partial struct StringViewFFI
     }
 
     public static readonly nuint STRLEN = WebGPU_FFI.STRLEN;
-    public readonly static StringViewFFI NullValue = new(null, STRLEN);
     public readonly static StringViewFFI EmptyString = new(null, 0);
 
     public static StringViewFFI CreateExplicitlySized(byte* data, int length)

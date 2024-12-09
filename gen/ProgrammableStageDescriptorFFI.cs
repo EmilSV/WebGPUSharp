@@ -7,7 +7,7 @@ public unsafe partial struct ProgrammableStageDescriptorFFI
 {
     public ChainedStruct* NextInChain;
     public ShaderModuleHandle Module;
-    public StringViewFFI EntryPoint = new();
+    public StringViewFFI EntryPoint = StringViewFFI.NullValue;
     public nuint ConstantCount;
     public ConstantEntryFFI* Constants;
 
