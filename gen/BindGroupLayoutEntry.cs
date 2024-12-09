@@ -22,12 +22,12 @@ public unsafe partial struct BindGroupLayoutEntry
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is BufferBinding.
     /// </summary>
-    public BufferBindingLayout Buffer = new();
+    public BufferBindingLayout Buffer = default;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is  <see cref="WebGpuSharp.Sampler"/>.
     /// </summary>
-    public SamplerBindingLayout Sampler = new();
+    public SamplerBindingLayout Sampler = default;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is  <see cref="WebGpuSharp.TextureView"/>.
