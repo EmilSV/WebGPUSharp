@@ -32,7 +32,7 @@ public unsafe partial struct BindGroupLayoutEntry
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is  <see cref="WebGpuSharp.TextureView"/>.
     /// </summary>
-    public TextureBindingLayout Texture = new();
+    public TextureBindingLayout Texture = default;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is  <see cref="WebGpuSharp.TextureView"/>.
