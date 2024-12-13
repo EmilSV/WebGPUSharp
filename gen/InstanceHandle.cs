@@ -37,8 +37,6 @@ public readonly unsafe partial struct InstanceHandle : IEquatable<InstanceHandle
 
     public SurfaceHandle CreateSurface(SurfaceDescriptorFFI* descriptor) => WebGPU_FFI.InstanceCreateSurface(this, descriptor);
 
-    public nuint EnumerateWGSLLanguageFeatures(WGSLFeatureName* features) => WebGPU_FFI.InstanceEnumerateWGSLLanguageFeatures(this, features);
-
     public WebGPUBool HasWGSLLanguageFeature(WGSLFeatureName feature) => WebGPU_FFI.InstanceHasWGSLLanguageFeature(this, feature);
 
     public void ProcessEvents() => WebGPU_FFI.InstanceProcessEvents(this);
@@ -46,8 +44,6 @@ public readonly unsafe partial struct InstanceHandle : IEquatable<InstanceHandle
     public void RequestAdapter(RequestAdapterOptionsFFI* options, delegate* unmanaged[Cdecl]<RequestAdapterStatus, AdapterHandle, StringViewFFI, void*, void> callback, void* userdata) => WebGPU_FFI.InstanceRequestAdapter(this, options, callback, userdata);
 
     public Future RequestAdapter(RequestAdapterOptionsFFI* options, RequestAdapterCallbackInfo2FFI callbackInfo) => WebGPU_FFI.InstanceRequestAdapter2(this, options, callbackInfo);
-
-    public Future RequestAdapterF(RequestAdapterOptionsFFI* options, RequestAdapterCallbackInfoFFI callbackInfo) => WebGPU_FFI.InstanceRequestAdapterF(this, options, callbackInfo);
 
     public WaitStatus WaitAny(nuint futureCount, FutureWaitInfo* futures, ulong timeoutNS) => WebGPU_FFI.InstanceWaitAny(this, futureCount, futures, timeoutNS);
 

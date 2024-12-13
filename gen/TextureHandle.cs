@@ -35,8 +35,6 @@ public readonly unsafe partial struct TextureHandle : IEquatable<TextureHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public TextureViewHandle CreateErrorView(TextureViewDescriptorFFI* descriptor) => WebGPU_FFI.TextureCreateErrorView(this, descriptor);
-
     /// <summary>
     /// Creates a  <see cref="WebGpuSharp.TextureView"/>.
     /// </summary>

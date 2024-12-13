@@ -35,15 +35,9 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void CopyExternalTextureForBrowser(ImageCopyExternalTextureFFI* source, ImageCopyTextureFFI* destination, Extent3D* copySize, CopyTextureForBrowserOptionsFFI* options) => WebGPU_FFI.QueueCopyExternalTextureForBrowser(this, source, destination, copySize, options);
-
-    public void CopyTextureForBrowser(ImageCopyTextureFFI* source, ImageCopyTextureFFI* destination, Extent3D* copySize, CopyTextureForBrowserOptionsFFI* options) => WebGPU_FFI.QueueCopyTextureForBrowser(this, source, destination, copySize, options);
-
     public void OnSubmittedWorkDone(delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> callback, void* userdata) => WebGPU_FFI.QueueOnSubmittedWorkDone(this, callback, userdata);
 
     public Future OnSubmittedWorkDone(QueueWorkDoneCallbackInfo2FFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDone2(this, callbackInfo);
-
-    public Future OnSubmittedWorkDoneF(QueueWorkDoneCallbackInfoFFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDoneF(this, callbackInfo);
 
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel(this, label);
 

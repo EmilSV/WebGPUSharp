@@ -102,8 +102,6 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
     /// </summary>
     public CommandBufferHandle Finish(CommandBufferDescriptorFFI* descriptor) => WebGPU_FFI.CommandEncoderFinish(this, descriptor);
 
-    public void InjectValidationError(StringViewFFI message) => WebGPU_FFI.CommandEncoderInjectValidationError(this, message);
-
     public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.CommandEncoderInsertDebugMarker(this, markerLabel);
 
     public void PopDebugGroup() => WebGPU_FFI.CommandEncoderPopDebugGroup(this);
@@ -116,8 +114,6 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
     public void ResolveQuerySet(QuerySetHandle querySet, uint firstQuery, uint queryCount, BufferHandle destination, ulong destinationOffset) => WebGPU_FFI.CommandEncoderResolveQuerySet(this, querySet, firstQuery, queryCount, destination, destinationOffset);
 
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandEncoderSetLabel(this, label);
-
-    public void WriteBuffer(BufferHandle buffer, ulong bufferOffset, byte* data, ulong size) => WebGPU_FFI.CommandEncoderWriteBuffer(this, buffer, bufferOffset, data, size);
 
     public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex) => WebGPU_FFI.CommandEncoderWriteTimestamp(this, querySet, queryIndex);
 

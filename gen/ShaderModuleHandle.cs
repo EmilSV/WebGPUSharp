@@ -44,8 +44,6 @@ public readonly unsafe partial struct ShaderModuleHandle : IEquatable<ShaderModu
 
     public Future GetCompilationInfo(CompilationInfoCallbackInfo2FFI callbackInfo) => WebGPU_FFI.ShaderModuleGetCompilationInfo2(this, callbackInfo);
 
-    public Future GetCompilationInfoF(CompilationInfoCallbackInfoFFI callbackInfo) => WebGPU_FFI.ShaderModuleGetCompilationInfoF(this, callbackInfo);
-
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.ShaderModuleSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.ShaderModuleAddRef(this);

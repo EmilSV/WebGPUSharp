@@ -35,15 +35,9 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public DeviceHandle CreateDevice(DeviceDescriptorFFI* descriptor) => WebGPU_FFI.AdapterCreateDevice(this, descriptor);
-
     public void GetFeatures(SupportedFeaturesFFI* features) => WebGPU_FFI.AdapterGetFeatures(this, features);
 
-    public Status GetFormatCapabilities(TextureFormat format, FormatCapabilities* capabilities) => WebGPU_FFI.AdapterGetFormatCapabilities(this, format, capabilities);
-
     public Status GetInfo(AdapterInfoFFI* info) => WebGPU_FFI.AdapterGetInfo(this, info);
-
-    public InstanceHandle GetInstance() => WebGPU_FFI.AdapterGetInstance(this);
 
     public Status GetLimits(SupportedLimits* limits) => WebGPU_FFI.AdapterGetLimits(this, limits);
 
@@ -58,8 +52,6 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     public void RequestDevice(DeviceDescriptorFFI* descriptor, delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, StringViewFFI, void*, void> callback, void* userdata) => WebGPU_FFI.AdapterRequestDevice(this, descriptor, callback, userdata);
 
     public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfo2FFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice2(this, options, callbackInfo);
-
-    public Future RequestDeviceF(DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDeviceF(this, options, callbackInfo);
 
     public void AddRef() => WebGPU_FFI.AdapterAddRef(this);
 

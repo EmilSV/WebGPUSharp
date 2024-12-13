@@ -7,29 +7,33 @@ public ref partial struct SurfaceDescriptor
     internal ref ChainedStruct _next;
     public WGPURefText Label;
 
-
-    public SurfaceDescriptor(ref SurfaceDescriptorFromXlibWindowFFI chain)
+    public SurfaceDescriptor(ref SurfaceSourceXCBWindowFFI source)
     {
-        _next = ref chain.Value.Chain;
+        _next = ref source.Chain;
     }
 
-    public SurfaceDescriptor(ref SurfaceDescriptorFromMetalLayerFFI chain)
+    public SurfaceDescriptor(ref SurfaceSourceMetalLayerFFI source)
     {
-        _next = ref chain.Value.Chain;
+        _next = ref source.Chain;
     }
 
-    public SurfaceDescriptor(ref SurfaceDescriptorFromWaylandSurfaceFFI chain)
+    public SurfaceDescriptor(ref SurfaceSourceXlibWindowFFI source)
     {
-        _next = ref chain.Value.Chain;
+        _next = ref source.Chain;
     }
 
-    public SurfaceDescriptor(ref SurfaceDescriptorFromAndroidNativeWindowFFI chain)
+    public SurfaceDescriptor(ref SurfaceSourceWindowsHWNDFFI source)
     {
-        _next = ref chain.Value.Chain;
+        _next = ref source.Chain;
     }
 
-    public SurfaceDescriptor(ref SurfaceDescriptorFromWindowsHWNDFFI chain)
+    public SurfaceDescriptor(ref SurfaceSourceWaylandSurfaceFFI source)
     {
-        _next = ref chain.Value.Chain;
+        _next = ref source.Chain;
+    }
+
+    public SurfaceDescriptor(ref SurfaceSourceAndroidNativeWindowFFI source)
+    {
+        _next = ref source.Chain;
     }
 }

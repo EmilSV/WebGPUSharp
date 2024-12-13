@@ -77,8 +77,6 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     /// <param name="pipeline">The compute pipeline to use for subsequent dispatch commands.</param>
     public void SetPipeline(ComputePipelineHandle pipeline) => WebGPU_FFI.ComputePassEncoderSetPipeline(this, pipeline);
 
-    public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex) => WebGPU_FFI.ComputePassEncoderWriteTimestamp(this, querySet, queryIndex);
-
     public void AddRef() => WebGPU_FFI.ComputePassEncoderAddRef(this);
 
     public void Release() => WebGPU_FFI.ComputePassEncoderRelease(this);

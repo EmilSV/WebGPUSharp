@@ -70,12 +70,6 @@ public readonly unsafe partial struct RenderPassEncoderHandle : IEquatable<Rende
 
     public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderPassEncoderInsertDebugMarker(this, markerLabel);
 
-    public void MultiDrawIndexedIndirect(BufferHandle indirectBuffer, ulong indirectOffset, uint maxDrawCount, BufferHandle drawCountBuffer, ulong drawCountBufferOffset) => WebGPU_FFI.RenderPassEncoderMultiDrawIndexedIndirect(this, indirectBuffer, indirectOffset, maxDrawCount, drawCountBuffer, drawCountBufferOffset);
-
-    public void MultiDrawIndirect(BufferHandle indirectBuffer, ulong indirectOffset, uint maxDrawCount, BufferHandle drawCountBuffer, ulong drawCountBufferOffset) => WebGPU_FFI.RenderPassEncoderMultiDrawIndirect(this, indirectBuffer, indirectOffset, maxDrawCount, drawCountBuffer, drawCountBufferOffset);
-
-    public void PixelLocalStorageBarrier() => WebGPU_FFI.RenderPassEncoderPixelLocalStorageBarrier(this);
-
     public void PopDebugGroup() => WebGPU_FFI.RenderPassEncoderPopDebugGroup(this);
 
     public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderPassEncoderPushDebugGroup(this, groupLabel);
@@ -126,8 +120,6 @@ public readonly unsafe partial struct RenderPassEncoderHandle : IEquatable<Rende
     /// <param name="minDepth">Minimum depth value of the viewport.</param>
     /// <param name="maxDepth">Maximum depth value of the viewport.</param>
     public void SetViewport(float x, float y, float width, float height, float minDepth, float maxDepth) => WebGPU_FFI.RenderPassEncoderSetViewport(this, x, y, width, height, minDepth, maxDepth);
-
-    public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex) => WebGPU_FFI.RenderPassEncoderWriteTimestamp(this, querySet, queryIndex);
 
     public void AddRef() => WebGPU_FFI.RenderPassEncoderAddRef(this);
 

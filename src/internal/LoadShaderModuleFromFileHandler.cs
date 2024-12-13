@@ -27,23 +27,19 @@ internal unsafe static class LoadShaderModuleFromFileHandler
         fixed (byte* dataPtr = data)
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            ShaderModuleWGSLDescriptorFFI shaderModuleWGSLDescriptor = new()
+            ShaderSourceWGSLFFI shaderSourceWGSL = new()
             {
-                Value =
-                {
-                    Chain =
-                    {
-                        Next = null,
-                        SType = SType.ShaderSourceWGSL
-                    },
-                    Code = StringViewFFI.CreateExplicitlySized(dataPtr, data.Length)
-                }
+                Chain = {
+                    Next = null,
+                    SType = SType.ShaderSourceWGSL
+                },
+                Code = StringViewFFI.CreateExplicitlySized(dataPtr, data.Length)
             };
 
             ShaderModuleDescriptorFFI shaderModuleDescriptor = new()
             {
                 Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
-                NextInChain = &shaderModuleWGSLDescriptor.Value.Chain,
+                NextInChain = &shaderSourceWGSL.Chain,
             };
             return WebGPU_FFI.DeviceCreateShaderModule(device, &shaderModuleDescriptor);
         }
