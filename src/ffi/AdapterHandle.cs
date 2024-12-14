@@ -67,26 +67,23 @@ public unsafe readonly partial struct AdapterHandle :
     private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
-        CallbackUserDataHandle handle = default;
+        void* userData = default;
         try
         {
             taskCompletionSource = new TaskCompletionSource<DeviceHandle>();
-            handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
+            userData = AllocUserData(taskCompletionSource);
 
             WebGPU_FFI.AdapterRequestDevice(
                adapter: this,
                descriptor: descriptor,
                callback: &OnDeviceRequestEndedTaskCompletionSource,
-               userdata: (void*)handle
+               userdata: userData
             );
         }
         catch (Exception e)
         {
             Console.Error.WriteLine(e);
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userData);
             return Task.FromResult(default(DeviceHandle));
         }
 
@@ -136,7 +133,7 @@ public unsafe readonly partial struct AdapterHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        CallbackUserDataHandle handle = default;
+        void* userData = null;
         try
         {
             var deviceDescriptorLabelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
@@ -174,22 +171,19 @@ public unsafe readonly partial struct AdapterHandle :
                     }
                 };
 
-                handle = CallbackUserDataHandle.Alloc(callback);
+                userData = AllocUserData(callback);
                 WebGPU_FFI.AdapterRequestDevice(
                    adapter: this,
                    descriptor: &deviceDescriptor,
                    callback: &OnDeviceRequestEndedDelegate,
-                   userdata: (void*)handle
+                   userdata: userData
                 );
             }
         }
         catch (Exception e)
         {
             Console.Error.WriteLine(e);
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userData);
             callback(default);
         }
     }
@@ -213,12 +207,15 @@ public unsafe readonly partial struct AdapterHandle :
     private static unsafe void OnDeviceRequestEndedDelegate(
       RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         Action<DeviceHandle>? callback = null;
         try
         {
+            callback = (Action<DeviceHandle>?)GetObjectFromUserData(userdata);
 
-            callback = (Action<DeviceHandle>)handle.GetObject()!;
+            if (callback == null)
+            {
+                return;
+            }
 
             if (status == RequestDeviceStatus.Success)
             {
@@ -238,10 +235,7 @@ public unsafe readonly partial struct AdapterHandle :
         }
         finally
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userdata);
         }
     }
 
@@ -252,12 +246,16 @@ public unsafe readonly partial struct AdapterHandle :
     private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
       RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<DeviceHandle>? taskCompletionSource = null;
         try
         {
 
-            taskCompletionSource = (TaskCompletionSource<DeviceHandle>)handle.GetObject()!;
+            taskCompletionSource = (TaskCompletionSource<DeviceHandle>?)GetObjectFromUserData(userdata);
+
+            if (taskCompletionSource == null)
+            {
+                return;
+            }
 
             if (status == RequestDeviceStatus.Success)
             {
@@ -277,10 +275,7 @@ public unsafe readonly partial struct AdapterHandle :
         }
         finally
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userdata);
         }
     }
 

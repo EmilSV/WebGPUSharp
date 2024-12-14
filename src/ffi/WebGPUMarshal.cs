@@ -405,4 +405,43 @@ public unsafe static partial class WebGPUMarshal
     {
         return WebGPUHandleWrapperBase<THandle>.IsHandleWrapperSameLifetime(handleWrapper);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void* AllocUserData(object? userData)
+    {
+        if (userData == null)
+        {
+            return null;
+        }
+
+        var userDataHandle = GCHandle.Alloc(userData);
+        return (void*)Unsafe.As<GCHandle, nuint>(ref userDataHandle);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe object? GetObjectFromUserData(void* userData)
+    {
+        if (userData == null)
+        {
+            return null;
+        }
+
+        var userDataHandle = Unsafe.BitCast<nuint, GCHandle>((nuint)userData);
+        return userDataHandle.Target;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void FreeUserData(void* userData)
+    {
+        if (userData == null)
+        {
+            return;
+        }
+
+        var userDataHandle = Unsafe.BitCast<nuint, GCHandle>((nuint)userData);
+        if (userDataHandle.IsAllocated)
+        {
+            userDataHandle.Free();
+        }
+    }
 }

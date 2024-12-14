@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
@@ -13,12 +14,11 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     {
         fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
-            CallbackUserDataHandle userDataHandle = CallbackUserDataHandle.Alloc(callback);
             WebGPU_FFI.DeviceCreateComputePipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
                 callback: &OnCallbackDelegate,
-                userdata: (void*)userDataHandle
+                userdata: AllocUserData(callback)
             );
         }
     }
@@ -30,12 +30,11 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
             TaskCompletionSource<ComputePipelineHandle> taskCompletionSource = new();
-            CallbackUserDataHandle userDataHandle = CallbackUserDataHandle.Alloc(taskCompletionSource);
             WebGPU_FFI.DeviceCreateComputePipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
                 callback: &OnCallbackTask,
-                userdata: (void*)userDataHandle
+                userdata: AllocUserData(taskCompletionSource)
             );
 
             return taskCompletionSource.Task;
@@ -43,17 +42,15 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     }
 
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackTask(
             CreatePipelineAsyncStatus status, ComputePipelineHandle computePipelineHandle,
             StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<ComputePipelineHandle>? taskCompletionSource = null;
         try
         {
-
-            taskCompletionSource = (TaskCompletionSource<ComputePipelineHandle>?)handle.GetObject();
+            taskCompletionSource = (TaskCompletionSource<ComputePipelineHandle>?)GetObjectFromUserData(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
 
             if (status != CreatePipelineAsyncStatus.Success)
@@ -78,24 +75,19 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         }
         finally
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userdata);
         }
     }
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackDelegate(
         CreatePipelineAsyncStatus status, ComputePipelineHandle computePipelineHandle,
         StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        CreateComputePipelineAsyncDelegate<ComputePipelineHandle>? callback = null;
         try
         {
 
-            callback = (CreateComputePipelineAsyncDelegate<ComputePipelineHandle>?)handle.GetObject();
+            var callback = (CreateComputePipelineAsyncDelegate<ComputePipelineHandle>?)GetObjectFromUserData(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
@@ -108,14 +100,11 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         }
         catch (Exception)
         {
-
+            computePipelineHandle.Dispose();
         }
         finally
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userdata);
         }
     }
 }

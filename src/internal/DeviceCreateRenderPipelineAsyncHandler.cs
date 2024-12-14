@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
@@ -13,12 +14,11 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     {
         fixed (RenderPipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
-            CallbackUserDataHandle userDataHandle = CallbackUserDataHandle.Alloc(callback);
             WebGPU_FFI.DeviceCreateRenderPipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
                 callback: &OnCallbackDelegate,
-                userdata: (void*)userDataHandle
+                userdata: AllocUserData(callback)
             );
         }
     }
@@ -30,12 +30,11 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         fixed (RenderPipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
             TaskCompletionSource<RenderPipelineHandle> taskCompletionSource = new();
-            CallbackUserDataHandle userDataHandle = CallbackUserDataHandle.Alloc(taskCompletionSource);
             WebGPU_FFI.DeviceCreateRenderPipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
                 callback: &OnCallbackTask,
-                userdata: (void*)userDataHandle
+                userdata: AllocUserData(taskCompletionSource)
             );
 
             return taskCompletionSource.Task;
@@ -48,12 +47,11 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
             CreatePipelineAsyncStatus status, RenderPipelineHandle renderPipelineHandle,
             StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
         TaskCompletionSource<RenderPipelineHandle>? taskCompletionSource = null;
         try
         {
 
-            taskCompletionSource = (TaskCompletionSource<RenderPipelineHandle>?)handle.GetObject();
+            taskCompletionSource = (TaskCompletionSource<RenderPipelineHandle>?)GetObjectFromUserData(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (status != CreatePipelineAsyncStatus.Success)
             {
@@ -77,24 +75,18 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         }
         finally
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userdata);
         }
     }
 
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackDelegate(
         CreatePipelineAsyncStatus status, RenderPipelineHandle renderPipelineHandle,
         StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>? callback = null;
         try
         {
-
-            callback = (CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>?)handle.GetObject();
+            var callback = (CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>?)GetObjectFromUserData(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
@@ -107,14 +99,11 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         }
         catch (Exception)
         {
-
+            
         }
         finally
         {
-            if (handle.IsValid())
-            {
-                handle.Dispose();
-            }
+            FreeUserData(userdata);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.Buffer;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -50,12 +50,12 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     {
 
         ReadWriteStateChangeLock.AddStateChangeLock();
-        CallbackUserDataHandle bufferBaseHandle = default;
-        CallbackUserDataHandle callbackHandle = default;
+        void* bufferBaseUserData = null;
+        void* callbackUserData = null;
         try
         {
-            bufferBaseHandle = CallbackUserDataHandle.Alloc(this);
-            callbackHandle = CallbackUserDataHandle.Alloc(callback);
+            bufferBaseUserData = AllocUserData(this);
+            callbackUserData = AllocUserData(callback);
 
             Handle.MapAsync(
                 mode: mode,
@@ -64,16 +64,16 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
                 callbackInfo: new()
                 {
                     Callback = &BufferCallbackHandler.OnBufferMapCallback_Action,
-                    Userdata1 = (void*)bufferBaseHandle,
-                    Userdata2 = (void*)callbackHandle,
+                    Userdata1 = bufferBaseUserData,
+                    Userdata2 = callbackUserData,
                     Mode = CallbackMode.AllowSpontaneous,
                 }
             );
         }
         catch (Exception)
         {
-            bufferBaseHandle.Dispose();
-            callbackHandle.Dispose();
+            FreeUserData(bufferBaseUserData);
+            FreeUserData(callbackUserData);
             ReadWriteStateChangeLock.RemoveStateChangeLock();
             throw;
         }
@@ -97,12 +97,12 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     {
         ReadWriteStateChangeLock.AddStateChangeLock();
         TaskCompletionSource<MapAsyncStatus> taskCompletionSource = new();
-        CallbackUserDataHandle bufferBaseHandle = default;
-        CallbackUserDataHandle taskCompletionSourceHandle = default;
+        void* bufferBaseHandle = null;
+        void* taskCompletionSourceHandle = null;
         try
         {
-            bufferBaseHandle = CallbackUserDataHandle.Alloc(this);
-            taskCompletionSourceHandle = CallbackUserDataHandle.Alloc(taskCompletionSource);
+            bufferBaseHandle = AllocUserData(this);
+            taskCompletionSourceHandle = AllocUserData(taskCompletionSource);
 
             Handle.MapAsync(
                 mode: mode,
@@ -121,8 +121,8 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
         catch (Exception)
         {
-            bufferBaseHandle.Dispose();
-            taskCompletionSourceHandle.Dispose();
+            FreeUserData(bufferBaseHandle);
+            FreeUserData(taskCompletionSourceHandle);
             ReadWriteStateChangeLock.RemoveStateChangeLock();
             throw;
         }

@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -9,12 +10,11 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
 {
     public static void GetCompilationInfo(ShaderModuleHandle handle, CompilationInfoCallback callback)
     {
-        CallbackUserDataHandle callbackHandle = CallbackUserDataHandle.Alloc(callback);
         WebGPU_FFI.ShaderModuleGetCompilationInfo2(handle, new()
         {
             Mode = CallbackMode.AllowSpontaneous,
             Callback = &OnCallback,
-            Userdata1 = (void*)callbackHandle,
+            Userdata1 = AllocUserData(callback),
             Userdata2 = null
         });
     }
@@ -61,14 +61,22 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     public static void OnCallback(
         CompilationInfoRequestStatus status, CompilationInfoFFI* compilationInfo, void* userdata, void* _)
     {
-        using CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
-        CompilationInfoCallback? callback = null;
-        callback = (CompilationInfoCallback?)handle.GetObject();
-        if (callback == null)
+        try
         {
-            return;
+            CompilationInfoCallback? callback = (CompilationInfoCallback?)GetObjectFromUserData(userdata);
+            if (callback == null)
+            {
+                return;
+            }
+            callback(status, new CompilationInfo(in *compilationInfo));
         }
-
-        callback(status, new CompilationInfo(in *compilationInfo));
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+        }
+        finally
+        {
+            FreeUserData(userdata);
+        }
     }
 }

@@ -1,5 +1,6 @@
 #pragma warning disable CS0162 // Unreachable code detected  
 
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,11 +18,11 @@ public readonly unsafe partial struct InstanceHandle :
         unsafe
         {
             TaskCompletionSource<AdapterHandle> taskCompletionSource;
-            CallbackUserDataHandle handle = default;
+            GCHandle handle = default;
             try
             {
                 taskCompletionSource = new TaskCompletionSource<AdapterHandle>();
-                handle = CallbackUserDataHandle.Alloc(taskCompletionSource);
+                handle = GCHandle.Alloc(taskCompletionSource);
 
                 fixed (RequestAdapterOptionsFFI* optionsPtr = &options)
                 {
@@ -29,16 +30,16 @@ public readonly unsafe partial struct InstanceHandle :
                        instance: this,
                        options: optionsPtr,
                        callback: &OnAdapterRequestEnded,
-                       userdata: (void*)handle
+                       userdata: (void*)Unsafe.As<GCHandle, nuint>(ref handle)
                     );
                 }
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine(e);
-                if (handle.IsValid())
+                if (handle.IsAllocated)
                 {
-                    handle.Dispose();
+                    handle.Free();
                 }
                 return Task.FromResult(AdapterHandle.Null);
             }
@@ -96,12 +97,11 @@ public readonly unsafe partial struct InstanceHandle :
         RequestAdapterStatus status, AdapterHandle adapter,
         StringViewFFI message, void* userdata)
     {
-        CallbackUserDataHandle handle = (CallbackUserDataHandle)userdata;
+        GCHandle handle = Unsafe.BitCast<nuint, GCHandle>((nuint)userdata);
         TaskCompletionSource<AdapterHandle>? taskCompletionSource = null;
         try
         {
-
-            taskCompletionSource = (TaskCompletionSource<AdapterHandle>)handle.GetObject()!;
+            taskCompletionSource = (TaskCompletionSource<AdapterHandle>)handle.Target!;
 
             if (status == RequestAdapterStatus.Success)
             {
@@ -121,9 +121,9 @@ public readonly unsafe partial struct InstanceHandle :
         }
         finally
         {
-            if (handle.IsValid())
+            if (handle.IsAllocated)
             {
-                handle.Dispose();
+                handle.Free();
             }
         }
     }
