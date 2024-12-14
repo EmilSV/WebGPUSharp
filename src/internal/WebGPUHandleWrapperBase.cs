@@ -2,7 +2,9 @@ using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp.Internal;
 
-public abstract class WebGPUHandleWrapperBase<THandle> : IEquatable<WebGPUHandleWrapperBase<THandle>>
+public abstract class WebGPUHandleWrapperBase<THandle> :
+    IEquatable<WebGPUHandleWrapperBase<THandle>>,
+    IEquatable<THandle>
     where THandle : unmanaged, IEquatable<THandle>
 {
     protected abstract THandle Handle { get; }
@@ -24,6 +26,13 @@ public abstract class WebGPUHandleWrapperBase<THandle> : IEquatable<WebGPUHandle
     public bool Equals(WebGPUHandleWrapperBase<THandle>? other)
     {
         return other != null && Handle.Equals(other.Handle);
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Equals(THandle other)
+    {
+        return Handle.Equals(other);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49,4 +58,6 @@ public abstract class WebGPUHandleWrapperBase<THandle> : IEquatable<WebGPUHandle
     {
         return Handle.GetHashCode();
     }
+
+
 }

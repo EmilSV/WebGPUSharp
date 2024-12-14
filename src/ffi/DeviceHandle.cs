@@ -496,6 +496,27 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     [SkipLocalsInit]
+    public unsafe Status GetAdapterInfo(out AdapterInfo adapterInfo)
+    {
+        bool gotAdapterInfo = false;
+        var adapterInfoFFI = new AdapterInfoFFI();
+        try
+        {
+            var status = GetAdapterInfo(&adapterInfoFFI);
+            gotAdapterInfo = true;
+            adapterInfo = new AdapterInfo(adapterInfoFFI);
+            return status;
+        }
+        finally
+        {
+            if (gotAdapterInfo)
+            {
+                WebGPU_FFI.AdapterInfoFreeMembers(adapterInfoFFI);
+            }
+        }
+    }
+
+    [SkipLocalsInit]
     public FeatureName[] GetFeatures()
     {
         bool gotFeatures = false;

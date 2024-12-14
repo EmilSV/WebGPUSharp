@@ -14,7 +14,7 @@ public class AdapterInfo
     public readonly uint VendorID;
     public readonly uint DeviceID;
 
-    unsafe internal AdapterInfo(AdapterInfoFFI adapterInfoFFI)
+    unsafe internal AdapterInfo(in AdapterInfoFFI adapterInfoFFI)
     {
         static string? GetString(StringViewFFI stringView)
         {
