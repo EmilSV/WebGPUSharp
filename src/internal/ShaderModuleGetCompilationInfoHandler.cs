@@ -63,7 +63,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     {
         try
         {
-            CompilationInfoCallback? callback = (CompilationInfoCallback?)GetObjectFromUserData(userdata);
+            CompilationInfoCallback? callback = (CompilationInfoCallback?)ConsumeUserDataIntoObject(userdata);
             if (callback == null)
             {
                 return;
@@ -73,10 +73,6 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
         catch (Exception ex)
         {
             Console.Error.WriteLine(ex);
-        }
-        finally
-        {
-            FreeUserData(userdata);
         }
     }
 }

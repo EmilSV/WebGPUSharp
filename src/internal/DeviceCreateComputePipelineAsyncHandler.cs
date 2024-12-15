@@ -50,7 +50,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         TaskCompletionSource<ComputePipelineHandle>? taskCompletionSource = null;
         try
         {
-            taskCompletionSource = (TaskCompletionSource<ComputePipelineHandle>?)GetObjectFromUserData(userdata);
+            taskCompletionSource = (TaskCompletionSource<ComputePipelineHandle>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
 
             if (status != CreatePipelineAsyncStatus.Success)
@@ -73,10 +73,6 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
             computePipelineHandle.Dispose();
             taskCompletionSource?.SetException(e);
         }
-        finally
-        {
-            FreeUserData(userdata);
-        }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -87,7 +83,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         try
         {
 
-            var callback = (CreateComputePipelineAsyncDelegate<ComputePipelineHandle>?)GetObjectFromUserData(userdata);
+            var callback = (CreateComputePipelineAsyncDelegate<ComputePipelineHandle>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
@@ -101,10 +97,6 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         catch (Exception)
         {
             computePipelineHandle.Dispose();
-        }
-        finally
-        {
-            FreeUserData(userdata);
         }
     }
 }

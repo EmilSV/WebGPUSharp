@@ -431,6 +431,25 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe object? ConsumeUserDataIntoObject(void* userData)
+    {
+        if (userData == null)
+        {
+            return null;
+        }
+
+        var userDataHandle = Unsafe.BitCast<nuint, GCHandle>((nuint)userData);
+        if (!userDataHandle.IsAllocated)
+        {
+            return null;
+        }
+
+        var target = userDataHandle.Target;
+        userDataHandle.Free();
+        return target;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void FreeUserData(void* userData)
     {
         if (userData == null)

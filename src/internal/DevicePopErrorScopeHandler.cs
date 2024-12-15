@@ -26,7 +26,7 @@ internal unsafe static class DevicePopErrorScopeHandler
     {
         try
         {
-            var callback = (DevicePopErrorScopeDelegate?)GetObjectFromUserData(userdata);
+            var callback = (DevicePopErrorScopeDelegate?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             callback?.Invoke(errorType, messageSpan);
         }
@@ -34,27 +34,19 @@ internal unsafe static class DevicePopErrorScopeHandler
         {
 
         }
-        finally
-        {
-            FreeUserData(userdata);
-        }
     }
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnDevicePopErrorScopeTask(ErrorType errorType, StringViewFFI message, void* userdata)
     {
         try
         {
-            var callback = (TaskCompletionSource<(ErrorType errorType, string message)>?)GetObjectFromUserData(userdata);
+            var callback = (TaskCompletionSource<(ErrorType errorType, string message)>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             callback?.SetResult((errorType, Encoding.UTF8.GetString(messageSpan)));
         }
         catch (Exception)
         {
 
-        }
-        finally
-        {
-            FreeUserData(userdata);
         }
     }
 }

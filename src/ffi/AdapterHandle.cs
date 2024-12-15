@@ -210,7 +210,7 @@ public unsafe readonly partial struct AdapterHandle :
         Action<DeviceHandle>? callback = null;
         try
         {
-            callback = (Action<DeviceHandle>?)GetObjectFromUserData(userdata);
+            callback = (Action<DeviceHandle>?)ConsumeUserDataIntoObject(userdata);
 
             if (callback == null)
             {
@@ -233,10 +233,6 @@ public unsafe readonly partial struct AdapterHandle :
             device.Dispose();
             callback?.Invoke(default);
         }
-        finally
-        {
-            FreeUserData(userdata);
-        }
     }
 
 
@@ -250,7 +246,7 @@ public unsafe readonly partial struct AdapterHandle :
         try
         {
 
-            taskCompletionSource = (TaskCompletionSource<DeviceHandle>?)GetObjectFromUserData(userdata);
+            taskCompletionSource = (TaskCompletionSource<DeviceHandle>?)ConsumeUserDataIntoObject(userdata);
 
             if (taskCompletionSource == null)
             {
@@ -272,10 +268,6 @@ public unsafe readonly partial struct AdapterHandle :
         {
             taskCompletionSource?.SetResult(DeviceHandle.Null);
             device.Dispose();
-        }
-        finally
-        {
-            FreeUserData(userdata);
         }
     }
 

@@ -51,7 +51,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         try
         {
 
-            taskCompletionSource = (TaskCompletionSource<RenderPipelineHandle>?)GetObjectFromUserData(userdata);
+            taskCompletionSource = (TaskCompletionSource<RenderPipelineHandle>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (status != CreatePipelineAsyncStatus.Success)
             {
@@ -73,10 +73,6 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
             renderPipelineHandle.Dispose();
             taskCompletionSource?.SetException(e);
         }
-        finally
-        {
-            FreeUserData(userdata);
-        }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -86,7 +82,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     {
         try
         {
-            var callback = (CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>?)GetObjectFromUserData(userdata);
+            var callback = (CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {
@@ -100,10 +96,6 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         catch (Exception)
         {
             
-        }
-        finally
-        {
-            FreeUserData(userdata);
         }
     }
 }

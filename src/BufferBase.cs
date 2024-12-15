@@ -111,8 +111,8 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
                 callbackInfo: new()
                 {
                     Callback = &BufferCallbackHandler.OnBufferMapCallback_TaskCompletionSource,
-                    Userdata1 = (void*)bufferBaseHandle,
-                    Userdata2 = (void*)taskCompletionSourceHandle,
+                    Userdata1 = bufferBaseHandle,
+                    Userdata2 = taskCompletionSourceHandle,
                     Mode = CallbackMode.AllowSpontaneous,
                 }
             );
@@ -452,21 +452,9 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             try
             {
-                BufferBase? bufferBase = null;
-                TaskCompletionSource<MapAsyncStatus>? taskCompletionSource = null;
-                {
-                    using CallbackUserDataHandle handle1 = (CallbackUserDataHandle)userdata1;
-                    using CallbackUserDataHandle handle2 = (CallbackUserDataHandle)userdata2;
-                    if (handle1.IsValid())
-                    {
-                        bufferBase = (BufferBase)handle1.GetObject()!;
-                    }
+                var bufferBase = (BufferBase?)ConsumeUserDataIntoObject(userdata1);
+                var taskCompletionSource = (TaskCompletionSource<MapAsyncStatus>?)ConsumeUserDataIntoObject(userdata2);
 
-                    if (handle2.IsValid())
-                    {
-                        taskCompletionSource = (TaskCompletionSource<MapAsyncStatus>)handle2.GetObject()!;
-                    }
-                }
                 if (bufferBase == null || taskCompletionSource == null)
                 {
                     Console.Error.WriteLine("Invalid buffer map callback");
@@ -487,6 +475,10 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
                 }
             }
+            finally
+            {
+
+            }
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -495,21 +487,8 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             try
             {
-                BufferBase? bufferBase = null;
-                Action<MapAsyncStatus>? callback = null;
-                {
-                    using CallbackUserDataHandle handle1 = (CallbackUserDataHandle)userdata1;
-                    using CallbackUserDataHandle handle2 = (CallbackUserDataHandle)userdata2;
-                    if (handle1.IsValid())
-                    {
-                        bufferBase = (BufferBase)handle1.GetObject()!;
-                    }
-
-                    if (handle2.IsValid())
-                    {
-                        callback = (Action<MapAsyncStatus>?)handle2.GetObject()!;
-                    }
-                }
+                var bufferBase = (BufferBase?)ConsumeUserDataIntoObject(userdata1);
+                var callback = (Action<MapAsyncStatus>?)ConsumeUserDataIntoObject(userdata2);
                 if (bufferBase == null || callback == null)
                 {
                     Console.Error.WriteLine("Invalid buffer map callback");
