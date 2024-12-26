@@ -3,7 +3,8 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
+public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
+     IBindingCommands, IDebugCommands, IRenderCommands
 {
     private readonly ulong _localToken;
     private readonly RenderPassEncoderHandle _originalHandle;
@@ -41,8 +42,6 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.Draw(vertexCount, instanceCount, firstVertex, firstInstance);
     }
 
-
-
     public void DrawIndexed(
         uint indexCount, uint instanceCount = 1,
         uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0)
@@ -59,14 +58,14 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
     }
 
     public void DrawIndexedIndirect(
-        Buffer indirectBuffer, ulong indirectOffset)
+        BufferBase indirectBuffer, ulong indirectOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.DrawIndexedIndirect(indirectBuffer, indirectOffset);
     }
 
     public void DrawIndirect(
-        Buffer indirectBuffer, ulong indirectOffset)
+        BufferBase indirectBuffer, ulong indirectOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.DrawIndirect(indirectBuffer, indirectOffset);
@@ -86,7 +85,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.EndOcclusionQuery();
     }
 
-    public void ExecuteBundle(RenderBundle bundle)
+    public void ExecuteBundle(RenderBundleBase bundle)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.ExecuteBundle(bundle);
@@ -116,19 +115,19 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.PushDebugGroup(groupLabel);
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroup group)
+    public void SetBindGroup(uint groupIndex, BindGroupBase group)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetBindGroup(groupIndex, group);
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetBindGroup(groupIndex, group, dynamicOffset);
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetBindGroup(groupIndex, group, dynamicOffsets);
@@ -140,12 +139,11 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.SetBlendConstant(color);
     }
 
-    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
+    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetIndexBuffer(buffer, format, offset, size);
     }
-
 
     public void SetLabel(WGPURefText label)
     {
@@ -153,7 +151,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.SetLabel(label);
     }
 
-    public void SetPipeline(RenderPipeline pipeline)
+    public void SetPipeline(RenderPipelineBase pipeline)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetPipeline(pipeline);
@@ -171,19 +169,18 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>
         _pooledHandle.handle.SetStencilReference(reference);
     }
 
-
     public void SetVertexBuffer(
-        uint slot, Buffer buffer, ulong offset, ulong size)
+        uint slot, BufferBase buffer, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset, size);
     }
 
     public void SetVertexBuffer(
-     uint slot, Buffer buffer, ulong offset = 0)
+     uint slot, BufferBase buffer, ulong offset = 0)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset, buffer.GetSize() - offset);
+        _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset);
     }
 
     public void SetViewport(

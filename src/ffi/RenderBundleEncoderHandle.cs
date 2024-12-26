@@ -67,6 +67,28 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
+    {
+        WebGPU_FFI.RenderBundleEncoderSetBindGroup(
+            renderBundleEncoder: this,
+            groupIndex: groupIndex,
+            group: GetBorrowHandle(group),
+            dynamicOffsetCount: 1,
+            dynamicOffsets: &dynamicOffset
+        );
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroupBase group)
+    {
+        WebGPU_FFI.RenderBundleEncoderSetBindGroup(
+            renderBundleEncoder: this,
+            groupIndex: groupIndex,
+            group: GetBorrowHandle(group),
+            dynamicOffsetCount: 0,
+            dynamicOffsets: null
+        );
+    }
+
     public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffset)
     {
         fixed (uint* dynamicOffsetPtr = dynamicOffset)
@@ -92,13 +114,19 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    public void SetPipeline(RenderPipeline pipeline)
+    public void SetPipeline(RenderPipelineBase pipeline)
     {
         WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetBorrowHandle(pipeline));
     }
 
     public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
     {
+        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
+    }
+
+    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset = 0)
+    {
+        var size = buffer.GetSize() - offset;
         WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
     }
 

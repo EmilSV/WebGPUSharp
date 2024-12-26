@@ -3,40 +3,168 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public sealed class RenderBundleEncoder :
-    RenderBundleEncoderBase,
-    IFromHandle<RenderBundleEncoder, RenderBundleEncoderHandle>
+public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
+    IBindingCommands, IDebugCommands, IRenderCommands
 {
-    private readonly WebGpuSafeHandle<RenderBundleEncoderHandle> _safeHandle;
+    private readonly ulong _localToken;
+    private readonly RenderBundleEncoderHandle _originalHandle;
+    private readonly PooledHandle<RenderBundleEncoderHandle> _pooledHandle;
 
-    protected override RenderBundleEncoderHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private RenderBundleEncoder(RenderBundleEncoderHandle handle)
+    private RenderBundleEncoder(PooledHandle<RenderBundleEncoderHandle> pooledHandle)
     {
-        _safeHandle = new WebGpuSafeHandle<RenderBundleEncoderHandle>(handle);
+        _originalHandle = pooledHandle.handle;
+        _localToken = pooledHandle.token;
+        _pooledHandle = pooledHandle;
     }
 
-    static RenderBundleEncoder? IFromHandle<RenderBundleEncoder, RenderBundleEncoderHandle>.FromHandle(
-        RenderBundleEncoderHandle handle)
+    internal static RenderBundleEncoder FromHandle(RenderBundleEncoderHandle handle)
     {
-        if (RenderBundleEncoderHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        RenderBundleEncoderHandle.Reference(handle);
-        return new(handle);
+        var newRenderBundleEncoderPooledHandle = PooledHandle<RenderBundleEncoderHandle>.Get(handle);
+        return new RenderBundleEncoder(newRenderBundleEncoderPooledHandle);
     }
 
-    static RenderBundleEncoder? IFromHandle<RenderBundleEncoder, RenderBundleEncoderHandle>.FromHandleNoRefIncrement(
-        RenderBundleEncoderHandle handle)
+    internal RenderBundleEncoderHandle GetOwnedHandle()
     {
-        if (RenderBundleEncoderHandle.IsNull(handle))
-        {
-            return null;
-        }
+        return _pooledHandle.GetOwnedHandle(_localToken);
+    }
 
-        return new(handle);
+    public void Draw(
+        uint vertexCount, uint instanceCount = 1,
+        uint firstVertex = 0, uint firstInstance = 0)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.Draw(
+            vertexCount: vertexCount,
+            instanceCount: instanceCount,
+            firstVertex: firstVertex,
+            firstInstance: firstInstance
+        );
+    }
+
+    public void DrawIndexed(
+        uint indexCount, uint instanceCount = 1,
+        uint firstIndex = 0, int baseVertex = 0, uint firstInstance = 0)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.DrawIndexed(
+            indexCount: indexCount,
+            instanceCount: instanceCount,
+            firstIndex: firstIndex,
+            baseVertex: baseVertex,
+            firstInstance: firstInstance
+        );
+    }
+
+    public void DrawIndexedIndirect(
+        BufferBase indirectBuffer, ulong indirectOffset)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.DrawIndexedIndirect(indirectBuffer, indirectOffset);
+    }
+
+    public void DrawIndirect(
+        BufferBase indirectBuffer, ulong indirectOffset)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.DrawIndirect(indirectBuffer, indirectOffset);
+    }
+
+    public RenderBundle Finish(in RenderBundleDescriptor descriptor)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        var result = _originalHandle.Finish(descriptor).ToSafeHandle(false)!;
+        PooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
+        return result;
+    }
+
+    public void InsertDebugMarker(WGPURefText label)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.InsertDebugMarker(label);
+    }
+
+    public void PopDebugGroup()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.PopDebugGroup();
+    }
+
+    public void PushDebugGroup(WGPURefText groupLabel)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.PushDebugGroup(groupLabel);
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroupBase group)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetBindGroup(groupIndex, group);
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetBindGroup(groupIndex, group, dynamicOffset);
+    }
+
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetBindGroup(groupIndex, group, dynamicOffsets);
+    }
+    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetIndexBuffer(buffer, format, offset, size);
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetLabel(label);
+    }
+
+    public void SetPipeline(RenderPipelineBase pipeline)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetPipeline(pipeline);
+    }
+
+    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetVertexBuffer(slot, buffer, offset, size);
+    }
+
+    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset = 0)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetVertexBuffer(slot, buffer, offset);
+    }
+
+    public bool Equals(RenderBundleEncoder other)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        return _pooledHandle.handle == other._pooledHandle.handle;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is RenderBundleEncoder encoder && Equals(encoder);
+    }
+
+    public static bool operator ==(RenderBundleEncoder left, RenderBundleEncoder right)
+    {
+        return left._originalHandle == right._originalHandle;
+    }
+
+    public static bool operator !=(RenderBundleEncoder left, RenderBundleEncoder right)
+    {
+        return left._originalHandle != right._originalHandle;
+    }
+
+    public override int GetHashCode()
+    {
+        return _originalHandle.GetHashCode();
     }
 }

@@ -7,7 +7,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     IDisposable, IWebGpuHandle<RenderPassEncoderHandle>
 {
     public void DrawIndexedIndirect(
-        Buffer indirectBuffer, ulong indirectOffset)
+        BufferBase indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(
             renderPassEncoder: this,
@@ -17,7 +17,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     public void DrawIndirect(
-        Buffer indirectBuffer, ulong indirectOffset)
+        BufferBase indirectBuffer, ulong indirectOffset)
 
     {
         WebGPU_FFI.RenderPassEncoderDrawIndirect(
@@ -36,7 +36,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
-    public void ExecuteBundle(RenderBundle bundle)
+    public void ExecuteBundle(RenderBundleBase bundle)
     {
         RenderBundleHandle handle = GetBorrowHandle(bundle);
         WebGPU_FFI.RenderPassEncoderExecuteBundles(
@@ -117,7 +117,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
-
     public readonly void SetBindGroup(uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffsets)
     {
         fixed (uint* dynamicOffsetsPtr = dynamicOffsets)
@@ -132,22 +131,20 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
-
-    public readonly void SetBindGroup(uint groupIndex, BindGroup group)
+    public readonly void SetBindGroup(uint groupIndex, BindGroupBase group)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group));
     }
 
-    public readonly void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
+    public readonly void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffset);
     }
 
-    public readonly void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
+    public readonly void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffsets);
     }
-
 
     public void SetBlendConstant(in Color color)
     {
@@ -158,7 +155,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     public readonly void SetIndexBuffer(
-        Buffer buffer, IndexFormat format, ulong offset, ulong size)
+        BufferBase buffer, IndexFormat format, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderPassEncoderSetIndexBuffer(
             renderPassEncoder: this,
@@ -182,15 +179,21 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
-    public readonly void SetPipeline(RenderPipeline pipeline) =>
+    public readonly void SetPipeline(RenderPipelineBase pipeline) =>
         SetPipeline(GetBorrowHandle(pipeline));
 
     public readonly void SetVertexBuffer(
-        uint slot, Buffer buffer, ulong offset, ulong size)
+        uint slot, BufferBase buffer, ulong offset, ulong size)
     {
         SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);
     }
 
+    public readonly void SetVertexBuffer(
+        uint slot, BufferBase buffer, ulong offset = 0)
+    {
+        var size = buffer.GetSize() - offset;
+        SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);
+    }
 
     public void SetViewport(
         uint x, uint y, uint width, uint height, float minDepth, float maxDepth)
@@ -206,7 +209,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
-
     public readonly void Dispose()
     {
         if (_ptr != UIntPtr.Zero)
@@ -214,8 +216,6 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
             WebGPU_FFI.RenderPassEncoderRelease(this);
         }
     }
-
-
 
     public static ref nuint AsPointer(ref RenderPassEncoderHandle handle)
     {

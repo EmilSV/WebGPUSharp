@@ -385,6 +385,12 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RenderBundleEncoderHandle GetOwnedHandle(RenderBundleEncoder safeHandle)
+    {
+        return safeHandle.GetOwnedHandle();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TSafeHandle? ToSafeHandle<TSafeHandle, THandle>(THandle handle)
         where TSafeHandle : IFromHandle<TSafeHandle, THandle>
          where THandle : unmanaged, IWebGpuHandle<THandle>
