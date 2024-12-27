@@ -5,6 +5,7 @@ public interface IRenderCommands : IBindingCommands
     void SetPipeline(RenderPipelineBase pipeline);
 
     void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size);
+    void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0);
 
     void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size);
     void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset = 0);
