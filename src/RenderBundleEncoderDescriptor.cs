@@ -13,4 +13,3 @@ public ref struct RenderBundleEncoderDescriptor
     {
     }
 }
-

@@ -7,6 +7,7 @@
     <WarningsAsErrors>
       CS8600;CS8601;CS8602;CS8604;CS8613;CS8614;CS8619;CS8620;CS8622;CS8625;CS8629;CS8633;CS8524;CS8509;CS8524;CS8767
     </WarningsAsErrors>
+    <NoWarn>1073;RCS1021;RCS1123,RCS1242</NoWarn>
     <WarningsAsErrors>Nullable</WarningsAsErrors>
     <_WebGpuSharp_IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</_WebGpuSharp_IsWindows>
     <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_WebGpuSharp_NativeRuntime>

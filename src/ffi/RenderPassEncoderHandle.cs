@@ -166,6 +166,19 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    public readonly void SetIndexBuffer(
+    BufferBase buffer, IndexFormat format, ulong offset = 0)
+    {
+        var size = buffer.GetSize() - offset;
+        WebGPU_FFI.RenderPassEncoderSetIndexBuffer(
+            renderPassEncoder: this,
+            buffer: GetBorrowHandle(buffer),
+            format: format,
+            offset: offset,
+            size: size
+        );
+    }
+
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();

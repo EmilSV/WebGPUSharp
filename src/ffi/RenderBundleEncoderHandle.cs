@@ -4,7 +4,7 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct RenderBundleEncoderHandle :
-    IDisposable, IWebGpuHandle<RenderBundleEncoderHandle, RenderBundleEncoder>
+    IDisposable, IWebGpuHandle<RenderBundleEncoderHandle>
 {
     public void DrawIndexedIndirect(BufferBase indirectBuffer, ulong indirectOffset)
     {
@@ -33,6 +33,11 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
             RenderBundleDescriptorFFI descriptorFFI = new() { Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length) };
             return WebGPU_FFI.RenderBundleEncoderFinish(this, &descriptorFFI);
         }
+    }
+
+    public RenderBundleHandle Finish()
+    {
+        return WebGPU_FFI.RenderBundleEncoderFinish(this, null);
     }
 
     public void InsertDebugMarker(WGPURefText label)
@@ -102,6 +107,12 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
     }
 
+    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
+    {
+        var size = buffer.GetSize() - offset;
+        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
+    }
+
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -164,15 +175,8 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    public RenderBundleEncoder? ToSafeHandle(bool incrementRefCount)
+    public RenderBundleEncoder ToSafeHandle()
     {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<RenderBundleEncoder, RenderBundleEncoderHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<RenderBundleEncoder, RenderBundleEncoderHandle>(this);
-        }
+        return RenderBundleEncoder.FromHandle(this);
     }
 }

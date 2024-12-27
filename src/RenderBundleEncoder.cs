@@ -77,6 +77,14 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         return result;
     }
 
+    public RenderBundle Finish()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        var result = _originalHandle.Finish().ToSafeHandle(false)!;
+        PooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
+        return result;
+    }
+
     public void InsertDebugMarker(WGPURefText label)
     {
         _pooledHandle.VerifyToken(_localToken);
@@ -116,6 +124,12 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetIndexBuffer(buffer, format, offset, size);
+    }
+
+    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetIndexBuffer(buffer, format, offset);
     }
 
     public void SetLabel(WGPURefText label)

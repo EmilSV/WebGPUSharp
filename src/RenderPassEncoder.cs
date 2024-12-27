@@ -145,6 +145,12 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.SetIndexBuffer(buffer, format, offset, size);
     }
 
+    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.SetIndexBuffer(buffer, format, offset);
+    }
+
     public void SetLabel(WGPURefText label)
     {
         _pooledHandle.VerifyToken(_localToken);

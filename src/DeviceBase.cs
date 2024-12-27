@@ -37,7 +37,7 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
         Handle.CreateQuerySet(descriptor).ToSafeHandle(false)!;
 
     public RenderBundleEncoder CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor descriptor) =>
-        Handle.CreateRenderBundleEncoder(descriptor).ToSafeHandle(false)!;
+        Handle.CreateRenderBundleEncoder(descriptor).ToSafeHandle();
 
     public RenderPipeline CreateRenderPipeline(in RenderPipelineDescriptor descriptor) =>
         Handle.CreateRenderPipeline(descriptor).ToSafeHandle(false)!;
