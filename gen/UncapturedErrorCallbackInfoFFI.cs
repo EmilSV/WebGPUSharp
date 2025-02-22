@@ -6,8 +6,9 @@ namespace WebGpuSharp.FFI;
 public unsafe partial struct UncapturedErrorCallbackInfoFFI
 {
     public ChainedStruct* NextInChain;
-    public delegate* unmanaged[Cdecl]<ErrorType, StringViewFFI, void*, void> Callback;
-    public void* Userdata;
+    public delegate* unmanaged[Cdecl]<DeviceHandle*, ErrorType, StringViewFFI, void*, void*, void> Callback;
+    public void* Userdata1;
+    public void* Userdata2;
 
     public UncapturedErrorCallbackInfoFFI() { }
 

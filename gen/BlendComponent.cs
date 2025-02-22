@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Describe how the color or alpha components of a fragment are blended:
+/// </summary>
 public partial struct BlendComponent
 {
     /// <summary>

@@ -3,9 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a Buffer. For use with Device.CreateBuffer.
+/// </summary>
 public unsafe partial struct BufferDescriptorFFI
 {
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// Debug label of the Buffer
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
     /// The allowed usages for the buffer.

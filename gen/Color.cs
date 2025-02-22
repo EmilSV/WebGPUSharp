@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// A color with red, green, blue and alpha channels.
+/// </summary>
 public partial struct Color
 {
     /// <summary>

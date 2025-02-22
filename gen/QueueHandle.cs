@@ -35,9 +35,7 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    public void OnSubmittedWorkDone(delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void> callback, void* userdata) => WebGPU_FFI.QueueOnSubmittedWorkDone(this, callback, userdata);
-
-    public Future OnSubmittedWorkDone(QueueWorkDoneCallbackInfo2FFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDone2(this, callbackInfo);
+    public Future OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfo);
 
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel(this, label);
 

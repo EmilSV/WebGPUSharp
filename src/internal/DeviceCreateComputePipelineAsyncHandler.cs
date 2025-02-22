@@ -17,8 +17,13 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
             WebGPU_FFI.DeviceCreateComputePipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
-                callback: &OnCallbackDelegate,
-                userdata: AllocUserData(callback)
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &OnCallbackDelegate,
+                    Userdata1 = AllocUserData(callback),
+                    Userdata2 = null
+                }
             );
         }
     }
@@ -33,8 +38,13 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
             WebGPU_FFI.DeviceCreateComputePipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
-                callback: &OnCallbackTask,
-                userdata: AllocUserData(taskCompletionSource)
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &OnCallbackTask,
+                    Userdata1 = AllocUserData(taskCompletionSource),
+                    Userdata2 = null
+                }
             );
 
             return taskCompletionSource.Task;
@@ -45,7 +55,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackTask(
             CreatePipelineAsyncStatus status, ComputePipelineHandle computePipelineHandle,
-            StringViewFFI message, void* userdata)
+            StringViewFFI message, void* userdata, void* _)
     {
         TaskCompletionSource<ComputePipelineHandle>? taskCompletionSource = null;
         try
@@ -78,7 +88,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackDelegate(
         CreatePipelineAsyncStatus status, ComputePipelineHandle computePipelineHandle,
-        StringViewFFI message, void* userdata)
+        StringViewFFI message, void* userdata, void* _)
     {
         try
         {

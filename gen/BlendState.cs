@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Describe the blend state of a render pipeline, within <see cref="FFI.ColorTargetStateFFI" />
+/// </summary>
 public partial struct BlendState
 {
     /// <summary>

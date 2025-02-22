@@ -7,8 +7,9 @@ public unsafe partial struct BufferMapCallbackInfoFFI
 {
     public ChainedStruct* NextInChain;
     public CallbackMode Mode;
-    public delegate* unmanaged[Cdecl]<BufferMapAsyncStatus, void*, void> Callback;
-    public void* Userdata;
+    public delegate* unmanaged[Cdecl]<MapAsyncStatus, StringViewFFI, void*, void*, void> Callback;
+    public void* Userdata1;
+    public void* Userdata2;
 
     public BufferMapCallbackInfoFFI() { }
 

@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Describes a single resource binding within a <see cref="WebGpuSharp.BindGroupLayout" />.
+/// </summary>
 public unsafe partial struct BindGroupLayoutEntry
 {
     public ChainedStruct* NextInChain;

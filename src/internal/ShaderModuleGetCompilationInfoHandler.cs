@@ -10,7 +10,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
 {
     public static void GetCompilationInfo(ShaderModuleHandle handle, CompilationInfoCallback callback)
     {
-        WebGPU_FFI.ShaderModuleGetCompilationInfo2(handle, new()
+        WebGPU_FFI.ShaderModuleGetCompilationInfo(handle, new()
         {
             Mode = CallbackMode.AllowSpontaneous,
             Callback = &OnCallback,

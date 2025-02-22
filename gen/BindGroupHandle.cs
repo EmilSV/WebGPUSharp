@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// A handle to a <see cref="WebGpuSharp.BindGroup" />.
+/// </summary>
 public readonly unsafe partial struct BindGroupHandle : IEquatable<BindGroupHandle>
 {
     private readonly nuint _ptr;
@@ -35,6 +38,10 @@ public readonly unsafe partial struct BindGroupHandle : IEquatable<BindGroupHand
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Set the label of the bind group.
+    /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.BindGroupSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.BindGroupAddRef(this);

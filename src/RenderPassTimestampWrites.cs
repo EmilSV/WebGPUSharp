@@ -3,15 +3,15 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public struct RenderPassTimestampWrites :
-    IWebGpuFFIConvertible<RenderPassTimestampWrites, RenderPassTimestampWritesFFI>
+public struct PassTimestampWrites :
+    IWebGpuFFIConvertible<PassTimestampWrites, PassTimestampWritesFFI>
 {
     public required QuerySetBase QuerySet;
     public uint BeginningOfPassWriteIndex;
     public uint EndOfPassWriteIndex;
 
-    static void IWebGpuFFIConvertible<RenderPassTimestampWrites, RenderPassTimestampWritesFFI>.UnsafeConvertToFFI(
-        in RenderPassTimestampWrites input, out RenderPassTimestampWritesFFI dest)
+    static void IWebGpuFFIConvertible<PassTimestampWrites, PassTimestampWritesFFI>.UnsafeConvertToFFI(
+        in PassTimestampWrites input, out PassTimestampWritesFFI dest)
     {
         dest = new()
         {
@@ -21,8 +21,8 @@ public struct RenderPassTimestampWrites :
         };
     }
 
-    static void IWebGpuFFIConvertibleAlloc<RenderPassTimestampWrites, RenderPassTimestampWritesFFI>.UnsafeConvertToFFI(
-        in RenderPassTimestampWrites input, WebGpuAllocatorHandle allocator, out RenderPassTimestampWritesFFI dest)
+    static void IWebGpuFFIConvertibleAlloc<PassTimestampWrites, PassTimestampWritesFFI>.UnsafeConvertToFFI(
+        in PassTimestampWrites input, WebGpuAllocatorHandle allocator, out PassTimestampWritesFFI dest)
     {
         WebGPUMarshal.ToFFI(in input, allocator, out dest);
     }

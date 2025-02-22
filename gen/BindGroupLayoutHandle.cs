@@ -3,6 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Handle to a binding group layout.
+/// 
+/// A BindGroupLayoutHandle is a handle to the GPU-side layout of a binding group. It can be used
+/// to create a <see cref="BindGroupDescriptorFFI" /> object, which in turn can be used to create a BindGroup
+/// object with Device.CreateBindGroup(). A series of BindGroupLayoutHandles can also be used to
+/// create a PipelineLayoutDescriptorFFI, which can be used to create a PipelineLayout.
+/// </summary>
 public readonly unsafe partial struct BindGroupLayoutHandle : IEquatable<BindGroupLayoutHandle>
 {
     private readonly nuint _ptr;

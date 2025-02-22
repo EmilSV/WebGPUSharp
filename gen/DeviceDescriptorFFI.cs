@@ -3,10 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a Device.
+/// </summary>
 public unsafe partial struct DeviceDescriptorFFI
 {
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// Debug label for the device.
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
+    /// <summary>
+    /// the number of required features in the requiredFeatures sequence.
+    /// </summary>
     public nuint RequiredFeatureCount;
     /// <summary>
     /// Specifies the features that are required by the device request.
@@ -28,8 +37,8 @@ public unsafe partial struct DeviceDescriptorFFI
     /// The descriptor for the default  <see cref="WebGpuSharp.Queue"/>.
     /// </summary>
     public QueueDescriptorFFI DefaultQueue = new();
-    public DeviceLostCallbackInfo2FFI DeviceLostCallbackInfo2 = new();
-    public UncapturedErrorCallbackInfo2FFI UncapturedErrorCallbackInfo2 = new();
+    public DeviceLostCallbackInfoFFI DeviceLostCallbackInfo = new();
+    public UncapturedErrorCallbackInfoFFI UncapturedErrorCallbackInfo = new();
 
     public DeviceDescriptorFFI() { }
 

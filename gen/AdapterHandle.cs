@@ -35,12 +35,32 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Get the features supported by the adapter.
+    /// </summary>
+    /// <param name="info">The features to fill in.</param>
+    /// <returns>the status of the call.</returns>
     public void GetFeatures(SupportedFeaturesFFI* features) => WebGPU_FFI.AdapterGetFeatures(this, features);
 
+    /// <summary>
+    /// Get info about the adapter itself.
+    /// </summary>
+    /// <param name="info">The info to fill in.</param>
+    /// <returns>the status of the call.</returns>
     public Status GetInfo(AdapterInfoFFI* info) => WebGPU_FFI.AdapterGetInfo(this, info);
 
+    /// <summary>
+    /// The best limits which can be used to create devices on this adapter.
+    /// </summary>
+    /// <param name="limits">The limits to fill in.</param>
+    /// <returns>the status of the call.</returns>
     public Status GetLimits(SupportedLimits* limits) => WebGPU_FFI.AdapterGetLimits(this, limits);
 
+    /// <summary>
+    /// Check if and additional functionality is supported by the adapter.
+    /// </summary>
+    /// <param name="feature">The feature to check.</param>
+    /// <returns>true if the feature is supported.</returns>
     public WebGPUBool HasFeature(FeatureName feature) => WebGPU_FFI.AdapterHasFeature(this, feature);
 
     /// <summary>
@@ -49,9 +69,7 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// the adapter becomes {{adapter/state/"consumed"}}.
     /// </summary>
     /// <param name="descriptor">Description of the  <see cref="WebGpuSharp.Device"/> to request.</param>
-    public void RequestDevice(DeviceDescriptorFFI* descriptor, delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, StringViewFFI, void*, void> callback, void* userdata) => WebGPU_FFI.AdapterRequestDevice(this, descriptor, callback, userdata);
-
-    public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfo2FFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice2(this, options, callbackInfo);
+    public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, options, callbackInfo);
 
     public void AddRef() => WebGPU_FFI.AdapterAddRef(this);
 

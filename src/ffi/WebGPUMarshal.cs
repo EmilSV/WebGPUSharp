@@ -419,9 +419,9 @@ public unsafe static partial class WebGPUMarshal
         {
             return null;
         }
-
+        
         var userDataHandle = GCHandle.Alloc(userData);
-        return (void*)Unsafe.As<GCHandle, nuint>(ref userDataHandle);
+        return (void*)GCHandle.ToIntPtr(userDataHandle);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -432,7 +432,7 @@ public unsafe static partial class WebGPUMarshal
             return null;
         }
 
-        var userDataHandle = Unsafe.BitCast<nuint, GCHandle>((nuint)userData);
+        var userDataHandle = GCHandle.FromIntPtr((nint)userData);
         return userDataHandle.Target;
     }
 
@@ -444,7 +444,7 @@ public unsafe static partial class WebGPUMarshal
             return null;
         }
 
-        var userDataHandle = Unsafe.BitCast<nuint, GCHandle>((nuint)userData);
+        var userDataHandle = GCHandle.FromIntPtr((nint)userData);
         if (!userDataHandle.IsAllocated)
         {
             return null;

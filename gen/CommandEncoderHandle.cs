@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Encodes a series of GPU operations. A command encoder can record RenderPasses,
+/// ComputePasses, and transfer operations between driver-managed resources like Buffers and
+/// Textures. When finished recording, call CommandEncoder.Finish() to obtain a
+/// CommandBuffer which may be submitted for execution.
+/// </summary>
 public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHandle>
 {
     private readonly nuint _ptr;
@@ -35,6 +41,11 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Begins encoding a compute pass described by descriptor.
+    /// </summary>
+    /// <param name="descriptor">The descriptor for the compute pass.</param>
+    /// <returns>A ComputePassEncoder which encodes the compute pass.</returns>
     public ComputePassEncoderHandle BeginComputePass(ComputePassDescriptorFFI* descriptor) => WebGPU_FFI.CommandEncoderBeginComputePass(this, descriptor);
 
     /// <summary>
@@ -113,6 +124,10 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
     /// </summary>
     public void ResolveQuerySet(QuerySetHandle querySet, uint firstQuery, uint queryCount, BufferHandle destination, ulong destinationOffset) => WebGPU_FFI.CommandEncoderResolveQuerySet(this, querySet, firstQuery, queryCount, destination, destinationOffset);
 
+    /// <summary>
+    /// Set debug label of this command encoder.
+    /// </summary>
+    /// <param name="label">The new label.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandEncoderSetLabel(this, label);
 
     public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex) => WebGPU_FFI.CommandEncoderWriteTimestamp(this, querySet, queryIndex);

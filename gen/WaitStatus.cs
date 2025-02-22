@@ -3,12 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// The status of a wait operation.
+/// </summary>
 public enum WaitStatus
 {
     Success = 1,
     TimedOut = 2,
-    UnsupportedTimeout = 3,
-    UnsupportedCount = 4,
-    UnsupportedMixedSources = 5,
-    Unknown = 6,
+    Error = 3,
 }

@@ -75,9 +75,14 @@ public unsafe readonly partial struct AdapterHandle :
 
             WebGPU_FFI.AdapterRequestDevice(
                adapter: this,
-               descriptor: descriptor,
-               callback: &OnDeviceRequestEndedTaskCompletionSource,
-               userdata: userData
+               options: descriptor,
+               callbackInfo: new()
+               {
+                   Mode = CallbackMode.AllowSpontaneous,
+                   Callback = &OnDeviceRequestEndedTaskCompletionSource,
+                   Userdata1 = userData,
+                   Userdata2 = null
+               }
             );
         }
         catch (Exception e)
@@ -115,14 +120,16 @@ public unsafe readonly partial struct AdapterHandle :
                 DefaultQueue = {
                     Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)
                 },
-                DeviceLostCallbackInfo2 = {
+                DeviceLostCallbackInfo = {
                     Mode = descriptor.DeviceLostCallbackMode,
                     Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
                     Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id,
+                    Userdata2 = null
                 },
-                UncapturedErrorCallbackInfo2 = {
+                UncapturedErrorCallbackInfo = {
                     Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                    Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                    Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id,
+                    Userdata2 = null
                 }
             };
             return RequestDeviceAsync(&deviceDescriptor);
@@ -158,25 +165,32 @@ public unsafe readonly partial struct AdapterHandle :
                     {
                         Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)
                     },
-                    DeviceLostCallbackInfo2 = new()
+                    DeviceLostCallbackInfo = new()
                     {
                         Mode = descriptor.DeviceLostCallbackMode,
                         Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
-                        Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id
+                        Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id,
+                        Userdata2 = null
                     },
-                    UncapturedErrorCallbackInfo2 = new()
+                    UncapturedErrorCallbackInfo = new()
                     {
                         Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                        Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id
+                        Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id,
+                        Userdata2 = null
                     }
                 };
 
                 userData = AllocUserData(callback);
                 WebGPU_FFI.AdapterRequestDevice(
                    adapter: this,
-                   descriptor: &deviceDescriptor,
-                   callback: &OnDeviceRequestEndedDelegate,
-                   userdata: userData
+                   options: &deviceDescriptor,
+                   callbackInfo: new()
+                   {
+                       Mode = CallbackMode.AllowSpontaneous,
+                       Callback = &OnDeviceRequestEndedDelegate,
+                       Userdata1 = userData,
+                       Userdata2 = null
+                   }
                 );
             }
         }
@@ -205,7 +219,8 @@ public unsafe readonly partial struct AdapterHandle :
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedDelegate(
-      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata)
+      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, 
+      void* userdata , void* _)
     {
         Action<DeviceHandle>? callback = null;
         try
@@ -240,7 +255,7 @@ public unsafe readonly partial struct AdapterHandle :
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
-      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata)
+      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata, void* _)
     {
         TaskCompletionSource<DeviceHandle>? taskCompletionSource = null;
         try

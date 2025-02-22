@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Extent of a texture related operation.
+/// </summary>
 public partial struct Extent3D
 {
     /// <summary>

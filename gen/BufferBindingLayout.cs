@@ -3,6 +3,11 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// BufferBindingLayout of defines the structure and purpose of related GPU resources
+/// such as buffers that will be used in a pipeline, and is used as a template when creating
+/// BindGroups.
+/// </summary>
 public unsafe partial struct BufferBindingLayout
 {
     public ChainedStruct* NextInChain;

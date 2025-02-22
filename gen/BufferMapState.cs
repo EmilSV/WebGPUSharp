@@ -3,10 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// The state of a buffer mapping.
+/// </summary>
 public enum BufferMapState
 {
     /// <summary>
-    /// The buffer is not mapped for use by `this`. <see cref="WebGpuSharp.Buffer.GetMappedRange"/>.
+    /// The buffer is not mapped for use by <see cref="WebGpuSharp.Buffer.GetMappedRange" />.
     /// </summary>
     Unmapped = 1,
     /// <summary>
@@ -15,7 +18,7 @@ public enum BufferMapState
     /// </summary>
     Pending = 2,
     /// <summary>
-    /// The buffer is mapped and `this`. <see cref="WebGpuSharp.Buffer.GetMappedRange"/> may be used.
+    /// The buffer is mapped and <see cref="WebGpuSharp.Buffer.GetMappedRange" /> may be used.
     /// </summary>
     Mapped = 3,
 }

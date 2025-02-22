@@ -3,6 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Handle to a command buffer on the GPU.
+/// 
+/// A CommandBuffer represents a complete sequence of commands that may be submitted to a command queue with Queue.Submit().
+/// A CommandBuffer is obtained by recording a series of commands to a CommandEncoder and then
+/// calling CommandEncoder.Finish().
+/// </summary>
 public readonly unsafe partial struct CommandBufferHandle : IEquatable<CommandBufferHandle>
 {
     private readonly nuint _ptr;
@@ -35,6 +42,10 @@ public readonly unsafe partial struct CommandBufferHandle : IEquatable<CommandBu
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Set debug label of this command buffer.
+    /// </summary>
+    /// <param name="label">The new label.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandBufferSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.CommandBufferAddRef(this);

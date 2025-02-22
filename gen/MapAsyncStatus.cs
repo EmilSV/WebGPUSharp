@@ -9,5 +9,4 @@ public enum MapAsyncStatus
     InstanceDropped = 2,
     Error = 3,
     Aborted = 4,
-    Unknown = 5,
 }

@@ -5,7 +5,7 @@ namespace WebGpuSharp;
 
 public unsafe partial struct SupportedLimits
 {
-    public ChainedStructOut* NextInChain;
+    public ChainedStruct* NextInChain;
     public Limits Limits = new();
 
     public SupportedLimits() { }

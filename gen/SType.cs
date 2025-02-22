@@ -16,7 +16,7 @@ public enum SType
     SurfaceSourceXCBWindow = 9,
     AdapterPropertiesSubgroups = 10,
     TextureBindingViewDimensionDescriptor = 131072,
-    SurfaceSourceCanvasHTMLSelector_Emscripten = 262144,
+    EmscriptenSurfaceSourceCanvasHTMLSelector = 262144,
     SurfaceDescriptorFromWindowsCoreWindow = 327680,
     ExternalTextureBindingEntry = 327681,
     ExternalTextureBindingLayout = 327682,
@@ -42,7 +42,7 @@ public enum SType
     AdapterPropertiesVk = 327702,
     DawnWireWGSLControl = 327703,
     DawnWGSLBlocklist = 327704,
-    DrmFormatCapabilities = 327705,
+    DawnDrmFormatCapabilities = 327705,
     ShaderModuleCompilationOptions = 327706,
     ColorTargetStateExpandResolveTextureDawn = 327707,
     RenderPassDescriptorExpandResolveRect = 327708,
@@ -76,4 +76,5 @@ public enum SType
     SharedTextureMemoryAHardwareBufferProperties = 327736,
     AHardwareBufferProperties = 327737,
     DawnExperimentalImmediateDataLimits = 327738,
+    DawnTexelCopyBufferRowAlignmentLimits = 327739,
 }

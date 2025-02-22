@@ -7,4 +7,5 @@ public enum PopErrorScopeStatus
 {
     Success = 1,
     InstanceDropped = 2,
+    EmptyStack = 3,
 }

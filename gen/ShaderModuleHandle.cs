@@ -40,9 +40,7 @@ public readonly unsafe partial struct ShaderModuleHandle : IEquatable<ShaderModu
     /// The locations, order, and contents of messages are implementation-defined
     /// In particular, messages may not be ordered by  <see cref="WebGpuSharp.CompilationMessage.LineNum"/>.
     /// </summary>
-    public void GetCompilationInfo(delegate* unmanaged[Cdecl]<CompilationInfoRequestStatus, CompilationInfoFFI*, void*, void> callback, void* userdata) => WebGPU_FFI.ShaderModuleGetCompilationInfo(this, callback, userdata);
-
-    public Future GetCompilationInfo(CompilationInfoCallbackInfo2FFI callbackInfo) => WebGPU_FFI.ShaderModuleGetCompilationInfo2(this, callbackInfo);
+    public Future GetCompilationInfo(CompilationInfoCallbackInfoFFI callbackInfo) => WebGPU_FFI.ShaderModuleGetCompilationInfo(this, callbackInfo);
 
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.ShaderModuleSetLabel(this, label);
 

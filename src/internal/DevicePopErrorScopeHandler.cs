@@ -10,19 +10,42 @@ internal unsafe static class DevicePopErrorScopeHandler
 {
     public static void DevicePopErrorScope(DeviceHandle device, DevicePopErrorScopeDelegate callback)
     {
-        WebGPU_FFI.DevicePopErrorScope(device, &OnDevicePopErrorScopeDelegate, AllocUserData(callback));
+        WebGPU_FFI.DevicePopErrorScope(
+           device: device,
+           callbackInfo: new()
+           {
+               NextInChain = null,
+               Mode = CallbackMode.AllowSpontaneous,
+               Callback = &OnDevicePopErrorScopeDelegate,
+               Userdata1 = AllocUserData(callback),
+               Userdata2 = null
+           }
+        );
     }
 
     public static Task<(ErrorType errorType, string message)> DevicePopErrorScope(DeviceHandle device)
     {
         TaskCompletionSource<(ErrorType errorType, string message)> taskCompletionSource = new();
-        WebGPU_FFI.DevicePopErrorScope(device, &OnDevicePopErrorScopeTask, AllocUserData(taskCompletionSource));
+
+        WebGPU_FFI.DevicePopErrorScope(
+            device: device,
+            callbackInfo: new()
+            {
+                NextInChain = null,
+                Mode = CallbackMode.AllowSpontaneous,
+                Callback = &OnDevicePopErrorScopeTask,
+                Userdata1 = AllocUserData(taskCompletionSource),
+                Userdata2 = null
+            }
+        );
         return taskCompletionSource.Task;
     }
 
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static void OnDevicePopErrorScopeDelegate(ErrorType errorType, StringViewFFI message, void* userdata)
+    private static void OnDevicePopErrorScopeDelegate(
+        PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
+        void* userdata, void* _)
     {
         try
         {
@@ -36,7 +59,9 @@ internal unsafe static class DevicePopErrorScopeHandler
         }
     }
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static void OnDevicePopErrorScopeTask(ErrorType errorType, StringViewFFI message, void* userdata)
+    private static void OnDevicePopErrorScopeTask(
+        PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
+        void* userdata, void* _)
     {
         try
         {

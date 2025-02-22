@@ -17,8 +17,13 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
             WebGPU_FFI.DeviceCreateRenderPipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
-                callback: &OnCallbackDelegate,
-                userdata: AllocUserData(callback)
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &OnCallbackDelegate,
+                    Userdata1 = AllocUserData(callback),
+                    Userdata2 = null
+                }
             );
         }
     }
@@ -33,8 +38,13 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
             WebGPU_FFI.DeviceCreateRenderPipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
-                callback: &OnCallbackTask,
-                userdata: AllocUserData(taskCompletionSource)
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &OnCallbackTask,
+                    Userdata1 = AllocUserData(taskCompletionSource),
+                    Userdata2 = null
+                }
             );
 
             return taskCompletionSource.Task;
@@ -45,7 +55,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackTask(
             CreatePipelineAsyncStatus status, RenderPipelineHandle renderPipelineHandle,
-            StringViewFFI message, void* userdata)
+            StringViewFFI message, void* userdata, void* _)
     {
         TaskCompletionSource<RenderPipelineHandle>? taskCompletionSource = null;
         try
@@ -78,7 +88,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCallbackDelegate(
         CreatePipelineAsyncStatus status, RenderPipelineHandle renderPipelineHandle,
-        StringViewFFI message, void* userdata)
+        StringViewFFI message, void* userdata, void* _)
     {
         try
         {

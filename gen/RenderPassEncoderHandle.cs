@@ -35,8 +35,6 @@ public readonly unsafe partial struct RenderPassEncoderHandle : IEquatable<Rende
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
-    /// <summary>
-    /// </summary>
     /// <param name="queryIndex">The index of the query in the query set.</param>
     public void BeginOcclusionQuery(uint queryIndex) => WebGPU_FFI.RenderPassEncoderBeginOcclusionQuery(this, queryIndex);
 

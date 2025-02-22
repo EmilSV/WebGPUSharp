@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// The compute pass encoder encodes commands related to controlling the compute
+/// shader stage, as issued by a ComputePipeline.
+/// </summary>
 public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<ComputePassEncoderHandle>
 {
     private readonly nuint _ptr;
@@ -61,14 +65,39 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     /// </summary>
     public void End() => WebGPU_FFI.ComputePassEncoderEnd(this);
 
+    /// <summary>
+    /// Marks a point in a stream of commands with a label.
+    /// </summary>
     public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.ComputePassEncoderInsertDebugMarker(this, markerLabel);
 
+    /// <summary>
+    /// Ends the labeled debug group most recently started by <see cref="PushDebugGroup" />.
+    /// </summary>
     public void PopDebugGroup() => WebGPU_FFI.ComputePassEncoderPopDebugGroup(this);
 
+    /// <summary>
+    /// Begins a labeled debug group containing subsequent commands.
+    /// </summary>
+    /// <param name="groupLabel">The label to use for the debug group.</param>
     public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.ComputePassEncoderPushDebugGroup(this, groupLabel);
 
+    /// <summary>
+    /// Sets the current GPUBindGroup for the given index.
+    /// </summary>
+    /// <param name="dynamicOffsets">
+    /// a sequence containing buffer offsets in bytes for each
+    /// entry in bindGroup marked as Buffer.HasDynamicOffset, ordered by
+    /// BindGroupLayoutEntry.Binding.
+    /// </param>
+    /// <param name="dynamicOffsetCount">The number of dynamic offsets in the dynamicOffsets sequence.</param>
+    /// <param name="bindGroup">Bind group to use for subsequent render or compute commands.</param>
+    /// <param name="index">The index to set the bind group at.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.ComputePassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
+    /// <summary>
+    /// Set debug label of this command encoder.
+    /// </summary>
+    /// <param name="label">The new label.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.ComputePassEncoderSetLabel(this, label);
 
     /// <summary>

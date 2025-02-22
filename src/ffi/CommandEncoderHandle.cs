@@ -42,8 +42,8 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            RenderPassTimestampWritesFFI timestampWritesFFI;
-            RenderPassTimestampWritesFFI* timestampWritesFFIPtr;
+            PassTimestampWritesFFI timestampWritesFFI;
+            PassTimestampWritesFFI* timestampWritesFFIPtr;
             if (descriptor.TimestampWrites.HasValue)
             {
                 ref readonly var timestampWrites = ref descriptor.TimestampWrites.Value;

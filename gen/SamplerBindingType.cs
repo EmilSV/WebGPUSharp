@@ -5,8 +5,9 @@ namespace WebGpuSharp;
 
 public enum SamplerBindingType
 {
-    Undefined = 0,
-    Filtering = 1,
-    NonFiltering = 2,
-    Comparison = 3,
+    BindingNotUsed = 0,
+    Undefined = 1,
+    Filtering = 2,
+    NonFiltering = 3,
+    Comparison = 4,
 }

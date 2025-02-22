@@ -5,6 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct RenderPassDepthStencilAttachmentFFI
 {
+    public ChainedStruct* NextInChain;
     /// <summary>
     /// A  <see cref="WebGpuSharp.TextureView"/> describing the texture subresource that will be output to
     /// and read from for this depth/stencil attachment.

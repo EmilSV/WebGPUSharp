@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes the color state of a render pipeline.
+/// </summary>
 public unsafe partial struct ColorTargetStateFFI
 {
     public ChainedStruct* NextInChain;

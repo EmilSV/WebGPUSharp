@@ -5,10 +5,11 @@ namespace WebGpuSharp;
 
 public enum TextureSampleType
 {
-    Undefined = 0,
-    Float = 1,
-    UnfilterableFloat = 2,
-    Depth = 3,
-    Sint = 4,
-    Uint = 5,
+    BindingNotUsed = 0,
+    Undefined = 1,
+    Float = 2,
+    UnfilterableFloat = 3,
+    Depth = 4,
+    Sint = 5,
+    Uint = 6,
 }

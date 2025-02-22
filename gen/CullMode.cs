@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// The face culling mode.
+/// </summary>
 public enum CullMode
 {
     Undefined = 0,

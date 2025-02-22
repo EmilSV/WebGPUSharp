@@ -37,6 +37,10 @@ public partial struct Limits
     public uint MaxComputeWorkgroupSizeY;
     public uint MaxComputeWorkgroupSizeZ;
     public uint MaxComputeWorkgroupsPerDimension;
+    public uint MaxStorageBuffersInVertexStage;
+    public uint MaxStorageTexturesInVertexStage;
+    public uint MaxStorageBuffersInFragmentStage;
+    public uint MaxStorageTexturesInFragmentStage;
 
     public Limits() { }
 

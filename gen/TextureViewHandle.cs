@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// A TextureView is a view onto some subset of the <see href="https://gpuweb.github.io/gpuweb/#texture-subresources"> texture subresources</see>
+/// defined by a particular <see cref="WebGpuSharp.Texture" />.
+/// </summary>
 public readonly unsafe partial struct TextureViewHandle : IEquatable<TextureViewHandle>
 {
     private readonly nuint _ptr;

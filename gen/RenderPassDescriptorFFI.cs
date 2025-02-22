@@ -29,7 +29,7 @@ public unsafe partial struct RenderPassDescriptorFFI
     /// <summary>
     /// Defines which timestamp values will be written for this pass, and where to write them to.
     /// </summary>
-    public RenderPassTimestampWritesFFI* TimestampWrites;
+    public PassTimestampWritesFFI* TimestampWrites;
 
     public RenderPassDescriptorFFI() { }
 

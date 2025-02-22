@@ -11,7 +11,7 @@ public unsafe partial struct ComputePipelineDescriptorFFI
     /// <summary>
     /// Describes the compute shader entry point of the pipeline.
     /// </summary>
-    public required ProgrammableStageDescriptorFFI Compute;
+    public required ComputeStateFFI Compute;
 
     public ComputePipelineDescriptorFFI() { }
 

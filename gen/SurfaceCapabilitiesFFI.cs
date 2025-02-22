@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe partial struct SurfaceCapabilitiesFFI
 {
-    public ChainedStructOut* NextInChain;
+    public ChainedStruct* NextInChain;
     public TextureUsage Usages;
     public nuint FormatCount;
     public TextureFormat* Formats;

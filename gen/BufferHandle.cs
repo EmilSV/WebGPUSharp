@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// The Buffer represents a block of memory that can be used to store raw data to use
+/// in GPU operations.
+/// </summary>
 public readonly unsafe partial struct BufferHandle : IEquatable<BufferHandle>
 {
     private readonly nuint _ptr;
@@ -45,6 +49,9 @@ public readonly unsafe partial struct BufferHandle : IEquatable<BufferHandle>
 
     public void* GetConstMappedRange(nuint offset, nuint size) => WebGPU_FFI.BufferGetConstMappedRange(this, offset, size);
 
+    /// <summary>
+    /// An enumerated value representing the mapped state of the Buffer.
+    /// </summary>
     public BufferMapState GetMapState() => WebGPU_FFI.BufferGetMapState(this);
 
     /// <summary>
@@ -54,8 +61,14 @@ public readonly unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     /// <param name="size">Size in bytes of the ArrayBuffer to return.</param>
     public void* GetMappedRange(nuint offset, nuint size) => WebGPU_FFI.BufferGetMappedRange(this, offset, size);
 
+    /// <summary>
+    /// Returns the size of the buffer in bytes.
+    /// </summary>
     public ulong GetSize() => WebGPU_FFI.BufferGetSize(this);
 
+    /// <summary>
+    /// Returns the allowed usages of the Buffer
+    /// </summary>
     public BufferUsage GetUsage() => WebGPU_FFI.BufferGetUsage(this);
 
     /// <summary>
@@ -74,10 +87,12 @@ public readonly unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     /// <param name="mode">Whether the buffer should be mapped for reading or writing.</param>
     /// <param name="offset">Offset in bytes into the buffer to the start of the range to map.</param>
     /// <param name="size">Size in bytes of the range to map.</param>
-    public void MapAsync(MapMode mode, nuint offset, nuint size, delegate* unmanaged[Cdecl]<BufferMapAsyncStatus, void*, void> callback, void* userdata) => WebGPU_FFI.BufferMapAsync(this, mode, offset, size, callback, userdata);
+    public Future MapAsync(MapMode mode, nuint offset, nuint size, BufferMapCallbackInfoFFI callbackInfo) => WebGPU_FFI.BufferMapAsync(this, mode, offset, size, callbackInfo);
 
-    public Future MapAsync(MapMode mode, nuint offset, nuint size, BufferMapCallbackInfo2FFI callbackInfo) => WebGPU_FFI.BufferMapAsync2(this, mode, offset, size, callbackInfo);
-
+    /// <summary>
+    /// Sets a label on the Buffer.
+    /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.BufferSetLabel(this, label);
 
     /// <summary>

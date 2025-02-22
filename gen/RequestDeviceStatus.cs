@@ -8,5 +8,4 @@ public enum RequestDeviceStatus
     Success = 1,
     InstanceDropped = 2,
     Error = 3,
-    Unknown = 4,
 }

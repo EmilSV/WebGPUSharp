@@ -3,8 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// describes the behavior of the sampler if the sampled texels extend beyond the
+/// bounds of the sampled texture.
+/// </summary>
 public enum AddressMode
 {
+    /// <summary>
+    /// No address mode is specified. (uses default address mode)
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Texture coordinates are clamped between 0.0 and 1.0, inclusive.

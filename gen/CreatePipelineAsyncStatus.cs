@@ -9,7 +9,4 @@ public enum CreatePipelineAsyncStatus
     InstanceDropped = 2,
     ValidationError = 3,
     InternalError = 4,
-    DeviceLost = 5,
-    DeviceDestroyed = 6,
-    Unknown = 7,
 }

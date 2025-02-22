@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Describes the depth/stencil state in a render pipeline.
+/// </summary>
 public unsafe partial struct DepthStencilState
 {
     public ChainedStruct* NextInChain;

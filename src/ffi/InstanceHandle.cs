@@ -22,15 +22,18 @@ public readonly unsafe partial struct InstanceHandle :
             try
             {
                 taskCompletionSource = new TaskCompletionSource<AdapterHandle>();
-                handle = GCHandle.Alloc(taskCompletionSource);
-
                 fixed (RequestAdapterOptionsFFI* optionsPtr = &options)
                 {
                     WebGPU_FFI.InstanceRequestAdapter(
                        instance: this,
                        options: optionsPtr,
-                       callback: &OnAdapterRequestEnded,
-                       userdata: (void*)Unsafe.As<GCHandle, nuint>(ref handle)
+                       callbackInfo : new()
+                       {
+                           Mode = CallbackMode.AllowSpontaneous,
+                           Callback = &OnAdapterRequestEnded,
+                           Userdata1 = AllocUserData(taskCompletionSource),
+                           Userdata2 = null
+                       }
                     );
                 }
             }
@@ -95,7 +98,7 @@ public readonly unsafe partial struct InstanceHandle :
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnAdapterRequestEnded(
         RequestAdapterStatus status, AdapterHandle adapter,
-        StringViewFFI message, void* userdata)
+        StringViewFFI message, void* userdata, void* _)
     {
         GCHandle handle = Unsafe.BitCast<nuint, GCHandle>((nuint)userdata);
         TaskCompletionSource<AdapterHandle>? taskCompletionSource = null;

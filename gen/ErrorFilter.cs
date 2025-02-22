@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Specifies which errors should be caught by the error scope.
+/// </summary>
 public enum ErrorFilter
 {
     /// <summary>

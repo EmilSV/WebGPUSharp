@@ -9,5 +9,4 @@ public enum RequestAdapterStatus
     InstanceDropped = 2,
     Unavailable = 3,
     Error = 4,
-    Unknown = 5,
 }

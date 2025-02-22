@@ -5,8 +5,9 @@ namespace WebGpuSharp;
 
 public enum StorageTextureAccess
 {
-    Undefined = 0,
-    WriteOnly = 1,
-    ReadOnly = 2,
-    ReadWrite = 3,
+    BindingNotUsed = 0,
+    Undefined = 1,
+    WriteOnly = 2,
+    ReadOnly = 3,
+    ReadWrite = 4,
 }
