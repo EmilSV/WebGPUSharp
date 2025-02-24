@@ -14,7 +14,7 @@
     <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_WebGpuSharp_NativeRuntime>
     <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'arm64')">osx-arm64</_WebGpuSharp_NativeRuntime>
     <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-x64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
-    <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == '>osx-arm64'">webgpu_dawn.dynlib</_WebGpuSharp_NativeLibName>
+    <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == '>osx-arm64'"webgpu_dawn.dynlib</_WebGpuSharp_NativeLibName>
   </PropertyGroup>
   <ItemGroup>
     <Content Condition="'$(_WebGpuSharp_NativeRuntime)' != ''" Include="runtimes/$(_WebGpuSharp_NativeRuntime)/native/$(_WebGpuSharp_NativeLibName)">
