@@ -3,8 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Defines which polygons are considered front-facing by a <see cref="WebGpuSharp.RenderPipeline" />
+/// </summary>
 public enum FrontFace
 {
+    /// <summary>
+    /// Indicates no value is passed for this argument
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Polygons with vertices whose framebuffer coordinates are given in counter-clockwise order

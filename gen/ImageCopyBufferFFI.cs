@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// In an image copy operation, <see cref="ImageCopyBufferFFI" /> defines a <see cref="BufferHandle" /> and, together
+/// with the copySize, how image data is laid out in the buffer's memory
+/// </summary>
 public unsafe partial struct ImageCopyBufferFFI
 {
     public TextureDataLayout Layout = new();

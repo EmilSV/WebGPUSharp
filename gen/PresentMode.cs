@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Describes when and in which order frames are presented on the screen when <see cref="WebGpuSharp.Surface.Present" /> is called.
+/// </summary>
 public enum PresentMode
 {
     Fifo = 1,

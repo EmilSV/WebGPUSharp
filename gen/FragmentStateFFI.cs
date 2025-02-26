@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Represents the fragment state of a pipeline.
+/// </summary>
 public unsafe partial struct FragmentStateFFI
 {
     public ChainedStruct* NextInChain;
