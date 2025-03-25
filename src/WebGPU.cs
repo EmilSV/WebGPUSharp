@@ -1,3 +1,5 @@
+using WebGpuSharp.FFI;
+
 namespace WebGpuSharp;
 
 public static unsafe partial class WebGPU

@@ -1,3 +1,5 @@
+using WebGpuSharp.FFI;
+
 namespace WebGpuSharp;
 
 public partial struct Limits
