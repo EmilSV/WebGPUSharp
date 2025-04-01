@@ -17,7 +17,7 @@ public readonly unsafe partial struct BindGroupHandle :
     public readonly void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
             WebGPU_FFI.BindGroupSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));

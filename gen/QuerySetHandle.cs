@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Handle to a query set. It can be created with <see cref="DeviceHandle.CreateQuerySet"></see>.
+/// </summary>
 public readonly unsafe partial struct QuerySetHandle : IEquatable<QuerySetHandle>
 {
     private readonly nuint _ptr;
@@ -36,12 +39,20 @@ public readonly unsafe partial struct QuerySetHandle : IEquatable<QuerySetHandle
     public override int GetHashCode() => _ptr.GetHashCode();
 
     /// <summary>
-    /// Destroys the  <see cref="WebGpuSharp.QuerySet"/>.
+    /// Destroys the  <see cref="QuerySet"/>.
     /// </summary>
     public void Destroy() => WebGPU_FFI.QuerySetDestroy(this);
 
+    /// <summary>
+    /// Gets the number of queries managed by this QuerySet.
+    /// </summary>
+    /// <returns>number of queries managed by this QuerySet.</returns>
     public uint GetCount() => WebGPU_FFI.QuerySetGetCount(this);
 
+    /// <summary>
+    /// Sets a label on the QuerySet.
+    /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.QuerySetSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.QuerySetAddRef(this);

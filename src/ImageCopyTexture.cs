@@ -8,7 +8,7 @@ public struct ImageCopyTexture :
 {
     public required TextureBase Texture;
     public uint MipLevel = 0;
-    public Origin3D Origin= new();
+    public Origin3D Origin = new();
     public TextureAspect Aspect = TextureAspect.All;
 
     public ImageCopyTexture()

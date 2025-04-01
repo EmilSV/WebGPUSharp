@@ -105,7 +105,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
         }
         catch (Exception)
         {
-            
+
         }
     }
 }

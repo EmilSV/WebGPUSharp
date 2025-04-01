@@ -3,8 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Operation to perform to the output attachment at the end of a render pass.
+/// </summary>
 public enum StoreOp
 {
+    /// <summary>
+    /// Indicates no value is passed for this argument
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Stores the resulting value of the render pass for this attachment.

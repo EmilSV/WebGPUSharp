@@ -219,8 +219,8 @@ public unsafe readonly partial struct AdapterHandle :
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static unsafe void OnDeviceRequestEndedDelegate(
-      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, 
-      void* userdata , void* _)
+      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message,
+      void* userdata, void* _)
     {
         Action<DeviceHandle>? callback = null;
         try

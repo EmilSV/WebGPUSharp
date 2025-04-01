@@ -5,9 +5,9 @@ namespace WebGpuSharp;
 
 public abstract class TextureBase : WebGPUHandleWrapperBase<TextureHandle>
 {
-    public TextureView CreateView(in TextureViewDescriptor textureViewDescriptor) => 
+    public TextureView CreateView(in TextureViewDescriptor textureViewDescriptor) =>
         Handle.CreateView(textureViewDescriptor).ToSafeHandle(false)!;
-        
+
     public TextureView CreateView() => Handle.CreateView().ToSafeHandle(false)!;
     public void Destroy() => Handle.Destroy();
     public uint GetDepthOrArrayLayers() => Handle.GetDepthOrArrayLayers();

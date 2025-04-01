@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public abstract class RenderBundleBase : 
+public abstract class RenderBundleBase :
     WebGPUHandleWrapperBase<RenderBundleHandle>
 {
 }

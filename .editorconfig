@@ -10,3 +10,14 @@ tab_width = 4
 
 [*.{cs,vb}]
 dotnet_diagnostic.IDE0018.severity = none
+
+[*.{cs,vb}]
+dotnet_diagnostic.IDE0001.severity = warning
+dotnet_diagnostic.IDE0002.severity = warning
+dotnet_diagnostic.IDE0047.severity = warning
+dotnet_diagnostic.IDE0049.severity = warning
+dotnet_diagnostic.IDE0250.severity = warning
+dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary
+dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary
+dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary

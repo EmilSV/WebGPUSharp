@@ -3,6 +3,11 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a Surface.
+/// 
+/// For use with <see cref="Surface.Configure" />.
+/// </summary>
 public unsafe partial struct SurfaceConfigurationFFI
 {
     public ChainedStruct* NextInChain;

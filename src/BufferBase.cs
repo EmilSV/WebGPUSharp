@@ -266,7 +266,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public unsafe void GetMappedRange<T>(ReadWriteContextDelegate<T> callback)
         where T : unmanaged
     {
-        GetMappedRange<T>(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
+        GetMappedRange(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
     }
 
     public void GetMappedRange(ReadWriteContextDelegate<byte> callback)

@@ -111,8 +111,8 @@ public readonly unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// The returned future resolves when the created pipeline is ready to be used without additional delay.
     /// </summary>
     /// <remarks">Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
-    /// <param name="callbackInfo">The callbackInfo to use for the RenderPipeline</param>
     /// <param name="descriptor">The descriptor to use for the RenderPipeline</param>
+    /// <param name="callbackInfo">The callbackInfo to use for the RenderPipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
     public Future CreateRenderPipelineAsync(RenderPipelineDescriptorFFI* descriptor, CreateRenderPipelineAsyncCallbackInfoFFI callbackInfo) => WebGPU_FFI.DeviceCreateRenderPipelineAsync(this, descriptor, callbackInfo);
 

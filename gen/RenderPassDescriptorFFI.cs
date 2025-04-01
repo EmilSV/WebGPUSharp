@@ -3,27 +3,38 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes the attachments of a render pass.
+/// 
+/// For use with <see cref="CommandEncoderHandle.BeginRenderPass" />.
+/// </summary>
 public unsafe partial struct RenderPassDescriptorFFI
 {
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// A label to apply to the render pass.
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
+    /// <summary>
+    /// the number of color attachments in the colorAttachments sequence.
+    /// </summary>
     public nuint ColorAttachmentCount;
     /// <summary>
-    /// The set of  <see cref="WebGpuSharp.RenderPassColorAttachment"/> values in this sequence defines which
+    /// The set of  <see cref="RenderPassColorAttachment"/> values in this sequence defines which
     /// color attachments will be output to when executing this render pass.
     /// Due to usage compatibility, no color attachment
     /// may alias another attachment or any resource used inside the render pass.
     /// </summary>
     public required RenderPassColorAttachmentFFI* ColorAttachments;
     /// <summary>
-    /// The  <see cref="WebGpuSharp.RenderPassDepthStencilAttachment"/> value that defines the depth/stencil
+    /// The  <see cref="RenderPassDepthStencilAttachment"/> value that defines the depth/stencil
     /// attachment that will be output to and tested against when executing this render pass.
     /// Due to usage compatibility, no writable depth/stencil attachment
     /// may alias another attachment or any resource used inside the render pass.
     /// </summary>
     public RenderPassDepthStencilAttachmentFFI* DepthStencilAttachment;
     /// <summary>
-    /// The  <see cref="WebGpuSharp.QuerySet"/> value defines where the occlusion query results will be stored for this pass.
+    /// The  <see cref="QuerySet"/> value defines where the occlusion query results will be stored for this pass.
     /// </summary>
     public QuerySetHandle OcclusionQuerySet;
     /// <summary>

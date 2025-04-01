@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// A PipelineLayout object describes the available binding groups of a pipeline. It can be created with <see cref="Device.CreatePipelineLayout" />.
+/// </summary>
 public readonly unsafe partial struct PipelineLayoutHandle : IEquatable<PipelineLayoutHandle>
 {
     private readonly nuint _ptr;
@@ -35,6 +38,9 @@ public readonly unsafe partial struct PipelineLayoutHandle : IEquatable<Pipeline
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Sets the label of the pipeline layout.
+    /// </summary>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.PipelineLayoutSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.PipelineLayoutAddRef(this);

@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public abstract class ShaderModuleBase : 
+public abstract class ShaderModuleBase :
     WebGPUHandleWrapperBase<ShaderModuleHandle>
 {
     public void GetCompilationInfo(CompilationInfoCallback callback)

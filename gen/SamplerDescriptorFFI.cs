@@ -3,15 +3,28 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a Sampler.
+/// 
+/// For use with <see cref="DeviceHandle.CreateSampler" />.
+/// </summary>
 public unsafe partial struct SamplerDescriptorFFI
 {
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// Debug label of the sampler.
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
+    /// <summary>
+    /// How to deal with out of bounds accesses in the u (i.e. x) direction.
+    /// </summary>
     public AddressMode AddressModeU = AddressMode.ClampToEdge;
+    /// <summary>
+    /// How to deal with out of bounds accesses in the v (i.e. y) direction
+    /// </summary>
     public AddressMode AddressModeV = AddressMode.ClampToEdge;
     /// <summary>
-    /// Specifies the  <see cref="AddressMode">address modes</see> for the texture width, height, and depth
-    /// coordinates, respectively.
+    /// How to deal with out of bounds accesses in the w (i.e. z) direction
     /// </summary>
     public AddressMode AddressModeW = AddressMode.ClampToEdge;
     /// <summary>
@@ -27,10 +40,12 @@ public unsafe partial struct SamplerDescriptorFFI
     /// Specifies behavior for sampling between mipmap levels.
     /// </summary>
     public MipmapFilterMode MipmapFilter = MipmapFilterMode.Nearest;
+    /// <summary>
+    /// Minimum level of detail (i.e. mip level) to use
+    /// </summary>
     public float LodMinClamp = 0;
     /// <summary>
-    /// Specifies the minimum and maximum levels of detail, respectively, used internally when
-    /// sampling a texture.
+    /// Maximum level of detail (i.e. mip level) to use
     /// </summary>
     public float LodMaxClamp = 32;
     /// <summary>
@@ -42,14 +57,14 @@ public unsafe partial struct SamplerDescriptorFFI
     public CompareFunction Compare;
     /// <summary>
     /// Specifies the maximum anisotropy value clamp used by the sampler. Anisotropic filtering is
-    /// enabled when  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/> is &gt; 1 and the implementation supports it.
+    /// enabled when  <see cref="SamplerDescriptor.MaxAnisotropy"/> is &gt; 1 and the implementation supports it.
     /// Anisotropic filtering improves the image quality of textures sampled at oblique viewing
-    /// angles. Higher  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/> values indicate the maximum ratio of
+    /// angles. Higher  <see cref="SamplerDescriptor.MaxAnisotropy"/> values indicate the maximum ratio of
     /// anisotropy supported when filtering.
     /// <remarks>
     /// 
-    /// Most implementations support  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/> values in range
-    /// between 1 and 16, inclusive. The used value of  <see cref="WebGpuSharp.SamplerDescriptor.MaxAnisotropy"/>
+    /// Most implementations support  <see cref="SamplerDescriptor.MaxAnisotropy"/> values in range
+    /// between 1 and 16, inclusive. The used value of  <see cref="SamplerDescriptor.MaxAnisotropy"/>
     /// will be clamped to the maximum value that the platform supports.
     /// The precise filtering behavior is implementation-dependent.
     /// 

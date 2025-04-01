@@ -3,8 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Operation to perform to the output attachment at the start of a render pass.
+/// </summary>
 public enum LoadOp
 {
+    /// <summary>
+    /// Indicates no value is passed for this argument
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Loads the existing value for this attachment into the render pass.

@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Primitive type the input mesh is composed of.
+/// </summary>
 public enum PrimitiveTopology
 {
     Undefined = 0,

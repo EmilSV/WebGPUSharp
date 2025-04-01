@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Describes the state of primitive assembly and rasterization in a render pipeline.
+/// </summary>
 public unsafe partial struct PrimitiveState
 {
     public ChainedStruct* NextInChain;

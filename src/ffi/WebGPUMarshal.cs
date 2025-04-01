@@ -419,7 +419,7 @@ public unsafe static partial class WebGPUMarshal
         {
             return null;
         }
-        
+
         var userDataHandle = GCHandle.Alloc(userData);
         return (void*)GCHandle.ToIntPtr(userDataHandle);
     }

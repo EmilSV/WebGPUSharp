@@ -5,7 +5,7 @@ namespace WebGpuSharp.FFI;
 
 /// <summary>
 /// A TextureView is a view onto some subset of the <see href="https://gpuweb.github.io/gpuweb/#texture-subresources"> texture subresources</see>
-/// defined by a particular <see cref="WebGpuSharp.Texture" />.
+/// defined by a particular <see cref="Texture" />.
 /// </summary>
 public readonly unsafe partial struct TextureViewHandle : IEquatable<TextureViewHandle>
 {
@@ -39,6 +39,10 @@ public readonly unsafe partial struct TextureViewHandle : IEquatable<TextureView
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Set the label of the texture view.
+    /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.TextureViewSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.TextureViewAddRef(this);

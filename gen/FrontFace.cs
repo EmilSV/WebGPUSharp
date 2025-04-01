@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 /// <summary>
-/// Defines which polygons are considered front-facing by a <see cref="WebGpuSharp.RenderPipeline" />
+/// Defines which polygons are considered front-facing by a <see cref="RenderPipeline" />
 /// </summary>
 public enum FrontFace
 {

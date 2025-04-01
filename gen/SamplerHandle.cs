@@ -3,6 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Handle to a sampler.
+/// 
+/// A Sampler object defines how a pipeline will sample from a TextureView.
+/// Samplers define image filters (including anisotropy) and address (wrapping) modes, among other things.
+/// See the documentation for SamplerDescriptor for more information.
+/// 
+/// It can be created with <see cref="DeviceHandle.CreateSampler" />.
+/// </summary>
 public readonly unsafe partial struct SamplerHandle : IEquatable<SamplerHandle>
 {
     private readonly nuint _ptr;
@@ -35,6 +44,9 @@ public readonly unsafe partial struct SamplerHandle : IEquatable<SamplerHandle>
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Set the label of the sampler.
+    /// </summary>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.SamplerSetLabel(this, label);
 
     public void AddRef() => WebGPU_FFI.SamplerAddRef(this);

@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes how the vertex buffer is interpreted.
+/// </summary>
 public unsafe partial struct VertexBufferLayoutFFI
 {
     /// <summary>

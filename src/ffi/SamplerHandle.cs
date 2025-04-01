@@ -9,7 +9,7 @@ public unsafe readonly partial struct SamplerHandle :
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
             WebGPU_FFI.SamplerSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));

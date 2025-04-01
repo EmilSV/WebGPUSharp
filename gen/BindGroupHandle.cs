@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp.FFI;
 
 /// <summary>
-/// A handle to a <see cref="WebGpuSharp.BindGroup" />.
+/// A handle to a <see cref="BindGroup" />.
 /// </summary>
 public readonly unsafe partial struct BindGroupHandle : IEquatable<BindGroupHandle>
 {

@@ -3,6 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Encodes a series of GPU operations into a reusable “render bundle”
+/// 
+/// It only supports a handful of render commands, but it makes them reusable.
+/// It can be created with
+/// <see cref="DeviceHandle.CreateRenderBundleEncoder"></see> It can be executed onto a CommandEncoder using <see cref="FFI.RenderPassHandle.ExecuteBundles"></see>
+/// .
+/// 
+/// Executing a RenderBundle is often more efficient than issuing the underlying commands manually.
+/// </summary>
 public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundleEncoderHandle>
 {
     private readonly nuint _ptr;
@@ -35,12 +45,52 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
 
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Draws primitives from the active vertex buffer(s).
+    /// 
+    /// The active vertex buffers can be set with <see cref="SetVertexBuffer"></see>.
+    /// Does not use an Index Buffer.
+    /// If you need this see <see cref="DrawIndexed"></see>.
+    /// 
+    /// Errors if vertices Range is outside of the range of the vertices range of any set vertex buffer.
+    /// </summary>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
+    /// <param name="firstVertex">The index of the first vertex to draw.</param>
+    /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="vertexCount">The number of vertices to draw.</param>
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDraw(this, vertexCount, instanceCount, firstVertex, firstInstance);
 
+    /// <summary>
+    /// Draws indexed primitives using the active index buffer and the active vertex buffer(s).
+    /// 
+    /// The active index buffer can be set with <see cref="SetIndexBuffer" />.
+    /// The active vertex buffer(s) can be set with <see cref="SetVertexBuffer" />.
+    /// 
+    /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
+    /// </summary>
+    /// <param name="indexCount">The number of indices to draw.</param>
+    /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="firstIndex">The index of the first index to draw.</param>
+    /// <param name="baseVertex">The value added to the vertex index before indexing into the vertex buffer.</param>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
     public void DrawIndexed(uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDrawIndexed(this, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 
+    /// <summary>
+    /// Draws indexed primitives using the active index buffer and the active vertex buffers, based on the contents of the indirectBuffer.
+    /// 
+    /// The active index buffer can be set with RenderBundleEncoder.SetIndexBuffer, while the active vertex buffers can be set with RenderBundleEncoder.SetVertexBuffer.
+    /// </summary>
+    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
+    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     public void DrawIndexedIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, indirectBuffer, indirectOffset);
 
+    /// <summary>
+    /// Draws primitives from the active vertex buffer(s) based on the contents of the indirectBuffer.
+    /// 
+    /// The active vertex buffers can be set with <see cref="SetVertexBuffer" />.
+    /// </summary>
+    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
+    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     public void DrawIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, indirectBuffer, indirectOffset);
 
     /// <summary>
@@ -50,18 +100,63 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
 
     public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderBundleEncoderInsertDebugMarker(this, markerLabel);
 
+    /// <summary>
+    /// Stops command recording and creates debug group.
+    /// </summary>
     public void PopDebugGroup() => WebGPU_FFI.RenderBundleEncoderPopDebugGroup(this);
 
+    /// <summary>
+    /// Start record commands and group it into debug marker group.
+    /// </summary>
+    /// <param name="groupLabel">The label of the debug marker group.</param>
     public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderBundleEncoderPushDebugGroup(this, groupLabel);
 
+    /// <summary>
+    /// Sets the active bind group for a given bind group index.
+    /// The bind group layout in the active pipeline when any Draw() function is called must match the layout of this bind group.
+    /// 
+    /// If the bind group have dynamic offsets, provide them in the binding order.
+    /// </summary>
+    /// <param name="groupIndex">The index to set the bind group at.</param>
+    /// <param name="group">Bind group to use for subsequent render or compute commands.</param>
+    /// <param name="dynamicOffsetCount">The number of offsets in dynamicOffsets.</param>
+    /// <param name="dynamicOffsets">A square containing buffer offsets in bytes for each entry in bindGroup marked as buffer.HasDynamicOffset, ordered by BindGroupLayoutEntry.Binding.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
+    /// <summary>
+    /// Sets the active index buffer.
+    /// 
+    /// Subsequent calls to DrawIndexed on this RenderBundleEncoderHandle will use buffer as the source index buffer.
+    /// </summary>
+    /// <param name="buffer">The index buffer to use.</param>
+    /// <param name="format">The format of the index buffer.</param>
+    /// <param name="offset">The offset in bytes from the start of the buffer to the first index.</param>
+    /// <param name="size">The size in bytes of the index buffer.</param>
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, ulong offset, ulong size) => WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, buffer, format, offset, size);
 
+    /// <summary>
+    /// Sets the debug label of the RenderBundleEncoderHandle.
+    /// </summary>
+    /// <param name="label">The new debug label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderBundleEncoderSetLabel(this, label);
 
+    /// <summary>
+    /// Sets the current RenderPipeline.
+    /// </summary>
+    /// <param name="pipeline">The render pipeline to use for subsequent drawing commands.</param>
     public void SetPipeline(RenderPipelineHandle pipeline) => WebGPU_FFI.RenderBundleEncoderSetPipeline(this, pipeline);
 
+    /// <summary>
+    /// Assign a vertex buffer to a slot.
+    /// 
+    /// Subsequent calls to draw and draw_indexed on this RenderBundleEncoderHandle will use buffer as one of the source vertex buffers.
+    /// 
+    /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
+    /// </summary>
+    /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
+    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
+    /// <param name="offset">Offset in bytes into buffer where the vertex data begins.</param>
+    /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size) => WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, buffer, offset, size);
 
     public void AddRef() => WebGPU_FFI.RenderBundleEncoderAddRef(this);

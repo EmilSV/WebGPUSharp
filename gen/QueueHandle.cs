@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Handle to a command queue on a device.
+/// A Queue executes recorded CommandBuffer objects and provides convenience methods for writing to buffers and textures.
+/// </summary>
 public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
 {
     private readonly nuint _ptr;
@@ -37,6 +41,9 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
 
     public Future OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfo);
 
+    /// <summary>
+    /// Sets a label on the queue.
+    /// </summary>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel(this, label);
 
     /// <summary>
@@ -46,7 +53,7 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     public void Submit(nuint commandCount, CommandBufferHandle* commands) => WebGPU_FFI.QueueSubmit(this, commandCount, commands);
 
     /// <summary>
-    /// Issues a write operation of the provided data into a  <see cref="WebGpuSharp.Buffer"/>.
+    /// Issues a write operation of the provided data into a  <see cref="Buffer"/>.
     /// </summary>
     /// <param name="buffer">The buffer to write to.</param>
     /// <param name="bufferOffset">Offset in bytes into <paramref name="buffer"/> to begin writing at.</param>
@@ -62,7 +69,7 @@ public readonly unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     public void WriteBuffer(BufferHandle buffer, ulong bufferOffset, void* data, nuint size) => WebGPU_FFI.QueueWriteBuffer(this, buffer, bufferOffset, data, size);
 
     /// <summary>
-    /// Issues a write operation of the provided data into a  <see cref="WebGpuSharp.Texture"/>.
+    /// Issues a write operation of the provided data into a  <see cref="Texture"/>.
     /// </summary>
     /// <param name="destination">The texture subresource and origin to write to.</param>
     /// <param name="data">Data to write into <paramref name="destination"/>.</param>

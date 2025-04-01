@@ -3,9 +3,17 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a Texture.
+/// 
+/// For use with <see cref="DeviceHandle.CreateTexture" />.
+/// </summary>
 public unsafe partial struct TextureDescriptorFFI
 {
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// A debug label for the texture.
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
     /// The allowed usages for the texture.
@@ -28,23 +36,26 @@ public unsafe partial struct TextureDescriptorFFI
     /// </summary>
     public uint MipLevelCount = 1;
     /// <summary>
-    /// The sample count of the texture. A  <see cref="WebGpuSharp.TextureDescriptor.SampleCount"/> &gt; `1` indicates
+    /// The sample count of the texture. A  <see cref="TextureDescriptor.SampleCount"/> &gt; `1` indicates
     /// a multisampled texture.
     /// </summary>
     public uint SampleCount = 1;
+    /// <summary>
+    /// The number of entries in the <see cref="ViewFormats" /> sequence.
+    /// </summary>
     public nuint ViewFormatCount;
     /// <summary>
-    /// Specifies what view  <see cref="WebGpuSharp.TextureViewDescriptor.Format"/> values will be allowed when calling
-    ///  <see cref="WebGpuSharp.Texture.CreateView"/> on this texture (in addition to the texture's actual
-    ///  <see cref="WebGpuSharp.TextureDescriptor.Format"/>).
+    /// Specifies what view  <see cref="TextureViewDescriptor.Format"/> values will be allowed when calling
+    ///  <see cref="Texture.CreateView"/> on this texture (in addition to the texture's actual
+    ///  <see cref="TextureDescriptor.Format"/>).
     /// <remarks>
     /// 
     /// Adding a format to this list may have a significant performance impact, so it is best
     /// to avoid adding formats unnecessarily.
     /// The actual performance impact is highly dependent on the target system; developers must
     /// test various systems to find out the impact on their particular application.
-    /// For example, on some systems any texture with a  <see cref="WebGpuSharp.TextureDescriptor.Format"/> or
-    ///  <see cref="WebGpuSharp.TextureDescriptor.ViewFormats"/> entry including
+    /// For example, on some systems any texture with a  <see cref="TextureDescriptor.Format"/> or
+    ///  <see cref="TextureDescriptor.ViewFormats"/> entry including
     ///  <see cref="TextureFormat.Rgba8unorm-srgb"/> will perform less optimally than a
     ///  <see cref="TextureFormat.Rgba8unorm"/> texture which does not.
     /// Similar caveats exist for other formats and pairs of formats on other systems.

@@ -33,14 +33,14 @@ public readonly ref struct WebGpuAllocatorHandle
     public unsafe T* Realloc<T>(T* ptr, nuint amount)
         where T : unmanaged
     {
-        return _allocator.Realloc<T>(ptr, amount);
+        return _allocator.Realloc(ptr, amount);
     }
 
     public unsafe void ReallocSpan<T>(ref Span<T> span, nuint amount)
         where T : unmanaged
     {
         var ptr = Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
-        ptr = _allocator.Realloc<T>((T*)ptr, amount);
+        ptr = _allocator.Realloc((T*)ptr, amount);
         span = new Span<T>(ptr, (int)amount);
     }
 

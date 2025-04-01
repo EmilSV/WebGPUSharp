@@ -27,7 +27,7 @@ public readonly unsafe partial struct InstanceHandle :
                     WebGPU_FFI.InstanceRequestAdapter(
                        instance: this,
                        options: optionsPtr,
-                       callbackInfo : new()
+                       callbackInfo: new()
                        {
                            Mode = CallbackMode.AllowSpontaneous,
                            Callback = &OnAdapterRequestEnded,

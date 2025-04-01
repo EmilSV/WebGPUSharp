@@ -50,7 +50,7 @@ public readonly ref struct WGPUNullableRef<T>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public ref readonly T GetPinnableReference()
     {
-        return ref _value;    
+        return ref _value;
     }
 
 }

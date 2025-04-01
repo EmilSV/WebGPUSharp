@@ -11,7 +11,7 @@ public unsafe readonly partial struct PipelineLayoutHandle :
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {

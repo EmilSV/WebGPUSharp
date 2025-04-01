@@ -40,7 +40,7 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     public override int GetHashCode() => _ptr.GetHashCode();
 
     /// <summary>
-    /// Dispatch work to be performed with the current  <see cref="WebGpuSharp.ComputePipeline"/>.
+    /// Dispatch work to be performed with the current  <see cref="ComputePipeline"/>.
     /// See #computing-operations for the detailed specification.
     /// </summary>
     /// <param name="workgroupCountX">X dimension of the grid of workgroups to dispatch.</param>
@@ -49,11 +49,11 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     public void DispatchWorkgroups(uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ) => WebGPU_FFI.ComputePassEncoderDispatchWorkgroups(this, workgroupCountX, workgroupCountY, workgroupCountZ);
 
     /// <summary>
-    /// Dispatch work to be performed with the current  <see cref="WebGpuSharp.ComputePipeline"/> using parameters read
-    /// from a  <see cref="WebGpuSharp.Buffer"/>.
+    /// Dispatch work to be performed with the current  <see cref="ComputePipeline"/> using parameters read
+    /// from a  <see cref="Buffer"/>.
     /// See #computing-operations for the detailed specification.
     /// packed block of **three 32-bit unsigned integer values (12 bytes total)**,
-    /// given in the same order as the arguments for  <see cref="WebGpuSharp.ComputePassEncoder.DispatchWorkgroups"/>.
+    /// given in the same order as the arguments for  <see cref="ComputePassEncoder.DispatchWorkgroups"/>.
     /// For example:
     /// </summary>
     /// <param name="indirectBuffer">Buffer containing the indirect dispatch parameters.</param>
@@ -84,14 +84,14 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     /// <summary>
     /// Sets the current GPUBindGroup for the given index.
     /// </summary>
+    /// <param name="index">The index to set the bind group at.</param>
+    /// <param name="bindGroup">Bind group to use for subsequent render or compute commands.</param>
     /// <param name="dynamicOffsets">
     /// a sequence containing buffer offsets in bytes for each
     /// entry in bindGroup marked as Buffer.HasDynamicOffset, ordered by
     /// BindGroupLayoutEntry.Binding.
     /// </param>
     /// <param name="dynamicOffsetCount">The number of dynamic offsets in the dynamicOffsets sequence.</param>
-    /// <param name="bindGroup">Bind group to use for subsequent render or compute commands.</param>
-    /// <param name="index">The index to set the bind group at.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.ComputePassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
     /// <summary>
@@ -101,7 +101,7 @@ public readonly unsafe partial struct ComputePassEncoderHandle : IEquatable<Comp
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.ComputePassEncoderSetLabel(this, label);
 
     /// <summary>
-    /// Sets the current  <see cref="WebGpuSharp.ComputePipeline"/>.
+    /// Sets the current  <see cref="ComputePipeline"/>.
     /// </summary>
     /// <param name="pipeline">The compute pipeline to use for subsequent dispatch commands.</param>
     public void SetPipeline(ComputePipelineHandle pipeline) => WebGPU_FFI.ComputePassEncoderSetPipeline(this, pipeline);

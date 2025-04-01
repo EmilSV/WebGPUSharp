@@ -309,7 +309,7 @@ public unsafe class PinnedList<T> : IList<T>, IReadOnlyList<T>
         {
             PinnedList<T> localList = _list;
 
-            if (_version == localList._version && ((uint)_index < (uint)localList._size))
+            if (_version == localList._version && (uint)_index < (uint)localList._size)
             {
                 _current = localList._items[_index];
                 _index++;

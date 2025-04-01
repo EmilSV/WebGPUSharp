@@ -68,7 +68,7 @@ public readonly unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// This is a one-time action: if a device is returned successfully,
     /// the adapter becomes {{adapter/state/"consumed"}}.
     /// </summary>
-    /// <param name="descriptor">Description of the  <see cref="WebGpuSharp.Device"/> to request.</param>
+    /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
     public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, options, callbackInfo);
 
     public void AddRef() => WebGPU_FFI.AdapterAddRef(this);

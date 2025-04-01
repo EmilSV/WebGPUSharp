@@ -21,11 +21,11 @@ public unsafe partial struct BufferBindingLayout
     public WebGPUBool HasDynamicOffset = false;
     /// <summary>
     /// Indicates the minimum BufferBinding.Size of a buffer binding used with this bind point.
-    /// Bindings are always validated against this size in  <see cref="WebGpuSharp.Device.CreateBindGroup"/>.
+    /// Bindings are always validated against this size in  <see cref="Device.CreateBindGroup"/>.
     /// If this *is not* `0`, pipeline creation additionally validates
     /// that this value &ge; the minimum buffer binding size of the variable.
     /// If this *is* `0`, it is ignored by pipeline creation, and instead draw/dispatch commands
-    /// validate that each binding in the  <see cref="WebGpuSharp.BindGroup"/>
+    /// validate that each binding in the  <see cref="BindGroup"/>
     /// satisfies the minimum buffer binding size of the variable.
     /// Note:
     /// Similar execution-time validation is theoretically possible for other

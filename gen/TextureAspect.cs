@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Kind of data the texture holds.
+/// </summary>
 public enum TextureAspect
 {
     Undefined = 0,

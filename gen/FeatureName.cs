@@ -27,11 +27,11 @@ public enum FeatureName
     /// 
     /// This feature allows the use of
     /// 
-    /// <see cref="WebGpuSharp.RenderPassDescriptor.TimestampWrites" /><see cref="WebGpuSharp.ComputePassDescriptor.TimestampWrites" /> to write out timestamps.
+    /// <see cref="RenderPassDescriptor.TimestampWrites" /><see cref="WebGpuSharp.ComputePassDescriptor.TimestampWrites" /> to write out timestamps.
     /// 
     /// For arbitrary timestamp write commands on encoders refer to <see cref="FeatureName.TimestampQueryInsideEncoders" />. For arbitrary timestamp write commands on passes refer to <see cref="FeatureName.TimestampQueryInsidePasses" />.
     /// 
-    /// They must be resolved using <see cref="WebGpuSharp.CommandEncoder.ResolveQuerySet" /> into a buffer, the timestamps results is in nanoseconds and stored as 64bit integers. Multiple timestamps can then be diffed to get the time for operations between them to finish.
+    /// They must be resolved using <see cref="CommandEncoder.ResolveQuerySet" /> into a buffer, the timestamps results is in nanoseconds and stored as 64bit integers. Multiple timestamps can then be diffed to get the time for operations between them to finish.
     /// 
     /// Supported Platforms:<list type="bullet"><item><description>Vulkan</description></item><item><description>DX12</description></item><item><description>Metal</description></item></list>
     /// </summary>

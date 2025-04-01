@@ -3,7 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public abstract class QuerySetBase : 
+public abstract class QuerySetBase :
     WebGPUHandleWrapperBase<QuerySetHandle>
 {
     public void Destroy()

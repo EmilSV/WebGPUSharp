@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// View of a texture which can be used to copy to/from a buffer/texture.
+/// </summary>
 public unsafe partial struct ImageCopyTextureFFI
 {
     /// <summary>
@@ -10,7 +13,7 @@ public unsafe partial struct ImageCopyTextureFFI
     /// </summary>
     public required TextureHandle Texture;
     /// <summary>
-    /// Mip-map level of the  <see cref="WebGpuSharp.ImageCopyTexture.Texture"/> to copy to/from.
+    /// Mip-map level of the  <see cref="ImageCopyTexture.Texture"/> to copy to/from.
     /// </summary>
     public uint MipLevel = 0;
     /// <summary>
@@ -19,7 +22,7 @@ public unsafe partial struct ImageCopyTextureFFI
     /// </summary>
     public Origin3D Origin = new();
     /// <summary>
-    /// Defines which aspects of the  <see cref="WebGpuSharp.ImageCopyTexture.Texture"/> to copy to/from.
+    /// Defines which aspects of the  <see cref="ImageCopyTexture.Texture"/> to copy to/from.
     /// </summary>
     public TextureAspect Aspect = TextureAspect.All;
 

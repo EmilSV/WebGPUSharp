@@ -3,9 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// A struct containing the WGSL code.
+/// </summary>
 public unsafe partial struct ShaderSourceWGSLFFI
 {
     public ChainedStruct Chain;
+    /// <summary>
+    /// The WGSL code.
+    /// </summary>
     public StringViewFFI Code = StringViewFFI.NullValue;
 
     public ShaderSourceWGSLFFI() { }

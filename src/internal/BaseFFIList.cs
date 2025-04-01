@@ -582,7 +582,7 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
         {
             BaseFFIList<TMarshal, TManaged, TFFI, TCache> localList = _list;
 
-            if (_version == localList._version && ((uint)_index < (uint)localList._size))
+            if (_version == localList._version && (uint)_index < (uint)localList._size)
             {
                 _current = localList._managedItems[_index];
                 _index++;
@@ -630,7 +630,7 @@ public abstract class BaseFFIList<TMarshal, TManaged, TFFI, TCache> :
 
         readonly void IDisposable.Dispose()
         {
-           
+
         }
     }
 }

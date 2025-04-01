@@ -438,7 +438,7 @@ public unsafe sealed class ColorTargetStateList :
         {
             ColorTargetStateList localList = _list;
 
-            if (_version == localList._version && ((uint)_index < (uint)localList._size))
+            if (_version == localList._version && (uint)_index < (uint)localList._size)
             {
                 _current = localList[_index];
                 _index++;

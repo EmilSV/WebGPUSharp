@@ -15,12 +15,12 @@ public enum VertexStepMode
 {
     Undefined = 0,
     /// <summary>
-    /// The address is advanced by  <see cref="WebGpuSharp.VertexBufferLayout.ArrayStride"/> for each vertex,
+    /// The address is advanced by  <see cref="VertexBufferLayout.ArrayStride"/> for each vertex,
     /// and reset between instances.
     /// </summary>
     Vertex = 1,
     /// <summary>
-    /// The address is advanced by  <see cref="WebGpuSharp.VertexBufferLayout.ArrayStride"/> for each instance.
+    /// The address is advanced by  <see cref="VertexBufferLayout.ArrayStride"/> for each instance.
     /// </summary>
     Instance = 2,
 }

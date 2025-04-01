@@ -3,8 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Power Preference when choosing a physical adapter.
+/// </summary>
 public enum PowerPreference
 {
+    /// <summary>
+    /// Indicates no value is passed for this argument
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Indicates a request to prioritize power savings over performance.

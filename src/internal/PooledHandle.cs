@@ -70,7 +70,7 @@ internal unsafe sealed class PooledHandle<T>
     {
         VerifyToken(localToken);
         var oldHandle = handle;
-        if(T.IsNull(oldHandle))
+        if (T.IsNull(oldHandle))
         {
             throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid.");
         }

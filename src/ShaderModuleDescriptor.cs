@@ -11,7 +11,7 @@ public ref partial struct ShaderModuleDescriptor
         in ShaderModuleWGSLDescriptor next
     )
     {
-        if(next._chainType != SType.ShaderSourceWGSL)
+        if (next._chainType != SType.ShaderSourceWGSL)
         {
             throw new ArgumentException("ShaderModuleDescriptor must be initialized with a valid ShaderModuleWGSLDescriptor");
         }

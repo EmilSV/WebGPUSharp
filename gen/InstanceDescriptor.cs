@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 /// <summary>
-/// The descriptor for the creation of an <see cref="WebGpuSharp.Instance" />
+/// The descriptor for the creation of an <see cref="Instance" />
 /// </summary>
 public unsafe partial struct InstanceDescriptor
 {
