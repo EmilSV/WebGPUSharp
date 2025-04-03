@@ -48,7 +48,11 @@ public unsafe partial struct TextureDescriptorFFI
     /// Specifies what view  <see cref="TextureViewDescriptor.Format"/> values will be allowed when calling
     ///  <see cref="Texture.CreateView"/> on this texture (in addition to the texture's actual
     ///  <see cref="TextureDescriptor.Format"/>).
-    /// <remarks>
+    /// 
+    /// Formats in this list must be texture view format compatible with the texture format.
+    /// 
+    /// </summary>
+    /// <remarks>
     /// 
     /// Adding a format to this list may have a significant performance impact, so it is best
     /// to avoid adding formats unnecessarily.
@@ -59,11 +63,8 @@ public unsafe partial struct TextureDescriptorFFI
     ///  <see cref="TextureFormat.Rgba8unorm-srgb"/> will perform less optimally than a
     ///  <see cref="TextureFormat.Rgba8unorm"/> texture which does not.
     /// Similar caveats exist for other formats and pairs of formats on other systems.
-    /// 
-    /// </remarks>
-    /// Formats in this list must be texture view format compatible with the texture format.
     /// 
-    /// </summary>
+    /// </remarks>
     public TextureFormat* ViewFormats;
 
     public TextureDescriptorFFI() { }

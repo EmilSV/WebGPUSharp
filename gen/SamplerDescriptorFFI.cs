@@ -61,15 +61,16 @@ public unsafe partial struct SamplerDescriptorFFI
     /// Anisotropic filtering improves the image quality of textures sampled at oblique viewing
     /// angles. Higher  <see cref="SamplerDescriptor.MaxAnisotropy"/> values indicate the maximum ratio of
     /// anisotropy supported when filtering.
-    /// <remarks>
+    /// 
+    /// </summary>
+    /// <remarks>
     /// 
     /// Most implementations support  <see cref="SamplerDescriptor.MaxAnisotropy"/> values in range
     /// between 1 and 16, inclusive. The used value of  <see cref="SamplerDescriptor.MaxAnisotropy"/>
     /// will be clamped to the maximum value that the platform supports.
     /// The precise filtering behavior is implementation-dependent.
-    /// 
+    /// 
     /// </remarks>
-    /// </summary>
     public ushort MaxAnisotropy = 1;
 
     public SamplerDescriptorFFI() { }
