@@ -54,10 +54,10 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
     /// 
     /// Errors if vertices Range is outside of the range of the vertices range of any set vertex buffer.
     /// </summary>
-    /// <param name="firstInstance">The index of the first instance to draw.</param>
     /// <param name="firstVertex">The index of the first vertex to draw.</param>
-    /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
     /// <param name="vertexCount">The number of vertices to draw.</param>
+    /// <param name="instanceCount">The number of instances to draw.</param>
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDraw(this, vertexCount, instanceCount, firstVertex, firstInstance);
 
     /// <summary>
@@ -68,11 +68,11 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
     /// 
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
-    /// <param name="indexCount">The number of indices to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
     /// <param name="firstIndex">The index of the first index to draw.</param>
     /// <param name="baseVertex">The value added to the vertex index before indexing into the vertex buffer.</param>
     /// <param name="firstInstance">The index of the first instance to draw.</param>
+    /// <param name="indexCount">The number of indices to draw.</param>
     public void DrawIndexed(uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDrawIndexed(this, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 
     /// <summary>
