@@ -7,8 +7,9 @@ namespace WebGpuSharp;
 /// <summary>
 /// Describes the shader stages that a binding will be visible from.
 /// These can be combined so something that is visible from both vertex and fragment shaders can be defined as:
-/// <see cref="ShaderStage.Vertex" /> | <see cref="ShaderStage.Fragment" />
+/// <see cref="Vertex" /> | <see cref="Fragment" />
 /// </summary>
+[Flags]
 public enum ShaderStage : ulong
 {
     /// <summary>

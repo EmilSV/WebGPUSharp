@@ -7,6 +7,7 @@ namespace WebGpuSharp;
 /// <summary>
 /// Type of buffer mapping.
 /// </summary>
+[Flags]
 public enum MapMode : ulong
 {
     /// <summary>

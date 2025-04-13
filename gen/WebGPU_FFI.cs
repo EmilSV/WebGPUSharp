@@ -87,8 +87,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="callbackInfo">The callback to call when the device is ready</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuAdapterRequestDevice")]
     public static extern Future AdapterRequestDevice(AdapterHandle adapter, DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo);
+    /// <summary>
+    /// Increments the reference count of the <see cref="AdapterHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuAdapterAddRef")]
     public static extern void AdapterAddRef(AdapterHandle adapter);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="AdapterHandle"/>. When the reference count reaches zero, the <see cref="AdapterHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="AdapterHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuAdapterRelease")]
     public static extern void AdapterRelease(AdapterHandle adapter);
     /// <summary>
@@ -97,14 +118,56 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The label to set.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBindGroupSetLabel")]
     public static extern void BindGroupSetLabel(BindGroupHandle bindGroup, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="BindGroupHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBindGroupAddRef")]
     public static extern void BindGroupAddRef(BindGroupHandle bindGroup);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="BindGroupHandle"/>. When the reference count reaches zero, the <see cref="BindGroupHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="BindGroupHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBindGroupRelease")]
     public static extern void BindGroupRelease(BindGroupHandle bindGroup);
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBindGroupLayoutSetLabel")]
     public static extern void BindGroupLayoutSetLabel(BindGroupLayoutHandle bindGroupLayout, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="BindGroupLayoutHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBindGroupLayoutAddRef")]
     public static extern void BindGroupLayoutAddRef(BindGroupLayoutHandle bindGroupLayout);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="BindGroupLayoutHandle"/>. When the reference count reaches zero, the <see cref="BindGroupLayoutHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="BindGroupLayoutHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBindGroupLayoutRelease")]
     public static extern void BindGroupLayoutRelease(BindGroupLayoutHandle bindGroupLayout);
     /// <summary>
@@ -169,8 +232,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBufferUnmap")]
     public static extern void BufferUnmap(BufferHandle buffer);
+    /// <summary>
+    /// Increments the reference count of the <see cref="BufferHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBufferAddRef")]
     public static extern void BufferAddRef(BufferHandle buffer);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="BufferHandle"/>. When the reference count reaches zero, the <see cref="BufferHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="BufferHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuBufferRelease")]
     public static extern void BufferRelease(BufferHandle buffer);
     /// <summary>
@@ -179,8 +263,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The new label.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandBufferSetLabel")]
     public static extern void CommandBufferSetLabel(CommandBufferHandle commandBuffer, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="CommandBufferHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandBufferAddRef")]
     public static extern void CommandBufferAddRef(CommandBufferHandle commandBuffer);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="CommandBufferHandle"/>. When the reference count reaches zero, the <see cref="CommandBufferHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="CommandBufferHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandBufferRelease")]
     public static extern void CommandBufferRelease(CommandBufferHandle commandBuffer);
     /// <summary>
@@ -255,10 +360,21 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderFinish")]
     public static extern CommandBufferHandle CommandEncoderFinish(CommandEncoderHandle commandEncoder, CommandBufferDescriptorFFI* descriptor);
+    /// <summary>
+    /// Marks a point in a stream of commands with a label.
+    /// </summary>
+    /// <param name="markerLabel">The label to insert.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderInsertDebugMarker")]
     public static extern void CommandEncoderInsertDebugMarker(CommandEncoderHandle commandEncoder, StringViewFFI markerLabel);
+    /// <summary>
+    /// Ends the labeled debug group most recently started by <see cref="CommandEncoderHandle.PushDebugGroup">pushDebugGroup()</see>.
+    /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderPopDebugGroup")]
     public static extern void CommandEncoderPopDebugGroup(CommandEncoderHandle commandEncoder);
+    /// <summary>
+    /// Begins a labeled debug group containing subsequent commands.
+    /// </summary>
+    /// <param name="groupLabel">The label for the command group.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderPushDebugGroup")]
     public static extern void CommandEncoderPushDebugGroup(CommandEncoderHandle commandEncoder, StringViewFFI groupLabel);
     /// <summary>
@@ -273,9 +389,31 @@ public unsafe static partial class WebGPU_FFI
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderSetLabel")]
     public static extern void CommandEncoderSetLabel(CommandEncoderHandle commandEncoder, StringViewFFI label);
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderWriteTimestamp")]
+    [Obsolete("", false)]
     public static extern void CommandEncoderWriteTimestamp(CommandEncoderHandle commandEncoder, QuerySetHandle querySet, uint queryIndex);
+    /// <summary>
+    /// Increments the reference count of the <see cref="CommandEncoderHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderAddRef")]
     public static extern void CommandEncoderAddRef(CommandEncoderHandle commandEncoder);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="CommandEncoderHandle"/>. When the reference count reaches zero, the <see cref="CommandEncoderHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="CommandEncoderHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuCommandEncoderRelease")]
     public static extern void CommandEncoderRelease(CommandEncoderHandle commandEncoder);
     /// <summary>
@@ -345,8 +483,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="pipeline">The compute pipeline to use for subsequent dispatch commands.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuComputePassEncoderSetPipeline")]
     public static extern void ComputePassEncoderSetPipeline(ComputePassEncoderHandle computePassEncoder, ComputePipelineHandle pipeline);
+    /// <summary>
+    /// Increments the reference count of the <see cref="ComputePassEncoderHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuComputePassEncoderAddRef")]
     public static extern void ComputePassEncoderAddRef(ComputePassEncoderHandle computePassEncoder);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="ComputePassEncoderHandle"/>. When the reference count reaches zero, the <see cref="ComputePassEncoderHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="ComputePassEncoderHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuComputePassEncoderRelease")]
     public static extern void ComputePassEncoderRelease(ComputePassEncoderHandle computePassEncoder);
     /// <summary>
@@ -366,8 +525,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The new label.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuComputePipelineSetLabel")]
     public static extern void ComputePipelineSetLabel(ComputePipelineHandle computePipeline, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="ComputePipelineHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuComputePipelineAddRef")]
     public static extern void ComputePipelineAddRef(ComputePipelineHandle computePipeline);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="ComputePipelineHandle"/>. When the reference count reaches zero, the <see cref="ComputePipelineHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="ComputePipelineHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuComputePipelineRelease")]
     public static extern void ComputePipelineRelease(ComputePipelineHandle computePipeline);
     /// <summary>
@@ -410,8 +590,8 @@ public unsafe static partial class WebGPU_FFI
     /// The returned future resolves when the created pipeline is ready to be used without additional delay.
     /// </summary>
     /// <remarks">Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
-    /// <param name="callbackInfo">The callbackInfo to use for the ComputePipeline</param>
     /// <param name="descriptor">The descriptor to use for the ComputePipeline</param>
+    /// <param name="callbackInfo">The callbackInfo to use for the ComputePipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuDeviceCreateComputePipelineAsync")]
     public static extern Future DeviceCreateComputePipelineAsync(DeviceHandle device, ComputePipelineDescriptorFFI* descriptor, CreateComputePipelineAsyncCallbackInfoFFI callbackInfo);
@@ -532,8 +712,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The label to set</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuDeviceSetLabel")]
     public static extern void DeviceSetLabel(DeviceHandle device, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="DeviceHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuDeviceAddRef")]
     public static extern void DeviceAddRef(DeviceHandle device);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="DeviceHandle"/>. When the reference count reaches zero, the <see cref="DeviceHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="DeviceHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuDeviceRelease")]
     public static extern void DeviceRelease(DeviceHandle device);
     /// <summary>
@@ -541,6 +742,11 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceCreateSurface")]
     public static extern SurfaceHandle InstanceCreateSurface(InstanceHandle instance, SurfaceDescriptorFFI* descriptor);
+    /// <summary>
+    /// Returns set of supported WGSL language extensions supported by this instance.
+    /// </summary>
+    /// <param name="features">A pointer to struct to fill with supported extension</param>
+    /// <returns>The status of the operation</returns>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceGetWGSLLanguageFeatures")]
     public static extern Status InstanceGetWGSLLanguageFeatures(InstanceHandle instance, SupportedWGSLLanguageFeaturesFFI* features);
     /// <summary>
@@ -564,8 +770,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceWaitAny")]
     public static extern WaitStatus InstanceWaitAny(InstanceHandle instance, nuint futureCount, FutureWaitInfo* futures, ulong timeoutNS);
+    /// <summary>
+    /// Increments the reference count of the <see cref="InstanceHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceAddRef")]
     public static extern void InstanceAddRef(InstanceHandle instance);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="InstanceHandle"/>. When the reference count reaches zero, the <see cref="InstanceHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="InstanceHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuInstanceRelease")]
     public static extern void InstanceRelease(InstanceHandle instance);
     /// <summary>
@@ -573,8 +800,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuPipelineLayoutSetLabel")]
     public static extern void PipelineLayoutSetLabel(PipelineLayoutHandle pipelineLayout, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="PipelineLayoutHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuPipelineLayoutAddRef")]
     public static extern void PipelineLayoutAddRef(PipelineLayoutHandle pipelineLayout);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="PipelineLayoutHandle"/>. When the reference count reaches zero, the <see cref="PipelineLayoutHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="PipelineLayoutHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuPipelineLayoutRelease")]
     public static extern void PipelineLayoutRelease(PipelineLayoutHandle pipelineLayout);
     /// <summary>
@@ -596,8 +844,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The label to set.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQuerySetSetLabel")]
     public static extern void QuerySetSetLabel(QuerySetHandle querySet, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="QuerySetHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQuerySetAddRef")]
     public static extern void QuerySetAddRef(QuerySetHandle querySet);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="QuerySetHandle"/>. When the reference count reaches zero, the <see cref="QuerySetHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="QuerySetHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQuerySetRelease")]
     public static extern void QuerySetRelease(QuerySetHandle querySet);
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueOnSubmittedWorkDone")]
@@ -638,8 +907,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="size">Extents of the content to write from <paramref name="data"/> to <paramref name="destination"/>.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueWriteTexture")]
     public static extern void QueueWriteTexture(QueueHandle queue, ImageCopyTextureFFI* destination, void* data, nuint dataSize, TextureDataLayout* dataLayout, Extent3D* writeSize);
+    /// <summary>
+    /// Increments the reference count of the <see cref="QueueHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueAddRef")]
     public static extern void QueueAddRef(QueueHandle queue);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="QueueHandle"/>. When the reference count reaches zero, the <see cref="QueueHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="QueueHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuQueueRelease")]
     public static extern void QueueRelease(QueueHandle queue);
     /// <summary>
@@ -648,8 +938,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The new debug label to set.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleSetLabel")]
     public static extern void RenderBundleSetLabel(RenderBundleHandle renderBundle, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="RenderBundleHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleAddRef")]
     public static extern void RenderBundleAddRef(RenderBundleHandle renderBundle);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="RenderBundleHandle"/>. When the reference count reaches zero, the <see cref="RenderBundleHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="RenderBundleHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleRelease")]
     public static extern void RenderBundleRelease(RenderBundleHandle renderBundle);
     /// <summary>
@@ -663,8 +974,8 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     /// <param name="firstVertex">The index of the first vertex to draw.</param>
     /// <param name="firstInstance">The index of the first instance to draw.</param>
-    /// <param name="vertexCount">The number of vertices to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="vertexCount">The number of vertices to draw.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderDraw")]
     public static extern void RenderBundleEncoderDraw(RenderBundleEncoderHandle renderBundleEncoder, uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance);
     /// <summary>
@@ -675,11 +986,11 @@ public unsafe static partial class WebGPU_FFI
     /// 
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
+    /// <param name="indexCount">The number of indices to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
     /// <param name="firstIndex">The index of the first index to draw.</param>
     /// <param name="baseVertex">The value added to the vertex index before indexing into the vertex buffer.</param>
     /// <param name="firstInstance">The index of the first instance to draw.</param>
-    /// <param name="indexCount">The number of indices to draw.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderDrawIndexed")]
     public static extern void RenderBundleEncoderDrawIndexed(RenderBundleEncoderHandle renderBundleEncoder, uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance);
     /// <summary>
@@ -696,8 +1007,8 @@ public unsafe static partial class WebGPU_FFI
     /// 
     /// The active vertex buffers can be set with <see cref="RenderBundleEncoderHandle.SetVertexBuffer" />.
     /// </summary>
-    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
     /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
+    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderDrawIndirect")]
     public static extern void RenderBundleEncoderDrawIndirect(RenderBundleEncoderHandle renderBundleEncoder, BufferHandle indirectBuffer, ulong indirectOffset);
     /// <summary>
@@ -766,8 +1077,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderSetVertexBuffer")]
     public static extern void RenderBundleEncoderSetVertexBuffer(RenderBundleEncoderHandle renderBundleEncoder, uint slot, BufferHandle buffer, ulong offset, ulong size);
+    /// <summary>
+    /// Increments the reference count of the <see cref="RenderBundleEncoderHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderAddRef")]
     public static extern void RenderBundleEncoderAddRef(RenderBundleEncoderHandle renderBundleEncoder);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="RenderBundleEncoderHandle"/>. When the reference count reaches zero, the <see cref="RenderBundleEncoderHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="RenderBundleEncoderHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderRelease")]
     public static extern void RenderBundleEncoderRelease(RenderBundleEncoderHandle renderBundleEncoder);
     /// <param name="queryIndex">The index of the query in the query set.</param>
@@ -909,8 +1241,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="maxDepth">Maximum depth value of the viewport.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPassEncoderSetViewport")]
     public static extern void RenderPassEncoderSetViewport(RenderPassEncoderHandle renderPassEncoder, float x, float y, float width, float height, float minDepth, float maxDepth);
+    /// <summary>
+    /// Increments the reference count of the <see cref="RenderPassEncoderHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPassEncoderAddRef")]
     public static extern void RenderPassEncoderAddRef(RenderPassEncoderHandle renderPassEncoder);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="RenderPassEncoderHandle"/>. When the reference count reaches zero, the <see cref="RenderPassEncoderHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="RenderPassEncoderHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPassEncoderRelease")]
     public static extern void RenderPassEncoderRelease(RenderPassEncoderHandle renderPassEncoder);
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPipelineGetBindGroupLayout")]
@@ -920,8 +1273,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPipelineSetLabel")]
     public static extern void RenderPipelineSetLabel(RenderPipelineHandle renderPipeline, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="RenderPipelineHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPipelineAddRef")]
     public static extern void RenderPipelineAddRef(RenderPipelineHandle renderPipeline);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="RenderPipelineHandle"/>. When the reference count reaches zero, the <see cref="RenderPipelineHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="RenderPipelineHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderPipelineRelease")]
     public static extern void RenderPipelineRelease(RenderPipelineHandle renderPipeline);
     /// <summary>
@@ -929,8 +1303,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSamplerSetLabel")]
     public static extern void SamplerSetLabel(SamplerHandle sampler, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="SamplerHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSamplerAddRef")]
     public static extern void SamplerAddRef(SamplerHandle sampler);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="SamplerHandle"/>. When the reference count reaches zero, the <see cref="SamplerHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="SamplerHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSamplerRelease")]
     public static extern void SamplerRelease(SamplerHandle sampler);
     /// <summary>
@@ -945,8 +1340,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuShaderModuleSetLabel")]
     public static extern void ShaderModuleSetLabel(ShaderModuleHandle shaderModule, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="ShaderModuleHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuShaderModuleAddRef")]
     public static extern void ShaderModuleAddRef(ShaderModuleHandle shaderModule);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="ShaderModuleHandle"/>. When the reference count reaches zero, the <see cref="ShaderModuleHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="ShaderModuleHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuShaderModuleRelease")]
     public static extern void ShaderModuleRelease(ShaderModuleHandle shaderModule);
     /// <summary>
@@ -986,8 +1402,29 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSurfaceUnconfigure")]
     public static extern void SurfaceUnconfigure(SurfaceHandle surface);
+    /// <summary>
+    /// Increments the reference count of the <see cref="SurfaceHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSurfaceAddRef")]
     public static extern void SurfaceAddRef(SurfaceHandle surface);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="SurfaceHandle"/>. When the reference count reaches zero, the <see cref="SurfaceHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="SurfaceHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuSurfaceRelease")]
     public static extern void SurfaceRelease(SurfaceHandle surface);
     /// <summary>
@@ -1059,8 +1496,29 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="label">The new label.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuTextureSetLabel")]
     public static extern void TextureSetLabel(TextureHandle texture, StringViewFFI label);
+    /// <summary>
+    /// Increments the reference count of the <see cref="TextureHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuTextureAddRef")]
     public static extern void TextureAddRef(TextureHandle texture);
+    /// <summary>
+    /// Decrements the reference count of the <see cref="TextureHandle"/>. When the reference count reaches zero, the <see cref="TextureHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="TextureHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuTextureRelease")]
     public static extern void TextureRelease(TextureHandle texture);
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuTextureViewSetLabel")]

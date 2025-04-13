@@ -9,6 +9,7 @@ namespace WebGpuSharp;
 /// 
 /// The usages determine what kind of memory the texture is allocated from and what actions the texture can partake in.
 /// </summary>
+[Flags]
 public enum TextureUsage : ulong
 {
     /// <summary>

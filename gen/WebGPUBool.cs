@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 /// <summary>
 /// 32bit boolean value.
 /// </summary>
-public readonly partial struct WebGPUBool
+public partial struct WebGPUBool
 {
     private readonly uint _value;
 }

@@ -8,6 +8,7 @@ namespace WebGpuSharp;
 /// Bitmask controlling which channels are are written to
 /// when drawing to this color target.
 /// </summary>
+[Flags]
 public enum ColorWriteMask : ulong
 {
     /// <summary>

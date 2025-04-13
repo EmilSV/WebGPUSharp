@@ -13,9 +13,12 @@ namespace WebGpuSharp.FFI;
 /// 
 /// Executing a RenderBundle is often more efficient than issuing the underlying commands manually.
 /// </summary>
-public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundleEncoderHandle>
+public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundleEncoderHandle>
 {
     private readonly nuint _ptr;
+    /// <summary>
+    /// Get a null handle.
+    /// </summary>
     public static RenderBundleEncoderHandle Null
     {
         get => new(nuint.Zero);
@@ -23,32 +26,65 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
 
     public RenderBundleEncoderHandle(nuint ptr) => _ptr = ptr;
 
+    /// <summary>
+    /// Convert a handle to a pointer.
+    /// </summary>
     public static explicit operator nuint(RenderBundleEncoderHandle handle) => handle._ptr;
 
+    /// <summary>
+    /// Check if two handles are equal.
+    /// </summary>
     public static bool operator ==(RenderBundleEncoderHandle left, RenderBundleEncoderHandle right) => left._ptr == right._ptr;
 
+    /// <summary>
+    /// Check if two handles are not equal.
+    /// </summary>
     public static bool operator !=(RenderBundleEncoderHandle left, RenderBundleEncoderHandle right) => left._ptr != right._ptr;
 
+    /// <summary>
+    /// Check if two handles are equal.
+    /// </summary>
     public static bool operator ==(RenderBundleEncoderHandle left, RenderBundleEncoderHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
 
+    /// <summary>
+    /// Check if two handles are not equal.
+    /// </summary>
     public static bool operator !=(RenderBundleEncoderHandle left, RenderBundleEncoderHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
 
+    /// <summary>
+    /// Check if a handle is equal to a pointer.
+    /// </summary>
     public static bool operator ==(RenderBundleEncoderHandle left, nuint right) => left._ptr == right;
 
+    /// <summary>
+    /// Check if a handle is not equal to a pointer.
+    /// </summary>
     public static bool operator !=(RenderBundleEncoderHandle left, nuint right) => left._ptr != right;
 
+    /// <summary>
+    /// Get the address of the handle.
+    /// </summary>
     public nuint GetAddress() => _ptr;
 
+    /// <summary>
+    /// Indicates whether the current object is equal to another object of the same type.
+    /// </summary>
     public bool Equals(RenderBundleEncoderHandle other) => _ptr == other._ptr;
 
+    /// <summary>
+    /// Returns a value indicating whether this instance is equal to a specified object.
+    /// </summary>
     public override bool Equals(object? other) => other is RenderBundleEncoderHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
 
+    /// <summary>
+    /// Returns the hash code for this instance.
+    /// </summary>
     public override int GetHashCode() => _ptr.GetHashCode();
 
     /// <summary>
     /// Draws primitives from the active vertex buffer(s).
     /// 
-    /// The active vertex buffers can be set with <see cref="SetVertexBuffer"></see>.
+    /// The active vertex buffers can be set with <see cref="RenderBundleEncoderHandle.SetVertexBuffer"></see>.
     /// Does not use an Index Buffer.
     /// If you need this see <see cref="DrawIndexed"></see>.
     /// 
@@ -56,23 +92,23 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
     /// </summary>
     /// <param name="firstVertex">The index of the first vertex to draw.</param>
     /// <param name="firstInstance">The index of the first instance to draw.</param>
-    /// <param name="vertexCount">The number of vertices to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="vertexCount">The number of vertices to draw.</param>
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDraw(this, vertexCount, instanceCount, firstVertex, firstInstance);
 
     /// <summary>
     /// Draws indexed primitives using the active index buffer and the active vertex buffer(s).
     /// 
-    /// The active index buffer can be set with <see cref="SetIndexBuffer" />.
-    /// The active vertex buffer(s) can be set with <see cref="SetVertexBuffer" />.
+    /// The active index buffer can be set with <see cref="RenderBundleEncoderHandle.SetIndexBuffer" />.
+    /// The active vertex buffer(s) can be set with <see cref="RenderBundleEncoderHandle.SetVertexBuffer" />.
     /// 
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
+    /// <param name="indexCount">The number of indices to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
     /// <param name="firstIndex">The index of the first index to draw.</param>
     /// <param name="baseVertex">The value added to the vertex index before indexing into the vertex buffer.</param>
     /// <param name="firstInstance">The index of the first instance to draw.</param>
-    /// <param name="indexCount">The number of indices to draw.</param>
     public void DrawIndexed(uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDrawIndexed(this, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 
     /// <summary>
@@ -87,10 +123,10 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
     /// <summary>
     /// Draws primitives from the active vertex buffer(s) based on the contents of the indirectBuffer.
     /// 
-    /// The active vertex buffers can be set with <see cref="SetVertexBuffer" />.
+    /// The active vertex buffers can be set with <see cref="RenderBundleEncoderHandle.SetVertexBuffer" />.
     /// </summary>
-    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
     /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
+    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
     public void DrawIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, indirectBuffer, indirectOffset);
 
     /// <summary>
@@ -159,8 +195,29 @@ public readonly unsafe partial struct RenderBundleEncoderHandle : IEquatable<Ren
     /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size) => WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, buffer, offset, size);
 
+    /// <summary>
+    /// Increments the reference count of the <see cref="RenderBundleEncoderHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     public void AddRef() => WebGPU_FFI.RenderBundleEncoderAddRef(this);
 
+    /// <summary>
+    /// Decrements the reference count of the <see cref="RenderBundleEncoderHandle"/>. When the reference count reaches zero, the <see cref="RenderBundleEncoderHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="RenderBundleEncoderHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     public void Release() => WebGPU_FFI.RenderBundleEncoderRelease(this);
 
 }

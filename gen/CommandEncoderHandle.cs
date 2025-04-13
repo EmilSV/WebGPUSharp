@@ -9,9 +9,12 @@ namespace WebGpuSharp.FFI;
 /// Textures. When finished recording, call CommandEncoder.Finish() to obtain a
 /// CommandBuffer which may be submitted for execution.
 /// </summary>
-public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHandle>
+public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHandle>
 {
     private readonly nuint _ptr;
+    /// <summary>
+    /// Get a null handle.
+    /// </summary>
     public static CommandEncoderHandle Null
     {
         get => new(nuint.Zero);
@@ -19,26 +22,59 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
 
     public CommandEncoderHandle(nuint ptr) => _ptr = ptr;
 
+    /// <summary>
+    /// Convert a handle to a pointer.
+    /// </summary>
     public static explicit operator nuint(CommandEncoderHandle handle) => handle._ptr;
 
+    /// <summary>
+    /// Check if two handles are equal.
+    /// </summary>
     public static bool operator ==(CommandEncoderHandle left, CommandEncoderHandle right) => left._ptr == right._ptr;
 
+    /// <summary>
+    /// Check if two handles are not equal.
+    /// </summary>
     public static bool operator !=(CommandEncoderHandle left, CommandEncoderHandle right) => left._ptr != right._ptr;
 
+    /// <summary>
+    /// Check if two handles are equal.
+    /// </summary>
     public static bool operator ==(CommandEncoderHandle left, CommandEncoderHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
 
+    /// <summary>
+    /// Check if two handles are not equal.
+    /// </summary>
     public static bool operator !=(CommandEncoderHandle left, CommandEncoderHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
 
+    /// <summary>
+    /// Check if a handle is equal to a pointer.
+    /// </summary>
     public static bool operator ==(CommandEncoderHandle left, nuint right) => left._ptr == right;
 
+    /// <summary>
+    /// Check if a handle is not equal to a pointer.
+    /// </summary>
     public static bool operator !=(CommandEncoderHandle left, nuint right) => left._ptr != right;
 
+    /// <summary>
+    /// Get the address of the handle.
+    /// </summary>
     public nuint GetAddress() => _ptr;
 
+    /// <summary>
+    /// Indicates whether the current object is equal to another object of the same type.
+    /// </summary>
     public bool Equals(CommandEncoderHandle other) => _ptr == other._ptr;
 
+    /// <summary>
+    /// Returns a value indicating whether this instance is equal to a specified object.
+    /// </summary>
     public override bool Equals(object? other) => other is CommandEncoderHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
 
+    /// <summary>
+    /// Returns the hash code for this instance.
+    /// </summary>
     public override int GetHashCode() => _ptr.GetHashCode();
 
     /// <summary>
@@ -113,10 +149,21 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
     /// </summary>
     public CommandBufferHandle Finish(CommandBufferDescriptorFFI* descriptor) => WebGPU_FFI.CommandEncoderFinish(this, descriptor);
 
+    /// <summary>
+    /// Marks a point in a stream of commands with a label.
+    /// </summary>
+    /// <param name="markerLabel">The label to insert.</param>
     public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.CommandEncoderInsertDebugMarker(this, markerLabel);
 
+    /// <summary>
+    /// Ends the labeled debug group most recently started by <see cref="CommandEncoderHandle.PushDebugGroup">pushDebugGroup()</see>.
+    /// </summary>
     public void PopDebugGroup() => WebGPU_FFI.CommandEncoderPopDebugGroup(this);
 
+    /// <summary>
+    /// Begins a labeled debug group containing subsequent commands.
+    /// </summary>
+    /// <param name="groupLabel">The label for the command group.</param>
     public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.CommandEncoderPushDebugGroup(this, groupLabel);
 
     /// <summary>
@@ -132,8 +179,29 @@ public readonly unsafe partial struct CommandEncoderHandle : IEquatable<CommandE
 
     public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex) => WebGPU_FFI.CommandEncoderWriteTimestamp(this, querySet, queryIndex);
 
+    /// <summary>
+    /// Increments the reference count of the <see cref="CommandEncoderHandle"/>.
+    /// </summary>
+    /// <remarks>
+    /// WebGPU objects are refcounted. Each call to <see cref="AddRef"/> must be balanced with a corresponding
+    /// call to <see cref="Release"/> when the reference is no longer needed. Objects returned directly from
+    /// the API start with a reference count of 1.
+    /// 
+    /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
+    /// WebGPU objects, as the implementation maintains internal references as needed.
+    /// </remarks>
     public void AddRef() => WebGPU_FFI.CommandEncoderAddRef(this);
 
+    /// <summary>
+    /// Decrements the reference count of the <see cref="CommandEncoderHandle"/>. When the reference count reaches zero, the <see cref="CommandEncoderHandle"/> and associated resources may be freed.
+    /// </summary>
+    /// <remarks>
+    /// It's unsafe to use an object after its reference count has reached zero, even if other
+    /// WebGPU objects internally reference it.
+    /// 
+    /// Applications must call <see cref="Release"/> on all <see cref="CommandEncoderHandle"/> references they own before losing the pointer.
+    /// Failing to balance <see cref="AddRef"/> and <see cref="Release"/> calls will result in memory leaks or use-after-free errors.
+    /// </remarks>
     public void Release() => WebGPU_FFI.CommandEncoderRelease(this);
 
 }
