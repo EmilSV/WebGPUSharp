@@ -8,6 +8,9 @@ namespace WebGpuSharp.FFI;
 /// </summary>
 public unsafe partial struct SurfaceSourceXlibWindowFFI
 {
+    /// <summary>
+    /// The chain link for struct chaining.
+    /// </summary>
     public ChainedStruct Chain;
     /// <summary>
     /// The Xlib display.

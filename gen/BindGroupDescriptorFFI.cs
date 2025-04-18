@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a group of bindings and the resources to be bound.
+/// </summary>
 public unsafe partial struct BindGroupDescriptorFFI
 {
     /// <summary>
@@ -15,11 +18,18 @@ public unsafe partial struct BindGroupDescriptorFFI
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// Debug label of the bind group
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
-    /// The  <see cref="BindGroupLayout"/> the entries of this bind group will conform to.
+    /// The <see cref="BindGroupLayout" /> the entries of
+    /// this bind group will conform to.
     /// </summary>
     public required BindGroupLayoutHandle Layout;
+    /// <summary>
+    /// the number of entries at <see cref="Entries" />
+    /// </summary>
     public nuint EntryCount;
     /// <summary>
     /// A list of entries describing the resources to expose to the shader for each binding

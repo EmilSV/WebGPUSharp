@@ -3,6 +3,11 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// A single binding entry in a <see cref="WebGpuSharp.Bindgroup" />.
+/// A BindgroupEntry can either bind a one of either a <see cref="BufferHandle" /> with offset and size,
+/// or a <see cref="SamplerHandle" /> or <see cref="TextureViewHandle" />.
+/// </summary>
 public unsafe partial struct BindGroupEntryFFI
 {
     /// <summary>
@@ -16,15 +21,30 @@ public unsafe partial struct BindGroupEntryFFI
     /// </remarks>
     public ChainedStruct* NextInChain;
     /// <summary>
-    /// A unique identifier for a resource binding within the  <see cref="BindGroup"/>, corresponding to a
-    ///  <see cref="BindGroupLayoutEntry.Binding">GPUBindGroupLayoutEntry.binding</see> and a @binding
-    /// attribute in the  <see cref="ShaderModule"/>.
+    /// A unique identifier for a resource binding within the <see cref="WebGpuSharp.Bindgroup" />,
+    /// corresponding to a <see cref="WebGpuSharp.BindgroupLayoutEntry.Binding" /> and
+    /// a @binding attribute in the ShaderModule.
     /// </summary>
     public required uint Binding;
+    /// <summary>
+    /// The Buffer object you want to bind.
+    /// </summary>
     public BufferHandle Buffer;
+    /// <summary>
+    /// The offset, in bytes, from the beginning of the buffer to the beginning of the range exposed to the shader by the buffer binding.
+    /// </summary>
     public ulong Offset;
+    /// <summary>
+    /// The size, in bytes, of the buffer binding
+    /// </summary>
     public ulong Size;
+    /// <summary>
+    /// The Sampler object you want to bind.
+    /// </summary>
     public SamplerHandle Sampler;
+    /// <summary>
+    /// The TextureView object you want to bind.
+    /// </summary>
     public TextureViewHandle TextureView;
 
     public BindGroupEntryFFI() { }

@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Features enabled on the WGPUInstance
+/// </summary>
 public unsafe partial struct InstanceCapabilities
 {
     /// <summary>
@@ -15,7 +18,13 @@ public unsafe partial struct InstanceCapabilities
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// Enable use of <see cref="FFI.InstanceHandle.WaitAny" /> with `timeoutNS &gt; 0`.
+    /// </summary>
     public WebGPUBool TimedWaitAnyEnable = new();
+    /// <summary>
+    /// The maximum number @ref WGPUFutureWaitInfo supported in a call to <see cref="FFI.InstanceHandle.WaitAny" /> with `timeoutNS &gt; 0`.
+    /// </summary>
     public nuint TimedWaitAnyMaxCount;
 
     public InstanceCapabilities() { }

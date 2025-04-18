@@ -8,6 +8,9 @@ namespace WebGpuSharp.FFI;
 /// </summary>
 public unsafe partial struct SurfaceSourceMetalLayerFFI
 {
+    /// <summary>
+    /// The chain link for struct chaining.
+    /// </summary>
     public ChainedStruct Chain;
     /// <summary>
     /// The Metal layer.

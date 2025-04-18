@@ -25,36 +25,49 @@ public unsafe partial struct RenderPipelineHandle : IEquatable<RenderPipelineHan
     /// <summary>
     /// Convert a handle to a pointer.
     /// </summary>
+    /// <param name="handle">The handle to convert.</param>
     public static explicit operator nuint(RenderPipelineHandle handle) => handle._ptr;
 
     /// <summary>
     /// Check if two handles are equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator ==(RenderPipelineHandle left, RenderPipelineHandle right) => left._ptr == right._ptr;
 
     /// <summary>
     /// Check if two handles are not equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator !=(RenderPipelineHandle left, RenderPipelineHandle right) => left._ptr != right._ptr;
 
     /// <summary>
     /// Check if two handles are equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator ==(RenderPipelineHandle left, RenderPipelineHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
 
     /// <summary>
     /// Check if two handles are not equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator !=(RenderPipelineHandle left, RenderPipelineHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
 
     /// <summary>
     /// Check if a handle is equal to a pointer.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right pointer.</param>
     public static bool operator ==(RenderPipelineHandle left, nuint right) => left._ptr == right;
 
     /// <summary>
     /// Check if a handle is not equal to a pointer.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right pointer.</param>
     public static bool operator !=(RenderPipelineHandle left, nuint right) => left._ptr != right;
 
     /// <summary>
@@ -65,11 +78,13 @@ public unsafe partial struct RenderPipelineHandle : IEquatable<RenderPipelineHan
     /// <summary>
     /// Indicates whether the current object is equal to another object of the same type.
     /// </summary>
+    /// <param name="other">The other handle to compare with</param>
     public bool Equals(RenderPipelineHandle other) => _ptr == other._ptr;
 
     /// <summary>
     /// Returns a value indicating whether this instance is equal to a specified object.
     /// </summary>
+    /// <param name="other">The other object to compare with</param>
     public override bool Equals(object? other) => other is RenderPipelineHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
 
     /// <summary>

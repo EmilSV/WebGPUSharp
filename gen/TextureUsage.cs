@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
-[Flags]
 /// <summary>
 /// Different ways that you can use a texture.
 /// 

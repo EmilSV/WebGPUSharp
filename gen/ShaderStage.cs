@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
-[Flags]
 /// <summary>
 /// Describes the shader stages that a binding will be visible from.
 /// These can be combined so something that is visible from both vertex and fragment shaders can be defined as:

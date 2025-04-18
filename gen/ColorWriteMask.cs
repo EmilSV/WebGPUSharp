@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
-[Flags]
 /// <summary>
 /// Bitmask controlling which channels are are written to
 /// when drawing to this color target.

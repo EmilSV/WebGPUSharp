@@ -18,10 +18,11 @@ public unsafe partial struct InstanceDescriptor
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
-    public InstanceCapabilities Capabilities = new();
     /// <summary>
-    /// Instance features to enable
+    /// Instance capabilities to enable.
     /// </summary>
+    public InstanceCapabilities Capabilities = new();
+    [Obsolete("", false)]
     public InstanceCapabilities Features = new();
 
     public InstanceDescriptor() { }

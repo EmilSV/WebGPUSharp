@@ -8,7 +8,13 @@ namespace WebGpuSharp.FFI;
 /// </summary>
 public unsafe partial struct SupportedFeaturesFFI
 {
+    /// <summary>
+    /// The number of items in the <see cref="Features" /> sequence.
+    /// </summary>
     public nuint FeatureCount;
+    /// <summary>
+    /// The features supported by the WebGPU API.
+    /// </summary>
     public FeatureName* Features;
 
     public SupportedFeaturesFFI() { }

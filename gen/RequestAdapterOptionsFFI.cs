@@ -24,6 +24,9 @@ public unsafe partial struct RequestAdapterOptionsFFI
     /// Surface that is required to be presentable with the requested adapter. This does not create the surface, only guarantees that the adapter can present to said surface.
     /// </summary>
     public SurfaceHandle CompatibleSurface;
+    /// <summary>
+    /// The feature level of the resulting adapter.
+    /// </summary>
     public FeatureLevel FeatureLevel;
     /// <summary>
     /// Power preference for the adapter.

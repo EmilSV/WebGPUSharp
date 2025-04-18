@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Information about an adapter.
+/// </summary>
 public unsafe partial struct AdapterInfoFFI
 {
     /// <summary>
@@ -64,6 +67,9 @@ public unsafe partial struct AdapterInfoFFI
     /// superset of PCI IDs.
     /// </summary>
     public uint DeviceID;
+    /// <summary>
+    /// Is the adapter in compatibility mode
+    /// </summary>
     public WebGPUBool CompatibilityMode = new();
 
     public AdapterInfoFFI() { }

@@ -53,7 +53,7 @@ public unsafe static partial class WebGPU_FFI
     /// <summary>
     /// Get the features supported by the adapter.
     /// </summary>
-    /// <param name="info">The features to fill in.</param>
+    /// <param name="features">The features to fill in.</param>
     /// <returns>the status of the call.</returns>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuAdapterGetFeatures")]
     public static extern void AdapterGetFeatures(AdapterHandle adapter, SupportedFeaturesFFI* features);
@@ -590,8 +590,8 @@ public unsafe static partial class WebGPU_FFI
     /// The returned future resolves when the created pipeline is ready to be used without additional delay.
     /// </summary>
     /// <remarks">Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
-    /// <param name="descriptor">The descriptor to use for the ComputePipeline</param>
     /// <param name="callbackInfo">The callbackInfo to use for the ComputePipeline</param>
+    /// <param name="descriptor">The descriptor to use for the ComputePipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuDeviceCreateComputePipelineAsync")]
     public static extern Future DeviceCreateComputePipelineAsync(DeviceHandle device, ComputePipelineDescriptorFFI* descriptor, CreateComputePipelineAsyncCallbackInfoFFI callbackInfo);
@@ -1007,8 +1007,8 @@ public unsafe static partial class WebGPU_FFI
     /// 
     /// The active vertex buffers can be set with <see cref="RenderBundleEncoderHandle.SetVertexBuffer" />.
     /// </summary>
-    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters.</param>
+    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuRenderBundleEncoderDrawIndirect")]
     public static extern void RenderBundleEncoderDrawIndirect(RenderBundleEncoderHandle renderBundleEncoder, BufferHandle indirectBuffer, ulong indirectOffset);
     /// <summary>

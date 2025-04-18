@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
-[Flags]
 /// <summary>
 /// Type of buffer mapping.
 /// </summary>

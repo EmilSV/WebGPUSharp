@@ -3,6 +3,11 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Describes a <see cref="RenderBundleHandle" />.
+/// 
+/// For use with <see cref="DeviceHandle.CreateRenderBundleEncoder" />.
+/// </summary>
 public unsafe partial struct RenderBundleEncoderDescriptorFFI
 {
     /// <summary>
@@ -15,10 +20,26 @@ public unsafe partial struct RenderBundleEncoderDescriptorFFI
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// Debug label of the render bundle encoder.
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
+    /// <summary>
+    /// The number of color formats in the <see cref="ColorFormats" /> sequence.
+    /// </summary>
     public nuint ColorFormatCount;
+    /// <summary>
+    /// The formats of the color attachments that this render bundle is capable to rendering to.
+    /// This must match the formats of the color attachments in the render pass this render bundle is executed in.
+    /// </summary>
     public TextureFormat* ColorFormats;
+    /// <summary>
+    /// The depth stencil format of the render target.
+    /// </summary>
     public TextureFormat DepthStencilFormat;
+    /// <summary>
+    /// The sample count of the render targets.
+    /// </summary>
     public uint SampleCount;
     /// <summary>
     /// If `true`, indicates that the render bundle does not modify the depth component of the

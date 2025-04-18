@@ -19,36 +19,49 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// <summary>
     /// Convert a handle to a pointer.
     /// </summary>
+    /// <param name="handle">The handle to convert.</param>
     public static explicit operator nuint(AdapterHandle handle) => handle._ptr;
 
     /// <summary>
     /// Check if two handles are equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator ==(AdapterHandle left, AdapterHandle right) => left._ptr == right._ptr;
 
     /// <summary>
     /// Check if two handles are not equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator !=(AdapterHandle left, AdapterHandle right) => left._ptr != right._ptr;
 
     /// <summary>
     /// Check if two handles are equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator ==(AdapterHandle left, AdapterHandle? right) => left._ptr == right.GetValueOrDefault()._ptr;
 
     /// <summary>
     /// Check if two handles are not equal.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right handle.</param>
     public static bool operator !=(AdapterHandle left, AdapterHandle? right) => left._ptr != right.GetValueOrDefault()._ptr;
 
     /// <summary>
     /// Check if a handle is equal to a pointer.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right pointer.</param>
     public static bool operator ==(AdapterHandle left, nuint right) => left._ptr == right;
 
     /// <summary>
     /// Check if a handle is not equal to a pointer.
     /// </summary>
+    /// <param name="left">The left handle.</param>
+    /// <param name="right">The right pointer.</param>
     public static bool operator !=(AdapterHandle left, nuint right) => left._ptr != right;
 
     /// <summary>
@@ -59,11 +72,13 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// <summary>
     /// Indicates whether the current object is equal to another object of the same type.
     /// </summary>
+    /// <param name="other">The other handle to compare with</param>
     public bool Equals(AdapterHandle other) => _ptr == other._ptr;
 
     /// <summary>
     /// Returns a value indicating whether this instance is equal to a specified object.
     /// </summary>
+    /// <param name="other">The other object to compare with</param>
     public override bool Equals(object? other) => other is AdapterHandle h && Equals(h) || other is null && _ptr == UIntPtr.Zero;
 
     /// <summary>
@@ -74,7 +89,7 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// <summary>
     /// Get the features supported by the adapter.
     /// </summary>
-    /// <param name="info">The features to fill in.</param>
+    /// <param name="features">The features to fill in.</param>
     /// <returns>the status of the call.</returns>
     public void GetFeatures(SupportedFeaturesFFI* features) => WebGPU_FFI.AdapterGetFeatures(this, features);
 

@@ -24,27 +24,30 @@ public unsafe partial struct CompilationMessageFFI
     /// </summary>
     public StringViewFFI Message = StringViewFFI.NullValue;
     /// <summary>
-    /// An enumerated value representing the type of the message — error, info, or warning.
+    /// Severity level of the message.
     /// </summary>
     public CompilationMessageType Type;
     /// <summary>
-    /// A number representing the line number in the shader code that the message corresponds to.
+    /// Line number where the message is attached, starting at 1.
     /// </summary>
     public ulong LineNum;
     /// <summary>
-    /// A number representing the position in the code line that the message corresponds to. This could be an exact point, or the start of the relevant substring.
+    /// Offset in UTF-8 code units (bytes) from the beginning of the line, starting at 1.
     /// </summary>
     public ulong LinePos;
     /// <summary>
-    /// A number representing the offset from the start of the shader code to the exact point, or the start of the relevant substring, that the message corresponds to.
+    /// Offset in UTF-8 code units (bytes) from the beginning of the shader code, starting at 0.
     /// </summary>
     public ulong Offset;
     /// <summary>
-    /// A number representing the length of the substring that the message corresponds to.
+    /// Length in UTF-8 code units (bytes) of the span the message corresponds to.
     /// </summary>
     public ulong Length;
+    [Obsolete("", false)]
     public ulong Utf16LinePos;
+    [Obsolete("", false)]
     public ulong Utf16Offset;
+    [Obsolete("", false)]
     public ulong Utf16Length;
 
     public CompilationMessageFFI() { }

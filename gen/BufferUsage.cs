@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp;
 
 [Flags]
-[Flags]
 public enum BufferUsage : ulong
 {
     None = 0,
