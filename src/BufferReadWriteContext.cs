@@ -7,11 +7,11 @@ namespace WebGpuSharp;
 
 public unsafe ref struct BufferReadWriteContext
 {
-    private readonly ArrayPool<object> _pool;
-    private object[]? _buffersUsedInContext;
+    private readonly ArrayPool<object?> _pool;
+    private object?[]? _buffersUsedInContext;
     private ReadOnlySpan<object?> _buffersUsedInContextSpan;
 
-    internal BufferReadWriteContext(ReadOnlySpan<GPUBuffer> buffersUsedInContext, ArrayPool<object> pool)
+    internal BufferReadWriteContext(ReadOnlySpan<GPUBuffer> buffersUsedInContext, ArrayPool<object?> pool)
     {
         _pool = pool;
         _buffersUsedInContext = pool.Rent(buffersUsedInContext.Length);
