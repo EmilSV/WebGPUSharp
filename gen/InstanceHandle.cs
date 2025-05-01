@@ -93,6 +93,7 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// <summary>
     /// Creates a new surface targeting a given window/canvas/surface/etc..
     /// </summary>
+    /// <param name="descriptor">The descriptor to use for the surface</param>
     public SurfaceHandle CreateSurface(SurfaceDescriptorFFI* descriptor) => WebGPU_FFI.InstanceCreateSurface(this, descriptor);
 
     /// <summary>
@@ -105,6 +106,7 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// <summary>
     /// check if a WGSL language extensions is supported by this instance.
     /// </summary>
+    /// <param name="feature">The feature to check for</param>
     /// <returns>true if the feature is supported, false otherwise.</returns>
     public WebGPUBool HasWGSLLanguageFeature(WGSLLanguageFeatureName feature) => WebGPU_FFI.InstanceHasWGSLLanguageFeature(this, feature);
 
@@ -116,11 +118,16 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// <summary>
     /// Retrieves an Adapter which matches the given <see cref="RequestAdapterOptionsFFI" />.
     /// </summary>
+    /// <param name="callbackInfo">The callback to call when the adapter is ready</param>
+    /// <param name="options">The options to use for the adapter</param>
     public Future RequestAdapter(RequestAdapterOptionsFFI* options, RequestAdapterCallbackInfoFFI callbackInfo) => WebGPU_FFI.InstanceRequestAdapter(this, options, callbackInfo);
 
     /// <summary>
     /// Wait for at least one Future in `futures` to complete, and call callbacks of the respective completed asynchronous operations.
     /// </summary>
+    /// <param name="timeoutNS">The timeout in nanoseconds</param>
+    /// <param name="futures">The futures to wait for</param>
+    /// <param name="futureCount">The number of futures to wait for</param>
     public WaitStatus WaitAny(nuint futureCount, FutureWaitInfo* futures, ulong timeoutNS) => WebGPU_FFI.InstanceWaitAny(this, futureCount, futures, timeoutNS);
 
     /// <summary>

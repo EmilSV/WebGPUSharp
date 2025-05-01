@@ -54,19 +54,19 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         _pooledHandle.handle.ClearBuffer(buffer, offset, size);
     }
 
-    public void CopyBufferToTexture(in ImageCopyBuffer source, in ImageCopyTexture destination, in Extent3D copySize)
+    public void CopyBufferToTexture(in TexelCopyBufferInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.CopyBufferToTexture(source, destination, copySize);
     }
 
-    public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
+    public void CopyTextureToBuffer(in TexelCopyTextureInfo source, in TexelCopyBufferInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.CopyTextureToBuffer(source, destination, copySize);
     }
 
-    public void CopyTextureToTexture(in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
+    public void CopyTextureToTexture(in TexelCopyTextureInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.CopyTextureToTexture(source, destination, copySize);

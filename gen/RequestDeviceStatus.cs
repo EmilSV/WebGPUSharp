@@ -12,10 +12,7 @@ public enum RequestDeviceStatus
     /// The request was completed successfully.
     /// </summary>
     Success = 1,
-    /// <summary>
-    /// The instance was dropped before the request could be completed.
-    /// </summary>
-    InstanceDropped = 2,
+    CallbackCancelled = 2,
     /// <summary>
     /// An error occurred while requesting the device.
     /// </summary>

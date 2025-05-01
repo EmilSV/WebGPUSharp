@@ -18,6 +18,9 @@ public unsafe partial struct SurfaceDescriptorFFI
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// A debug label for the surface.
+    /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
 
     public SurfaceDescriptorFFI() { }

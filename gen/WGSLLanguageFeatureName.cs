@@ -9,6 +9,7 @@ public enum WGSLLanguageFeatureName
     Packed4x8IntegerDotProduct = 2,
     UnrestrictedPointerParameters = 3,
     PointerCompositeAccess = 4,
+    SizedBindingArray = 5,
     ChromiumTestingUnimplemented = 327680,
     ChromiumTestingUnsafeExperimental = 327681,
     ChromiumTestingExperimental = 327682,

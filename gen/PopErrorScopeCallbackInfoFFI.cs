@@ -26,7 +26,13 @@ public unsafe partial struct PopErrorScopeCallbackInfoFFI
     /// The callback to be called when an error scope is popped. Only one of Callback or OldCallback can be non-null.
     /// </summary>
     public delegate* unmanaged[Cdecl]<PopErrorScopeStatus, ErrorType, StringViewFFI, void*, void*, void> Callback;
+    /// <summary>
+    /// The first userdata to be passed to the callback.
+    /// </summary>
     public void* Userdata1;
+    /// <summary>
+    /// The second userdata to be passed to the callback.
+    /// </summary>
     public void* Userdata2;
 
     public PopErrorScopeCallbackInfoFFI() { }

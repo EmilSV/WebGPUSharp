@@ -34,19 +34,6 @@ public unsafe partial struct SurfaceConfigurationFFI
     /// </summary>
     public TextureUsage Usage;
     /// <summary>
-    /// The number of view formats in the <see cref="ViewFormats" /> sequence.
-    /// </summary>
-    public nuint ViewFormatCount;
-    /// <summary>
-    /// Specifies what view formats will be allowed when calling <see cref="TextureHandle.CreateView" /> on the texture returned by <see cref="SurfaceHandle.GetCurrentTexture" />.
-    /// View formats of the same format as the texture are always allowed.
-    /// </summary>
-    public TextureFormat* ViewFormats;
-    /// <summary>
-    /// Specifies how the alpha channel of the textures should be handled during compositing.
-    /// </summary>
-    public CompositeAlphaMode AlphaMode;
-    /// <summary>
     /// Width of the swap chain. Must be the same size as the surface, and nonzero.
     /// 
     /// If this is not the same size as the underlying surface (e.g. if it is set once, and the window is later resized),
@@ -62,6 +49,19 @@ public unsafe partial struct SurfaceConfigurationFFI
     /// other platforms may do something else).
     /// </summary>
     public uint Height;
+    /// <summary>
+    /// The number of view formats in the <see cref="ViewFormats" /> sequence.
+    /// </summary>
+    public nuint ViewFormatCount;
+    /// <summary>
+    /// Specifies what view formats will be allowed when calling <see cref="TextureHandle.CreateView" /> on the texture returned by <see cref="SurfaceHandle.GetCurrentTexture" />.
+    /// View formats of the same format as the texture are always allowed.
+    /// </summary>
+    public TextureFormat* ViewFormats;
+    /// <summary>
+    /// Specifies how the alpha channel of the textures should be handled during compositing.
+    /// </summary>
+    public CompositeAlphaMode AlphaMode;
     /// <summary>
     /// Presentation mode of the swap chain.
     /// Fifo is the only mode guaranteed to be supported. FifoRelaxed, Immediate,

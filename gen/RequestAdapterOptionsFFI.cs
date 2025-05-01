@@ -21,10 +21,6 @@ public unsafe partial struct RequestAdapterOptionsFFI
     /// </remarks>
     public ChainedStruct* NextInChain;
     /// <summary>
-    /// Surface that is required to be presentable with the requested adapter. This does not create the surface, only guarantees that the adapter can present to said surface.
-    /// </summary>
-    public SurfaceHandle CompatibleSurface;
-    /// <summary>
     /// The feature level of the resulting adapter.
     /// </summary>
     public FeatureLevel FeatureLevel;
@@ -33,13 +29,17 @@ public unsafe partial struct RequestAdapterOptionsFFI
     /// </summary>
     public PowerPreference PowerPreference;
     /// <summary>
+    /// Indicates that only a fallback adapter can be returned. This is generally a “software” implementation on the system.
+    /// </summary>
+    public WebGPUBool ForceFallbackAdapter = false;
+    /// <summary>
     /// The backend type of the resulting adapter.
     /// </summary>
     public BackendType BackendType;
     /// <summary>
-    /// Indicates that only a fallback adapter can be returned. This is generally a “software” implementation on the system.
+    /// Surface that is required to be presentable with the requested adapter. This does not create the surface, only guarantees that the adapter can present to said surface.
     /// </summary>
-    public WebGPUBool ForceFallbackAdapter = false;
+    public SurfaceHandle CompatibleSurface;
 
     public RequestAdapterOptionsFFI() { }
 

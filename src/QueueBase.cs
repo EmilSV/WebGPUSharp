@@ -62,9 +62,9 @@ public abstract class QueueBase : WebGPUHandleWrapperBase<QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         List<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize
     ) where T : unmanaged
     {
@@ -78,9 +78,9 @@ public abstract class QueueBase : WebGPUHandleWrapperBase<QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         T[] data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize
     ) where T : unmanaged
     {
@@ -94,9 +94,9 @@ public abstract class QueueBase : WebGPUHandleWrapperBase<QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         Span<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize
     ) where T : unmanaged
     {
@@ -110,9 +110,9 @@ public abstract class QueueBase : WebGPUHandleWrapperBase<QueueHandle>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         ReadOnlySpan<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {

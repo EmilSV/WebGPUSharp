@@ -345,7 +345,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             {
                 buffer.ReadWriteStateChangeLock.AddReadWriteLock();
             }
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
             callback(context);
         }
         finally
@@ -375,7 +375,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             {
                 buffer.ReadWriteStateChangeLock.AddReadWriteLock();
             }
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
             return callback(context);
         }
         finally
@@ -429,7 +429,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             {
                 buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object>.Shared);
+            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
             return callback(context, ref state);
         }
         finally

@@ -8,6 +8,7 @@ namespace WebGpuSharp;
 /// </summary>
 public enum PresentMode
 {
+    Undefined = 0,
     Fifo = 1,
     FifoRelaxed = 2,
     Immediate = 3,

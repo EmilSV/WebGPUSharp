@@ -23,7 +23,7 @@ public unsafe partial struct DeviceDescriptorFFI
     /// </summary>
     public StringViewFFI Label = StringViewFFI.NullValue;
     /// <summary>
-    /// the number of required features in the requiredFeatures sequence.
+    /// the number of items in the <see cref="RequiredFeatures" /> sequence.
     /// </summary>
     public nuint RequiredFeatureCount;
     /// <summary>
@@ -41,12 +41,18 @@ public unsafe partial struct DeviceDescriptorFFI
     /// device (not the adapter; see #limits).
     /// 
     /// </summary>
-    public RequiredLimits* RequiredLimits;
+    public Limits* RequiredLimits;
     /// <summary>
-    /// The descriptor for the default  <see cref="Queue"/>.
+    /// The descriptor for the default <see cref="Queue" />.
     /// </summary>
     public QueueDescriptorFFI DefaultQueue = new();
+    /// <summary>
+    /// Callback for when the device is lost.
+    /// </summary>
     public DeviceLostCallbackInfoFFI DeviceLostCallbackInfo = new();
+    /// <summary>
+    /// Callback for when an uncaptured error occurs.
+    /// </summary>
     public UncapturedErrorCallbackInfoFFI UncapturedErrorCallbackInfo = new();
 
     public DeviceDescriptorFFI() { }

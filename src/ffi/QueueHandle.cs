@@ -120,9 +120,9 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in TexelCopyTextureInfoFFI destination,
         List<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
@@ -131,9 +131,9 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in TexelCopyTextureInfoFFI destination,
         T[] data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
@@ -142,9 +142,9 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in TexelCopyTextureInfoFFI destination,
         Span<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
@@ -152,17 +152,17 @@ public readonly unsafe partial struct QueueHandle :
     }
 
     public readonly void WriteTexture<T>(
-        in ImageCopyTextureFFI destination,
+        in TexelCopyTextureInfoFFI destination,
         ReadOnlySpan<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
         unsafe
         {
             fixed (T* dataPtr = data)
-            fixed (ImageCopyTextureFFI* destinationPtr = &destination)
-            fixed (TextureDataLayout* dataLayoutPtr = &dataLayout)
+            fixed (TexelCopyTextureInfoFFI* destinationPtr = &destination)
+            fixed (TexelCopyBufferLayout* dataLayoutPtr = &dataLayout)
             fixed (Extent3D* writeSizePtr = &writeSize)
             {
                 WebGPU_FFI.QueueWriteTexture(
@@ -179,9 +179,9 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         List<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
@@ -190,9 +190,9 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         T[] data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
@@ -201,9 +201,9 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-        in ImageCopyTexture destination,
+        in TexelCopyTextureInfo destination,
         Span<T> data,
-        in TextureDataLayout dataLayout,
+        in TexelCopyBufferLayout dataLayout,
         in Extent3D writeSize)
         where T : unmanaged
     {
@@ -212,13 +212,13 @@ public readonly unsafe partial struct QueueHandle :
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
-       in ImageCopyTexture destination,
+       in TexelCopyTextureInfo destination,
        ReadOnlySpan<T> data,
-       in TextureDataLayout dataLayout,
+       in TexelCopyBufferLayout dataLayout,
        in Extent3D writeSize)
        where T : unmanaged
     {
-        ImageCopyTextureFFI destinationFFI = new()
+        TexelCopyTextureInfoFFI destinationFFI = new()
         {
             Texture = GetBorrowHandle(destination.Texture),
             MipLevel = destination.MipLevel,

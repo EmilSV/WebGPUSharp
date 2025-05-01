@@ -33,18 +33,18 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly bool GetLimits(out SupportedLimits limits)
+    public readonly bool GetLimits(out Limits limits)
     {
         limits = default;
-        fixed (SupportedLimits* limitsPtr = &limits)
+        fixed (Limits* limitsPtr = &limits)
         {
             return WebGPU_FFI.AdapterGetLimits(this, limitsPtr) == Status.Success;
         }
     }
 
-    public readonly SupportedLimits? GetLimits()
+    public readonly Limits? GetLimits()
     {
-        SupportedLimits limits = default;
+        Limits limits = default;
         if (WebGPU_FFI.AdapterGetLimits(this, &limits) == Status.Success)
         {
             return limits;
@@ -106,7 +106,7 @@ public unsafe readonly partial struct AdapterHandle :
         fixed (byte* deviceDescriptorLabelPtr = labelUtf8Span)
         fixed (byte* queueLabelPtr = queueLabelUtf8Span)
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
-        fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
+        fixed (Limits* requiredLimitsPtr = descriptor.RequiredLimits)
         {
             var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
             var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
@@ -149,7 +149,7 @@ public unsafe readonly partial struct AdapterHandle :
             fixed (byte* deviceDescriptorLabelPtr = deviceDescriptorLabelUtf8Span)
             fixed (byte* queueLabelPtr = queueLabelUtf8Span)
             fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
-            fixed (RequiredLimits* requiredLimitsPtr = descriptor.RequiredLimits)
+            fixed (Limits* requiredLimitsPtr = descriptor.RequiredLimits)
             {
                 var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
                 var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);

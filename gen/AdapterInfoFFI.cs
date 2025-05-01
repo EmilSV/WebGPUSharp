@@ -68,9 +68,13 @@ public unsafe partial struct AdapterInfoFFI
     /// </summary>
     public uint DeviceID;
     /// <summary>
-    /// Is the adapter in compatibility mode
+    /// Minimum subgroup size supported by the adapter.
     /// </summary>
-    public WebGPUBool CompatibilityMode = new();
+    public uint SubgroupMinSize;
+    /// <summary>
+    /// Maximum subgroup size supported by the adapter.
+    /// </summary>
+    public uint SubgroupMaxSize;
 
     public AdapterInfoFFI() { }
 

@@ -16,10 +16,7 @@ public enum DeviceLostReason
     /// The device was destroyed by <see cref="Device.Destroy()" />
     /// </summary>
     Destroyed = 2,
-    /// <summary>
-    /// The device was lost because the instance was dropped.
-    /// </summary>
-    InstanceDropped = 3,
+    CallbackCancelled = 3,
     /// <summary>
     /// The device was lost because it failed to be created.
     /// </summary>

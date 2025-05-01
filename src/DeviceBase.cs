@@ -66,8 +66,8 @@ public abstract class DeviceBase : WebGPUHandleWrapperBase<DeviceHandle>
 
     public FeatureName[] GetFeatures() => Handle.GetFeatures();
 
-    public SupportedLimits GetLimits() => Handle.GetLimits();
-    public void GetLimits(ref SupportedLimits supportedLimits) => Handle.GetLimits(ref supportedLimits);
+    public Limits GetLimits() => Handle.GetLimits();
+    public void GetLimits(ref Limits supportedLimits) => Handle.GetLimits(ref supportedLimits);
 
     public Queue GetQueue()
     {

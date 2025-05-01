@@ -6,8 +6,7 @@ public unsafe struct SurfaceTexture
 {
     private SurfaceTextureFFI _innerSurfaceTextureFFI;
     public Texture? Texture { get; private set; }
-    public WebGPUBool Suboptimal => _innerSurfaceTextureFFI.Suboptimal;
-    public SurfaceGetCurrentTextureStatus Status => _innerSurfaceTextureFFI.Status;
+    public readonly SurfaceGetCurrentTextureStatus Status => _innerSurfaceTextureFFI.Status;
 
     internal void InternalSetSurfaceTextureFFI(SurfaceHandle surface)
     {

@@ -26,7 +26,13 @@ public unsafe partial struct CreateRenderPipelineAsyncCallbackInfoFFI
     /// The callback to call when the render pipeline is created.
     /// </summary>
     public delegate* unmanaged[Cdecl]<CreatePipelineAsyncStatus, RenderPipelineHandle, StringViewFFI, void*, void*, void> Callback;
+    /// <summary>
+    /// User data pointer 1.
+    /// </summary>
     public void* Userdata1;
+    /// <summary>
+    /// User data pointer 2.
+    /// </summary>
     public void* Userdata2;
 
     public CreateRenderPipelineAsyncCallbackInfoFFI() { }

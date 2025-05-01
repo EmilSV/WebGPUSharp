@@ -26,7 +26,13 @@ public unsafe partial struct QueueWorkDoneCallbackInfoFFI
     /// The callback to be called when a queue work done event is fired.
     /// </summary>
     public delegate* unmanaged[Cdecl]<QueueWorkDoneStatus, void*, void*, void> Callback;
+    /// <summary>
+    /// The first userdata to be passed to the callback.
+    /// </summary>
     public void* Userdata1;
+    /// <summary>
+    /// The second userdata to be passed to the callback.
+    /// </summary>
     public void* Userdata2;
 
     public QueueWorkDoneCallbackInfoFFI() { }

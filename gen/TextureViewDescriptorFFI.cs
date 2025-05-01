@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Description of a texture view.
+/// </summary>
 public unsafe partial struct TextureViewDescriptorFFI
 {
     /// <summary>

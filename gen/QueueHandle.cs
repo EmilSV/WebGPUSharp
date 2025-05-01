@@ -90,17 +90,27 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// </summary>
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Registers a callback when the previous call to submit finishes running on the gpu. This callback being called implies that all mapped buffer callbacks which were registered before this call will have been called.
+    /// For the callback to complete, either queue.submit(..), instance.poll_all(..), or device.poll(..) must be called elsewhere in the runtime, possibly integrated into an event loop or run on a separate thread.
+    /// The callback will be called on the thread that first calls the above functions after the gpu work has completed. There are no restrictions on the code you can run in the callback,
+    /// however on native the call to the function will not complete until the callback returns, so prefer keeping callbacks short and used to set flags, send messages, etc.
+    /// </summary>
+    /// <param name="callbackInfo">callback to be called with some user data to be passed to the callback.</param>
     public Future OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI callbackInfo) => WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfo);
 
     /// <summary>
     /// Sets a label on the queue.
     /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.QueueSetLabel(this, label);
 
     /// <summary>
     /// Schedules the execution of the command buffers by the GPU on this queue.
     /// Submitted command buffers cannot be used again.
     /// </summary>
+    /// <param name="commands">The command buffers to submit.</param>
+    /// <param name="commandCount">The number of command buffers to submit.</param>
     public void Submit(nuint commandCount, CommandBufferHandle* commands) => WebGPU_FFI.QueueSubmit(this, commandCount, commands);
 
     /// <summary>
@@ -125,8 +135,9 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// <param name="destination">The texture subresource and origin to write to.</param>
     /// <param name="data">Data to write into <paramref name="destination"/>.</param>
     /// <param name="dataLayout">Layout of the content in <paramref name="data"/>.</param>
-    /// <param name="size">Extents of the content to write from <paramref name="data"/> to <paramref name="destination"/>.</param>
-    public void WriteTexture(ImageCopyTextureFFI* destination, void* data, nuint dataSize, TextureDataLayout* dataLayout, Extent3D* writeSize) => WebGPU_FFI.QueueWriteTexture(this, destination, data, dataSize, dataLayout, writeSize);
+    /// <param name="dataSize">The size of the data to write.</param>
+    /// <param name="writeSize">Extents of the content to write from <paramref name="data" /> to <paramref name="destination" />.</param>
+    public void WriteTexture(TexelCopyTextureInfoFFI* destination, void* data, nuint dataSize, TexelCopyBufferLayout* dataLayout, Extent3D* writeSize) => WebGPU_FFI.QueueWriteTexture(this, destination, data, dataSize, dataLayout, writeSize);
 
     /// <summary>
     /// Increments the reference count of the <see cref="QueueHandle"/>.

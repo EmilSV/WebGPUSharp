@@ -98,6 +98,7 @@ public unsafe partial struct SamplerHandle : IEquatable<SamplerHandle>
     /// <summary>
     /// Set the label of the sampler.
     /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.SamplerSetLabel(this, label);
 
     /// <summary>

@@ -3,20 +3,20 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-public struct ImageCopyTexture :
-    IWebGpuFFIConvertibleAlloc<ImageCopyTexture, ImageCopyTextureFFI>
+public struct TexelCopyTextureInfo :
+    IWebGpuFFIConvertibleAlloc<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>
 {
     public required TextureBase Texture;
     public uint MipLevel = 0;
     public Origin3D Origin = new();
     public TextureAspect Aspect = TextureAspect.All;
 
-    public ImageCopyTexture()
+    public TexelCopyTextureInfo()
     {
     }
 
-    static void IWebGpuFFIConvertibleAlloc<ImageCopyTexture, ImageCopyTextureFFI>.UnsafeConvertToFFI(
-        in ImageCopyTexture input, WebGpuAllocatorHandle allocator, out ImageCopyTextureFFI dest)
+    static void IWebGpuFFIConvertibleAlloc<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>.UnsafeConvertToFFI(
+        in TexelCopyTextureInfo input, WebGpuAllocatorHandle allocator, out TexelCopyTextureInfoFFI dest)
     {
         dest = new()
         {

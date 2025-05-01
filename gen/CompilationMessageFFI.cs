@@ -43,12 +43,6 @@ public unsafe partial struct CompilationMessageFFI
     /// Length in UTF-8 code units (bytes) of the span the message corresponds to.
     /// </summary>
     public ulong Length;
-    [Obsolete("", false)]
-    public ulong Utf16LinePos;
-    [Obsolete("", false)]
-    public ulong Utf16Offset;
-    [Obsolete("", false)]
-    public ulong Utf16Length;
 
     public CompilationMessageFFI() { }
 

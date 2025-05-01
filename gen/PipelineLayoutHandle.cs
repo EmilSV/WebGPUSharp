@@ -92,6 +92,7 @@ public unsafe partial struct PipelineLayoutHandle : IEquatable<PipelineLayoutHan
     /// <summary>
     /// Sets the label of the pipeline layout.
     /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.PipelineLayoutSetLabel(this, label);
 
     /// <summary>

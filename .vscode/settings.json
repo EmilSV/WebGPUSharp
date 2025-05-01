@@ -6,6 +6,7 @@
         "mipmap",
         "Multisample",
         "SPIRV",
+        "Texel",
         "TFFI",
         "Uncaptured",
         "Unconfigure",

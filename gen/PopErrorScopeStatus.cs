@@ -6,6 +6,6 @@ namespace WebGpuSharp;
 public enum PopErrorScopeStatus
 {
     Success = 1,
-    InstanceDropped = 2,
-    EmptyStack = 3,
+    CallbackCancelled = 2,
+    Error = 3,
 }

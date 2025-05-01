@@ -101,14 +101,14 @@ public readonly unsafe partial struct CommandEncoderHandle :
         );
     }
 
-    public void CopyBufferToTexture(in ImageCopyBuffer source, in ImageCopyTexture destination, in Extent3D copySize)
+    public void CopyBufferToTexture(in TexelCopyBufferInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         ToFFI(
             input: source,
-            dest: out ImageCopyBufferFFI sourceFFI
+            dest: out TexelCopyBufferInfoFFI sourceFFI
         );
 
-        ImageCopyTextureFFI destinationFFI = new()
+        TexelCopyTextureInfoFFI destinationFFI = new()
         {
             Texture = GetBorrowHandle(destination.Texture),
             MipLevel = destination.MipLevel,
@@ -128,10 +128,10 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void CopyBufferToTexture(in ImageCopyBufferFFI source, in ImageCopyTextureFFI destination, in Extent3D copySize)
+    public void CopyBufferToTexture(in TexelCopyBufferInfoFFI source, in TexelCopyTextureInfoFFI destination, in Extent3D copySize)
     {
-        fixed (ImageCopyBufferFFI* sourcePtr = &source)
-        fixed (ImageCopyTextureFFI* destinationPtr = &destination)
+        fixed (TexelCopyBufferInfoFFI* sourcePtr = &source)
+        fixed (TexelCopyTextureInfoFFI* destinationPtr = &destination)
         fixed (Extent3D* copySizePtr = &copySize)
         {
             WebGPU_FFI.CommandEncoderCopyBufferToTexture(
@@ -143,9 +143,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void CopyTextureToBuffer(in ImageCopyTexture source, in ImageCopyBuffer destination, in Extent3D copySize)
+    public void CopyTextureToBuffer(in TexelCopyTextureInfo source, in TexelCopyBufferInfo destination, in Extent3D copySize)
     {
-        ImageCopyTextureFFI sourceFFI = new()
+        TexelCopyTextureInfoFFI sourceFFI = new()
         {
             Texture = GetBorrowHandle(source.Texture),
             MipLevel = source.MipLevel,
@@ -155,7 +155,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         ToFFI(
             input: destination,
-            dest: out ImageCopyBufferFFI destinationFFI
+            dest: out TexelCopyBufferInfoFFI destinationFFI
         );
 
         fixed (Extent3D* copySizePtr = &copySize)
@@ -169,10 +169,10 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
-    public void CopyTextureToBuffer(in ImageCopyTextureFFI source, in ImageCopyBufferFFI destination, in Extent3D copySize)
+    public void CopyTextureToBuffer(in TexelCopyTextureInfoFFI source, in TexelCopyBufferInfoFFI destination, in Extent3D copySize)
     {
-        fixed (ImageCopyTextureFFI* sourcePtr = &source)
-        fixed (ImageCopyBufferFFI* destinationPtr = &destination)
+        fixed (TexelCopyTextureInfoFFI* sourcePtr = &source)
+        fixed (TexelCopyBufferInfoFFI* destinationPtr = &destination)
         fixed (Extent3D* copySizePtr = &copySize)
         {
             WebGPU_FFI.CommandEncoderCopyTextureToBuffer(
@@ -185,10 +185,10 @@ public readonly unsafe partial struct CommandEncoderHandle :
     }
 
     public void CopyTextureToTexture(
-        in ImageCopyTextureFFI source, in ImageCopyTextureFFI destination, in Extent3D copySize)
+        in TexelCopyTextureInfoFFI source, in TexelCopyTextureInfoFFI destination, in Extent3D copySize)
     {
-        fixed (ImageCopyTextureFFI* sourcePtr = &source)
-        fixed (ImageCopyTextureFFI* destinationPtr = &destination)
+        fixed (TexelCopyTextureInfoFFI* sourcePtr = &source)
+        fixed (TexelCopyTextureInfoFFI* destinationPtr = &destination)
         fixed (Extent3D* copySizePtr = &copySize)
         {
             WebGPU_FFI.CommandEncoderCopyTextureToTexture(
@@ -201,9 +201,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
     }
 
     public void CopyTextureToTexture(
-        in ImageCopyTexture source, in ImageCopyTexture destination, in Extent3D copySize)
+        in TexelCopyTextureInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
-        ImageCopyTextureFFI sourceFFI = new()
+        TexelCopyTextureInfoFFI sourceFFI = new()
         {
             Texture = GetBorrowHandle(source.Texture),
             MipLevel = source.MipLevel,
@@ -211,7 +211,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             Aspect = source.Aspect
         };
 
-        ImageCopyTextureFFI destinationFFI = new()
+        TexelCopyTextureInfoFFI destinationFFI = new()
         {
             Texture = GetBorrowHandle(destination.Texture),
             MipLevel = destination.MipLevel,
@@ -303,6 +303,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    [Obsolete("", false)]
     public void WriteTimestamp(QuerySet querySet, uint queryIndex)
     {
         WebGPU_FFI.CommandEncoderWriteTimestamp(

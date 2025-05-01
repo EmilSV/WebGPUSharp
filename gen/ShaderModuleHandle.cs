@@ -98,11 +98,13 @@ public unsafe partial struct ShaderModuleHandle : IEquatable<ShaderModuleHandle>
     /// The locations, order, and contents of messages are implementation-defined
     /// In particular, messages may not be ordered by <see cref="CompilationMessage.LineNum" />.
     /// </summary>
+    /// <param name="callbackInfo">The callback to call when the compilation info is ready.</param>
     public Future GetCompilationInfo(CompilationInfoCallbackInfoFFI callbackInfo) => WebGPU_FFI.ShaderModuleGetCompilationInfo(this, callbackInfo);
 
     /// <summary>
     /// Sets the debug label of the shader module.
     /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.ShaderModuleSetLabel(this, label);
 
     /// <summary>

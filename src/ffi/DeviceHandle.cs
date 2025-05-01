@@ -540,16 +540,16 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     [SkipLocalsInit]
-    public SupportedLimits GetLimits()
+    public Limits GetLimits()
     {
-        SupportedLimits supportedLimits;
+        Limits supportedLimits;
         WebGPU_FFI.DeviceGetLimits(this, &supportedLimits);
         return supportedLimits;
     }
 
-    public void GetLimits(ref SupportedLimits supportedLimits)
+    public void GetLimits(ref Limits supportedLimits)
     {
-        fixed (SupportedLimits* supportedLimitsPtr = &supportedLimits)
+        fixed (Limits* supportedLimitsPtr = &supportedLimits)
         {
             WebGPU_FFI.DeviceGetLimits(this, supportedLimitsPtr);
         }

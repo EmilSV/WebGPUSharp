@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// Handle to a physical graphics and/or compute device.
+/// Adapters can be created using Instance::request_adapter or other Instance methods.
+/// Adapters can be used to open a connection to the corresponding Device on the host system by using Adapter::request_device.
+/// Does not have to be kept alive.
+/// </summary>
 public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
 {
     private readonly nuint _ptr;
@@ -105,7 +111,7 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// </summary>
     /// <param name="limits">The limits to fill in.</param>
     /// <returns>the status of the call.</returns>
-    public Status GetLimits(SupportedLimits* limits) => WebGPU_FFI.AdapterGetLimits(this, limits);
+    public Status GetLimits(Limits* limits) => WebGPU_FFI.AdapterGetLimits(this, limits);
 
     /// <summary>
     /// Check if and additional functionality is supported by the adapter.
@@ -119,8 +125,9 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// This is a one-time action: if a device is returned successfully,
     /// the adapter then enters a "consumed" state
     /// </summary>
-    /// <param name="descriptor">The device descriptor to use.</param>
+    /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
     /// <param name="callbackInfo">The callback to call when the device is ready</param>
+    /// <param name="options">The device descriptor to use.</param>
     public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, options, callbackInfo);
 
     /// <summary>

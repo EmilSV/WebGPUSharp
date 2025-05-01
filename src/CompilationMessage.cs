@@ -22,7 +22,4 @@ public unsafe readonly ref struct CompilationMessage
     public ulong LinePos => _compilationMessageFFI.LinePos;
     public ulong Offset => _compilationMessageFFI.Offset;
     public ulong Length => _compilationMessageFFI.Length;
-    public ulong Utf16LinePos => _compilationMessageFFI.Utf16LinePos;
-    public ulong Utf16Offset => _compilationMessageFFI.Utf16Offset;
-    public ulong Utf16Length => _compilationMessageFFI.Utf16Length;
 }

@@ -6,8 +6,18 @@ namespace WebGpuSharp;
 /// <summary>
 /// Each limit is a numeric limit on the usage of WebGPU on a device.
 /// </summary>
-public partial struct Limits
+public unsafe partial struct Limits
 {
+    /// <summary>
+    /// Pointer to the first element in a chain of structures that extends this descriptor.
+    /// </summary>
+    /// <remarks>
+    /// Enables struct-chaining, a pattern that extends existing structs with new members while 
+    /// maintaining API compatibility. Each extension struct must be properly initialized with 
+    /// correct sType values and linked together. For detailed information about struct-chaining,
+    /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
+    /// </remarks>
+    public ChainedStruct* NextInChain;
     /// <summary>
     /// Maximum allowed value for the size.Width of a texture created with <see cref="TextureDimension.D1" />. Defaults to 8192. Higher is “better”.
     /// </summary>
@@ -98,10 +108,6 @@ public partial struct Limits
     /// Maximum value for VertexBufferLayout.ArrayStride when creating a RenderPipeline. Defaults to 2048. Higher is “better”.
     /// </summary>
     public uint MaxVertexBufferArrayStride = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
-    /// <summary>
-    /// Maximum allowed number of components (scalars) of input or output locations for inter-stage communication (vertex outputs to fragment inputs). Defaults to 60. Higher is “better”.
-    /// </summary>
-    public uint MaxInterStageShaderComponents = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
     /// <summary>
     /// The maximum allowed number of input or output variables for inter-stage communication (like vertex outputs or fragment inputs). Defaults to 16. Higher is “better”.
     /// </summary>

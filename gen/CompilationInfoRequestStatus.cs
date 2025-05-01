@@ -6,5 +6,5 @@ namespace WebGpuSharp;
 public enum CompilationInfoRequestStatus
 {
     Success = 1,
-    InstanceDropped = 2,
+    CallbackCancelled = 2,
 }

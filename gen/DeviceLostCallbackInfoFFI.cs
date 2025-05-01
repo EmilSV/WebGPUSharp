@@ -18,9 +18,21 @@ public unsafe partial struct DeviceLostCallbackInfoFFI
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// The callback mode.
+    /// </summary>
     public CallbackMode Mode;
+    /// <summary>
+    /// The callback to call when the device is lost.
+    /// </summary>
     public delegate* unmanaged[Cdecl]<DeviceHandle*, DeviceLostReason, StringViewFFI, void*, void*, void> Callback;
+    /// <summary>
+    /// The first user data to be passed to the callback function.
+    /// </summary>
     public void* Userdata1;
+    /// <summary>
+    /// The second user data to be passed to the callback function.
+    /// </summary>
     public void* Userdata2;
 
     public DeviceLostCallbackInfoFFI() { }

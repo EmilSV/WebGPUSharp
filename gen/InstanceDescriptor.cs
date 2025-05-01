@@ -22,8 +22,6 @@ public unsafe partial struct InstanceDescriptor
     /// Instance capabilities to enable.
     /// </summary>
     public InstanceCapabilities Capabilities = new();
-    [Obsolete("", false)]
-    public InstanceCapabilities Features = new();
 
     public InstanceDescriptor() { }
 

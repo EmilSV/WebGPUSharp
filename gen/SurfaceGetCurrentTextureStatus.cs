@@ -8,32 +8,22 @@ namespace WebGpuSharp;
 /// </summary>
 public enum SurfaceGetCurrentTextureStatus
 {
-    /// <summary>
-    /// The call to <see cref="Surface.GetCurrentTexture" /> was successful.
-    /// </summary>
-    Success = 1,
+    SuccessOptimal = 1,
+    SuccessSuboptimal = 2,
     /// <summary>
     /// The call to <see cref="Surface.GetCurrentTexture" /> timed out.
     /// </summary>
-    Timeout = 2,
+    Timeout = 3,
     /// <summary>
     /// The call to <see cref="Surface.GetCurrentTexture" /> was outdated.
     /// </summary>
-    Outdated = 3,
+    Outdated = 4,
     /// <summary>
     /// The call to <see cref="Surface.GetCurrentTexture" /> was lost.
     /// </summary>
-    Lost = 4,
-    /// <summary>
-    /// The call to <see cref="Surface.GetCurrentTexture" /> failed due to out of memory.
-    /// </summary>
-    OutOfMemory = 5,
-    /// <summary>
-    /// The call to <see cref="Surface.GetCurrentTexture" /> failed due to the device being lost.
-    /// </summary>
-    DeviceLost = 6,
+    Lost = 5,
     /// <summary>
     /// The call to <see cref="Surface.GetCurrentTexture" /> failed due to an error.
     /// </summary>
-    Error = 7,
+    Error = 6,
 }

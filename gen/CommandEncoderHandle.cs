@@ -134,7 +134,8 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// Combined with <paramref name="copySize"/>, defines the region of the destination texture subresource.
     /// <paramref name="copySize"/>:
     /// </param>
-    public void CopyBufferToTexture(ImageCopyBufferFFI* source, ImageCopyTextureFFI* destination, Extent3D* copySize) => WebGPU_FFI.CommandEncoderCopyBufferToTexture(this, source, destination, copySize);
+    /// <param name="copySize">specifies the width, height, and depth/array layer count of the copied data.</param>
+    public void CopyBufferToTexture(TexelCopyBufferInfoFFI* source, TexelCopyTextureInfoFFI* destination, Extent3D* copySize) => WebGPU_FFI.CommandEncoderCopyBufferToTexture(this, source, destination, copySize);
 
     /// <summary>
     /// Encode a command into the  <see cref="CommandEncoder"/> that copies data from a sub-region of one or
@@ -145,7 +146,8 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// Combined with <paramref name="copySize"/>, defines the region of the destination buffer.
     /// <paramref name="copySize"/>:
     /// </param>
-    public void CopyTextureToBuffer(ImageCopyTextureFFI* source, ImageCopyBufferFFI* destination, Extent3D* copySize) => WebGPU_FFI.CommandEncoderCopyTextureToBuffer(this, source, destination, copySize);
+    /// <param name="copySize">specifies the width, height, and depth/array layer count of the copied data.</param>
+    public void CopyTextureToBuffer(TexelCopyTextureInfoFFI* source, TexelCopyBufferInfoFFI* destination, Extent3D* copySize) => WebGPU_FFI.CommandEncoderCopyTextureToBuffer(this, source, destination, copySize);
 
     /// <summary>
     /// Encode a command into the  <see cref="CommandEncoder"/> that copies data from a sub-region of one
@@ -157,11 +159,13 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// Combined with <paramref name="copySize"/>, defines the region of the destination texture subresources.
     /// <paramref name="copySize"/>:
     /// </param>
-    public void CopyTextureToTexture(ImageCopyTextureFFI* source, ImageCopyTextureFFI* destination, Extent3D* copySize) => WebGPU_FFI.CommandEncoderCopyTextureToTexture(this, source, destination, copySize);
+    /// <param name="copySize">specifies the width, height, and depth/array layer count of the copied data.</param>
+    public void CopyTextureToTexture(TexelCopyTextureInfoFFI* source, TexelCopyTextureInfoFFI* destination, Extent3D* copySize) => WebGPU_FFI.CommandEncoderCopyTextureToTexture(this, source, destination, copySize);
 
     /// <summary>
     /// Completes recording of the commands sequence and returns a corresponding  <see cref="CommandBuffer"/>.
     /// </summary>
+    /// <param name="descriptor">The descriptor.</param>
     public CommandBufferHandle Finish(CommandBufferDescriptorFFI* descriptor) => WebGPU_FFI.CommandEncoderFinish(this, descriptor);
 
     /// <summary>
@@ -184,6 +188,11 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// <summary>
     /// Resolves query results from a  <see cref="QuerySet"/> out into a range of a  <see cref="Buffer"/>.
     /// </summary>
+    /// <param name="querySet">The query set.</param>
+    /// <param name="firstQuery">The index number of the first query value to be copied over to the buffer.</param>
+    /// <param name="destinationOffset">The offset, in bytes, from the start of the buffer to start writing the query values at.</param>
+    /// <param name="destination">The buffer to copy the query values to.</param>
+    /// <param name="queryCount">The number of queries to be copied over to the buffer, starting from <paramref name="firstQuery" /></param>
     public void ResolveQuerySet(QuerySetHandle querySet, uint firstQuery, uint queryCount, BufferHandle destination, ulong destinationOffset) => WebGPU_FFI.CommandEncoderResolveQuerySet(this, querySet, firstQuery, queryCount, destination, destinationOffset);
 
     /// <summary>
@@ -192,6 +201,7 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// <param name="label">The new label.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.CommandEncoderSetLabel(this, label);
 
+    [Obsolete("", false)]
     public void WriteTimestamp(QuerySetHandle querySet, uint queryIndex) => WebGPU_FFI.CommandEncoderWriteTimestamp(this, querySet, queryIndex);
 
     /// <summary>

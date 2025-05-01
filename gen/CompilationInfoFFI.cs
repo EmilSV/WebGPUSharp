@@ -18,6 +18,9 @@ public unsafe partial struct CompilationInfoFFI
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// The number of messages in the <see cref="Messages" /> sequence.
+    /// </summary>
     public nuint MessageCount;
     /// <summary>
     /// The messages from the shader compilation process.

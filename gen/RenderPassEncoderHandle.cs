@@ -99,6 +99,9 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// </summary>
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Start a occlusion query on this render pass. It can be ended with end_occlusion_query. Occlusion queries may not be nested.
+    /// </summary>
     /// <param name="queryIndex">The index of the query in the query set.</param>
     public void BeginOcclusionQuery(uint queryIndex) => WebGPU_FFI.RenderPassEncoderBeginOcclusionQuery(this, queryIndex);
 
@@ -109,6 +112,10 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Errors if vertices Range is outside of the range of the vertices range of any set vertex buffer.
     /// </summary>
+    /// <param name="vertexCount">The number of vertices to draw.</param>
+    /// <param name="firstInstance">First instance to draw.</param>
+    /// <param name="firstVertex">Offset into the vertex buffers, in vertices, to begin drawing from.</param>
+    /// <param name="instanceCount">The number of instances to draw.</param>
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance) => WebGPU_FFI.RenderPassEncoderDraw(this, vertexCount, instanceCount, firstVertex, firstInstance);
 
     /// <summary>
@@ -118,6 +125,11 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
+    /// <param name="baseVertex">Added to each index value before indexing into the vertex buffers.</param>
+    /// <param name="firstIndex">Offset into the index buffer, in indices, begin drawing from.</param>
+    /// <param name="instanceCount">The number of indices to draw.</param>
+    /// <param name="indexCount">The number of indices to draw.</param>
+    /// <param name="firstInstance">First instance to draw.</param>
     public void DrawIndexed(uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance) => WebGPU_FFI.RenderPassEncoderDrawIndexed(this, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 
     /// <summary>
@@ -125,8 +137,19 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// This is like calling <see cref="DrawIndexed" /> but the contents of the call are specified in the indirectBuffer.
     /// </summary>
+    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
+    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters</param>
     public void DrawIndexedIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(this, indirectBuffer, indirectOffset);
 
+    /// <summary>
+    /// Draws primitives from the active vertex buffer(s) based on the contents of the <paramref name="indirectBuffer" />.
+    /// 
+    /// The active vertex buffers can be set with <see cref="FFI.RenderEncoder.SetVertexBuffer" />.
+    /// 
+    /// The indirect draw parameters encoded in the buffer must be a tightly packed block of four 32-bit unsigned integer values (16 bytes total), given in the same order as the arguments for <see cref="FFI.RenderEncoder.Draw" />.
+    /// </summary>
+    /// <param name="indirectBuffer">Buffer containing the indirect draw parameters.</param>
+    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     public void DrawIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderPassEncoderDrawIndirect(this, indirectBuffer, indirectOffset);
 
     /// <summary>
@@ -150,8 +173,13 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// This occurs even if zero  <see cref="RenderBundle">GPURenderBundles</see> are executed.
     /// </summary>
     /// <param name="bundles">List of render bundles to execute.</param>
+    /// <param name="bundleCount">The number item in the <paramref name="bundles" /> sequence.</param>
     public void ExecuteBundles(nuint bundleCount, RenderBundleHandle* bundles) => WebGPU_FFI.RenderPassEncoderExecuteBundles(this, bundleCount, bundles);
 
+    /// <summary>
+    /// Inserts a debug marker into the command stream.
+    /// </summary>
+    /// <param name="markerLabel">The label of the debug marker.</param>
     public void InsertDebugMarker(StringViewFFI markerLabel) => WebGPU_FFI.RenderPassEncoderInsertDebugMarker(this, markerLabel);
 
     /// <summary>
@@ -162,6 +190,7 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// <summary>
     /// Start record commands and group it into debug marker group.
     /// </summary>
+    /// <param name="groupLabel">The label of the debug group.</param>
     public void PushDebugGroup(StringViewFFI groupLabel) => WebGPU_FFI.RenderPassEncoderPushDebugGroup(this, groupLabel);
 
     /// <summary>
@@ -171,6 +200,10 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Subsequent draw calls' shader executions will be able to access data in these bind groups.
     /// </summary>
+    /// <param name="dynamicOffsets">Sequence containing buffer offsets in bytes for each entry in bindGroup marked as <see cref="BindGroupLayoutEntry.BindGroupLayoutEntry.Buffer">Buffer</see>.<see cref="BufferBindingLayout.HasDynamicOffset">HasDynamicOffset</see>, ordered by <see cref="BindGroupLayoutEntry.BindGroupLayoutEntry.Binding">BindGroupLayoutEntry.Binding</see>.</param>
+    /// <param name="dynamicOffsetCount">The number of item in the <paramref name="dynamicOffsets" />.</param>
+    /// <param name="group">Bind group to use for subsequent render commands.</param>
+    /// <param name="groupIndex">The index to set the bind group at.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.RenderPassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
     /// <summary>
@@ -185,11 +218,16 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Subsequent calls to <see cref="DrawIndexed" /> on this RenderPassEncoderHandle will use buffer as the source index buffer.
     /// </summary>
+    /// <param name="size">Size in bytes of the index data in buffer. Defaults to the size of the buffer minus the offset.</param>
+    /// <param name="offset">Offset in bytes into buffer where the index data begins. Defaults to 0.</param>
+    /// <param name="format">Format of the index data contained in buffer.</param>
+    /// <param name="buffer">Buffer containing index data to use for subsequent drawing commands.</param>
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, ulong offset, ulong size) => WebGPU_FFI.RenderPassEncoderSetIndexBuffer(this, buffer, format, offset, size);
 
     /// <summary>
     /// Sets the debug label of the RenderPassEncoderHandle.
     /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderPassEncoderSetLabel(this, label);
 
     /// <summary>
@@ -197,6 +235,7 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Subsequent draw calls will exhibit the behavior defined by pipeline.
     /// </summary>
+    /// <param name="pipeline">The render pipeline to use for subsequent drawing commands.</param>
     public void SetPipeline(RenderPipelineHandle pipeline) => WebGPU_FFI.RenderPassEncoderSetPipeline(this, pipeline);
 
     /// <summary>
@@ -224,6 +263,10 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
     /// </summary>
+    /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
+    /// <param name="offset">Offset in bytes into buffer where the vertex data begins. Defaults to 0.</param>
+    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
+    /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size) => WebGPU_FFI.RenderPassEncoderSetVertexBuffer(this, slot, buffer, offset, size);
 
     /// <summary>

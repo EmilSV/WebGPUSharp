@@ -6,8 +6,8 @@ namespace WebGpuSharp;
 public abstract class AdapterBase : WebGPUHandleWrapperBase<AdapterHandle>
 {
     public AdapterInfo GetInfo() => Handle.GetInfo()!;
-    public bool GetLimits(out SupportedLimits limits) => Handle.GetLimits(out limits);
-    public SupportedLimits? GetLimits() => Handle.GetLimits();
+    public bool GetLimits(out Limits limits) => Handle.GetLimits(out limits);
+    public Limits? GetLimits() => Handle.GetLimits();
 
     public FeatureName[] GetFeatures() => Handle.GetFeatures();
     public bool HasFeature(FeatureName feature) => Handle.HasFeature(feature);

@@ -98,6 +98,20 @@ public unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     /// </summary>
     public void Destroy() => WebGPU_FFI.BufferDestroy(this);
 
+    /// <summary>
+    /// Returns a const pointer to beginning of the mapped range.
+    /// It must not be written; writing to this range causes undefined behavior.
+    /// See MappedRangeBehavior for error conditions and guarantees.
+    /// This function is safe to call inside spontaneous callbacks (see CallbackReentrancy).
+    /// </summary>
+    /// <param name="size">
+    /// Byte size of the range to get.
+    /// If this is
+    /// <see cref="WebGPU_FFI.WHOLE_MAP_SIZE" />
+    /// , it defaults to `buffer.size - offset`.
+    /// The returned pointer is valid for exactly this many bytes.
+    /// </param>
+    /// <param name="offset">Byte offset relative to the beginning of the buffer.</param>
     public void* GetConstMappedRange(nuint offset, nuint size) => WebGPU_FFI.BufferGetConstMappedRange(this, offset, size);
 
     /// <summary>
@@ -138,7 +152,22 @@ public unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     /// <param name="mode">Whether the buffer should be mapped for reading or writing.</param>
     /// <param name="offset">Offset in bytes into the buffer to the start of the range to map.</param>
     /// <param name="size">Size in bytes of the range to map.</param>
+    /// <param name="callbackInfo">Callback to be called when the buffer is mapped.</param>
+    /// <returns>The future for the callback.</returns>
     public Future MapAsync(MapMode mode, nuint offset, nuint size, BufferMapCallbackInfoFFI callbackInfo) => WebGPU_FFI.BufferMapAsync(this, mode, offset, size, callbackInfo);
+
+    /// <summary>
+    /// Copies a range of data from the buffer mapping into the provided destination pointer.
+    /// See MappedRangeBehavior for error conditions and guarantees.
+    /// This function is safe to call inside spontaneous callbacks (see CallbackReentrancy).
+    /// 
+    /// In Wasm, this is more efficient than copying from a mapped range into a `malloc`'d range.
+    /// </summary>
+    /// <param name="size">Number of bytes of data to read from the buffer. (Note <see cref="WebGPU_FFI.WHOLE_MAP_SIZE" /> is *not* accepted here.)</param>
+    /// <param name="data">Destination, to read buffer data into.</param>
+    /// <param name="offset">Byte offset relative to the beginning of the buffer.</param>
+    /// <returns><see cref="Status.Error" /> if the copy did not occur.</returns>
+    public Status ReadMappedRange(nuint offset, void* data, nuint size) => WebGPU_FFI.BufferReadMappedRange(this, offset, data, size);
 
     /// <summary>
     /// Sets a label on the Buffer.
@@ -151,6 +180,18 @@ public unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     /// GPU again.
     /// </summary>
     public void Unmap() => WebGPU_FFI.BufferUnmap(this);
+
+    /// <summary>
+    /// Copies a range of data from the provided source pointer into the buffer mapping.
+    /// See MappedRangeBehavior for error conditions and guarantees.
+    /// This function is safe to call inside spontaneous callbacks (see CallbackReentrancy).
+    /// In Wasm, this is more efficient than copying from a `malloc`'d range into a mapped range.
+    /// </summary>
+    /// <param name="data">Source, to write buffer data from.</param>
+    /// <param name="offset">Byte offset relative to the beginning of the buffer.</param>
+    /// <param name="size">Number of bytes of data to write to the buffer. (Note <see cref="WebGPU_FFI.WHOLE_MAP_SIZE" /> is *not* accepted here.)</param>
+    /// <returns><see cref="Status.Error" /> if the copy did not occur.</returns>
+    public Status WriteMappedRange(nuint offset, void* data, nuint size) => WebGPU_FFI.BufferWriteMappedRange(this, offset, data, size);
 
     /// <summary>
     /// Increments the reference count of the <see cref="BufferHandle"/>.

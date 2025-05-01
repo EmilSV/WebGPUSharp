@@ -48,6 +48,7 @@ public enum FeatureName
     /// Supported Platforms:<list type="bullet"><item><description>desktops</description></item><item><description>Mobile (All Apple9 and some Apple7 and Apple8 devices)</description></item></list>
     /// </summary>
     TextureCompressionBC = 4,
+    TextureCompressionBCSliced3D = 5,
     /// <summary>
     /// Enables ETC family of compressed textures. All ETC textures use 4x4 pixel blocks.
     /// ETC2 RGB and RGBA1 are 8 bytes per block. RTC2 RGBA8 and EAC are 16 bytes per block.
@@ -59,7 +60,7 @@ public enum FeatureName
     /// 
     /// Supported Platforms:<list type="bullet"><item><description>Vulkan on Intel</description></item><item><description>Mobile (some)</description></item></list>
     /// </summary>
-    TextureCompressionETC2 = 5,
+    TextureCompressionETC2 = 6,
     /// <summary>
     /// Enables ASTC family of compressed textures. ASTC textures use pixel blocks varying from 4x4 to 12x12. Blocks are always 16 bytes.
     /// 
@@ -69,7 +70,8 @@ public enum FeatureName
     /// 
     /// Supported Platforms:<list type="bullet"><item><description>Vulkan on Intel</description></item><item><description>Mobile (some)</description></item></list>
     /// </summary>
-    TextureCompressionASTC = 6,
+    TextureCompressionASTC = 7,
+    TextureCompressionASTCSliced3D = 8,
     /// <summary>
     /// Allows non-zero value for the first_instance member in indirect draw calls.
     /// 
@@ -81,33 +83,33 @@ public enum FeatureName
     /// 
     /// Not Supported:<list type="bullet"><item>OpenGL ES / WebGL</item></list>
     /// </summary>
-    IndirectFirstInstance = 7,
+    IndirectFirstInstance = 9,
     /// <summary>
     /// Allows shaders to acquire the FP16 ability.
     /// 
     /// Supported platforms:<list type="bullet"><item>Vulkan</item><item>Metal</item></list>
     /// </summary>
-    ShaderF16 = 8,
+    ShaderF16 = 10,
     /// <summary>
     /// Allows for usage of textures of format <see cref="TextureFormat.Rg11b10Ufloat" /> as a render target.
     /// 
     /// Supported platforms:<list type="bullet"><item>Vulkan</item><item>DX12</item><item>Metal</item></list>
     /// </summary>
-    RG11B10UfloatRenderable = 9,
+    RG11B10UfloatRenderable = 11,
     /// <summary>
     /// Allows the <see cref="TextureUsage.StorageBinding" /> usage on textures with format <see cref="TextureFormat.BGRA8Unorm" />.
     /// 
     /// Supported Platforms:<list type="bullet"><item>Vulkan</item><item>DX12</item><item>Metal</item></list>
     /// </summary>
-    BGRA8UnormStorage = 10,
+    BGRA8UnormStorage = 12,
     /// <summary>
     /// Allows textures with formats “r32float”, “rg32float”, and “rgba32float” to be filterable.
     /// 
     /// Supported Platforms:<list type="bullet"><item>Vulkan (mainly on Desktop GPUs)</item><item>DX12</item><item>Metal on macOS or Apple9+ GPUs, optional on iOS/iPadOS with Apple7/8 GPUs</item><item>GL with one of GL_ARB_color_buffer_float/GL_EXT_color_buffer_float/OES_texture_float_linear</item></list>
     /// </summary>
-    Float32Filterable = 11,
-    Float32Blendable = 12,
-    Subgroups = 13,
+    Float32Filterable = 13,
+    Float32Blendable = 14,
+    ClipDistances = 15,
     /// <summary>
     /// Allows two outputs from a shader to be used for blending. Note that dual-source blending doesn’t support multiple render targets.
     /// 
@@ -115,6 +117,6 @@ public enum FeatureName
     /// 
     /// Supported platforms:<list type="bullet"><item>OpenGL ES (with GL_EXT_blend_func_extended)</item><item>Metal (with MSL 1.2+)</item><item>Vulkan (with dualSrcBlend)</item><item>DX12</item></list>
     /// </summary>
-    DualSourceBlending = 327688,
-    ClipDistances = 327734,
+    DualSourceBlending = 16,
+    Subgroups = 17,
 }

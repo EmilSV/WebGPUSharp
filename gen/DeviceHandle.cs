@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp.FFI;
 
+/// <summary>
+/// A DeviceHandle encapsulates a graphics/compute device and exposes the functionality of that device.
+/// </summary>
 public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
 {
     private readonly nuint _ptr;
@@ -134,6 +137,7 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// <summary>
     /// Creates a PipelineLayout.
     /// </summary>
+    /// <param name="descriptor">The descriptor to use for the PipelineLayout</param>
     public PipelineLayoutHandle CreatePipelineLayout(PipelineLayoutDescriptorFFI* descriptor) => WebGPU_FFI.DeviceCreatePipelineLayout(this, descriptor);
 
     /// <summary>
@@ -162,8 +166,8 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// The returned future resolves when the created pipeline is ready to be used without additional delay.
     /// </summary>
     /// <remarks">Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
-    /// <param name="descriptor">The descriptor to use for the RenderPipeline</param>
     /// <param name="callbackInfo">The callbackInfo to use for the RenderPipeline</param>
+    /// <param name="descriptor">The descriptor to use for the RenderPipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
     public Future CreateRenderPipelineAsync(RenderPipelineDescriptorFFI* descriptor, CreateRenderPipelineAsyncCallbackInfoFFI callbackInfo) => WebGPU_FFI.DeviceCreateRenderPipelineAsync(this, descriptor, callbackInfo);
 
@@ -216,8 +220,12 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// </summary>
     /// <param name="limits">an pointer to a SupportedLimits to insert the limits into</param>
     /// <returns>Return status of the operation</returns>
-    public Status GetLimits(SupportedLimits* limits) => WebGPU_FFI.DeviceGetLimits(this, limits);
+    public Status GetLimits(Limits* limits) => WebGPU_FFI.DeviceGetLimits(this, limits);
 
+    /// <summary>
+    /// Get the future which resolves when the device is lost
+    /// </summary>
+    /// <returns>The <see cref="Future" /> for the device-lost event of the device.</returns>
     public Future GetLostFuture() => WebGPU_FFI.DeviceGetLostFuture(this);
 
     /// <summary>
@@ -234,6 +242,11 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// <returns>true if the feature is supported false otherwise</returns>
     public WebGPUBool HasFeature(FeatureName feature) => WebGPU_FFI.DeviceHasFeature(this, feature);
 
+    /// <summary>
+    /// Pops a error scope off the errorScopeStack for this device and resolves to any error observed by the error scope, or null if none.
+    /// </summary>
+    /// <param name="callbackInfo">The callback to call when the error scope is popped.</param>
+    /// <returns>a future resolving when the error from the error scope is ready to be observed</returns>
     public Future PopErrorScope(PopErrorScopeCallbackInfoFFI callbackInfo) => WebGPU_FFI.DevicePopErrorScope(this, callbackInfo);
 
     /// <summary>

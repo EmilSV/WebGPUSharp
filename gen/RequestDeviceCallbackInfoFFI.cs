@@ -26,7 +26,13 @@ public unsafe partial struct RequestDeviceCallbackInfoFFI
     /// The callback to invoke when the request is completed.
     /// </summary>
     public delegate* unmanaged[Cdecl]<RequestDeviceStatus, DeviceHandle, StringViewFFI, void*, void*, void> Callback;
+    /// <summary>
+    /// The first userdata to be passed to the callback.
+    /// </summary>
     public void* Userdata1;
+    /// <summary>
+    /// The second userdata to be passed to the callback.
+    /// </summary>
     public void* Userdata2;
 
     public RequestDeviceCallbackInfoFFI() { }

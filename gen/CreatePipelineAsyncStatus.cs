@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public enum CreatePipelineAsyncStatus
 {
     Success = 1,
-    InstanceDropped = 2,
+    CallbackCancelled = 2,
     ValidationError = 3,
     InternalError = 4,
 }

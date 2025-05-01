@@ -94,6 +94,10 @@ public unsafe partial struct BindGroupLayoutHandle : IEquatable<BindGroupLayoutH
     /// </summary>
     public override int GetHashCode() => _ptr.GetHashCode();
 
+    /// <summary>
+    /// Set the Debug label for this BindGroupLayoutHandle.
+    /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.BindGroupLayoutSetLabel(this, label);
 
     /// <summary>

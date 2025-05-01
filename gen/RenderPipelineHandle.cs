@@ -99,11 +99,13 @@ public unsafe partial struct RenderPipelineHandle : IEquatable<RenderPipelineHan
     /// 
     /// This method will raise a validation error if there is no bind group layout at index.
     /// </summary>
+    /// <param name="groupIndex">Index into the pipeline layout's sequence.</param>
     public BindGroupLayoutHandle GetBindGroupLayout(uint groupIndex) => WebGPU_FFI.RenderPipelineGetBindGroupLayout(this, groupIndex);
 
     /// <summary>
     /// Set the debug label of this RenderPipelineHandle.
     /// </summary>
+    /// <param name="label">The label to set.</param>
     public void SetLabel(StringViewFFI label) => WebGPU_FFI.RenderPipelineSetLabel(this, label);
 
     /// <summary>

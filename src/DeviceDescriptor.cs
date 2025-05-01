@@ -6,7 +6,7 @@ public ref partial struct DeviceDescriptor
 
     public WGPURefText Label;
     public Span<FeatureName> RequiredFeatures;
-    public WGPUNullableRef<RequiredLimits> RequiredLimits;
+    public WGPUNullableRef<Limits> RequiredLimits;
     public QueueDescriptor DefaultQueue;
     public CallbackMode DeviceLostCallbackMode = CallbackMode.AllowProcessEvents;
     public DeviceLostCallbackDelegate? DeviceLostCallback;

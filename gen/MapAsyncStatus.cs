@@ -12,10 +12,7 @@ public enum MapAsyncStatus
     /// The operation was successful.
     /// </summary>
     Success = 1,
-    /// <summary>
-    /// The instance was dropped while the operation was pending.
-    /// </summary>
-    InstanceDropped = 2,
+    CallbackCancelled = 2,
     /// <summary>
     /// There was an error while mapping the buffer.
     /// </summary>
