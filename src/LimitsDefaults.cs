@@ -180,10 +180,10 @@ public static class LimitsDefaults
     /// </summary>
     public const uint MAX_COMPUTE_WORKGROUPS_PER_DIMENSION = 65535;
 
-    public const uint MAX_STORAGE_TEXTURES_IN_VERTEX_STAGE  = 0;
+    public const uint MAX_STORAGE_TEXTURES_IN_VERTEX_STAGE = 0;
     public const uint MAX_STORAGE_BUFFERS_IN_VERTEX_STAGE = 0;
     public const uint MAX_STORAGE_BUFFERS_IN_FRAGMENT_STAGE = 4;
-    public const uint MAX_STORAGE_TEXTURES_IN_FRAGMENT_STAGE   = 4;
+    public const uint MAX_STORAGE_TEXTURES_IN_FRAGMENT_STAGE = 4;
 
     public static void SetToDefaultValues(out Limits limits)
     {

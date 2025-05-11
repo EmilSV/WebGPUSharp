@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace WebGpuSharp.FFI;
 
 /// <summary>
-/// Handle to a query set. It can be created with <see cref="DeviceHandle.CreateQuerySet"></see>.
+/// Handle to a query set. It can be created with <see cref="DeviceHandle.CreateQuerySet" />.
 /// </summary>
 public unsafe partial struct QuerySetHandle : IEquatable<QuerySetHandle>
 {
@@ -99,6 +99,15 @@ public unsafe partial struct QuerySetHandle : IEquatable<QuerySetHandle>
     /// </summary>
     /// <returns>number of queries managed by this QuerySet.</returns>
     public uint GetCount() => WebGPU_FFI.QuerySetGetCount(this);
+
+    /// <summary>
+    /// Specifying the type of queries managed by the <see cref="QuerySetHandle" />.
+    /// </summary>
+    /// <returns>
+    /// Two possible values:
+    /// <list type="bullet"><item><description><see cref="QueryType.Occlusion">Occlusion</see> The <see cref="QuerySetHandle" /> manages occlusion queries.</description></item><item><description><see cref="QueryType.Timestamp">Timestamp</see> The <see cref="QuerySetHandle" /> manages timestamp queries.</description></item></list>
+    /// </returns>
+    public QueryType WebGpuGetType() => WebGPU_FFI.QuerySetGetType(this);
 
     /// <summary>
     /// Sets a label on the QuerySet.

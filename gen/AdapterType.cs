@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// The type of GPU adapter.
+/// </summary>
 public enum AdapterType
 {
     /// <summary>

@@ -100,8 +100,8 @@ public unsafe partial struct SurfaceHandle : IEquatable<SurfaceHandle>
     /// 
     /// Returns specified values (see SurfaceCapabilities) if surface is incompatible with the adapter.
     /// </summary>
-    /// <param name="adapter">The adapter to use.</param>
     /// <param name="capabilities">The capabilities of the surface.</param>
+    /// <param name="adapter">The adapter to use.</param>
     public Status GetCapabilities(AdapterHandle adapter, SurfaceCapabilitiesFFI* capabilities) => WebGPU_FFI.SurfaceGetCapabilities(this, adapter, capabilities);
 
     /// <summary>

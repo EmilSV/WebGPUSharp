@@ -141,9 +141,9 @@ public unsafe partial struct ComputePassEncoderHandle : IEquatable<ComputePassEn
     /// entry in bindGroup marked as Buffer.HasDynamicOffset, ordered by
     /// BindGroupLayoutEntry.Binding.
     /// </param>
+    /// <param name="dynamicOffsetCount">The number of dynamic offsets in the dynamicOffsets sequence.</param>
     /// <param name="group">Bind group to use for subsequent render or compute commands.</param>
     /// <param name="groupIndex">The index to set the bind group at.</param>
-    /// <param name="dynamicOffsetCount">The number of dynamic offsets in the dynamicOffsets sequence.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.ComputePassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
     /// <summary>

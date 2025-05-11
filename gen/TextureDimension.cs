@@ -8,6 +8,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum TextureDimension
 {
+    /// <summary>
+    /// Texture dimension is not defined.
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// 1D texture

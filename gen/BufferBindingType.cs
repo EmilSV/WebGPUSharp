@@ -8,7 +8,14 @@ namespace WebGpuSharp;
 /// </summary>
 public enum BufferBindingType
 {
+    /// <summary>
+    /// Indicates that this <see cref="BufferBindingLayout">BufferBindingLayout</see> member of
+    /// its parent <see cref="BindGroupLayoutEntry">BindGroupLayoutEntry</see> is not used.
+    /// </summary>
     BindingNotUsed = 0,
+    /// <summary>
+    /// No buffer binding type is provided.
+    /// </summary>
     Undefined = 1,
     /// <summary>
     /// A buffer for uniform values

@@ -8,6 +8,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum BlendFactor
 {
+    /// <summary>
+    /// No blend factor is provided.
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// 0

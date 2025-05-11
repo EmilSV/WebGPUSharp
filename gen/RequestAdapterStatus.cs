@@ -12,6 +12,9 @@ public enum RequestAdapterStatus
     /// The request was completed successfully.
     /// </summary>
     Success = 1,
+    /// <summary>
+    /// The callback was cancelled.
+    /// </summary>
     CallbackCancelled = 2,
     /// <summary>
     /// No adapter could be found that matches the request.

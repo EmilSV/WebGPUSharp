@@ -8,6 +8,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum PrimitiveTopology
 {
+    /// <summary>
+    /// Primitive topology is not defined.
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Each vertex defines a point primitive.

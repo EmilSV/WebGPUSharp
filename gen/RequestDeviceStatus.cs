@@ -12,6 +12,9 @@ public enum RequestDeviceStatus
     /// The request was completed successfully.
     /// </summary>
     Success = 1,
+    /// <summary>
+    /// The callback was cancelled.
+    /// </summary>
     CallbackCancelled = 2,
     /// <summary>
     /// An error occurred while requesting the device.

@@ -8,7 +8,13 @@ namespace WebGpuSharp;
 /// </summary>
 public enum SurfaceGetCurrentTextureStatus
 {
+    /// <summary>
+    /// The call to <see cref="Surface.GetCurrentTexture" /> was successful and the texture is optimal.
+    /// </summary>
     SuccessOptimal = 1,
+    /// <summary>
+    /// The call to <see cref="Surface.GetCurrentTexture" /> was successful and the texture is suboptimal.
+    /// </summary>
     SuccessSuboptimal = 2,
     /// <summary>
     /// The call to <see cref="Surface.GetCurrentTexture" /> timed out.

@@ -10,6 +10,10 @@ namespace WebGpuSharp;
 /// </summary>
 public enum StorageTextureAccess
 {
+    /// <summary>
+    /// Indicates that this <see cref="StorageTextureBindingLayout" /> member of
+    /// its parent <see cref="BindGroupLayoutEntry" /> is not used.
+    /// </summary>
     BindingNotUsed = 0,
     /// <summary>
     /// No value is passed for this argument

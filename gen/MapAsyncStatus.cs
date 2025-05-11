@@ -12,6 +12,9 @@ public enum MapAsyncStatus
     /// The operation was successful.
     /// </summary>
     Success = 1,
+    /// <summary>
+    /// The callback was cancelled.
+    /// </summary>
     CallbackCancelled = 2,
     /// <summary>
     /// There was an error while mapping the buffer.

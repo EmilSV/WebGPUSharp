@@ -8,6 +8,10 @@ namespace WebGpuSharp;
 /// </summary>
 public enum SamplerBindingType
 {
+    /// <summary>
+    /// Indicates that this <see cref="SamplerBindingLayout" /> member of
+    /// its parent <see cref="BindGroupLayoutEntry" /> is not used.
+    /// </summary>
     BindingNotUsed = 0,
     /// <summary>
     /// No sampler binding type specified.

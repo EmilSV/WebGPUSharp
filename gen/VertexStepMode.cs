@@ -13,6 +13,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum VertexStepMode
 {
+    /// <summary>
+    /// Vertex step mode is not defined.
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// The address is advanced by  <see cref="VertexBufferLayout.ArrayStride"/> for each vertex,

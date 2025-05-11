@@ -8,6 +8,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum CullMode
 {
+    /// <summary>
+    /// The face culling mode is not defined.
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// No polygons are discarded.

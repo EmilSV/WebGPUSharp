@@ -8,6 +8,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum TextureAspect
 {
+    /// <summary>
+    /// Texture aspect is not defined.
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// All available aspects of the texture format will be accessible to the texture view. For
@@ -29,7 +32,4 @@ public enum TextureAspect
     /// The GPUTextureAspect.set of aspects is =aspect.depth=.
     /// </summary>
     DepthOnly = 3,
-    Plane0Only = 327680,
-    Plane1Only = 327681,
-    Plane2Only = 327682,
 }

@@ -112,10 +112,10 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Errors if vertices Range is outside of the range of the vertices range of any set vertex buffer.
     /// </summary>
-    /// <param name="vertexCount">The number of vertices to draw.</param>
     /// <param name="firstInstance">First instance to draw.</param>
     /// <param name="firstVertex">Offset into the vertex buffers, in vertices, to begin drawing from.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="vertexCount">The number of vertices to draw.</param>
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance) => WebGPU_FFI.RenderPassEncoderDraw(this, vertexCount, instanceCount, firstVertex, firstInstance);
 
     /// <summary>
@@ -125,11 +125,11 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
+    /// <param name="firstInstance">First instance to draw.</param>
     /// <param name="baseVertex">Added to each index value before indexing into the vertex buffers.</param>
     /// <param name="firstIndex">Offset into the index buffer, in indices, begin drawing from.</param>
     /// <param name="instanceCount">The number of indices to draw.</param>
     /// <param name="indexCount">The number of indices to draw.</param>
-    /// <param name="firstInstance">First instance to draw.</param>
     public void DrawIndexed(uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance) => WebGPU_FFI.RenderPassEncoderDrawIndexed(this, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 
     /// <summary>
@@ -137,8 +137,8 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// This is like calling <see cref="DrawIndexed" /> but the contents of the call are specified in the indirectBuffer.
     /// </summary>
-    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters</param>
+    /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
     public void DrawIndexedIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(this, indirectBuffer, indirectOffset);
 
     /// <summary>
@@ -148,8 +148,8 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// The indirect draw parameters encoded in the buffer must be a tightly packed block of four 32-bit unsigned integer values (16 bytes total), given in the same order as the arguments for <see cref="FFI.RenderEncoder.Draw" />.
     /// </summary>
-    /// <param name="indirectBuffer">Buffer containing the indirect draw parameters.</param>
     /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
+    /// <param name="indirectBuffer">Buffer containing the indirect draw parameters.</param>
     public void DrawIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderPassEncoderDrawIndirect(this, indirectBuffer, indirectOffset);
 
     /// <summary>
@@ -263,10 +263,10 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
     /// </summary>
+    /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
+    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     /// <param name="offset">Offset in bytes into buffer where the vertex data begins. Defaults to 0.</param>
-    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
-    /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size) => WebGPU_FFI.RenderPassEncoderSetVertexBuffer(this, slot, buffer, offset, size);
 
     /// <summary>

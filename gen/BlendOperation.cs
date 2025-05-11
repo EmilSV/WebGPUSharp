@@ -8,6 +8,9 @@ namespace WebGpuSharp;
 /// </summary>
 public enum BlendOperation
 {
+    /// <summary>
+    /// No BlendOperation is provided
+    /// </summary>
     Undefined = 0,
     /// <summary>
     /// Src + Dst

@@ -187,9 +187,9 @@ public unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     /// This function is safe to call inside spontaneous callbacks (see CallbackReentrancy).
     /// In Wasm, this is more efficient than copying from a `malloc`'d range into a mapped range.
     /// </summary>
+    /// <param name="size">Number of bytes of data to write to the buffer. (Note <see cref="WebGPU_FFI.WHOLE_MAP_SIZE" /> is *not* accepted here.)</param>
     /// <param name="data">Source, to write buffer data from.</param>
     /// <param name="offset">Byte offset relative to the beginning of the buffer.</param>
-    /// <param name="size">Number of bytes of data to write to the buffer. (Note <see cref="WebGPU_FFI.WHOLE_MAP_SIZE" /> is *not* accepted here.)</param>
     /// <returns><see cref="Status.Error" /> if the copy did not occur.</returns>
     public Status WriteMappedRange(nuint offset, void* data, nuint size) => WebGPU_FFI.BufferWriteMappedRange(this, offset, data, size);
 

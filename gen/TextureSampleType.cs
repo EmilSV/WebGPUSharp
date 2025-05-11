@@ -8,6 +8,10 @@ namespace WebGpuSharp;
 /// </summary>
 public enum TextureSampleType
 {
+    /// <summary>
+    /// Indicates that this <see cref="TextureBindingLayout" /> member of
+    /// its parent <see cref="BindGroupLayoutEntry" /> is not used.
+    /// </summary>
     BindingNotUsed = 0,
     /// <summary>
     /// No value is passed for this argument.

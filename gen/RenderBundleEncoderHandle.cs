@@ -119,11 +119,11 @@ public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundle
     /// 
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
-    /// <param name="indexCount">The number of indices to draw.</param>
-    /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
     /// <param name="baseVertex">The value added to the vertex index before indexing into the vertex buffer.</param>
     /// <param name="firstIndex">The index of the first index to draw.</param>
-    /// <param name="firstInstance">The index of the first instance to draw.</param>
+    /// <param name="instanceCount">The number of instances to draw.</param>
+    /// <param name="indexCount">The number of indices to draw.</param>
     public void DrawIndexed(uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDrawIndexed(this, indexCount, instanceCount, firstIndex, baseVertex, firstInstance);
 
     /// <summary>
@@ -185,8 +185,8 @@ public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundle
     /// 
     /// Subsequent calls to DrawIndexed on this RenderBundleEncoderHandle will use buffer as the source index buffer.
     /// </summary>
-    /// <param name="offset">The offset in bytes from the start of the buffer to the first index.</param>
     /// <param name="size">The size in bytes of the index buffer.</param>
+    /// <param name="offset">The offset in bytes from the start of the buffer to the first index.</param>
     /// <param name="format">The format of the index buffer.</param>
     /// <param name="buffer">The index buffer to use.</param>
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, ulong offset, ulong size) => WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, buffer, format, offset, size);

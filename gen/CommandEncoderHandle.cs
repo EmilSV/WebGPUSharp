@@ -188,11 +188,11 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// <summary>
     /// Resolves query results from a  <see cref="QuerySet"/> out into a range of a  <see cref="Buffer"/>.
     /// </summary>
-    /// <param name="querySet">The query set.</param>
-    /// <param name="firstQuery">The index number of the first query value to be copied over to the buffer.</param>
     /// <param name="destinationOffset">The offset, in bytes, from the start of the buffer to start writing the query values at.</param>
     /// <param name="destination">The buffer to copy the query values to.</param>
     /// <param name="queryCount">The number of queries to be copied over to the buffer, starting from <paramref name="firstQuery" /></param>
+    /// <param name="firstQuery">The index number of the first query value to be copied over to the buffer.</param>
+    /// <param name="querySet">The query set.</param>
     public void ResolveQuerySet(QuerySetHandle querySet, uint firstQuery, uint queryCount, BufferHandle destination, ulong destinationOffset) => WebGPU_FFI.CommandEncoderResolveQuerySet(this, querySet, firstQuery, queryCount, destination, destinationOffset);
 
     /// <summary>
