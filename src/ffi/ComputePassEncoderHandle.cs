@@ -6,6 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct ComputePassEncoderHandle :
     IDisposable, IWebGpuHandle<ComputePassEncoderHandle>
 {
+    /// <inheritdoc cref="DispatchWorkgroupsIndirect(BufferHandle, ulong)"/>
     public void DispatchWorkgroupsIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.ComputePassEncoderDispatchWorkgroupsIndirect(
@@ -15,6 +16,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -28,6 +30,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -41,6 +44,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public void SetBindGroup(
         uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffsets)
     {
@@ -56,6 +60,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public void SetBindGroup(
         uint groupIndex, BindGroup group, nuint dynamicOffsetCount, uint* dynamicOffsets)
     {
@@ -69,6 +74,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
 
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public void SetBindGroup(
         uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
     {
@@ -85,7 +91,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     }
 
 
-
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -99,6 +105,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetPipeline(ComputePipelineHandle)"/>
     public void SetPipeline(ComputePipeline pipeline)
     {
         WebGPU_FFI.ComputePassEncoderSetPipeline(

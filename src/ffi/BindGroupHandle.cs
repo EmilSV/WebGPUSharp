@@ -14,6 +14,7 @@ public readonly unsafe partial struct BindGroupHandle :
         }
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public readonly void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

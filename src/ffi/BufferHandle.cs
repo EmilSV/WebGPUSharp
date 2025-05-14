@@ -57,6 +57,7 @@ public unsafe readonly partial struct BufferHandle :
         }
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

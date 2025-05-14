@@ -7,6 +7,7 @@ namespace WebGpuSharp.FFI;
 public readonly unsafe partial struct CommandEncoderHandle :
     IDisposable, IWebGpuHandle<CommandEncoderHandle>
 {
+    /// <inheritdoc cref="BeginRenderPass(RenderPassDescriptorFFI*)"/>
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -69,6 +70,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="BeginRenderPass(RenderPassDescriptorFFI*)"/>
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptorFFI descriptor)
     {
         fixed (RenderPassDescriptorFFI* descriptorPtr = &descriptor)
@@ -77,6 +79,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="ClearBuffer(BufferHandle, ulong, ulong)"/>
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
     {
         ClearBuffer(
@@ -86,6 +89,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="CopyBufferToBuffer(BufferHandle, ulong, BufferHandle, ulong, ulong)"/>
     public void CopyBufferToBuffer(
         Buffer source, ulong sourceOffset,
         Buffer destination, ulong destinationOffset,
@@ -101,6 +105,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="CopyBufferToTexture(TexelCopyBufferInfoFFI*, TexelCopyTextureInfoFFI*, Extent3D*)"/>
     public void CopyBufferToTexture(in TexelCopyBufferInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         ToFFI(
@@ -128,6 +133,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="CopyBufferToTexture(TexelCopyBufferInfoFFI*, TexelCopyTextureInfoFFI*, Extent3D*)"/>
     public void CopyBufferToTexture(in TexelCopyBufferInfoFFI source, in TexelCopyTextureInfoFFI destination, in Extent3D copySize)
     {
         fixed (TexelCopyBufferInfoFFI* sourcePtr = &source)
@@ -143,6 +149,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="CopyTextureToBuffer(TexelCopyTextureInfoFFI*, TexelCopyBufferInfoFFI*, Extent3D*)"/>
     public void CopyTextureToBuffer(in TexelCopyTextureInfo source, in TexelCopyBufferInfo destination, in Extent3D copySize)
     {
         TexelCopyTextureInfoFFI sourceFFI = new()
@@ -168,7 +175,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             );
         }
     }
-
+    /// <inheritdoc cref="CopyTextureToBuffer(TexelCopyTextureInfoFFI*, TexelCopyBufferInfoFFI*, Extent3D*)"/>
     public void CopyTextureToBuffer(in TexelCopyTextureInfoFFI source, in TexelCopyBufferInfoFFI destination, in Extent3D copySize)
     {
         fixed (TexelCopyTextureInfoFFI* sourcePtr = &source)
@@ -184,6 +191,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="CopyTextureToTexture(TexelCopyTextureInfoFFI*, TexelCopyTextureInfoFFI*, Extent3D*)"/>
     public void CopyTextureToTexture(
         in TexelCopyTextureInfoFFI source, in TexelCopyTextureInfoFFI destination, in Extent3D copySize)
     {
@@ -200,6 +208,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="CopyTextureToTexture(TexelCopyTextureInfoFFI*, TexelCopyTextureInfoFFI*, Extent3D*)"/>
     public void CopyTextureToTexture(
         in TexelCopyTextureInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
@@ -231,6 +240,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     }
 
 
+    /// <inheritdoc cref="Finish(CommandBufferDescriptorFFI*)"/>
     public CommandBufferHandle Finish(in CommandBufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -248,11 +258,13 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="Finish(CommandBufferDescriptorFFI*)"/>
     public CommandBufferHandle Finish()
     {
         return WebGPU_FFI.CommandEncoderFinish(this, null);
     }
 
+    /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -265,6 +277,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -277,6 +290,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="ResolveQuerySet(QuerySetHandle, uint, uint, BufferHandle, ulong)"/>
     public void ResolveQuerySet(
         QuerySet querySet, uint firstQuery, uint queryCount,
         Buffer destination, ulong destinationOffset)
@@ -291,6 +305,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -302,17 +317,6 @@ public readonly unsafe partial struct CommandEncoderHandle :
             WebGPU_FFI.CommandEncoderSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
-
-    [Obsolete("", false)]
-    public void WriteTimestamp(QuerySet querySet, uint queryIndex)
-    {
-        WebGPU_FFI.CommandEncoderWriteTimestamp(
-           commandEncoder: this,
-           querySet: GetBorrowHandle(querySet),
-           queryIndex: queryIndex
-       );
-    }
-
 
     public void Dispose()
     {

@@ -37,6 +37,7 @@ public readonly unsafe partial struct CommandBufferHandle :
         return new CommandBufferHandle(pointer);
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

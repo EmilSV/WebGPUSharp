@@ -11,6 +11,9 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct AdapterHandle :
     IDisposable, IWebGpuHandle<AdapterHandle, Adapter>
 {
+
+    /// <returns>The features supported.</returns>
+    /// <inheritdoc cref="GetFeatures(SupportedFeaturesFFI*)" />
     public readonly FeatureName[] GetFeatures()
     {
         bool gotFeatures = false;
@@ -33,6 +36,8 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+    /// <returns>If true the call was successful, false otherwise.</returns>
+    /// <inheritdoc cref="GetLimits(Limits*)"/>
     public readonly bool GetLimits(out Limits limits)
     {
         limits = default;
@@ -42,6 +47,9 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+
+    /// <returns>The limits or null if it failed</returns>
+    /// <inheritdoc cref="GetLimits(Limits*)"/>
     public readonly Limits? GetLimits()
     {
         Limits limits = default;
@@ -55,6 +63,9 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+
+    /// <returns>The AdapterInfo or null if it failed</returns>
+    /// <inheritdoc cref="GetInfo(AdapterInfoFFI*)"/>
     public readonly AdapterInfo? GetInfo()
     {
         AdapterInfoFFI adapterInfoFFI = default;
@@ -64,6 +75,9 @@ public unsafe readonly partial struct AdapterHandle :
         return outAdapterInfo;
     }
 
+    /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
+    /// <returns>A task that resolve into a device.</returns>
+    /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*, RequestDeviceCallbackInfoFFI)"/>
     private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
@@ -96,6 +110,7 @@ public unsafe readonly partial struct AdapterHandle :
     }
 
 
+    /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -136,6 +151,9 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+    /// <param name="callback">The callback to call when the device is ready</param>
+    /// <returns/>
+    /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -202,6 +220,7 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+    /// <inheritdoc cref="RequestDeviceAsync(in DeviceDescriptor, Action{DeviceHandle})"/>
     public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<Device?> callback)
     {
         RequestDeviceAsync(descriptor, (DeviceHandle device) =>
@@ -249,8 +268,6 @@ public unsafe readonly partial struct AdapterHandle :
             callback?.Invoke(default);
         }
     }
-
-
 
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

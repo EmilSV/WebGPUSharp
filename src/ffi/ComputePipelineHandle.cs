@@ -43,6 +43,7 @@ public unsafe readonly partial struct ComputePipelineHandle :
         return new ComputePipelineHandle(pointer);
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();

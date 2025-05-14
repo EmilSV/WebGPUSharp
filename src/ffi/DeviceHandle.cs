@@ -7,6 +7,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<DeviceHandle, Device>
 {
+    /// <inheritdoc cref="CreateBindGroup(BindGroupDescriptorFFI*)"/>
     public BindGroupHandle CreateBindGroup(in BindGroupDescriptorFFI descriptor)
     {
         fixed (BindGroupDescriptorFFI* descriptorPtr = &descriptor)
@@ -15,6 +16,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateBindGroup(BindGroupDescriptorFFI*)"/>
     public BindGroupHandle CreateBindGroup(in BindGroupDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -36,6 +38,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateBindGroupLayout(BindGroupLayoutDescriptorFFI*)"/> />
     public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptorFFI descriptor)
     {
         fixed (BindGroupLayoutDescriptorFFI* descriptorPtr = &descriptor)
@@ -44,6 +47,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateBindGroupLayout(BindGroupLayoutDescriptorFFI*)"/>
     public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
