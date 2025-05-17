@@ -128,7 +128,7 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// Creates a GPUComputePipeline using async pipeline creation.
     /// The returned future resolves when the created pipeline is ready to be used without additional delay.
     /// </summary>
-    /// <remarks">Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
+    /// <remarks>Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
     /// <param name="callbackInfo">The callbackInfo to use for the ComputePipeline</param>
     /// <param name="descriptor">The descriptor to use for the ComputePipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
@@ -165,7 +165,7 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// Creates a GPURenderPipeline using async pipeline creation.
     /// The returned future resolves when the created pipeline is ready to be used without additional delay.
     /// </summary>
-    /// <remarks">Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
+    /// <remarks>Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
     /// <param name="callbackInfo">The callbackInfo to use for the RenderPipeline</param>
     /// <param name="descriptor">The descriptor to use for the RenderPipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
@@ -195,7 +195,7 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// <summary>
     /// Destroys the device, preventing further operations on it. Outstanding asynchronous operations will fail.
     /// </summary>
-    /// <remarks">It is valid to destroy a device multiple times.</remarks>
+    /// <remarks>It is valid to destroy a device multiple times.</remarks>
     /// <returns>A future resolving when the device is destroyed</returns>
     public void Destroy() => WebGPU_FFI.DeviceDestroy(this);
 

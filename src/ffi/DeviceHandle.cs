@@ -66,6 +66,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateBuffer(BufferDescriptorFFI*)"/>
     public BufferHandle CreateBuffer(ref BufferDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -80,6 +81,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateBuffer(BufferDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BufferHandle CreateBuffer(BufferDescriptor descriptor)
     {
@@ -94,6 +96,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateCommandEncoder(CommandEncoderDescriptorFFI*)"/>
     public CommandEncoderHandle CreateCommandEncoder(in CommandEncoderDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -110,6 +113,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateComputePipeline(ComputePipelineDescriptorFFI*)"/>
     public ComputePipelineHandle CreateComputePipeline(in ComputePipelineDescriptorFFI descriptor)
     {
         fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
@@ -118,6 +122,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateComputePipeline(ComputePipelineDescriptorFFI*)"/>
     public ComputePipelineHandle CreateComputePipeline(in ComputePipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -149,7 +154,8 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             return WebGPU_FFI.DeviceCreateComputePipeline(this, &descriptorFFI);
         }
     }
-
+    /// <returns/>
+    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
     public void CreateComputePipelineAsync(
         in ComputePipelineDescriptorFFI descriptor,
         CreateComputePipelineAsyncDelegate<ComputePipelineHandle> callback)
@@ -157,6 +163,8 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptor, callback);
     }
 
+    /// <returns/>
+    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
     public void CreateComputePipelineAsync(
         in ComputePipelineDescriptor descriptor,
         CreateComputePipelineAsyncDelegate<ComputePipelineHandle> callback)
@@ -193,13 +201,16 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     }
 
-
+    /// <returns>The <see cref="ComputePipelineHandle"/></returns>
+    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
     public Task<ComputePipelineHandle> CreateComputePipelineAsync(
         in ComputePipelineDescriptorFFI descriptor)
     {
         return DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptor);
     }
 
+    /// <returns>The <see cref="ComputePipelineHandle"/></returns>
+    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
     public Task<ComputePipelineHandle> CreateComputePipelineAsync(
         in ComputePipelineDescriptor descriptor)
     {
@@ -234,6 +245,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreatePipelineLayout(PipelineLayoutDescriptorFFI*)"/>
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptorFFI descriptor)
     {
         fixed (PipelineLayoutDescriptorFFI* descriptorPtr = &descriptor)
@@ -242,6 +254,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreatePipelineLayout(PipelineLayoutDescriptorFFI*)"/>
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -263,6 +276,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateQuerySet(QuerySetDescriptorFFI*)"/>
     public QuerySetHandle CreateQuerySet(in QuerySetDescriptorFFI descriptor)
     {
         fixed (QuerySetDescriptorFFI* descriptorPtr = &descriptor)
@@ -271,6 +285,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateQuerySet(QuerySetDescriptorFFI*)"/>
     public QuerySetHandle CreateQuerySet(in QuerySetDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -289,6 +304,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateRenderBundleEncoder(RenderBundleEncoderDescriptorFFI*)"/>
     public RenderBundleEncoderHandle CreateRenderBundleEncoder(in RenderBundleEncoderDescriptorFFI descriptor)
     {
         fixed (RenderBundleEncoderDescriptorFFI* descriptorPtr = &descriptor)
@@ -297,7 +313,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
-
+    /// <inheritdoc cref="CreateRenderBundleEncoder(RenderBundleEncoderDescriptorFFI*)"/>
     public RenderBundleEncoderHandle CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -322,6 +338,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateRenderPipeline(RenderPipelineDescriptorFFI*)"/>
     public RenderPipelineHandle CreateRenderPipeline(in RenderPipelineDescriptorFFI descriptor)
     {
         fixed (RenderPipelineDescriptorFFI* descriptorPtr = &descriptor)
@@ -330,6 +347,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateRenderPipeline(RenderPipelineDescriptorFFI*)"/>
     public RenderPipelineHandle CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -352,6 +370,8 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <returns></returns>
+    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
     public void CreateRenderPipelineAsync(
         in RenderPipelineDescriptorFFI descriptor,
         CreateRenderPipelineAsyncDelegate<RenderPipelineHandle> callback)
@@ -359,6 +379,8 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptor, callback);
     }
 
+    /// <returns></returns>
+    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
     public void CreateRenderPipelineAsync(
         in RenderPipelineDescriptor descriptor,
         CreateRenderPipelineAsyncDelegate<RenderPipelineHandle> callback)
@@ -384,11 +406,15 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
 
+    /// <returns>The <see cref="RenderPipelineHandle"/></returns>
+    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
     public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptorFFI descriptor)
     {
         return DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptor);
     }
 
+    /// <returns>The <see cref="RenderPipelineHandle"/></returns>
+    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
     public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -411,6 +437,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateSampler(SamplerDescriptorFFI*)"/>
     public SamplerHandle CreateSampler(ref SamplerDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -425,6 +452,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    //// <inheritdoc cref="CreateSampler(SamplerDescriptorFFI*)"/>
     public SamplerHandle CreateSampler(SamplerDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -438,6 +466,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
     public ShaderModuleHandle CreateShaderModule(in ShaderModuleDescriptorFFI descriptor)
     {
         fixed (ShaderModuleDescriptorFFI* descriptorPtr = &descriptor)
@@ -446,6 +475,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
     public ShaderModuleHandle CreateShaderModule(in ShaderModuleDescriptor descriptor)
     {
         if (descriptor.IsWgslNext())
@@ -463,6 +493,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateTexture(TextureDescriptorFFI*)"/>
     public TextureHandle CreateTexture(ref TextureDescriptor textureDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -481,6 +512,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    /// <inheritdoc cref="CreateTexture(TextureDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TextureHandle CreateTexture(TextureDescriptor textureDescriptor)
     {
@@ -498,7 +530,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             return WebGPU_FFI.DeviceCreateTexture(this, &textureDescriptor._unmanagedDescriptor);
         }
     }
-
+    /// <inheritdoc cref="GetAdapterInfo(AdapterInfoFFI*)"/>
     [SkipLocalsInit]
     public unsafe Status GetAdapterInfo(out AdapterInfo adapterInfo)
     {
@@ -519,7 +551,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             }
         }
     }
-
+    /// <inheritdoc cref="GetFeatures(SupportedFeaturesFFI*)"/>
     [SkipLocalsInit]
     public FeatureName[] GetFeatures()
     {
@@ -542,7 +574,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             }
         }
     }
-
+    /// <inheritdoc cref="GetLimits(Limits*)"/>
     [SkipLocalsInit]
     public Limits GetLimits()
     {
@@ -550,26 +582,28 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         WebGPU_FFI.DeviceGetLimits(this, &supportedLimits);
         return supportedLimits;
     }
-
-    public void GetLimits(ref Limits supportedLimits)
+    /// <inheritdoc cref="GetLimits(Limits*)"/>
+    public void GetLimits(ref Limits limits)
     {
-        fixed (Limits* supportedLimitsPtr = &supportedLimits)
+        fixed (Limits* limitsPtr = &limits)
         {
-            WebGPU_FFI.DeviceGetLimits(this, supportedLimitsPtr);
+            WebGPU_FFI.DeviceGetLimits(this, limitsPtr);
         }
     }
 
-    public void PopErrorScope(DevicePopErrorScopeDelegate callback)
+    /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
+    public void PopErrorScope(DevicePopErrorScopeDelegate callbackInfo)
     {
-        DevicePopErrorScopeHandler.DevicePopErrorScope(this, callback);
+        DevicePopErrorScopeHandler.DevicePopErrorScope(this, callbackInfo);
     }
 
-
+    /// <returns>The <see cref="ErrorType"/> and the error message</returns>
+    /// /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
     public Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
     {
         return DevicePopErrorScopeHandler.DevicePopErrorScope(this);
     }
-
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -581,7 +615,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             WebGPU_FFI.DeviceSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
-
+    /// <inheritdoc cref="CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
     private ShaderModuleHandle CreateShaderModuleWgsl(in ShaderModuleDescriptor descriptor, WGPURefText code)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

@@ -7,6 +7,7 @@ public unsafe readonly partial struct PipelineLayoutHandle :
     IDisposable, IWebGpuHandle<PipelineLayoutHandle, PipelineLayout>
 {
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

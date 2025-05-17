@@ -6,16 +6,19 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct RenderBundleEncoderHandle :
     IDisposable, IWebGpuHandle<RenderBundleEncoderHandle>
 {
+    /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndexedIndirect(BufferBase indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
     }
 
+    /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndirect(BufferBase indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
     }
 
+    /// <inheritdoc cref="Finish(RenderBundleDescriptorFFI*)"/>
     public RenderBundleHandle Finish(in RenderBundleDescriptorFFI descriptor)
     {
         fixed (RenderBundleDescriptorFFI* ptr = &descriptor)
@@ -24,6 +27,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="Finish(RenderBundleDescriptorFFI*)"/>
     public RenderBundleHandle Finish(in RenderBundleDescriptor descriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -35,11 +39,13 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="Finish(RenderBundleDescriptorFFI*)"/>
     public RenderBundleHandle Finish()
     {
         return WebGPU_FFI.RenderBundleEncoderFinish(this, null);
     }
 
+    /// <inheritdoc cref="InsertDebugMarker(WGPURefText)"/>
     public void InsertDebugMarker(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -52,6 +58,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -64,25 +71,28 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffset)
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
+    public void SetBindGroup(uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffsets)
     {
-        fixed (uint* dynamicOffsetPtr = dynamicOffset)
+        fixed (uint* dynamicOffsetPtr = dynamicOffsets)
         {
-            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, (nuint)dynamicOffset.Length, dynamicOffsetPtr);
+            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, (nuint)dynamicOffsets.Length, dynamicOffsetPtr);
         }
     }
 
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
+    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffsets)
     {
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(
             renderBundleEncoder: this,
             groupIndex: groupIndex,
             group: GetBorrowHandle(group),
             dynamicOffsetCount: 1,
-            dynamicOffsets: &dynamicOffset
+            dynamicOffsets: &dynamicOffsets
         );
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public void SetBindGroup(uint groupIndex, BindGroupBase group)
     {
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(
@@ -94,6 +104,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffset)
     {
         fixed (uint* dynamicOffsetPtr = dynamicOffset)
@@ -102,17 +113,20 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
     }
 
+    /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
         WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -125,16 +139,19 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetPipeline(RenderPipelineBase)"/>
     public void SetPipeline(RenderPipelineBase pipeline)
     {
         WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetBorrowHandle(pipeline));
     }
 
+    /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
     }
 
+    /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;

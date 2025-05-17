@@ -13,6 +13,7 @@ namespace WebGpuSharp.FFI;
 public readonly unsafe partial struct InstanceHandle :
     IDisposable, IWebGpuHandle<InstanceHandle, Instance>
 {
+    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
     public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptionsFFI options)
     {
         unsafe
@@ -51,6 +52,8 @@ public readonly unsafe partial struct InstanceHandle :
         }
     }
 
+    /// <returns> A task that will complete when the adapter is ready.</returns>
+    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
     public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptions options)
     {
         ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
@@ -65,6 +68,7 @@ public readonly unsafe partial struct InstanceHandle :
         }
     }
 
+    /// <inheritdoc cref="CreateSurface(SurfaceDescriptorFFI*)"/>
     public SurfaceHandle CreateSurface(in SurfaceDescriptorFFI descriptor)
     {
         fixed (SurfaceDescriptorFFI* surfaceDescriptorPtr = &descriptor)
@@ -73,6 +77,7 @@ public readonly unsafe partial struct InstanceHandle :
         }
     }
 
+    /// <inheritdoc cref="CreateSurface(SurfaceDescriptorFFI*)"/>
     public SurfaceHandle CreateSurface(SurfaceDescriptor descriptor)
     {
         unsafe

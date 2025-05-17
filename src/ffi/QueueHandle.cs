@@ -8,6 +8,7 @@ namespace WebGpuSharp.FFI;
 public readonly unsafe partial struct QueueHandle :
     IDisposable, IWebGpuHandle<QueueHandle, Queue>
 {
+    /// <inheritdoc cref ="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -20,6 +21,7 @@ public readonly unsafe partial struct QueueHandle :
         }
     }
 
+    /// <inheritdoc cref ="Submit(nuint, CommandBufferHandle*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(ReadOnlySpan<CommandBufferHandle> commands)
     {
@@ -29,12 +31,14 @@ public readonly unsafe partial struct QueueHandle :
         }
     }
 
+    /// <inheritdoc cref ="Submit(nuint, CommandBufferHandle*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(CommandBufferHandle commands)
     {
         WebGPU_FFI.QueueSubmit(this, 1, &commands);
     }
 
+    /// <inheritdoc cref ="Submit(nuint, CommandBufferHandle*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(ReadOnlySpan<CommandBuffer> commands)
     {
@@ -56,6 +60,7 @@ public readonly unsafe partial struct QueueHandle :
         }
     }
 
+    /// <inheritdoc cref ="Submit(nuint, CommandBufferHandle*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(CommandBuffer command)
     {
@@ -65,6 +70,7 @@ public readonly unsafe partial struct QueueHandle :
         PooledHandle<CommandBufferHandle>.Return(command._pooledHandle);
     }
 
+    /// <inheritdoc cref ="WriteBuffer(BufferHandle, ulong, void*, nuint)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteBuffer<T>(BufferHandle buffer, ulong bufferOffset, List<T> data)
         where T : unmanaged
@@ -72,6 +78,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteBuffer(buffer, bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
     }
 
+    /// <inheritdoc cref ="WriteBuffer(BufferHandle, ulong, void*, nuint)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteBuffer<T>(BufferHandle buffer, ulong bufferOffset, T[] data)
         where T : unmanaged
@@ -79,13 +86,14 @@ public readonly unsafe partial struct QueueHandle :
         WriteBuffer(buffer, bufferOffset, (ReadOnlySpan<T>)data);
     }
 
+    /// <inheritdoc cref ="WriteBuffer(BufferHandle, ulong, void*, nuint)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteBuffer<T>(BufferHandle buffer, ulong bufferOffset, Span<T> data)
         where T : unmanaged
     {
         WriteBuffer(buffer, bufferOffset, (ReadOnlySpan<T>)data);
     }
-
+    /// <inheritdoc cref ="WriteBuffer(BufferHandle, ulong, void*, nuint)"/>
     public readonly void WriteBuffer<T>(BufferHandle buffer, ulong bufferOffset, ReadOnlySpan<T> data)
         where T : unmanaged
     {
@@ -101,7 +109,7 @@ public readonly unsafe partial struct QueueHandle :
         }
     }
 
-
+    /// <inheritdoc cref ="WriteBuffer(BufferHandle, ulong, void*, nuint)"/>
     public readonly void WriteBuffer<T>(BufferHandle buffer, ulong bufferOffset, in T data)
         where T : unmanaged
     {
@@ -118,6 +126,7 @@ public readonly unsafe partial struct QueueHandle :
     }
 
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfoFFI destination,
@@ -129,6 +138,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteTexture(destination, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data), dataLayout, writeSize);
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfoFFI destination,
@@ -140,6 +150,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteTexture(destination, (ReadOnlySpan<T>)data, dataLayout, writeSize);
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfoFFI destination,
@@ -151,6 +162,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteTexture(destination, (ReadOnlySpan<T>)data, dataLayout, writeSize);
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfoFFI destination,
         ReadOnlySpan<T> data,
@@ -177,6 +189,7 @@ public readonly unsafe partial struct QueueHandle :
         }
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfo destination,
@@ -188,6 +201,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteTexture(destination, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data), dataLayout, writeSize);
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/> 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfo destination,
@@ -199,6 +213,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteTexture(destination, (ReadOnlySpan<T>)data, dataLayout, writeSize);
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
         in TexelCopyTextureInfo destination,
@@ -210,6 +225,7 @@ public readonly unsafe partial struct QueueHandle :
         WriteTexture(destination, (ReadOnlySpan<T>)data, dataLayout, writeSize);
     }
 
+    /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void WriteTexture<T>(
        in TexelCopyTextureInfo destination,

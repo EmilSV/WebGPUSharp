@@ -7,11 +7,14 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct QuerySetHandle :
     IWebGpuHandle<QuerySetHandle, QuerySet>, IDisposable
 {
+
+    /// <inheritdoc cref="GetQueryType"/>
     public QueryType GetQueryType()
     {
         return WebGPU_FFI.QuerySetGetType(this);
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

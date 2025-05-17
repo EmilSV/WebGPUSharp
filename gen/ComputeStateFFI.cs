@@ -26,7 +26,7 @@ public unsafe partial struct ComputeStateFFI
     /// <summary>
     /// The name of the function in the module that this stage will use to perform its work. The corresponding shader function must have the @compute attribute to be identified as this entry point. See <see href="https://gpuweb.github.io/gpuweb/wgsl/#entry-point-decl">Entry Point Declaration</see> for more information.
     /// </summary>
-    /// <remarks">You can omit the EntryPoint property if your shader code contains a single function with the @compute attribute set — this will be then default entry point. If entryPoint is omitted and no default entry can be determined, a ValidationError is generated and the resulting ComputePipeline will be invalid.</remarks>
+    /// <remarks>You can omit the EntryPoint property if your shader code contains a single function with the @compute attribute set — this will be then default entry point. If entryPoint is omitted and no default entry can be determined, a ValidationError is generated and the resulting ComputePipeline will be invalid.</remarks>
     public StringViewFFI EntryPoint = StringViewFFI.NullValue;
     /// <summary>
     /// The number of item in the <see cref="WebGpuSharp.WebGpuSharp.FFI.ComputeStateFFI.Constants" /> sequence
