@@ -6,6 +6,7 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct RenderPassEncoderHandle :
     IDisposable, IWebGpuHandle<RenderPassEncoderHandle>
 {
+    /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndexedIndirect(
         BufferBase indirectBuffer, ulong indirectOffset)
     {
@@ -16,6 +17,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndirect(
         BufferBase indirectBuffer, ulong indirectOffset)
 
@@ -27,6 +29,8 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <param name="bundle"> The bundle to execute.</param>
+    /// <inheritdoc cref="ExecuteBundles(nuint, RenderBundleHandle*)"/>
     public void ExecuteBundle(RenderBundleHandle bundle)
     {
         WebGPU_FFI.RenderPassEncoderExecuteBundles(
@@ -36,6 +40,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="ExecuteBundle(RenderBundleHandle)"/>
     public void ExecuteBundle(RenderBundleBase bundle)
     {
         RenderBundleHandle handle = GetBorrowHandle(bundle);
@@ -46,6 +51,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="ExecuteBundles(nuint, RenderBundleHandle*)"/>
     public void ExecuteBundles(ReadOnlySpan<RenderBundleHandle> bundles)
     {
         fixed (RenderBundleHandle* bundlesPtr = bundles)
@@ -58,6 +64,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="ExecuteBundles(nuint, RenderBundleHandle*)"/>
     public void ExecuteBundles(ReadOnlySpan<RenderBundle> bundles)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
@@ -69,6 +76,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
@@ -82,6 +90,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
@@ -95,6 +104,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public readonly void SetBindGroup(uint groupIndex, BindGroupHandle group)
     {
         WebGPU_FFI.RenderPassEncoderSetBindGroup(
@@ -106,6 +116,8 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <param name="dynamicOffset">A buffer offsets in bytes for each entry in bindGroup marked as <see cref="BindGroupLayoutEntry.BindGroupLayoutEntry.Buffer">Buffer</see>.<see cref="BufferBindingLayout.HasDynamicOffset">HasDynamicOffset</see>, ordered by <see cref="BindGroupLayoutEntry.BindGroupLayoutEntry.Binding">BindGroupLayoutEntry.Binding</see>.</param>
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public readonly void SetBindGroup(uint groupIndex, BindGroupHandle group, uint dynamicOffset)
     {
         WebGPU_FFI.RenderPassEncoderSetBindGroup(
@@ -117,6 +129,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public readonly void SetBindGroup(uint groupIndex, BindGroupHandle group, ReadOnlySpan<uint> dynamicOffsets)
     {
         fixed (uint* dynamicOffsetsPtr = dynamicOffsets)
@@ -131,21 +144,25 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public readonly void SetBindGroup(uint groupIndex, BindGroupBase group)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group));
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, uint)"/>
     public readonly void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffset);
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
     public readonly void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffsets);
     }
 
+    /// <inheritdoc cref="SetBlendConstant(Color*)"/>
     public void SetBlendConstant(in Color color)
     {
         fixed (Color* colorPtr = &color)
@@ -154,6 +171,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public readonly void SetIndexBuffer(
         BufferBase buffer, IndexFormat format, ulong offset, ulong size)
     {
@@ -166,6 +184,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public readonly void SetIndexBuffer(
     BufferBase buffer, IndexFormat format, ulong offset = 0)
     {
@@ -179,6 +198,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         );
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using var allocator = WebGpuAllocatorHandle.Get();
@@ -192,15 +212,18 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetPipeline(RenderPipelineHandle)"/>
     public readonly void SetPipeline(RenderPipelineBase pipeline) =>
         SetPipeline(GetBorrowHandle(pipeline));
 
+    /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public readonly void SetVertexBuffer(
         uint slot, BufferBase buffer, ulong offset, ulong size)
     {
         SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);
     }
 
+    /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public readonly void SetVertexBuffer(
         uint slot, BufferBase buffer, ulong offset = 0)
     {
@@ -208,6 +231,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);
     }
 
+    /// <inheritdoc cref="SetViewport(float, float, float, float, float, float)"/>
     public void SetViewport(
         uint x, uint y, uint width, uint height, float minDepth, float maxDepth)
     {

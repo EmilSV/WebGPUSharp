@@ -8,19 +8,22 @@ public readonly partial struct ShaderModuleHandle :
     IWebGpuHandle<ShaderModuleHandle, ShaderModule>
 {
 
-    public void GetCompilationInfo(CompilationInfoCallback callback)
+    /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
+    public void GetCompilationInfo(CompilationInfoCallback callbackInfo)
     {
-        ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callback);
+        ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callbackInfo);
     }
 
-    public Task GetCompilationInfoAsync(CompilationInfoCallback callback)
+    /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
+    public Task GetCompilationInfoAsync(CompilationInfoCallback callbackInfo)
     {
-        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callback);
+        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callbackInfo);
     }
 
-    public Task<T> GetCompilationInfoAsync<T>(CompilationInfoCallback<T> callback)
+    /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
+    public Task<T> GetCompilationInfoAsync<T>(CompilationInfoCallback<T> callbackInfo)
     {
-        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callback);
+        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callbackInfo);
     }
 
 

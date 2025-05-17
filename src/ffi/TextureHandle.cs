@@ -14,6 +14,7 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
+    /// <inheritdoc cref="CreateView(TextureViewDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TextureViewHandle CreateView(TextureViewDescriptor textureViewDescriptor)
     {
@@ -29,6 +30,7 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
+    /// <inheritdoc cref="CreateView(TextureViewDescriptorFFI*)"/>
     public TextureViewHandle CreateView(ref TextureViewDescriptor textureViewDescriptor)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
@@ -43,6 +45,7 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
+    /// <inheritdoc cref="CreateView(TextureViewDescriptorFFI*)"/>
     public TextureViewHandle CreateView(in TextureViewDescriptorFFI descriptor)
     {
         fixed (TextureViewDescriptorFFI* descriptorPtr = &descriptor)
@@ -51,11 +54,13 @@ public readonly unsafe partial struct TextureHandle :
         }
     }
 
+    /// <inheritdoc cref="CreateView(TextureViewDescriptorFFI*)"/>
     public TextureViewHandle CreateView()
     {
         return WebGPU_FFI.TextureCreateView(this, null);
     }
 
+    /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();

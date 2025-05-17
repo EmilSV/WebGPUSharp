@@ -7,6 +7,7 @@ namespace WebGpuSharp.FFI;
 public unsafe readonly partial struct SurfaceHandle :
     IDisposable, IWebGpuHandle<SurfaceHandle, Surface>
 {
+    /// <inheritdoc cref="Configure(SurfaceConfigurationFFI*)"/>
     public void Configure(in SurfaceConfigurationFFI configuration)
     {
         fixed (SurfaceConfigurationFFI* configurationPtr = &configuration)
@@ -15,6 +16,7 @@ public unsafe readonly partial struct SurfaceHandle :
         }
     }
 
+    /// <inheritdoc cref="Configure(SurfaceConfigurationFFI*)"/>
     public void Configure(in SurfaceConfiguration configuration)
     {
         fixed (TextureFormat* ViewFormatsPtr = configuration.ViewFormats)
@@ -35,6 +37,7 @@ public unsafe readonly partial struct SurfaceHandle :
         }
     }
 
+    /// <inheritdoc cref="GetCapabilities(AdapterHandle, SurfaceCapabilitiesFFI*)"/>
     public Status GetCapabilities(AdapterHandle adapter, ref SurfaceCapabilitiesFFI capabilities)
     {
         fixed (SurfaceCapabilitiesFFI* capabilitiesPtr = &capabilities)
@@ -43,6 +46,7 @@ public unsafe readonly partial struct SurfaceHandle :
         }
     }
 
+    /// <inheritdoc cref="GetCurrentTexture(SurfaceTextureFFI*)"/>
     public void GetCurrentTexture(ref SurfaceTextureFFI surfaceTexture)
     {
         fixed (SurfaceTextureFFI* surfaceTexturePtr = &surfaceTexture)
@@ -51,6 +55,7 @@ public unsafe readonly partial struct SurfaceHandle :
         }
     }
 
+    /// <inheritdoc cref="GetCurrentTexture(SurfaceTextureFFI*)"/>
     public void GetCurrentTexture(ref SurfaceTexture surfaceTexture)
     {
         surfaceTexture.InternalSetSurfaceTextureFFI(this);
