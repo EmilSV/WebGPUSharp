@@ -104,12 +104,6 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         _pooledHandle.handle.SetLabel(label);
     }
 
-    public void WriteTimestamp(QuerySet querySet, uint queryIndex)
-    {
-        _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.WriteTimestamp(querySet, queryIndex);
-    }
-
     public CommandBuffer Finish(in CommandBufferDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
