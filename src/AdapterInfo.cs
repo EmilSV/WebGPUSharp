@@ -3,15 +3,24 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="AdapterInfoFFI" />
 public class AdapterInfo
 {
+    /// <inheritdoc cref="AdapterInfoFFI.Vendor" />
     public readonly string? Vendor;
+    /// <inheritdoc cref="AdapterInfoFFI.Architecture" />
     public readonly string? Architecture;
+    /// <inheritdoc cref="AdapterInfoFFI.Device" />
     public readonly string? Device;
+    /// <inheritdoc cref="AdapterInfoFFI.Description" />
     public readonly string? Description;
+    /// <inheritdoc cref="AdapterInfoFFI.BackendType" />
     public readonly BackendType BackendType;
+    /// <inheritdoc cref="AdapterInfoFFI.AdapterType" />
     public readonly AdapterType AdapterType;
+    /// <inheritdoc cref="AdapterInfoFFI.VendorID" />
     public readonly uint VendorID;
+    /// <inheritdoc cref="AdapterInfoFFI.DeviceID" />
     public readonly uint DeviceID;
 
     unsafe internal AdapterInfo(in AdapterInfoFFI adapterInfoFFI)

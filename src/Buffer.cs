@@ -4,6 +4,7 @@ using WebGpuSharp.Internal;
 namespace WebGpuSharp;
 
 
+/// <inheritdoc/>
 public sealed class Buffer :
     BufferBase,
     IFromHandle<Buffer, BufferHandle>

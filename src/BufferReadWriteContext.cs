@@ -37,7 +37,10 @@ public unsafe ref struct BufferReadWriteContext
         return _buffersUsedInContext != null && _buffersUsedInContext.Contains(buffer);
     }
 
-    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
+    /// <param name="buffer">The buffer to get const mapped range from.</param>
+    /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
+    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size)
+        where T : unmanaged
     {
         if (_buffersUsedInContext == null)
         {
@@ -64,8 +67,10 @@ public unsafe ref struct BufferReadWriteContext
         throw new WebGPUNotInReadWriteContext("Buffer is not in read/write context");
     }
 
-
-    public readonly Span<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) where T : unmanaged
+    /// <param name="buffer">The buffer to get const mapped range from.</param>
+    /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
+    public readonly Span<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) 
+        where T : unmanaged
     {
         if (_buffersUsedInContext == null)
         {

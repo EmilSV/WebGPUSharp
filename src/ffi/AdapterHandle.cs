@@ -24,7 +24,8 @@ public unsafe readonly partial struct AdapterHandle :
             WebGPU_FFI.AdapterGetFeatures(this, &supportedFeaturesFFI);
             gotFeatures = true;
             FeatureName[] features = new FeatureName[supportedFeaturesFFI.FeatureCount];
-            features.CopyTo(new Span<FeatureName>(supportedFeaturesFFI.Features, (int)supportedFeaturesFFI.FeatureCount));
+            var supportedFeaturesFFISpan = new Span<FeatureName>(supportedFeaturesFFI.Features, (int)supportedFeaturesFFI.FeatureCount);
+            supportedFeaturesFFISpan.CopyTo(features);
             return features;
         }
         finally

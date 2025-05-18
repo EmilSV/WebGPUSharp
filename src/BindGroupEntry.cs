@@ -4,13 +4,20 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="BindGroupEntryFFI"/>
 public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>
 {
+    /// <inheritdoc cref="BindGroupEntryFFI.Binding"/>
     public required uint Binding;
+    /// <inheritdoc cref="BindGroupEntryFFI.Buffer"/>
     public Buffer? Buffer;
+    /// <inheritdoc cref="BindGroupEntryFFI.Offset"/>
     public ulong Offset = 0;
+    /// <inheritdoc cref="BindGroupEntryFFI.Size"/>
     public ulong? Size;
+    /// <inheritdoc cref="BindGroupEntryFFI.Sampler"/>
     public SamplerBase? Sampler;
+    /// <inheritdoc cref="BindGroupEntryFFI.TextureView"/>
     public TextureViewBase? TextureView;
 
     public BindGroupEntry()

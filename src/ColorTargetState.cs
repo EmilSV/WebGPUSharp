@@ -4,6 +4,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="ColorTargetStateFFI"/>
 [StructLayout(LayoutKind.Auto)]
 public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>
 {

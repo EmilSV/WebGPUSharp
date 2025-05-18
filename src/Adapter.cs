@@ -3,6 +3,8 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+
+/// <inheritdoc/>
 public sealed class Adapter :
     AdapterBase,
     IFromHandle<Adapter, AdapterHandle>

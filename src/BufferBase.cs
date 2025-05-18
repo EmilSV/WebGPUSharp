@@ -8,6 +8,7 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="BufferHandle"/>
 public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 {
     public delegate void ReadWriteContextDelegate<T>(Span<T> data)
@@ -42,11 +43,12 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     protected abstract ReadWriteStateChangeHandleLock ReadWriteStateChangeLock { get; }
 
 
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
     public unsafe void MapAsync(
        MapMode mode,
        nuint offset,
        nuint size,
-       Action<MapAsyncStatus> callback)
+       Action<MapAsyncStatus> callbackInfo)
     {
 
         ReadWriteStateChangeLock.AddStateChangeLock();
@@ -55,7 +57,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         try
         {
             bufferBaseUserData = AllocUserData(this);
-            callbackUserData = AllocUserData(callback);
+            callbackUserData = AllocUserData(callbackInfo);
 
             Handle.MapAsync(
                 mode: mode,
@@ -80,16 +82,19 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     }
 
 
-    public void MapAsync(MapMode mode, nuint offset, Action<MapAsyncStatus> callback)
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
+    public void MapAsync(MapMode mode, nuint offset, Action<MapAsyncStatus> callbackInfo)
     {
-        MapAsync(mode, offset, (nuint)GetSize() - offset, callback);
+        MapAsync(mode, offset, (nuint)GetSize() - offset, callbackInfo);
     }
 
-    public void MapAsync(MapMode mode, Action<MapAsyncStatus> callback)
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
+    public void MapAsync(MapMode mode, Action<MapAsyncStatus> callbackInfo)
     {
-        MapAsync(mode, 0, (nuint)GetSize(), callback);
+        MapAsync(mode, 0, (nuint)GetSize(), callbackInfo);
     }
 
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/>
     public unsafe Task<MapAsyncStatus> MapAsync(
         MapMode mode,
         nuint offset,
@@ -128,11 +133,13 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/>
     public Task<MapAsyncStatus> MapAsync(MapMode mode, nuint offset = 0)
     {
         return MapAsync(mode, offset, (nuint)GetSize() - offset);
     }
 
+    /// <inheritdoc cref="BufferHandle.Destroy"/>
     public void Destroy()
     {
         ReadWriteStateChangeLock.AddStateChangeLock();
@@ -147,6 +154,8 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     }
 
 
+    /// <param name="callback">The callback to be called with the mapped range.</param>
+    /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
     public unsafe void GetConstMappedRange<T>(nuint offset, nuint size, ReadContextDelegate<T> callback)
         where T : unmanaged
     {
@@ -163,6 +172,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, ReadContextDelegate{T})"/>
     public unsafe void GetConstMappedRange(nuint offset, nuint size, ReadContextDelegate<byte> callback)
     {
         GetConstMappedRange<byte>(offset, size, callback);
@@ -170,6 +180,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
 
 
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, ReadContextDelegate{T})"/>
     public unsafe TResult GetConstMappedRange<TResult, T>(nuint offset, nuint size, ReadContextDelegate<TResult, T> callback)
         where T : unmanaged
     {
@@ -186,7 +197,8 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-
+    /// <param name="state"> The state to be passed to the callback.</param>
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, ReadContextDelegate{T})"/>
     public unsafe void GetConstMappedRange<T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<T, TState> callback, ref TState state)
         where T : unmanaged
     {
@@ -203,11 +215,13 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, ReadContextDelegateWithState{T, TState}, ref TState)"/>
     public unsafe void GetConstMappedRange<TState>(nuint offset, nuint size, ReadContextDelegateWithState<byte, TState> callback, ref TState state)
     {
         GetConstMappedRange<byte, TState>(offset, size, callback, ref state);
     }
 
+    /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, ReadContextDelegateWithState{T, TState}, ref TState)"/>
     public unsafe TResult GetConstMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<TResult, T, TState> callback, ref TState state)
         where T : unmanaged
     {
@@ -224,8 +238,10 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <param name="callback">The callback to be called with the mapped range.</param>
+    /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
     public unsafe void GetMappedRange<T>(nuint offset, nuint size, ReadWriteContextDelegate<T> callback)
-    where T : unmanaged
+        where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
@@ -240,13 +256,13 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
     public unsafe void GetMappedRange(nuint offset, nuint size, ReadWriteContextDelegate<byte> callback)
     {
         GetMappedRange<byte>(offset, size, callback);
     }
 
-
-
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
     public unsafe TResult GetMappedRange<TResult, T>(nuint offset, nuint size, ReadWriteContextDelegate<TResult, T> callback)
         where T : unmanaged
     {
@@ -263,17 +279,21 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
     public unsafe void GetMappedRange<T>(ReadWriteContextDelegate<T> callback)
         where T : unmanaged
     {
         GetMappedRange(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
     }
 
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
     public void GetMappedRange(ReadWriteContextDelegate<byte> callback)
     {
         GetMappedRange<byte>(callback);
     }
 
+    /// <param name="state"> The state to be passed to the callback.</param>
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
     public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<T, TState> callback, ref TState state)
         where T : unmanaged
     {
@@ -290,11 +310,13 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, ReadWriteContextDelegateWithState{T, TState}, ref TState)"/>
     public unsafe void GetMappedRange<TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<byte, TState> callback, ref TState state)
     {
         GetMappedRange<byte, TState>(offset, size, callback, ref state);
     }
 
+    /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, ReadWriteContextDelegateWithState{T, TState}, ref TState)"/>
     public unsafe TResult GetMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<TResult, T, TState> callback, ref TState state)
         where T : unmanaged
     {
@@ -311,10 +333,14 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="BufferHandle.GetMapState"/>
     public BufferMapState GetMapState() => Handle.GetMapState();
+    /// <inheritdoc cref="BufferHandle.GetSize"/>
     public ulong GetSize() => Handle.GetSize();
+    /// <inheritdoc cref="BufferHandle.GetUsage"/>
     public BufferUsage GetUsage() => Handle.GetUsage();
-
+    
+    /// <inheritdoc cref="BufferHandle.Unmap"/>
     public void Unmap()
     {
         ReadWriteStateChangeLock.AddStateChangeLock();
@@ -329,6 +355,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
+    /// <inheritdoc cref="BufferHandle.SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
         Handle.SetLabel(label);
@@ -474,10 +501,6 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
                 {
 
                 }
-            }
-            finally
-            {
-
             }
         }
 
