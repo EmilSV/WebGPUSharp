@@ -8,5 +8,5 @@ public ref struct ComputePipelineDescriptor
     /// <inheritdoc cref="FFI.ComputePipelineDescriptorFFI.Layout" />
     public PipelineLayoutBase? Layout;
     /// <inheritdoc cref="FFI.ComputePipelineDescriptorFFI.Compute" />
-    public required ProgrammableStageDescriptor Compute;
+    public required ComputeState Compute;
 }

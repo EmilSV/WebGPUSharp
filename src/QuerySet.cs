@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref />
 public sealed class QuerySet :
     QuerySetBase,
     IFromHandle<QuerySet, QuerySetHandle>
