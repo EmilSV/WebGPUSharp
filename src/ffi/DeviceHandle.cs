@@ -592,7 +592,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
-    public void PopErrorScope(DevicePopErrorScopeDelegate callbackInfo)
+    public void PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callbackInfo)
     {
         DevicePopErrorScopeHandler.DevicePopErrorScope(this, callbackInfo);
     }

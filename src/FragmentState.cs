@@ -4,12 +4,17 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="FragmentStateFFI"/>
 public partial struct FragmentState :
     IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
 {
+    /// <inheritdoc cref="FragmentStateFFI.Module"/>
     public required ShaderModuleBase Module;
+    /// <inheritdoc cref="FragmentStateFFI.EntryPoint"/>
     public string? EntryPoint;
+    /// <inheritdoc cref="FragmentStateFFI.Constants"/>
     public ConstantEntryList? Constants;
+    /// <inheritdoc cref="FragmentStateFFI.Targets"/>
     public required ColorTargetStateList Targets;
 
     static unsafe void IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>.UnsafeConvertToFFI(

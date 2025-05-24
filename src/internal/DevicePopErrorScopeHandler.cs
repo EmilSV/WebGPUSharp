@@ -8,7 +8,7 @@ namespace WebGpuSharp.Internal;
 
 internal unsafe static class DevicePopErrorScopeHandler
 {
-    public static void DevicePopErrorScope(DeviceHandle device, DevicePopErrorScopeDelegate callback)
+    public static void DevicePopErrorScope(DeviceHandle device, Action<ErrorType, ReadOnlySpan<byte>> callback)
     {
         WebGPU_FFI.DevicePopErrorScope(
            device: device,
@@ -49,7 +49,7 @@ internal unsafe static class DevicePopErrorScopeHandler
     {
         try
         {
-            var callback = (DevicePopErrorScopeDelegate?)ConsumeUserDataIntoObject(userdata);
+            var callback = (Action<ErrorType, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             callback?.Invoke(errorType, messageSpan);
         }

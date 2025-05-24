@@ -366,9 +366,9 @@ file static class DeviceLostCallbackHandler
     }
 
     private static volatile uint deviceLostCallbackId = 0;
-    private static readonly ConcurrentDictionary<nuint, DeviceLostCallbackDelegate> deviceLostCallbacks = new();
+    private static readonly ConcurrentDictionary<nuint, Action<DeviceLostReason, ReadOnlySpan<byte>>> deviceLostCallbacks = new();
 
-    public unsafe static FuncPtrAndId AddDeviceLostCallback(DeviceLostCallbackDelegate? callback)
+    public unsafe static FuncPtrAndId AddDeviceLostCallback(Action<DeviceLostReason, ReadOnlySpan<byte>>? callback)
     {
         if (callback == null)
         {
@@ -402,9 +402,9 @@ file static class UncapturedErrorDelegateHandler
 
 
     private static volatile uint uncapturedErrorCallbackId = 0;
-    private static readonly ConcurrentDictionary<nuint, UncapturedErrorDelegate> uncapturedErrorCallbacks = new();
+    private static readonly ConcurrentDictionary<nuint, Action<ErrorType, ReadOnlySpan<byte>>> uncapturedErrorCallbacks = new();
 
-    public unsafe static FuncPtrAndId AddUncapturedErrorCallback(UncapturedErrorDelegate? callback)
+    public unsafe static FuncPtrAndId AddUncapturedErrorCallback(Action<ErrorType, ReadOnlySpan<byte>>? callback)
     {
         if (callback == null)
         {
