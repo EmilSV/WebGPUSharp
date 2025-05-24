@@ -9,19 +9,19 @@ public readonly partial struct ShaderModuleHandle :
 {
 
     /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
-    public void GetCompilationInfo(CompilationInfoCallback callbackInfo)
+    public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callbackInfo)
     {
         ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callbackInfo);
     }
 
     /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
-    public Task GetCompilationInfoAsync(CompilationInfoCallback callbackInfo)
+    public Task GetCompilationInfoAsync(Action<CompilationInfoRequestStatus, CompilationInfo> callbackInfo)
     {
         return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callbackInfo);
     }
 
     /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
-    public Task<T> GetCompilationInfoAsync<T>(CompilationInfoCallback<T> callbackInfo)
+    public Task<T> GetCompilationInfoAsync<T>(Func<CompilationInfoRequestStatus, CompilationInfo, T> callbackInfo)
     {
         return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callbackInfo);
     }

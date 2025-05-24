@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="ComputePassEncoderHandle"/>
 public sealed class ComputePassEncoder :
     ComputePassEncoderBase,
     IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>

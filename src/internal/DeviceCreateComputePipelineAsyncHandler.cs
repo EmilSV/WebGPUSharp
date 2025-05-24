@@ -10,7 +10,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
     public static void DeviceCreateComputePipelineAsync(
         DeviceHandle device,
         in ComputePipelineDescriptorFFI descriptor,
-        CreateComputePipelineAsyncDelegate<ComputePipelineHandle> callback)
+        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
     {
         fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
@@ -93,7 +93,7 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
         try
         {
 
-            var callback = (CreateComputePipelineAsyncDelegate<ComputePipelineHandle>?)ConsumeUserDataIntoObject(userdata);
+            var callback = (Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {

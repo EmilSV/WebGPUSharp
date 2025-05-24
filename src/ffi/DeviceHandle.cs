@@ -158,7 +158,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
     public void CreateComputePipelineAsync(
         in ComputePipelineDescriptorFFI descriptor,
-        CreateComputePipelineAsyncDelegate<ComputePipelineHandle> callback)
+        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
     {
         DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptor, callback);
     }
@@ -167,7 +167,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
     public void CreateComputePipelineAsync(
         in ComputePipelineDescriptor descriptor,
-        CreateComputePipelineAsyncDelegate<ComputePipelineHandle> callback)
+        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
@@ -374,7 +374,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
     public void CreateRenderPipelineAsync(
         in RenderPipelineDescriptorFFI descriptor,
-        CreateRenderPipelineAsyncDelegate<RenderPipelineHandle> callback)
+        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
     {
         DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptor, callback);
     }
@@ -383,7 +383,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
     public void CreateRenderPipelineAsync(
         in RenderPipelineDescriptor descriptor,
-        CreateRenderPipelineAsyncDelegate<RenderPipelineHandle> callback)
+        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 

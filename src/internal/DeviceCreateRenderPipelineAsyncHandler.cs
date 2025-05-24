@@ -10,7 +10,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     public static void DeviceCreateRenderPipelineAsync(
         DeviceHandle device,
         in RenderPipelineDescriptorFFI descriptor,
-        CreateRenderPipelineAsyncDelegate<RenderPipelineHandle> callback)
+        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
     {
         fixed (RenderPipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
@@ -92,7 +92,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     {
         try
         {
-            var callback = (CreateRenderPipelineAsyncDelegate<RenderPipelineHandle>?)ConsumeUserDataIntoObject(userdata);
+            var callback = (Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata);
             ReadOnlySpan<byte> messageSpan = message.AsSpan();
             if (callback != null)
             {

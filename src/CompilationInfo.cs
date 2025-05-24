@@ -3,6 +3,7 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="CompilationInfoFFI"/>
 public unsafe readonly ref partial struct CompilationInfo
 {
     private readonly ref readonly CompilationInfoFFI _compilationInfoFFI;
@@ -13,6 +14,7 @@ public unsafe readonly ref partial struct CompilationInfo
     }
 
 
+    /// <inheritdoc cref="CompilationInfoFFI.MessageCount"/>
     public nuint MessageCount => _compilationInfoFFI.MessageCount;
     public CompilationMessage this[nuint index]
     {

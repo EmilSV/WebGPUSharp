@@ -4,11 +4,13 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="BufferDescriptorFFI"/>
 public ref partial struct BufferDescriptor
 {
     internal BufferDescriptorFFI _unmanagedDescriptor;
     public WGPURefText Label;
 
+    /// <inheritdoc cref="BufferDescriptorFFI.Usage"/>
     public required BufferUsage Usage
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17,6 +19,7 @@ public ref partial struct BufferDescriptor
         set => _unmanagedDescriptor.Usage = value;
     }
 
+    /// <inheritdoc cref="BufferDescriptorFFI.Size"/>
     public required ulong Size
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -25,6 +28,7 @@ public ref partial struct BufferDescriptor
         set => _unmanagedDescriptor.Size = value;
     }
 
+    /// <inheritdoc cref="BufferDescriptorFFI.MappedAtCreation"/>
     public WebGPUBool MappedAtCreation
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

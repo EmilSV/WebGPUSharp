@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Transactions;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using static WebGpuSharp.FFI.WebGPUMarshal;
@@ -11,35 +12,6 @@ namespace WebGpuSharp;
 /// <inheritdoc cref="BufferHandle"/>
 public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 {
-    public delegate void ReadWriteContextDelegate<T>(Span<T> data)
-        where T : unmanaged;
-
-    public delegate TResult ReadWriteContextDelegate<TResult, T>(Span<T> data)
-        where T : unmanaged;
-
-    public delegate void ReadContextDelegate<T>(ReadOnlySpan<T> data)
-        where T : unmanaged;
-
-    public delegate TResult ReadContextDelegate<TResult, T>(ReadOnlySpan<T> data)
-        where T : unmanaged;
-
-    public delegate void ReadWriteContextDelegateWithState<T, TState>(Span<T> data, ref TState state)
-    where T : unmanaged;
-
-    public delegate TResult ReadWriteContextDelegateWithState<TResult, T, TState>(Span<T> data, ref TState state)
-        where T : unmanaged;
-
-    public delegate void ReadContextDelegateWithState<T, TState>(ReadOnlySpan<T> data, ref TState state)
-        where T : unmanaged;
-
-    public delegate TResult ReadContextDelegateWithState<TResult, T, TState>(ReadOnlySpan<T> data, ref TState state)
-        where T : unmanaged;
-
-    public delegate void ReadWriteOperationCallback(BufferReadWriteContext status);
-    public delegate T ReadWriteOperationCallback<T>(BufferReadWriteContext status);
-    public delegate T ReadWriteOperationCallbackWithData<T>(BufferReadWriteContext status, ref T userdata);
-    public delegate TReturnData ReadWriteOperationCallbackWithData<TReturnData, TUserdata>(BufferReadWriteContext status, ref TUserdata userdata);
-
     protected abstract ReadWriteStateChangeHandleLock ReadWriteStateChangeLock { get; }
 
 
@@ -50,7 +22,6 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
        nuint size,
        Action<MapAsyncStatus> callbackInfo)
     {
-
         ReadWriteStateChangeLock.AddStateChangeLock();
         void* bufferBaseUserData = null;
         void* callbackUserData = null;
@@ -156,7 +127,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
     /// <param name="callback">The callback to be called with the mapped range.</param>
     /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
-    public unsafe void GetConstMappedRange<T>(nuint offset, nuint size, ReadContextDelegate<T> callback)
+    public unsafe void GetConstMappedRange<T>(nuint offset, nuint size, Action<ReadOnlySpan<T>> callback)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -172,16 +143,16 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, ReadContextDelegate{T})"/>
-    public unsafe void GetConstMappedRange(nuint offset, nuint size, ReadContextDelegate<byte> callback)
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
+    public unsafe void GetConstMappedRange(nuint offset, nuint size, Action<ReadOnlySpan<byte>> callback)
     {
         GetConstMappedRange<byte>(offset, size, callback);
     }
 
 
 
-    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, ReadContextDelegate{T})"/>
-    public unsafe TResult GetConstMappedRange<TResult, T>(nuint offset, nuint size, ReadContextDelegate<TResult, T> callback)
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
+    public unsafe TResult GetConstMappedRange<TResult, T>(nuint offset, nuint size, Func<ReadOnlySpan<T>, TResult> callback)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -198,16 +169,17 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     }
 
     /// <param name="state"> The state to be passed to the callback.</param>
-    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, ReadContextDelegate{T})"/>
-    public unsafe void GetConstMappedRange<T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<T, TState> callback, ref TState state)
+   /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
+    public unsafe void GetConstMappedRange<T, TState>(nuint offset, nuint size, Action<ReadOnlySpan<T>, TState> callback, TState state)
         where T : unmanaged
+        where TState : allows ref struct
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
         try
         {
             void* ptr = Handle.GetConstMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
-            callback(span, ref state);
+            callback(span, state);
         }
         finally
         {
@@ -215,14 +187,15 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-    /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, ReadContextDelegateWithState{T, TState}, ref TState)"/>
-    public unsafe void GetConstMappedRange<TState>(nuint offset, nuint size, ReadContextDelegateWithState<byte, TState> callback, ref TState state)
+     /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, Action{ReadOnlySpan{T}, TState}, TState)"/>
+    public unsafe void GetConstMappedRange<TState>(nuint offset, nuint size, Action<ReadOnlySpan<byte>, TState> callback, TState state)
+        where TState : allows ref struct
     {
-        GetConstMappedRange<byte, TState>(offset, size, callback, ref state);
+        GetConstMappedRange<byte, TState>(offset, size, callback, state);
     }
 
     /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, ReadContextDelegateWithState{T, TState}, ref TState)"/>
-    public unsafe TResult GetConstMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadContextDelegateWithState<TResult, T, TState> callback, ref TState state)
+    public unsafe TResult GetConstMappedRange<TResult, T, TState>(nuint offset, nuint size, Func<ReadOnlySpan<T>, TState, TResult> callback, TState state)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -230,7 +203,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             void* ptr = Handle.GetConstMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new ReadOnlySpan<T>(ptr, (int)size);
-            return callback(span, ref state);
+            return callback(span, state);
         }
         finally
         {
@@ -240,7 +213,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
 
     /// <param name="callback">The callback to be called with the mapped range.</param>
     /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
-    public unsafe void GetMappedRange<T>(nuint offset, nuint size, ReadWriteContextDelegate<T> callback)
+    public unsafe void GetMappedRange<T>(nuint offset, nuint size, Action<Span<T>> callback)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -256,14 +229,14 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
-    public unsafe void GetMappedRange(nuint offset, nuint size, ReadWriteContextDelegate<byte> callback)
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, Action{Span{T}})"/>
+    public unsafe void GetMappedRange(nuint offset, nuint size, Action<Span<byte>> callback)
     {
         GetMappedRange<byte>(offset, size, callback);
     }
 
     /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
-    public unsafe TResult GetMappedRange<TResult, T>(nuint offset, nuint size, ReadWriteContextDelegate<TResult, T> callback)
+    public unsafe TResult GetMappedRange<TResult, T>(nuint offset, nuint size, Func<Span<T>, TResult> callback)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -279,22 +252,22 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
-    public unsafe void GetMappedRange<T>(ReadWriteContextDelegate<T> callback)
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, Action{Span{T}})"/>
+    public unsafe void GetMappedRange<T>(Action<Span<T>> callback)
         where T : unmanaged
     {
         GetMappedRange(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
     }
 
-    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
-    public void GetMappedRange(ReadWriteContextDelegate<byte> callback)
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, Action{Span{T}})"/>
+    public void GetMappedRange(Action<Span<byte>> callback)
     {
         GetMappedRange<byte>(callback);
     }
 
     /// <param name="state"> The state to be passed to the callback.</param>
-    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, ReadWriteContextDelegate{T})"/>
-    public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<T, TState> callback, ref TState state)
+    /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, Action{Span{T}})"/>
+    public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, Action<Span<T>, TState> callback, TState state)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -302,7 +275,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             void* ptr = Handle.GetMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
-            callback(span, ref state);
+            callback(span, state);
         }
         finally
         {
@@ -310,14 +283,14 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-    /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, ReadWriteContextDelegateWithState{T, TState}, ref TState)"/>
-    public unsafe void GetMappedRange<TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<byte, TState> callback, ref TState state)
+    /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, Action{Span{T}, TState}, TState)"/>
+    public unsafe void GetMappedRange<TState>(nuint offset, nuint size, Action<Span<byte>, TState> callback, TState state)
     {
-        GetMappedRange<byte, TState>(offset, size, callback, ref state);
+        GetMappedRange<byte, TState>(offset, size, callback, state);
     }
 
-    /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, ReadWriteContextDelegateWithState{T, TState}, ref TState)"/>
-    public unsafe TResult GetMappedRange<TResult, T, TState>(nuint offset, nuint size, ReadWriteContextDelegateWithState<TResult, T, TState> callback, ref TState state)
+    /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, Action{Span{T}, TState}, TState)"/>
+    public unsafe TResult GetMappedRange<TResult, T, TState>(nuint offset, nuint size, Func<Span<T>, TState, TResult> callback, TState state)
         where T : unmanaged
     {
         ReadWriteStateChangeLock.AddReadWriteLock();
@@ -325,7 +298,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         {
             void* ptr = Handle.GetMappedRange(offset, size * (nuint)sizeof(T));
             var span = ptr == null ? [] : new Span<T>(ptr, (int)size);
-            return callback(span, ref state);
+            return callback(span, state);
         }
         finally
         {
@@ -339,7 +312,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     public ulong GetSize() => Handle.GetSize();
     /// <inheritdoc cref="BufferHandle.GetUsage"/>
     public BufferUsage GetUsage() => Handle.GetUsage();
-    
+
     /// <inheritdoc cref="BufferHandle.Unmap"/>
     public void Unmap()
     {
@@ -361,48 +334,61 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         Handle.SetLabel(label);
     }
 
+    /// <summary>
+    /// Performs a read/write operation on a span of buffers.
+    /// </summary>
+    /// <param name="buffers">The buffers</param>
+    /// <param name="callback">The callback to perform the read/write operation in</param>
     public static void DoReadWriteOperation(
         ReadOnlySpan<BufferBase> buffers,
-        ReadWriteOperationCallback callback
+        Action<BufferReadWriteContext> callback
     )
     {
-        try
-        {
-            foreach (BufferBase buffer in buffers)
-            {
-                buffer.ReadWriteStateChangeLock.AddReadWriteLock();
-            }
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
-            callback(context);
-        }
-        finally
-        {
-            foreach (BufferBase buffer in buffers)
-            {
-                buffer.ReadWriteStateChangeLock.RemoveReadWriteLock();
-            }
-        }
-    }
-
-    public static T DoReadWriteOperation<T>(
-        ReadOnlySpan<BufferBase> buffers,
-        ReadWriteOperationCallback<T> callback
-    )
-    {
+        using MangedArrayPoolRentInstance<BufferBase> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
+        var rentBufferSpan = rentedBuffers.Span;
 
         int i = 0;
         try
         {
-            for (; i < buffers.Length; i++)
+            for (; i < rentBufferSpan.Length; i++)
             {
-                buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
+            BufferReadWriteContext context = new(rentBufferSpan);
+            callback(context);
+        }
+        finally
+        {
+            do
+            {
+                i--;
+                rentBufferSpan[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
+            } while (i != 0);
+        }
+    }
 
-            foreach (BufferBase buffer in buffers)
+    /// <summary>
+    /// Performs a read/write operation on a span of buffers.
+    /// </summary>
+    /// <param name="buffers">The buffers</param>
+    /// <param name="callback">The callback to perform the read/write operation in</param>
+    /// <returns>The result of the callback</returns>
+    public static T DoReadWriteOperation<T>(
+        ReadOnlySpan<BufferBase> buffers,
+        Func<BufferReadWriteContext, T> callback
+    )
+    {
+        using MangedArrayPoolRentInstance<BufferBase> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
+        var rentBufferSpan = rentedBuffers.Span;
+
+        int i = 0;
+        try
+        {
+            for (; i < rentBufferSpan.Length; i++)
             {
-                buffer.ReadWriteStateChangeLock.AddReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
+            BufferReadWriteContext context = new(rentBufferSpan);
             return callback(context);
         }
         finally
@@ -410,61 +396,80 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
             do
             {
                 i--;
-                buffers[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
             } while (i != 0);
         }
     }
 
 
+    /// <summary>
+    /// Performs a read/write operation on a span of buffers.
+    /// </summary>
+    /// <param name="buffers">The buffers</param>
+    /// <param name="state">The state to be passed to the callback.</param>
+    /// <param name="callback">The callback to perform the read/write operation in</param>
     public static void DoReadWriteOperation<TUserdata>(
         ReadOnlySpan<BufferBase> buffers,
-        ref TUserdata state,
-        ReadWriteOperationCallbackWithData<TUserdata> callback
+        TUserdata state,
+        Action<BufferReadWriteContext, TUserdata> callback
     )
+     where TUserdata : allows ref struct
     {
+        using MangedArrayPoolRentInstance<BufferBase> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
+        var rentBufferSpan = rentedBuffers.Span;
+
         int i = 0;
         try
         {
-            for (; i < buffers.Length; i++)
+            for (; i < rentBufferSpan.Length; i++)
             {
-                buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
-
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
-            callback(context, ref state);
+            BufferReadWriteContext context = new(rentBufferSpan);
+            callback(context, state);
         }
         finally
         {
             do
             {
                 i--;
-                buffers[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
             } while (i != 0);
         }
     }
 
+    /// <summary>
+    /// Performs a read/write operation on a span of buffers.
+    /// </summary>
+    /// <param name="buffers">The buffers</param>
+    /// <param name="state">The state to be passed to the callback.</param>
+    /// <param name="callback">The callback to perform the read/write operation in</param>
+    /// <returns>The result of the callback</returns>
     public static TReturnData DoReadWriteOperation<TReturnData, TUserdata>(
         ReadOnlySpan<BufferBase> buffers,
-        ref TUserdata state,
-        ReadWriteOperationCallbackWithData<TReturnData, TUserdata> callback
+        TUserdata state,
+        Func<BufferReadWriteContext, TUserdata, TReturnData> callback
     )
     {
+        using MangedArrayPoolRentInstance<BufferBase> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
+        var rentBufferSpan = rentedBuffers.Span;
+
         int i = 0;
         try
         {
-            for (; i < buffers.Length; i++)
+            for (; i < rentBufferSpan.Length; i++)
             {
-                buffers[i].ReadWriteStateChangeLock.AddReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.AddReadWriteLock();
             }
-            using BufferReadWriteContext context = new(buffers, ArrayPool<object?>.Shared);
-            return callback(context, ref state);
+            BufferReadWriteContext context = new(rentBufferSpan);
+            return callback(context, state);
         }
         finally
         {
             do
             {
                 i--;
-                buffers[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
+                rentBufferSpan[i].ReadWriteStateChangeLock.RemoveReadWriteLock();
             } while (i != 0);
         }
     }

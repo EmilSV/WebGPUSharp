@@ -8,8 +8,11 @@ namespace WebGpuSharp;
 [StructLayout(LayoutKind.Auto)]
 public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>
 {
+    /// <inheritdoc cref="ColorTargetStateFFI.Format"/>
     public TextureFormat Format;
+    /// <inheritdoc cref="ColorTargetStateFFI.Blend"/>
     public BlendState? Blend;
+    /// <inheritdoc cref="ColorTargetStateFFI.WriteMask"/>
     public ColorWriteMask WriteMask = ColorWriteMask.All;
 
     public ColorTargetState() { }

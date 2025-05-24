@@ -3,6 +3,8 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+
+/// <inheritdoc />
 public sealed class Device :
     DeviceBase,
     IFromHandle<Device, DeviceHandle>

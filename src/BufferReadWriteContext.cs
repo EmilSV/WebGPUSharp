@@ -1,56 +1,39 @@
-using System;
-using System.Buffers;
 using WebGpuSharp.FFI;
-using GPUBuffer = WebGpuSharp.BufferBase;
+
 
 namespace WebGpuSharp;
 
-public unsafe ref struct BufferReadWriteContext
+public readonly unsafe ref struct BufferReadWriteContext
 {
-    private readonly ArrayPool<object?> _pool;
-    private object?[]? _buffersUsedInContext;
-    private ReadOnlySpan<object?> _buffersUsedInContextSpan;
+    private readonly ReadOnlySpan<BufferBase> _buffersUsedInContext;
 
-    internal BufferReadWriteContext(ReadOnlySpan<GPUBuffer> buffersUsedInContext, ArrayPool<object?> pool)
+    internal BufferReadWriteContext(ReadOnlySpan<BufferBase> buffersUsedInContext)
     {
-        _pool = pool;
-        _buffersUsedInContext = pool.Rent(buffersUsedInContext.Length);
-        for (int i = 0; i < buffersUsedInContext.Length; i++)
-        {
-            _buffersUsedInContext[i] = buffersUsedInContext[i];
-        }
-        _buffersUsedInContextSpan = _buffersUsedInContext.AsSpan(0, buffersUsedInContext.Length);
+        _buffersUsedInContext = buffersUsedInContext;
     }
 
-    internal void Dispose()
+    public readonly bool HasBuffer(BufferBase buffer)
     {
-        if (_buffersUsedInContext != null)
+        foreach (var item in _buffersUsedInContext)
         {
-            _pool.Return(_buffersUsedInContext);
-            _buffersUsedInContextSpan = default;
-            _buffersUsedInContext = null;
+            if (item == buffer)
+            {
+                return true;
+            }
         }
-    }
 
-    public readonly bool HasBuffer(GPUBuffer buffer)
-    {
-        return _buffersUsedInContext != null && _buffersUsedInContext.Contains(buffer);
+        return false;
     }
 
     /// <param name="buffer">The buffer to get const mapped range from.</param>
     /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
-    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size)
+    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(BufferBase buffer, nuint offset, nuint size)
         where T : unmanaged
     {
-        if (_buffersUsedInContext == null)
-        {
-            throw new ObjectDisposedException(nameof(BufferReadWriteContext));
-        }
-
         nuint offsetInBytes = offset * (nuint)sizeof(T);
         nuint sizeInBytes = size * (nuint)sizeof(T);
 
-        foreach (GPUBuffer? item in _buffersUsedInContextSpan)
+        foreach (BufferBase item in _buffersUsedInContext)
         {
             if (item == buffer)
             {
@@ -69,20 +52,15 @@ public unsafe ref struct BufferReadWriteContext
 
     /// <param name="buffer">The buffer to get const mapped range from.</param>
     /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
-    public readonly Span<T> GetMappedRange<T>(GPUBuffer buffer, nuint offset, nuint size) 
+    public readonly Span<T> GetMappedRange<T>(BufferBase buffer, nuint offset, nuint size)
         where T : unmanaged
     {
-        if (_buffersUsedInContext == null)
-        {
-            throw new ObjectDisposedException(nameof(BufferReadWriteContext));
-        }
-
         nuint offsetInBytes = offset * (nuint)sizeof(T);
         nuint sizeInBytes = size * (nuint)sizeof(T);
 
-        foreach (var item in _buffersUsedInContextSpan)
+        foreach (var item in _buffersUsedInContext)
         {
-            if ((GPUBuffer)item! == buffer)
+            if (item == buffer)
             {
                 void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)

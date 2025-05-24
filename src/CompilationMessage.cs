@@ -3,6 +3,7 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="CompilationMessageFFI" />
 public unsafe readonly ref struct CompilationMessage
 {
     private readonly ref readonly CompilationMessageFFI _compilationMessageFFI;
@@ -12,14 +13,16 @@ public unsafe readonly ref struct CompilationMessage
         _compilationMessageFFI = ref compilationMessageFFI;
     }
 
-    public ReadOnlySpan<byte> GetMessage()
-    {
-        return _compilationMessageFFI.Message.AsSpan();
-    }
-
+    /// <inheritdoc cref="CompilationMessageFFI.Message" />
+    public ReadOnlySpan<byte> Message => _compilationMessageFFI.Message.AsSpan();
+    /// <inheritdoc cref="CompilationMessageFFI.Type" />
     public CompilationMessageType Type => _compilationMessageFFI.Type;
+    /// <inheritdoc cref="CompilationMessageFFI.LineNum" />
     public ulong LineNum => _compilationMessageFFI.LineNum;
+    /// <inheritdoc cref="CompilationMessageFFI.LinePos" />
     public ulong LinePos => _compilationMessageFFI.LinePos;
+    /// <inheritdoc cref="CompilationMessageFFI.Offset" />
     public ulong Offset => _compilationMessageFFI.Offset;
+    /// <inheritdoc cref="CompilationMessageFFI.Length" />
     public ulong Length => _compilationMessageFFI.Length;
 }

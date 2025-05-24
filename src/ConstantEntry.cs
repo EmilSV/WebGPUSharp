@@ -5,9 +5,12 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 namespace WebGpuSharp;
 
 
+/// <inheritdoc cref="ConstantEntryFFI" />
 public unsafe partial struct ConstantEntry : IWebGpuFFIConvertibleAlloc<ConstantEntry, ConstantEntryFFI>
 {
+    /// <inheritdoc cref="ConstantEntryFFI.Key" />
     public required string Key;
+    /// <inheritdoc cref="ConstantEntryFFI.Value" />
     public required double Value;
 
 

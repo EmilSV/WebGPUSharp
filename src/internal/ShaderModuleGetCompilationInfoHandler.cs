@@ -8,7 +8,7 @@ namespace WebGpuSharp;
 
 public unsafe static class ShaderModuleGetCompilationInfoHandler
 {
-    public static void GetCompilationInfo(ShaderModuleHandle handle, CompilationInfoCallback callback)
+    public static void GetCompilationInfo(ShaderModuleHandle handle, Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
         WebGPU_FFI.ShaderModuleGetCompilationInfo(handle, new()
         {
@@ -20,7 +20,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     }
 
 
-    public static Task<T> GetCompilationInfoAsync<T>(ShaderModuleHandle handle, CompilationInfoCallback<T> callback)
+    public static Task<T> GetCompilationInfoAsync<T>(ShaderModuleHandle handle, Func<CompilationInfoRequestStatus, CompilationInfo, T> callback)
     {
         TaskCompletionSource<T> tcs = new();
         void innerCallback(CompilationInfoRequestStatus status, CompilationInfo info)
@@ -38,7 +38,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
         return tcs.Task;
     }
 
-    public static Task GetCompilationInfoAsync(ShaderModuleHandle handle, CompilationInfoCallback callback)
+    public static Task GetCompilationInfoAsync(ShaderModuleHandle handle, Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
         TaskCompletionSource tcs = new();
         void innerCallback(CompilationInfoRequestStatus status, CompilationInfo info)
@@ -63,7 +63,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     {
         try
         {
-            CompilationInfoCallback? callback = (CompilationInfoCallback?)ConsumeUserDataIntoObject(userdata);
+            Action<CompilationInfoRequestStatus, CompilationInfo>? callback = (Action<CompilationInfoRequestStatus, CompilationInfo>?)ConsumeUserDataIntoObject(userdata);
             if (callback == null)
             {
                 return;

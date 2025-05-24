@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="CommandBufferHandle"/>
 public readonly struct CommandBuffer : IEquatable<CommandBuffer>
 {
     internal readonly ulong _localToken;
