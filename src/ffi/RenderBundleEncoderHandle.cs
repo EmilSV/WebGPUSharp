@@ -45,12 +45,12 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         return WebGPU_FFI.RenderBundleEncoderFinish(this, null);
     }
 
-    /// <inheritdoc cref="InsertDebugMarker(WGPURefText)"/>
-    public void InsertDebugMarker(WGPURefText label)
+    /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
+    public void InsertDebugMarker(WGPURefText markerLabel)
     {
         using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
 
-        var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
@@ -139,7 +139,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         }
     }
 
-    /// <inheritdoc cref="SetPipeline(RenderPipelineBase)"/>
+    /// <inheritdoc cref="SetPipeline(RenderPipelineHandle)"/>
     public void SetPipeline(RenderPipelineBase pipeline)
     {
         WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetBorrowHandle(pipeline));
