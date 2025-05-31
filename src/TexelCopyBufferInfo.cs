@@ -3,9 +3,12 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="TexelCopyBufferInfoFFI"/>
 public struct TexelCopyBufferInfo : IWebGpuFFIConvertible<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>
 {
+    /// <inheritdoc cref="TexelCopyBufferInfoFFI.Layout"/>
     public TexelCopyBufferLayout Layout;
+    /// <inheritdoc cref="TexelCopyBufferInfoFFI.Buffer"/>
     public required BufferBase Buffer;
 
     static void IWebGpuFFIConvertible<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>.UnsafeConvertToFFI(

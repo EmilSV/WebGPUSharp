@@ -2,9 +2,12 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="FFI.ShaderModuleDescriptorFFI"/>
 public ref partial struct ShaderModuleDescriptor
 {
     internal ref readonly SType _next;
+
+    /// <inheritdoc cref="FFI.ShaderModuleDescriptorFFI.Label"/>
     public WGPURefText Label;
 
     public ShaderModuleDescriptor(

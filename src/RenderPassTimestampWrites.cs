@@ -3,11 +3,15 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="PassTimestampWritesFFI"/>
 public struct PassTimestampWrites :
     IWebGpuFFIConvertible<PassTimestampWrites, PassTimestampWritesFFI>
 {
+    /// <inheritdoc cref="PassTimestampWritesFFI.QuerySet"/>
     public required QuerySetBase QuerySet;
+    /// <inheritdoc cref="PassTimestampWritesFFI.BeginningOfPassWriteIndex"/>
     public uint BeginningOfPassWriteIndex;
+    /// <inheritdoc cref="PassTimestampWritesFFI.EndOfPassWriteIndex"/>
     public uint EndOfPassWriteIndex;
 
     static void IWebGpuFFIConvertible<PassTimestampWrites, PassTimestampWritesFFI>.UnsafeConvertToFFI(

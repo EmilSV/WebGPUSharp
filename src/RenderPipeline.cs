@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc/>
 public sealed class RenderPipeline :
     RenderPipelineBase,
     IFromHandle<RenderPipeline, RenderPipelineHandle>

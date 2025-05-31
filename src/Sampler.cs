@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc/>
 public unsafe sealed class Sampler :
     SamplerBase,
     IFromHandle<Sampler, SamplerHandle>

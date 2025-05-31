@@ -2,9 +2,13 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
+
+///  <inheritdoc cref="SurfaceDescriptorFFI" />
 public ref partial struct SurfaceDescriptor
 {
     internal ref ChainedStruct _next;
+
+    ///  <inheritdoc cref="SurfaceDescriptorFFI.Label" />
     public WGPURefText Label;
 
     public SurfaceDescriptor(ref SurfaceSourceXCBWindowFFI source)

@@ -2,6 +2,7 @@ using WebGpuSharp.FFI;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref ="SurfaceCapabilitiesFFI"/>
 public class SurfaceCapabilities
 {
     private TextureFormat[] _formatsArray = [];
@@ -9,8 +10,11 @@ public class SurfaceCapabilities
     private PresentMode[] _presentModesArray = [];
     private int _presentModesArrayCount = 0;
 
+    /// <inheritdoc cref ="SurfaceCapabilitiesFFI.Usages"/>
     public TextureUsage Usages { get; private set; }
+    /// <inheritdoc cref ="SurfaceCapabilitiesFFI.Formats"/>
     public ReadOnlySpan<TextureFormat> Formats => _formatsArray.AsSpan(0, _formatsArrayCount);
+    /// <inheritdoc cref ="SurfaceCapabilitiesFFI.PresentModes"/>
     public ReadOnlySpan<PresentMode> PresentModes => _presentModesArray.AsSpan(0, _presentModesArrayCount);
 
     internal unsafe Status SetInternalSurfaceCapabilities(SurfaceHandle surface, AdapterHandle adapter)

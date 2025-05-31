@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="SurfaceHandle"/>
 public abstract class SurfaceBase : WebGPUHandleWrapperBase<SurfaceHandle>
 {
     public Status GetCapabilities(Adapter adapter, SurfaceCapabilities outCapabilities)
@@ -10,6 +11,7 @@ public abstract class SurfaceBase : WebGPUHandleWrapperBase<SurfaceHandle>
         return outCapabilities.SetInternalSurfaceCapabilities(Handle, WebGPUMarshal.GetBorrowHandle(adapter));
     }
 
+    /// <inheritdoc cref="SurfaceHandle.GetCapabilities(AdapterHandle, SurfaceCapabilitiesFFI*)"/>
     public SurfaceCapabilities? GetCapabilities(Adapter adapter)
     {
         SurfaceCapabilities capabilities = new();
@@ -21,6 +23,7 @@ public abstract class SurfaceBase : WebGPUHandleWrapperBase<SurfaceHandle>
         return capabilities;
     }
 
+    /// <inheritdoc cref="SurfaceHandle.GetCurrentTexture(SurfaceTextureFFI*)"/>
     public SurfaceTexture GetCurrentTexture()
     {
         SurfaceTexture surfaceTexture = default;
@@ -28,16 +31,19 @@ public abstract class SurfaceBase : WebGPUHandleWrapperBase<SurfaceHandle>
         return surfaceTexture;
     }
 
+    /// <inheritdoc cref="SurfaceHandle.Present()"/>
     public void Present()
     {
         Handle.Present();
     }
 
+    /// <inheritdoc cref="SurfaceHandle.Configure(in SurfaceConfiguration)"/>
     public void Configure(in SurfaceConfiguration configuration)
     {
         Handle.Configure(in configuration);
     }
 
+    /// <inheritdoc cref="SurfaceHandle.Unconfigure()"/>
     public void Unconfigure()
     {
         Handle.Unconfigure();

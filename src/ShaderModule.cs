@@ -3,6 +3,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc/>
 public sealed class ShaderModule :
     ShaderModuleBase,
     IFromHandle<ShaderModule, ShaderModuleHandle>
