@@ -4,6 +4,7 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc />
 public sealed class TextureView :
     TextureViewBase,
     IFromHandle<TextureView, TextureViewHandle>

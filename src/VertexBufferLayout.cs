@@ -1,24 +1,17 @@
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="FFI.VertexBufferLayoutFFI" />
 public struct VertexBufferLayout
 {
+    /// <inheritdoc cref="FFI.VertexBufferLayoutFFI.ArrayStride" />
     public required ulong ArrayStride;
+    /// <inheritdoc cref="FFI.VertexBufferLayoutFFI.StepMode" />
     public VertexStepMode StepMode = VertexStepMode.Vertex;
+    /// <inheritdoc cref="FFI.VertexBufferLayoutFFI.Attributes" />
     public required VertexAttributeList Attributes;
 
     public VertexBufferLayout()
     {
 
-    }
-
-    public VertexBufferLayout(
-        ulong arrayStride,
-        VertexStepMode stepMode,
-        VertexAttributeList attributes
-    )
-    {
-        this.ArrayStride = arrayStride;
-        this.StepMode = stepMode;
-        this.Attributes = attributes;
     }
 }

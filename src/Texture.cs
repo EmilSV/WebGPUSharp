@@ -3,10 +3,16 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+/// <summary>
+/// Handle to a texture on the GPU.
+/// 
+/// It can be created with <see cref="DeviceHandle.CreateTexture(TextureDescriptor)" />.
+/// </summary>
 public sealed class Texture :
     TextureBase,
     IFromHandle<Texture, TextureHandle>
 {
+    /// <inheritdoc cref="WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED"/>
     public const uint MIP_LEVEL_COUNT_UNDEFINED = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
 
     private readonly WebGpuSafeHandle<TextureHandle> _safeHandle;

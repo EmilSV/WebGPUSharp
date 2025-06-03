@@ -4,11 +4,16 @@ using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
+/// <inheritdoc cref="VertexStateFFI" />
 public struct VertexState : IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
-{
+{   
+    /// <inheritdoc cref="VertexStateFFI.Module" />
     public required ShaderModule Module;
+    /// <inheritdoc cref="VertexStateFFI.EntryPoint" />
     public string? EntryPoint;
+    /// <inheritdoc cref="VertexStateFFI.Constants" />
     public ConstantEntryList? Constants;
+    /// <inheritdoc cref="VertexStateFFI.Buffers" />
     public VertexBufferLayoutList? Buffers;
 
     static unsafe void IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>.UnsafeConvertToFFI(

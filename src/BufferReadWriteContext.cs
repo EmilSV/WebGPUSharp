@@ -47,7 +47,7 @@ public readonly unsafe ref struct BufferReadWriteContext
             }
         }
 
-        throw new WebGPUNotInReadWriteContext("Buffer is not in read/write context");
+        throw new WebGPUNotInReadWriteContextException("Buffer is not in read/write context");
     }
 
     /// <param name="buffer">The buffer to get const mapped range from.</param>
@@ -72,6 +72,6 @@ public readonly unsafe ref struct BufferReadWriteContext
             }
         }
 
-        throw new WebGPUNotInReadWriteContext("Buffer is not in read/write context");
+        throw new WebGPUNotInReadWriteContextException("Buffer is not in read/write context");
     }
 }

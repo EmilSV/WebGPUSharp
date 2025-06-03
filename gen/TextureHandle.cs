@@ -105,7 +105,7 @@ public unsafe partial struct TextureHandle : IEquatable<TextureHandle>
     /// <summary>
     /// Returns the depth or layer count of this Texture.
     /// 
-    /// This is always equal to the <see cref="TextureDescriptorFFI.Size.DepthOrArrayLayers" /> that was specified when creating the texture.
+    /// This is always equal to the <see cref="TextureDescriptorFFI.Size"/>.<see cref="Extent3D.DepthOrArrayLayers">DepthOrArrayLayers</see> that was specified when creating the texture.
     /// </summary>
     public uint GetDepthOrArrayLayers() => WebGPU_FFI.TextureGetDepthOrArrayLayers(this);
 
