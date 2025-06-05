@@ -1,26 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <WarningsAsErrors>
-      CS8600;CS8601;CS8602;CS8604;CS8613;CS8614;CS8619;CS8620;CS8622;CS8625;CS8629;CS8633;CS8524;CS8509;CS8524;CS8767
-    </WarningsAsErrors>
-    <NoWarn>1073;RCS1021;RCS1123,RCS1242</NoWarn>
-    <WarningsAsErrors>Nullable</WarningsAsErrors>
-    <_WebGpuSharp_IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</_WebGpuSharp_IsWindows>
-    <_WebGpuSharp_IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</_WebGpuSharp_IsOSX>
-    <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_WebGpuSharp_NativeRuntime>
-    <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'arm64')">osx-arm64</_WebGpuSharp_NativeRuntime>
-    <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-x64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
-    <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'osx-arm64'">webgpu_dawn.dylib</_WebGpuSharp_NativeLibName>
-  </PropertyGroup>
-  <ItemGroup>
-    <Content Condition="'$(_WebGpuSharp_NativeRuntime)' != ''" Include="runtimes/$(_WebGpuSharp_NativeRuntime)/native/$(_WebGpuSharp_NativeLibName)">
-      <Link>%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </Content>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <WarningsAsErrors>            
+            CS8600;CS8601;CS8602;CS8604;CS8613;CS8614;CS8619;CS8620;CS8622;CS8625;CS8629;CS8633;CS8524;CS8509;CS8524;CS8767
+        </WarningsAsErrors>
+        <NoWarn>1073;RCS1021;RCS1123,RCS1242</NoWarn>
+        <WarningsAsErrors>Nullable</WarningsAsErrors>
+        <_WebGpuSharp_IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</_WebGpuSharp_IsWindows>
+        <_WebGpuSharp_IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</_WebGpuSharp_IsOSX>
+        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_WebGpuSharp_NativeRuntime>
+        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'arm64')">osx-arm64</_WebGpuSharp_NativeRuntime>
+        <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-x64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
+        <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'osx-arm64'">webgpu_dawn.dylib</_WebGpuSharp_NativeLibName>
+        <!-- Package Information -->
+        <PackageId>WebGPUSharp</PackageId>
+        <Version>0.1.1</Version>
+        <Authors>Emil Vad</Authors>
+        <Description>A C# wrapper for WebGPU</Description>
+        <PackageTags>webgpu;graphics;gpu</PackageTags>
+        <PackageProjectUrl>https://github.com/EmilSV/WebGPUSharp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/EmilSV/WebGPUSharp</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <!-- Supported Runtime Identifiers -->
+        <RuntimeIdentifiers>win-x64;osx-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <ItemGroup>
+        <!-- Windows x64 native library -->
+        <Content Include="runtimes/win-x64/native/webgpu_dawn.dll" Condition="Exists('runtimes/win-x64/native/webgpu_dawn.dll')">
+            <PackagePath>runtimes/win-x64/native</PackagePath>
+            <Visible>False</Visible>
+            <Pack>true</Pack>
+        </Content>
+        <!-- macOS ARM64 native library -->
+        <Content Include="runtimes/osx-arm64/native/webgpu_dawn.dylib" Condition="Exists('runtimes/osx-arm64/native/webgpu_dawn.dylib')">
+            <PackagePath>runtimes/osx-arm64/native</PackagePath>
+            <Visible>False</Visible>
+            <Pack>true</Pack>
+        </Content>
+        <!-- Keep the current one for local development -->
+        <None Condition="'$(_WebGpuSharp_NativeRuntime)' != ''" Include="runtimes/$(_WebGpuSharp_NativeRuntime)/native/$(_WebGpuSharp_NativeLibName)">
+            <Link>%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Visible>False</Visible>
+            <Pack>false</Pack>
+        </None>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 </Project>
