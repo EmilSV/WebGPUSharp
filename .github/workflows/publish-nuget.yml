@@ -20,10 +20,12 @@ jobs:
     - name: Extract version from tag
       id: version
       run: |
+        # Extract tag name from ref
+        TAG_NAME=${GITHUB_REF#refs/tags/}
         # Remove 'v' prefix if present
-        VERSION=${GITHUB_REF#refs/tags/v}
-        VERSION=${GITHUB_REF#refs/tags/}
+        VERSION=${TAG_NAME#v}
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Extracted version: $VERSION"
         
     - name: Update project version
       run: |
