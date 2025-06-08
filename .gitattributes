@@ -23,8 +23,6 @@
 *.tif filter=lfs diff=lfs merge=lfs
 *.tiff filter=lfs diff=lfs merge=lfs
 *.pdn filter=lfs diff=lfs merge=lfs
-
-
 # Audio formats
 *.webm filter=lfs diff=lfs merge=lfs
 *.mp3 filter=lfs diff=lfs merge=lfs
@@ -37,7 +35,6 @@
 *.it filter=lfs diff=lfs merge=lfs
 *.s3m filter=lfs diff=lfs merge=lfs
 *.xm filter=lfs diff=lfs merge=lfs
- 
 # Video formats
 *.mov filter=lfs diff=lfs merge=lfs
 *.avi filter=lfs diff=lfs merge=lfs
@@ -46,7 +43,6 @@
 *.mpeg filter=lfs diff=lfs merge=lfs
 *.mp4 filter=lfs diff=lfs merge=lfs
 *.flac filter=lfs diff=lfs merge=lfs
-
 # 3D formats
 *.fbx filter=lfs diff=lfs merge=lfs
 *.obj filter=lfs diff=lfs merge=lfs
@@ -62,17 +58,14 @@
 *.lwo2 filter=lfs diff=lfs merge=lfs
 *.abc filter=lfs diff=lfs merge=lfs
 *.3dm filter=lfs diff=lfs merge=lfs
-
 # Packaging
 *.zip filter=lfs diff=lfs merge=lfs
 *.7z filter=lfs diff=lfs merge=lfs
 *.gz filter=lfs diff=lfs merge=lfs
 *.rar filter=lfs diff=lfs merge=lfs
 *.tar filter=lfs diff=lfs merge=lfs
-
 # Compressed Texture
 *.ktx filter=lfs diff=lfs merge=lfs
-
 # other
 *.exe filter=lfs diff=lfs merge=lfs
 *.dll filter=lfs diff=lfs merge=lfs
