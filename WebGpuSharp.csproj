@@ -12,11 +12,11 @@
         <_WebGpuSharp_IsWindows Condition="'$([System.OperatingSystem]::IsWindows())' == 'true'">true</_WebGpuSharp_IsWindows>
         <_WebGpuSharp_IsOSX Condition="'$([System.OperatingSystem]::IsMacOS())' == 'true'">true</_WebGpuSharp_IsOSX>
         <_WebGpuSharp_IsLinux Condition="'$([System.OperatingSystem]::IsLinux())' == 'true'">true</_WebGpuSharp_IsLinux>
-        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And'$(PlatformTarget)' == 'x64'">win-x64</_WebGpuSharp_NativeRuntime>
+        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And '$(PlatformTarget)' == 'arm64'">win-arm64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And '$(PlatformTarget)' == 'x64'">osx-x64</_WebGpuSharp_NativeRuntime>
-        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And '$(PlatformTarget)' == 'arm64'">osx-arm64</_WebGpuSharp_NativeRuntime>
-        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsLinux)' == 'true' And '$(PlatformTarget)' == 'x64'">linux-x64</_WebGpuSharp_NativeRuntime>
+        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'arm64')">osx-arm64</_WebGpuSharp_NativeRuntime>
+        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsLinux)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">linux-x64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsLinux)' == 'true' And '$(PlatformTarget)' == 'arm64'">linux-arm64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-x64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
         <_WebGpuSharp_NativeLibName Condition="'$(_WebGpuSharp_NativeRuntime)' == 'win-arm64'">webgpu_dawn.dll</_WebGpuSharp_NativeLibName>
@@ -36,7 +36,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <!-- Supported Runtime Identifiers -->
-        <RuntimeIdentifiers>win-x64;win-arm64;osx-arm64;osx-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x64;win-arm64;osx-x64;osx-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     </PropertyGroup>
     <ItemGroup>
         <!-- Windows x64 native library -->
@@ -45,7 +45,7 @@
             <Visible>False</Visible>
             <Pack>true</Pack>
         </Content>
-        <!-- Windows arm64 native library -->
+        <!-- Windows ARM64 native library -->
         <Content Include="runtimes/win-arm64/native/webgpu_dawn.dll" Condition="Exists('runtimes/win-arm64/native/webgpu_dawn.dll')">
             <PackagePath>runtimes/win-arm64/native</PackagePath>
             <Visible>False</Visible>
@@ -69,7 +69,7 @@
             <Visible>False</Visible>
             <Pack>true</Pack>
         </Content>
-        <!-- Linux arm64 native library -->
+        <!-- Linux ARM64 native library -->
         <Content Include="runtimes/linux-arm64/native/webgpu_dawn.so" Condition="Exists('runtimes/linux-arm64/native/webgpu_dawn.so')">
             <PackagePath>runtimes/linux-arm64/native</PackagePath>
             <Visible>False</Visible>
