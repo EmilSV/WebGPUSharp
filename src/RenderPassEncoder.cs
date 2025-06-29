@@ -98,7 +98,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.ExecuteBundle(bundle);
     }
-    
+
     /// <inheritdoc cref="RenderPassEncoderHandle.ExecuteBundles(ReadOnlySpan{RenderBundle})"/>
     public void ExecuteBundles(ReadOnlySpan<RenderBundle> bundles)
     {
@@ -162,7 +162,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.SetIndexBuffer(buffer, format, offset, size);
     }
 
-     /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(BufferBase, IndexFormat, ulong)"/>
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(BufferBase, IndexFormat, ulong)"/>
     public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
     {
         _pooledHandle.VerifyToken(_localToken);

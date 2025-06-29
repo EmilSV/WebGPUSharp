@@ -78,7 +78,7 @@ public unsafe ref struct SamplerDescriptor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set => _unsafeDescriptor.LodMaxClamp = value;
     }
-     /// <inheritdoc cref="SamplerDescriptorFFI.Compare"/>
+    /// <inheritdoc cref="SamplerDescriptorFFI.Compare"/>
     public CompareFunction Compare
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -86,7 +86,7 @@ public unsafe ref struct SamplerDescriptor
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set => _unsafeDescriptor.Compare = value;
     }
-     /// <inheritdoc cref="SamplerDescriptorFFI.MaxAnisotropy"/>
+    /// <inheritdoc cref="SamplerDescriptorFFI.MaxAnisotropy"/>
     public ushort MaxAnisotropy
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

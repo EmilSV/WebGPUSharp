@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 
 /// <inheritdoc cref="VertexStateFFI" />
 public struct VertexState : IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
-{   
+{
     /// <inheritdoc cref="VertexStateFFI.Module" />
     public required ShaderModule Module;
     /// <inheritdoc cref="VertexStateFFI.EntryPoint" />

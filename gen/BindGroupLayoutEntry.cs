@@ -30,6 +30,7 @@ public unsafe partial struct BindGroupLayoutEntry
     /// will be accessible from the associated shader stage.
     /// </summary>
     public required ShaderStage Visibility;
+    public uint BindingArraySize;
     /// <summary>
     /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
     /// is BufferBinding.

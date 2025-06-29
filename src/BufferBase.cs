@@ -169,7 +169,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
     }
 
     /// <param name="state"> The state to be passed to the callback.</param>
-   /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
     public unsafe void GetConstMappedRange<T, TState>(nuint offset, nuint size, Action<ReadOnlySpan<T>, TState> callback, TState state)
         where T : unmanaged
         where TState : allows ref struct
@@ -187,7 +187,7 @@ public abstract class BufferBase : WebGPUHandleWrapperBase<BufferHandle>
         }
     }
 
-     /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, Action{ReadOnlySpan{T}, TState}, TState)"/>
+    /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, Action{ReadOnlySpan{T}, TState}, TState)"/>
     public unsafe void GetConstMappedRange<TState>(nuint offset, nuint size, Action<ReadOnlySpan<byte>, TState> callback, TState state)
         where TState : allows ref struct
     {

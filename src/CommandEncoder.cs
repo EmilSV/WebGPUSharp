@@ -90,7 +90,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.PopDebugGroup();
     }
-    
+
     /// <inheritdoc cref="CommandEncoderHandle.PushDebugGroup(WGPURefText)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {

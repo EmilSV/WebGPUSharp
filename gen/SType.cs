@@ -76,7 +76,6 @@ public enum SType
     YCbCrVkDescriptor = 327734,
     SharedTextureMemoryAHardwareBufferProperties = 327735,
     AHardwareBufferProperties = 327736,
-    DawnExperimentalImmediateDataLimits = 327737,
     DawnTexelCopyBufferRowAlignmentLimits = 327738,
     AdapterPropertiesSubgroupMatrixConfigs = 327739,
     SharedFenceEGLSyncDescriptor = 327740,
@@ -85,4 +84,8 @@ public enum SType
     DawnCompilationMessageUtf16 = 327743,
     DawnFakeBufferOOMForTesting = 327744,
     SurfaceDescriptorFromWindowsWinUISwapChainPanel = 327745,
+    DawnDeviceAllocatorControl = 327746,
+    DawnHostMappedPointerLimits = 327747,
+    RenderPassDescriptorResolveRect = 327748,
+    RequestAdapterWebGPUBackendOptions = 327749,
 }
