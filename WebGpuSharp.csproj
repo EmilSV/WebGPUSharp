@@ -13,7 +13,7 @@
         <_WebGpuSharp_IsOSX Condition="'$([System.OperatingSystem]::IsMacOS())' == 'true'">true</_WebGpuSharp_IsOSX>
         <_WebGpuSharp_IsLinux Condition="'$([System.OperatingSystem]::IsLinux())' == 'true'">true</_WebGpuSharp_IsLinux>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And'$(PlatformTarget)' == 'x64'">win-x64</_WebGpuSharp_NativeRuntime>
-        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And $(PlatformTarget)' == 'arm64'">win-arm64</_WebGpuSharp_NativeRuntime>
+        <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsWindows)' == 'true' And '$(PlatformTarget)' == 'arm64'">win-arm64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And '$(PlatformTarget)' == 'x64'">osx-x64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsOSX)' == 'true' And '$(PlatformTarget)' == 'arm64'">osx-arm64</_WebGpuSharp_NativeRuntime>
         <_WebGpuSharp_NativeRuntime Condition=" '$(_WebGpuSharp_NativeRuntime)' == '' And '$(_WebGpuSharp_IsLinux)' == 'true' And '$(PlatformTarget)' == 'x64'">linux-x64</_WebGpuSharp_NativeRuntime>
