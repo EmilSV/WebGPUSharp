@@ -2,8 +2,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace WebGpuSharp;
-
 public readonly ref struct WGPUNullableRef<T>
+
     where T : struct
 {
     public struct NullRef { }

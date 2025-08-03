@@ -12,9 +12,9 @@ public struct VertexState : IWebGpuFFIConvertibleAlloc<VertexState, VertexStateF
     /// <inheritdoc cref="VertexStateFFI.EntryPoint" />
     public string? EntryPoint;
     /// <inheritdoc cref="VertexStateFFI.Constants" />
-    public ConstantEntryList? Constants;
+    public WebGpuManagedSpan<ConstantEntry> Constants;
     /// <inheritdoc cref="VertexStateFFI.Buffers" />
-    public VertexBufferLayoutList? Buffers;
+    public WebGpuManagedSpan<VertexBufferLayout> Buffers;
 
     static unsafe void IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>.UnsafeConvertToFFI(
         in VertexState input, WebGpuAllocatorHandle allocator, out VertexStateFFI dest)

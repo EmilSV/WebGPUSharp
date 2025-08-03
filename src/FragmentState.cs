@@ -13,9 +13,9 @@ public partial struct FragmentState :
     /// <inheritdoc cref="FragmentStateFFI.EntryPoint"/>
     public string? EntryPoint;
     /// <inheritdoc cref="FragmentStateFFI.Constants"/>
-    public ConstantEntryList? Constants;
+    public WebGpuManagedSpan<ConstantEntry> Constants;
     /// <inheritdoc cref="FragmentStateFFI.Targets"/>
-    public required ColorTargetStateList Targets;
+    public required WebGpuManagedSpan<ColorTargetState> Targets;
 
     static unsafe void IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>.UnsafeConvertToFFI(
         in FragmentState input,
@@ -23,7 +23,7 @@ public partial struct FragmentState :
         out FragmentStateFFI dest)
     {
         dest = default;
-        ToFFI(input.Targets, out dest.Targets, out dest.TargetCount);
+        ToFFI(input.Targets, allocator, out dest.Targets, out dest.TargetCount);
         dest.Module = GetBorrowHandle(input.Module);
         dest.EntryPoint = ToStringViewFFI(input.EntryPoint, allocator);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);

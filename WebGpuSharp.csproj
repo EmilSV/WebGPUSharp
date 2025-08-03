@@ -7,7 +7,7 @@
         <WarningsAsErrors>            
             CS8600;CS8601;CS8602;CS8604;CS8613;CS8614;CS8619;CS8620;CS8622;CS8625;CS8629;CS8633;CS8524;CS8509;CS8524;CS8767
         </WarningsAsErrors>
-        <NoWarn>1073;RCS1021;RCS1123,RCS1242</NoWarn>
+        <NoWarn>1073;RCS1021;RCS1123,RCS1242,IDE0130</NoWarn>
         <WarningsAsErrors>Nullable</WarningsAsErrors>
         <_WebGpuSharp_IsWindows Condition="'$([System.OperatingSystem]::IsWindows())' == 'true'">true</_WebGpuSharp_IsWindows>
         <_WebGpuSharp_IsOSX Condition="'$([System.OperatingSystem]::IsMacOS())' == 'true'">true</_WebGpuSharp_IsOSX>
