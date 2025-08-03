@@ -171,4 +171,5 @@ public enum FeatureName
     /// Subgroups enable SIMD-level parallelism by allowing threads in a workgroup to communicate and perform collective math operations (e.g., summing 16 numbers).
     /// </summary>
     Subgroups = 17,
+    CoreFeaturesAndLimits = 18,
 }

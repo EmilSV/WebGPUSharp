@@ -3,17 +3,17 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc cref="FFI.RequestAdapterOptionsFFI"/>
+/// <inheritdoc cref="RequestAdapterOptionsFFI"/>
 public struct RequestAdapterOptions :
     IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>
 {
-    /// <inheritdoc cref="FFI.RequestAdapterOptionsFFI.CompatibleSurface"/>
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.CompatibleSurface"/>
     public required SurfaceBase CompatibleSurface;
-    /// <inheritdoc cref="FFI.RequestAdapterOptionsFFI.PowerPreference"/>
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.PowerPreference"/>
     public PowerPreference PowerPreference;
-    /// <inheritdoc cref="FFI.RequestAdapterOptionsFFI.BackendType"/>
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.BackendType"/>
     public BackendType BackendType;
-    /// <inheritdoc cref="FFI.RequestAdapterOptionsFFI.ForceFallbackAdapter"/>
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.ForceFallbackAdapter"/>
     public bool ForceFallbackAdapter = false;
 
     public RequestAdapterOptions()

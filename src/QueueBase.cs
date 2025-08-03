@@ -69,7 +69,7 @@ public abstract class QueueBase : WebGPUHandleWrapperBase<QueueHandle>
         Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
     }
 
-    
+
     /// <inheritdoc cref="QueueHandle.WriteTexture{T}(in TexelCopyTextureInfo, List{T}, in TexelCopyBufferLayout, in Extent3D)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteTexture<T>(

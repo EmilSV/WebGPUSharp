@@ -271,6 +271,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.BindGroupLayouts = ptr;
             descriptorFFI.BindGroupLayoutCount = length;
+            descriptorFFI.ImmediateSize = descriptor.ImmediateSize;
 
             return CreatePipelineLayout(descriptorFFI);
         }

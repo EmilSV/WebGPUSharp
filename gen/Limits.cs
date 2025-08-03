@@ -144,6 +144,7 @@ public unsafe partial struct Limits
     /// The maximum value for each dimension of a ComputePass.Dispatch(x, y, z) operation. Defaults to 65535. Higher is “better”.
     /// </summary>
     public uint MaxComputeWorkgroupsPerDimension = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
+    public uint MaxImmediateSize = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
     /// <summary>
     /// Maximum number of storage buffers that can be accessed from the vertex stage.
     /// Defaults to 0 in compatibility mode and matches <see cref="MaxStorageBuffersPerShaderStage" /> in core mode.

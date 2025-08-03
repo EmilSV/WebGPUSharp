@@ -105,28 +105,28 @@ public unsafe partial struct TextureHandle : IEquatable<TextureHandle>
     /// <summary>
     /// Returns the depth or layer count of this Texture.
     /// 
-    /// This is always equal to the <see cref="TextureDescriptorFFI.Size"/>.<see cref="Extent3D.DepthOrArrayLayers">DepthOrArrayLayers</see> that was specified when creating the texture.
+    /// This is always equal to the <see cref="TextureDescriptorFFI.Size" />.<see cref="Extent3D.DepthOrArrayLayers">DepthOrArrayLayers</see> that was specified when creating the texture.
     /// </summary>
     public uint GetDepthOrArrayLayers() => WebGPU_FFI.TextureGetDepthOrArrayLayers(this);
 
     /// <summary>
     /// Returns the dimension of this Texture.
     /// 
-    /// This is always equal to the <see cref="TextureDescriptorFFI.Dimension" /> that was specified when creating the texture.
+    /// This is always equal to the <see cref="TextureDescriptorFFI" />.<see cref="Extent3D.Dimension">Dimension</see> that was specified when creating the texture.
     /// </summary>
     public TextureDimension GetDimension() => WebGPU_FFI.TextureGetDimension(this);
 
     /// <summary>
     /// Returns the format of this Texture.
     /// 
-    /// This is always equal to the <see cref="TextureDescriptorFFI.Format" /> that was specified when creating the texture.
+    /// This is always equal to the <see cref="TextureDescriptorFFI" />.<see cref="Extent3D.Format">Format</see> that was specified when creating the texture.
     /// </summary>
     public TextureFormat GetFormat() => WebGPU_FFI.TextureGetFormat(this);
 
     /// <summary>
     /// Returns the height of this Texture.
     /// 
-    /// This is always equal to the <see cref="TextureDescriptorFFI.Size.Height" /> that was specified when creating the texture.
+    /// This is always equal to the <see cref="TextureDescriptorFFI" />.<see cref="Extent3D.Height">Height</see> that was specified when creating the texture.
     /// </summary>
     public uint GetHeight() => WebGPU_FFI.TextureGetHeight(this);
 
@@ -150,7 +150,7 @@ public unsafe partial struct TextureHandle : IEquatable<TextureHandle>
     /// <summary>
     /// Returns the width of this Texture.
     /// 
-    /// This is always equal to the <see cref="TextureDescriptorFFI.Size.Width" /> that was specified when creating the texture.
+    /// This is always equal to the <see cref="TextureDescriptorFFI.Size" />.<see cref="Extent3D.Width">Width</see> that was specified when creating the texture.
     /// </summary>
     public uint GetWidth() => WebGPU_FFI.TextureGetWidth(this);
 

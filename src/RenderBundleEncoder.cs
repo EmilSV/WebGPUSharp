@@ -175,7 +175,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetVertexBuffer(slot, buffer, offset);
     }
-    
+
     public bool Equals(RenderBundleEncoder other)
     {
         _pooledHandle.VerifyToken(_localToken);

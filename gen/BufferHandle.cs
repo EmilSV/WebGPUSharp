@@ -115,16 +115,16 @@ public unsafe partial struct BufferHandle : IEquatable<BufferHandle>
     public void* GetConstMappedRange(nuint offset, nuint size) => WebGPU_FFI.BufferGetConstMappedRange(this, offset, size);
 
     /// <summary>
-    /// An enumerated value representing the mapped state of the Buffer.
-    /// </summary>
-    public BufferMapState GetMapState() => WebGPU_FFI.BufferGetMapState(this);
-
-    /// <summary>
     /// Returns an ArrayBuffer with the contents of the  <see cref="Buffer"/> in the given mapped range.
     /// </summary>
     /// <param name="offset">Offset in bytes into the buffer to return buffer contents from.</param>
     /// <param name="size">Size in bytes of the ArrayBuffer to return.</param>
     public void* GetMappedRange(nuint offset, nuint size) => WebGPU_FFI.BufferGetMappedRange(this, offset, size);
+
+    /// <summary>
+    /// An enumerated value representing the mapped state of the Buffer.
+    /// </summary>
+    public BufferMapState GetMapState() => WebGPU_FFI.BufferGetMapState(this);
 
     /// <summary>
     /// Returns the size of the buffer in bytes.
