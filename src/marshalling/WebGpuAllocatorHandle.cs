@@ -19,110 +19,91 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
 
     private struct LogicBlock
     {
-        public readonly unsafe struct StackMode(LogicBlock* block)
+        public unsafe struct StackModeData
         {
-            public void Setup(
-                WebGpuAllocator* allocator,
-                void* memory,
-                nuint remainingSize
-            )
-            {
-                block->Allocator = allocator;
-                block->Memory = memory;
-                block->RemainingSize = remainingSize;
-                block->_isStackMemoryOrCount = 0;
-            }
-
-            public T* Alloc<T>(nuint amount)
-                where T : unmanaged
-            {
-                nuint byteAmount = amount * (nuint)sizeof(T);
-                void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), amount, block->Memory, out nuint remainingSize);
-                if (alignedMemory == null || remainingSize < byteAmount)
-                {
-                    HeapMode heapMode = new(block);
-                    heapMode.Setup();
-                    return heapMode.Alloc<T>(amount);
-                }
-
-                block->Memory = (void*)((nuint)alignedMemory + byteAmount);
-                block->RemainingSize = remainingSize - byteAmount;
-                return (T*)alignedMemory;
-            }
+            public byte* Memory;
+            public nuint RemainingBytes;
         }
 
-        public readonly struct HeapMode(LogicBlock* block)
+        public unsafe struct HeapModeData
         {
-            public void Setup()
-            {
-                block->Memory = block->Allocator->Alloc((nuint)sizeof(nuint) * 4);
-                block->RemainingSize = 4;
-                block->_isStackMemoryOrCount = 0;
-            }
+            public void** AllocPtr;
+            public int Size;
+            public int Count;
+        }
 
-            public T* Alloc<T>(nuint amount)
-                where T : unmanaged
-            {
-                var newMemory = block->Allocator->AlignedAlloc((nuint)sizeof(T) * amount, WebGpuAlignment.GetAlignmentOf<T>());
-                if (newMemory == null)
-                {
-                    throw new OutOfMemoryException("Failed to allocate memory for WebGpuAllocatorHandle.");
-                }
-
-                if (block->RemainingSize <= (nuint)block->_isStackMemoryOrCount)
-                {
-                    var newSize = block->RemainingSize * 2;
-                    block->Memory = block->Allocator->Realloc(block->Memory, newSize * (nuint)sizeof(nuint));
-                    block->RemainingSize = newSize;
-                    var ptrArray = (void**)block->Memory;
-                    ptrArray[block->_isStackMemoryOrCount] = newMemory;
-                    block->_isStackMemoryOrCount++;
-                }
-
-                return (T*)newMemory;
-            }
-
-            public void Dispose()
-            {
-                if (block->Memory != null)
-                {
-                    for (nuint i = 0; i < (nuint)block->_isStackMemoryOrCount; i++)
-                    {
-                        var ptrArray = (void**)block->Memory;
-                        block->Allocator->Free(ptrArray[i]);
-                    }
-                    block->Allocator->Free(block->Memory);
-                }
-            }
+        [StructLayout(LayoutKind.Explicit)]
+        public struct ModeData
+        {
+            [FieldOffset(0)]
+            public StackModeData Stack;
+            [FieldOffset(0)]
+            public HeapModeData Heap;
         }
 
         public WebGpuAllocator* Allocator;
-        public void* Memory;
-        public nuint RemainingSize;
-        private nint _isStackMemoryOrCount;
+        public ModeData Data;
+        public bool IsInStackMode { get; private set; }
+
         public DisposableHandleArrayItem* DisposableHandles;
-        public readonly bool IsStackMemory
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _isStackMemoryOrCount < 0;
-        }
 
         public void SetUpStackMemory(
             WebGpuAllocator* allocator,
             void* memory,
-            nuint remainingSize)
+            nuint remainingBytes)
         {
+            IsInStackMode = true;
             Allocator = allocator;
-            Memory = memory;
-            RemainingSize = remainingSize;
-            _isStackMemoryOrCount = -1; // Negative value indicates stack memory mode
+            Data.Stack.Memory = (byte*)memory;
+            Data.Stack.RemainingBytes = remainingBytes;
+        }
+
+        public void SetUpHeapMemory()
+        {
+            IsInStackMode = false;
+            Data.Heap.AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4);
+            Data.Heap.Size = 4;
+            Data.Heap.Count = 0;
+        }
+
+        public T* AllocStack<T>(nuint amount)
+            where T : unmanaged
+        {
+            nuint byteAmount = amount * (nuint)sizeof(T);
+            void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), amount, Data.Stack.Memory, out nuint remainingSize);
+            if (alignedMemory == null || remainingSize < byteAmount)
+            {
+                SetUpHeapMemory();
+                return AllocHeap<T>(amount);
+            }
+
+            Data.Stack.Memory = (byte*)((nuint)alignedMemory + byteAmount);
+            Data.Stack.RemainingBytes = remainingSize - byteAmount;
+            return (T*)alignedMemory;
+        }
+
+        public T* AllocHeap<T>(nuint amount)
+            where T : unmanaged
+        {
+            var newMemory = Allocator->AlignedAlloc((nuint)sizeof(T) * amount, WebGpuAlignment.GetAlignmentOf<T>());
+            if (newMemory == null)
+            {
+                throw new OutOfMemoryException("Failed to allocate memory for WebGpuAllocatorHandle.");
+            }
+
+            if (Data.Heap.Size <= Data.Heap.Count)
+            {
+                var newSize = Data.Heap.Size * 2;
+                Data.Heap.AllocPtr = (void**)Allocator->Realloc(Data.Heap.AllocPtr, (nuint)(newSize * sizeof(void**)));
+                Data.Heap.Size = newSize;
+                Data.Heap.AllocPtr[Data.Heap.Count] = newMemory;
+                Data.Heap.Count++;
+            }
+
+            return (T*)newMemory;
         }
     }
     private readonly LogicBlock* _logicBlock;
-
-    private LogicBlock.StackMode LogicBlockStackMode => new(_logicBlock);
-
-    private LogicBlock.HeapMode LogicBlockHeapMode => new(_logicBlock);
 
     internal WebGpuAllocatorHandle(WebGpuAllocator* allocator, void* stackMemory, nuint size)
     {
@@ -133,10 +114,10 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         }
         _logicBlock = (LogicBlock*)alignedMemory;
 
-        LogicBlockStackMode.Setup(
-            allocator,
-            alignedMemory,
-            remainingSize
+        _logicBlock->SetUpStackMemory(
+            allocator: allocator,
+            memory: alignedMemory,
+            remainingBytes: remainingSize
         );
     }
 
@@ -221,7 +202,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             _logicBlock->Allocator->Free(_logicBlock->DisposableHandles);
         }
 
-        if (!_logicBlock->IsStackMemory)
+        if (!_logicBlock->IsInStackMode)
         {
             LogicBlockHeapMode.Dispose();
         }
