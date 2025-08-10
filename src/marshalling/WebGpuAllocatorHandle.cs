@@ -17,6 +17,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         public DisposableHandle DisposableHandle;
     }
 
+    [StructLayout(LayoutKind.Auto)]
     private struct LogicBlock
     {
         public unsafe struct StackModeData
@@ -43,22 +44,22 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
 
         public WebGpuAllocator* Allocator;
         public ModeData Data;
+        public DisposableHandleArrayItem* DisposableHandles;
         public bool IsInStackMode { get; private set; }
 
-        public DisposableHandleArrayItem* DisposableHandles;
-
-        public void SetUpStackMemory(
+        public void SetupStackMemory(
             WebGpuAllocator* allocator,
             void* memory,
             nuint remainingBytes)
         {
             IsInStackMode = true;
             Allocator = allocator;
+            DisposableHandles = null;
             Data.Stack.Memory = (byte*)memory;
             Data.Stack.RemainingBytes = remainingBytes;
         }
 
-        public void SetUpHeapMemory()
+        private void SwitchToHeapMemory()
         {
             IsInStackMode = false;
             Data.Heap.AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4);
@@ -66,14 +67,15 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             Data.Heap.Count = 0;
         }
 
-        public T* AllocStack<T>(nuint amount)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T* AllocStack<T>(nuint amount)
             where T : unmanaged
         {
             nuint byteAmount = amount * (nuint)sizeof(T);
             void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), amount, Data.Stack.Memory, out nuint remainingSize);
             if (alignedMemory == null || remainingSize < byteAmount)
             {
-                SetUpHeapMemory();
+                SwitchToHeapMemory();
                 return AllocHeap<T>(amount);
             }
 
@@ -82,7 +84,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             return (T*)alignedMemory;
         }
 
-        public T* AllocHeap<T>(nuint amount)
+        private T* AllocHeap<T>(nuint amount)
             where T : unmanaged
         {
             var newMemory = Allocator->AlignedAlloc((nuint)sizeof(T) * amount, WebGpuAlignment.GetAlignmentOf<T>());
@@ -102,8 +104,44 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
 
             return (T*)newMemory;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T* Alloc<T>(nuint amount)
+            where T : unmanaged
+        {
+            if (IsInStackMode)
+            {
+                return AllocStack<T>(amount);
+            }
+            else
+            {
+                return AllocHeap<T>(amount);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (DisposableHandles != null)
+            {
+                for (nuint i = 1; i < DisposableHandles[0].SizeInfo.count; i++)
+                {
+                    DisposableHandles[i].DisposableHandle.Dispose();
+                }
+                Allocator->Free(DisposableHandles);
+            }
+
+            if (!IsInStackMode)
+            {
+                for (int i = 0; i < Data.Heap.Count; i++)
+                {
+                    Allocator->Free(Data.Heap.AllocPtr[i]);
+                }
+                Allocator->Free(Data.Heap.AllocPtr);
+            }
+
+        }
     }
-    private readonly LogicBlock* _logicBlock;
+    private readonly ref LogicBlock _logicBlock;
 
     internal WebGpuAllocatorHandle(WebGpuAllocator* allocator, void* stackMemory, nuint size)
     {
@@ -112,9 +150,9 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         {
             throw new OutOfMemoryException("Failed to allocate aligned memory for WebGpuAllocatorHandle.");
         }
-        _logicBlock = (LogicBlock*)alignedMemory;
+        _logicBlock = ref *(LogicBlock*)alignedMemory;
 
-        _logicBlock->SetUpStackMemory(
+        _logicBlock.SetupStackMemory(
             allocator: allocator,
             memory: alignedMemory,
             remainingBytes: remainingSize
@@ -125,20 +163,13 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
     public unsafe T* Alloc<T>(nuint amount)
         where T : unmanaged
     {
-        if (_logicBlock->IsStackMemory)
-        {
-            return LogicBlockStackMode.Alloc<T>(amount);
-        }
-        else
-        {
-            return LogicBlockHeapMode.Alloc<T>(amount);
-        }
+        return _logicBlock.Alloc<T>(amount);
     }
 
-    public unsafe Span<T> AllocAsSpan<T>(nuint amount)
+    public unsafe Span<T> AllocAsSpan<T>(int amount)
         where T : unmanaged
     {
-        return new Span<T>(Alloc<T>(amount), (int)amount);
+        return new Span<T>(Alloc<T>((nuint)amount), amount);
     }
 
     public unsafe void AddHandleToDispose<THandle>(THandle handle)
@@ -149,24 +180,23 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             return;
         }
 
-        if (_logicBlock->DisposableHandles == null)
+        if (_logicBlock.DisposableHandles == null)
         {
-            _logicBlock->DisposableHandles = Alloc<DisposableHandleArrayItem>(4);
-            _logicBlock->DisposableHandles[0].SizeInfo = (4, 1);
+            _logicBlock.DisposableHandles = Alloc<DisposableHandleArrayItem>(4);
+            _logicBlock.DisposableHandles[0].SizeInfo = (4, 1);
         }
 
-        ref var sizeInfo = ref _logicBlock->DisposableHandles[0].SizeInfo;
-        var index = sizeInfo.count++;
-        if (sizeInfo.size <= index)
+        var index = _logicBlock.DisposableHandles->SizeInfo.count++;
+        if (_logicBlock.DisposableHandles->SizeInfo.size <= index)
         {
-            var newSize = sizeInfo.size * 2;
-            _logicBlock->DisposableHandles = (DisposableHandleArrayItem*)_logicBlock->Allocator->Realloc(
-              ptr: _logicBlock->DisposableHandles,
+            var newSize = _logicBlock.DisposableHandles->SizeInfo.size * 2;
+            _logicBlock.DisposableHandles = (DisposableHandleArrayItem*)_logicBlock.Allocator->Realloc(
+              ptr: _logicBlock.DisposableHandles,
               byteCount: newSize * (nuint)sizeof(DisposableHandleArrayItem)
             );
-            _logicBlock->DisposableHandles[0].SizeInfo.size = newSize;
+            _logicBlock.DisposableHandles[0].SizeInfo.size = newSize;
         }
-        _logicBlock->DisposableHandles[index].DisposableHandle = DisposableHandle.FromHandle(handle);
+        _logicBlock.DisposableHandles[index].DisposableHandle = DisposableHandle.FromHandle(handle);
     }
 
     public unsafe THandle GetHandle<THandle>(WebGPUHandleWrapperBase<THandle>? safeHandle)
@@ -193,22 +223,14 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
 
     public void Dispose()
     {
-        if (_logicBlock->DisposableHandles != null)
+        if (_logicBlock.DisposableHandles != null)
         {
-            for (nuint i = 1; i < _logicBlock->DisposableHandles[0].SizeInfo.count; i++)
+            for (nuint i = 1; i < _logicBlock.DisposableHandles[0].SizeInfo.count; i++)
             {
-                _logicBlock->DisposableHandles[i].DisposableHandle.Dispose();
+                _logicBlock.DisposableHandles[i].DisposableHandle.Dispose();
             }
-            _logicBlock->Allocator->Free(_logicBlock->DisposableHandles);
+            _logicBlock.Allocator->Free(_logicBlock.DisposableHandles);
         }
-
-        if (!_logicBlock->IsInStackMode)
-        {
-            LogicBlockHeapMode.Dispose();
-        }
-        else
-        {
-            // For stack memory, we don't need to free the memory, it will be automatically cleaned up.
-        }
+        _logicBlock.Dispose();
     }
 }

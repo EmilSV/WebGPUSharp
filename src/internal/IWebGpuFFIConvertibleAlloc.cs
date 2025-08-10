@@ -1,4 +1,4 @@
-using WebGpuSharp.FFI;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp.Internal;
 

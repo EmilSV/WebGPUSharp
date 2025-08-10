@@ -1,11 +1,12 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 using static WebGpuSharp.FFI.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="BindGroupEntryFFI"/>
-public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>
+public struct BindGroupEntry : IWebGpuMarshallable<BindGroupEntry, BindGroupEntryFFI>
 {
     /// <inheritdoc cref="BindGroupEntryFFI.Binding"/>
     public required uint Binding;
@@ -24,8 +25,7 @@ public struct BindGroupEntry : IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGr
     {
     }
 
-    static void IWebGpuFFIConvertibleAlloc<BindGroupEntry, BindGroupEntryFFI>.UnsafeConvertToFFI(
-        in BindGroupEntry input, WebGpuAllocatorHandle allocator, out BindGroupEntryFFI dest)
+    static void IWebGpuMarshallable<BindGroupEntry, BindGroupEntryFFI>.MarshalToFFI(in BindGroupEntry input, WebGpuAllocatorHandle allocator, out BindGroupEntryFFI dest)
     {
         ulong size = 0;
         if (input.Size.HasValue)
