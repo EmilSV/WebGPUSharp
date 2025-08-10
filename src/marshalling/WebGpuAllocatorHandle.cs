@@ -84,6 +84,30 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             return (T*)alignedMemory;
         }
 
+        private T* ReallocStack<T>(T* previousMemory, nuint previousSize, nuint newSize)
+            where T : unmanaged
+        {
+            if (newSize == previousSize)
+            {
+                return (T*)Data.Stack.Memory;
+            }
+
+            if ((nuint)Data.Stack.Memory - previousSize == (nuint)previousMemory)
+            {
+                var newAllocSize = (nuint)sizeof(T) * newSize;
+                if (newAllocSize <= Data.Stack.RemainingBytes)
+                {
+                    Data.Stack.Memory = (byte*)((nuint)previousMemory + newSize);
+                    Data.Stack.RemainingBytes -= newAllocSize;
+                    return (T*)Data.Stack.Memory;
+                }
+            }
+
+            var newMemory = AllocStack<T>(newSize);
+            Unsafe.CopyBlockUnaligned(newMemory, Data.Stack.Memory, (uint)previousSize);
+            return newMemory;
+        }
+
         private T* AllocHeap<T>(nuint amount)
             where T : unmanaged
         {
@@ -105,6 +129,26 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             return (T*)newMemory;
         }
 
+        private T* ReallocHeap<T>(T* previousMemory, nuint previousSize, nuint newSize)
+            where T : unmanaged
+        {
+            if (newSize == previousSize)
+            {
+                return previousMemory;
+            }
+
+            for (int i = 0; i < Data.Heap.Count; i++)
+            {
+                if (Data.Heap.AllocPtr[i] == previousMemory)
+                {
+                    Data.Heap.AllocPtr[i] = Allocator->Realloc(previousMemory, (nuint)sizeof(T) * newSize);
+                    return (T*)Data.Heap.AllocPtr[i];
+                }
+            }
+
+            throw new InvalidOperationException("Previous memory not found in heap allocation.");
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T* Alloc<T>(nuint amount)
             where T : unmanaged
@@ -116,6 +160,19 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             else
             {
                 return AllocHeap<T>(amount);
+            }
+        }
+
+        public T* Realloc<T>(T* previousMemory, nuint previousSize, nuint newSize)
+            where T : unmanaged
+        {
+            if (IsInStackMode)
+            {
+                return ReallocStack(previousMemory, previousSize, newSize);
+            }
+            else
+            {
+                return ReallocHeap(previousMemory, previousSize, newSize);
             }
         }
 
@@ -160,16 +217,38 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
     }
 
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe T* Alloc<T>(nuint amount)
         where T : unmanaged
     {
         return _logicBlock.Alloc<T>(amount);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe Span<T> AllocAsSpan<T>(int amount)
         where T : unmanaged
     {
         return new Span<T>(Alloc<T>((nuint)amount), amount);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe T* Realloc<T>(T* previousMemory, nuint previousSize, nuint newSize)
+        where T : unmanaged
+    {
+        return _logicBlock.Realloc(previousMemory, previousSize, newSize);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe Span<T> ReallocSpan<T>(ref Span<T> previousMemory, nuint previousSize, nuint newSize)
+        where T : unmanaged
+    {
+        Span<T> newMemorySpan;
+        fixed (T* previousPtr = previousMemory)
+        {
+            var newPtr = _logicBlock.Realloc(previousPtr, previousSize, newSize);
+            newMemorySpan = new Span<T>(newPtr, (int)newSize);
+        }
+        return newMemorySpan;
     }
 
     public unsafe void AddHandleToDispose<THandle>(THandle handle)
