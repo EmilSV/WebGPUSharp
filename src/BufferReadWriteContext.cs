@@ -1,18 +1,19 @@
 using WebGpuSharp.FFI;
+using WebGpuSharp.Marshalling;
 
 
 namespace WebGpuSharp;
 
 public readonly unsafe ref struct BufferReadWriteContext
 {
-    private readonly ReadOnlySpan<BufferBase> _buffersUsedInContext;
+    private readonly ReadOnlySpan<Buffer> _buffersUsedInContext;
 
-    internal BufferReadWriteContext(ReadOnlySpan<BufferBase> buffersUsedInContext)
+    internal BufferReadWriteContext(ReadOnlySpan<Buffer> buffersUsedInContext)
     {
         _buffersUsedInContext = buffersUsedInContext;
     }
 
-    public readonly bool HasBuffer(BufferBase buffer)
+    public readonly bool HasBuffer(Buffer buffer)
     {
         foreach (var item in _buffersUsedInContext)
         {
@@ -27,13 +28,13 @@ public readonly unsafe ref struct BufferReadWriteContext
 
     /// <param name="buffer">The buffer to get const mapped range from.</param>
     /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
-    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(BufferBase buffer, nuint offset, nuint size)
+    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(Buffer buffer, nuint offset, nuint size)
         where T : unmanaged
     {
         nuint offsetInBytes = offset * (nuint)sizeof(T);
         nuint sizeInBytes = size * (nuint)sizeof(T);
 
-        foreach (BufferBase item in _buffersUsedInContext)
+        foreach (Buffer item in _buffersUsedInContext)
         {
             if (item == buffer)
             {
@@ -52,7 +53,7 @@ public readonly unsafe ref struct BufferReadWriteContext
 
     /// <param name="buffer">The buffer to get const mapped range from.</param>
     /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
-    public readonly Span<T> GetMappedRange<T>(BufferBase buffer, nuint offset, nuint size)
+    public readonly Span<T> GetMappedRange<T>(Buffer buffer, nuint offset, nuint size)
         where T : unmanaged
     {
         nuint offsetInBytes = offset * (nuint)sizeof(T);

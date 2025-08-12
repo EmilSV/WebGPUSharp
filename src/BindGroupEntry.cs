@@ -1,7 +1,7 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -17,15 +17,15 @@ public struct BindGroupEntry : IWebGpuMarshallable<BindGroupEntry, BindGroupEntr
     /// <inheritdoc cref="BindGroupEntryFFI.Size"/>
     public ulong? Size;
     /// <inheritdoc cref="BindGroupEntryFFI.Sampler"/>
-    public SamplerBase? Sampler;
+    public Sampler? Sampler;
     /// <inheritdoc cref="BindGroupEntryFFI.TextureView"/>
-    public TextureViewBase? TextureView;
+    public TextureView? TextureView;
 
     public BindGroupEntry()
     {
     }
 
-    static void IWebGpuMarshallable<BindGroupEntry, BindGroupEntryFFI>.MarshalToFFI(in BindGroupEntry input, WebGpuAllocatorHandle allocator, out BindGroupEntryFFI dest)
+    static void IWebGpuMarshallable<BindGroupEntry, BindGroupEntryFFI>.MarshalToFFI(in BindGroupEntry input, out BindGroupEntryFFI dest)
     {
         ulong size = 0;
         if (input.Size.HasValue)
@@ -44,7 +44,7 @@ public struct BindGroupEntry : IWebGpuMarshallable<BindGroupEntry, BindGroupEntr
             Offset = input.Offset,
             Size = size,
             Sampler = GetBorrowHandle(input.Sampler),
-            TextureView = allocator.GetHandle(input.TextureView)
+            TextureView = GetBorrowHandle(input.TextureView)
         };
     }
 }

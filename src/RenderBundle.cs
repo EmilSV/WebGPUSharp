@@ -3,19 +3,13 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref="RenderBundleHandle" />
 public sealed class RenderBundle :
-    RenderBundleBase,
+    WebGPUManagedHandleBase<RenderBundleHandle>,
     IFromHandle<RenderBundle, RenderBundleHandle>
 {
-    private readonly WebGpuSafeHandle<RenderBundleHandle> _safeHandle;
-
-    protected override RenderBundleHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private RenderBundle(RenderBundleHandle handle)
+    private RenderBundle(RenderBundleHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<RenderBundleHandle>(handle);
     }
 
     static RenderBundle? IFromHandle<RenderBundle, RenderBundleHandle>.FromHandle(

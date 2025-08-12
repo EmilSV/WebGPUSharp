@@ -1,12 +1,13 @@
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="ColorTargetStateFFI"/>
 [StructLayout(LayoutKind.Auto)]
-public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>
+public unsafe partial struct ColorTargetState : IWebGpuMarshallableAlloc<ColorTargetState, ColorTargetStateFFI>
 {
     /// <inheritdoc cref="ColorTargetStateFFI.Format"/>
     public TextureFormat Format;
@@ -17,7 +18,7 @@ public unsafe partial struct ColorTargetState : IWebGpuFFIConvertibleAlloc<Color
 
     public ColorTargetState() { }
 
-    static void IWebGpuFFIConvertibleAlloc<ColorTargetState, ColorTargetStateFFI>.UnsafeConvertToFFI(
+    static void IWebGpuMarshallableAlloc<ColorTargetState, ColorTargetStateFFI>.MarshalToFFI(
         in ColorTargetState input, WebGpuAllocatorHandle allocator, out ColorTargetStateFFI dest)
     {
         if (input.Blend.HasValue)

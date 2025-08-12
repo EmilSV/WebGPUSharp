@@ -7,6 +7,7 @@ using WebGpuSharp.Marshalling;
 namespace WebGpuSharp.Marshalling;
 
 public readonly unsafe ref struct WebGpuAllocatorHandle
+    : IDisposable
 {
     [StructLayout(LayoutKind.Explicit)]
     private struct DisposableHandleArrayItem
@@ -46,6 +47,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         public ModeData Data;
         public DisposableHandleArrayItem* DisposableHandles;
         public bool IsInStackMode { get; private set; }
+        public bool IsLogicBlockHeapAllocated { get; private set; }
 
         public void SetupStackMemory(
             WebGpuAllocator* allocator,
@@ -53,10 +55,21 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             nuint remainingBytes)
         {
             IsInStackMode = true;
+            IsLogicBlockHeapAllocated = false;
             Allocator = allocator;
             DisposableHandles = null;
             Data.Stack.Memory = (byte*)memory;
             Data.Stack.RemainingBytes = remainingBytes;
+        }
+
+        public void SetupHeapMemory(WebGpuAllocator* allocator)
+        {
+            IsInStackMode = false;
+            IsLogicBlockHeapAllocated = true;
+            DisposableHandles = null;
+            Data.Heap.AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4);
+            Data.Heap.Size = 4;
+            Data.Heap.Count = 0;
         }
 
         private void SwitchToHeapMemory()
@@ -195,19 +208,26 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
                 }
                 Allocator->Free(Data.Heap.AllocPtr);
             }
-
         }
     }
-    private readonly ref LogicBlock _logicBlock;
+    private readonly LogicBlock* _logicBlockPtr;
+    private readonly ref LogicBlock _logicBlock => ref *_logicBlockPtr;
 
     internal WebGpuAllocatorHandle(WebGpuAllocator* allocator, void* stackMemory, nuint size)
     {
+        if (stackMemory == null && size == 0)
+        {
+            _logicBlockPtr = (LogicBlock*)allocator->Alloc((nuint)sizeof(LogicBlock));
+            _logicBlock.SetupHeapMemory(allocator);
+            return;
+        }
+
         var alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<LogicBlock>(), size, stackMemory, out nuint remainingSize);
         if (alignedMemory == null)
         {
             throw new OutOfMemoryException("Failed to allocate aligned memory for WebGpuAllocatorHandle.");
         }
-        _logicBlock = ref *(LogicBlock*)alignedMemory;
+        _logicBlockPtr = (LogicBlock*)alignedMemory;
 
         _logicBlock.SetupStackMemory(
             allocator: allocator,
@@ -239,13 +259,14 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe Span<T> ReallocSpan<T>(ref Span<T> previousMemory, nuint previousSize, nuint newSize)
+    public unsafe Span<T> ReallocSpan<T>(ref Span<T> previousMemory, int newSize)
         where T : unmanaged
     {
         Span<T> newMemorySpan;
+        nuint previousSize = (nuint)previousMemory.Length;
         fixed (T* previousPtr = previousMemory)
         {
-            var newPtr = _logicBlock.Realloc(previousPtr, previousSize, newSize);
+            var newPtr = _logicBlock.Realloc(previousPtr, previousSize, (nuint)newSize);
             newMemorySpan = new Span<T>(newPtr, (int)newSize);
         }
         return newMemorySpan;
@@ -278,28 +299,6 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         _logicBlock.DisposableHandles[index].DisposableHandle = DisposableHandle.FromHandle(handle);
     }
 
-    public unsafe THandle GetHandle<THandle>(WebGPUHandleWrapperBase<THandle>? safeHandle)
-        where THandle : unmanaged, IWebGpuHandle<THandle>, IEquatable<THandle>
-    {
-        if (safeHandle == null)
-        {
-            return THandle.Null;
-        }
-
-        if (WebGPUMarshal.IsHandleWrapperSameLifetime(safeHandle))
-        {
-            return WebGPUHandleWrapperBase<THandle>.GetHandle(safeHandle);
-        }
-        else
-        {
-            var ownedHandle = WebGPUHandleWrapperBase<THandle>.GetHandle(safeHandle);
-            THandle.Reference(ownedHandle);
-            AddHandleToDispose(ownedHandle);
-            return ownedHandle;
-        }
-    }
-
-
     public void Dispose()
     {
         if (_logicBlock.DisposableHandles != null)
@@ -311,5 +310,9 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             _logicBlock.Allocator->Free(_logicBlock.DisposableHandles);
         }
         _logicBlock.Dispose();
+        if (_logicBlock.IsLogicBlockHeapAllocated)
+        {
+            _logicBlock.Allocator->Free(_logicBlockPtr);
+        }
     }
 }

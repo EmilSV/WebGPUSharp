@@ -3,18 +3,33 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
+///<inheritdoc cref="InstanceHandle"/>
 public sealed class Instance :
-    InstanceBase,
+    WebGPUManagedHandleBase<InstanceHandle>,
     IFromHandle<Instance, InstanceHandle>
 {
-    private readonly WebGpuSafeHandle<InstanceHandle> _safeHandle;
-
-    protected override InstanceHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private Instance(InstanceHandle handle)
+    private Instance(InstanceHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<InstanceHandle>(handle);
+    }
+
+    public Task<Adapter> RequestAdapterAsync(in RequestAdapterOptions options)
+    {
+        return Handle.RequestAdapterAsync(options).ContinueWith(static task =>
+        {
+            return task.Result.ToSafeHandle(false)!;
+        });
+    }
+
+    ///<inheritdoc cref="InstanceHandle.ProcessEvents()"/>
+    public void ProcessEvents()
+    {
+        Handle.ProcessEvents();
+    }
+
+    ///<inheritdoc cref="InstanceHandle.CreateSurface(SurfaceDescriptor)"/>
+    public Surface? CreateSurface(SurfaceDescriptor descriptor)
+    {
+        return Handle.CreateSurface(descriptor).ToSafeHandle(false);
     }
 
     static Instance? IFromHandle<Instance, InstanceHandle>.FromHandle(InstanceHandle handle)

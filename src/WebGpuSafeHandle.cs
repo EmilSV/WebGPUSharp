@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
 
-namespace WebGpuSharp.Internal;
+namespace WebGpuSharp;
 
 public sealed class WebGpuSafeHandle<THandle> : WebGpuSafeHandle
     where THandle : unmanaged, IWebGpuHandle<THandle>

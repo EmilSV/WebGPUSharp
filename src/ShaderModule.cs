@@ -5,17 +5,26 @@ namespace WebGpuSharp;
 
 /// <inheritdoc/>
 public sealed class ShaderModule :
-    ShaderModuleBase,
+    WebGPUManagedHandleBase<ShaderModuleHandle>,
     IFromHandle<ShaderModule, ShaderModuleHandle>
 {
-    private readonly WebGpuSafeHandle<ShaderModuleHandle> _safeHandle;
-
-    protected override ShaderModuleHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private ShaderModule(ShaderModuleHandle handle)
+    private ShaderModule(ShaderModuleHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<ShaderModuleHandle>(handle);
+    }
+    
+    public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
+    {
+        Handle.GetCompilationInfo(callback);
+    }
+
+    public Task GetCompilationInfoAsync(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
+    {
+        return Handle.GetCompilationInfoAsync(callback);
+    }
+
+    public Task<T> GetCompilationInfoAsync<T>(Func<CompilationInfoRequestStatus, CompilationInfo, T> callback)
+    {
+        return Handle.GetCompilationInfoAsync(callback);
     }
 
     static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandle(

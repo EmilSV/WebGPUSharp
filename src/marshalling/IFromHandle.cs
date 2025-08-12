@@ -1,4 +1,4 @@
-namespace WebGpuSharp.Internal;
+namespace WebGpuSharp.Marshalling;
 
 public interface IFromHandle<TSelf, THandle>
 {

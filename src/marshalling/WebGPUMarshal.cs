@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Unicode;
+using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 
@@ -241,7 +242,7 @@ public unsafe static partial class WebGPUMarshal
             if (status == OperationStatus.DestinationTooSmall)
             {
                 int charRemaining = text.Length - totalCharsRead;
-                allocSize = (nuint)(charRemaining + charRemaining / 2 + (addNullTerminator ? 1 : 0));
+                allocSize = charRemaining + charRemaining / 2 + (addNullTerminator ? 1 : 0);
                 allocator.ReallocSpan(ref resultSpan, allocSize);
             }
             else
@@ -283,25 +284,25 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetBorrowHandle<T>(WebGPUHandleWrapperBase<T>? safeHandle)
+    public static T GetBorrowHandle<T>(WebGPUManagedHandleBase<T>? safeHandle)
         where T : unmanaged, IWebGpuHandle<T>, IEquatable<T>
     {
         if (safeHandle == null)
         {
             return T.Null;
         }
-        return WebGPUHandleWrapperBase<T>.GetHandle(safeHandle);
+        return WebGPUManagedHandleBase<T>.GetHandle(safeHandle);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetOwnedHandle<T>(WebGPUHandleWrapperBase<T> safeHandle)
+    public static T GetOwnedHandle<T>(WebGPUManagedHandleBase<T> safeHandle)
         where T : unmanaged, IWebGpuHandle<T>, IEquatable<T>
     {
         if (safeHandle == null)
         {
             return T.Null;
         }
-        var handle = WebGPUHandleWrapperBase<T>.GetHandle(safeHandle);
+        var handle = WebGPUManagedHandleBase<T>.GetHandle(safeHandle);
         T.Reference(handle);
         return handle;
     }
@@ -310,7 +311,7 @@ public unsafe static partial class WebGPUMarshal
     public static PtrAndLength<THandle> GetBorrowHandlesAsPtrAndLength<THandle, TWrapper>(
         ReadOnlySpan<TWrapper> safeHandles,
         WebGpuAllocatorHandle allocatorHandle)
-        where TWrapper : WebGPUHandleWrapperBase<THandle>
+        where TWrapper : WebGPUManagedHandleBase<THandle>
         where THandle : unmanaged, IWebGpuHandle<THandle>, IEquatable<THandle>
     {
         if (safeHandles.IsEmpty)
@@ -355,10 +356,10 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsHandleWrapperSameLifetime<THandle>(WebGPUHandleWrapperBase<THandle> handleWrapper)
+    public static bool IsHandleWrapperSameLifetime<THandle>(WebGPUManagedHandleBase<THandle> handleWrapper)
         where THandle : unmanaged, IEquatable<THandle>
     {
-        return WebGPUHandleWrapperBase<THandle>.IsHandleWrapperSameLifetime(handleWrapper);
+        return WebGPUManagedHandleBase<THandle>.IsHandleWrapperSameLifetime(handleWrapper);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -3,19 +3,23 @@ using WebGpuSharp.Internal;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref="RenderPipelineHandle"/>
 public sealed class RenderPipeline :
-    RenderPipelineBase,
+     WebGPUManagedHandleBase<RenderPipelineHandle>,
     IFromHandle<RenderPipeline, RenderPipelineHandle>
 {
-    private readonly WebGpuSafeHandle<RenderPipelineHandle> _safeHandle;
-
-    protected override RenderPipelineHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private RenderPipeline(RenderPipelineHandle handle)
+    private RenderPipeline(RenderPipelineHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<RenderPipelineHandle>(handle);
+    }
+
+    public BindGroupLayout GetBindGroupLayout(uint groupIndex)
+    {
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false)!;
+    }
+
+    public void SetLabel(WGPURefText label)
+    {
+        Handle.SetLabel(label);
     }
 
     static RenderPipeline? IFromHandle<RenderPipeline, RenderPipelineHandle>.FromHandle(
