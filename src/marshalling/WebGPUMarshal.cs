@@ -291,7 +291,7 @@ public unsafe static partial class WebGPUMarshal
         {
             return T.Null;
         }
-        return WebGPUManagedHandleBase<T>.GetHandle(safeHandle);
+        return safeHandle.GetHandle();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -302,7 +302,7 @@ public unsafe static partial class WebGPUMarshal
         {
             return T.Null;
         }
-        var handle = WebGPUManagedHandleBase<T>.GetHandle(safeHandle);
+        var handle = safeHandle.GetHandle();
         T.Reference(handle);
         return handle;
     }
@@ -353,13 +353,6 @@ public unsafe static partial class WebGPUMarshal
         where TSafeHandle : IFromHandle<TSafeHandle, THandle>
     {
         return TSafeHandle.FromHandleNoRefIncrement(handle);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsHandleWrapperSameLifetime<THandle>(WebGPUManagedHandleBase<THandle> handleWrapper)
-        where THandle : unmanaged, IEquatable<THandle>
-    {
-        return WebGPUManagedHandleBase<THandle>.IsHandleWrapperSameLifetime(handleWrapper);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

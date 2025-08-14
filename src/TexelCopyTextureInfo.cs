@@ -1,5 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
@@ -8,7 +9,7 @@ public struct TexelCopyTextureInfo :
     IWebGpuFFIConvertibleAlloc<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>
 {
     /// <inheritdoc cref="TexelCopyTextureInfoFFI.Texture"/>
-    public required TextureBase Texture;
+    public required Texture Texture;
     /// <inheritdoc cref="TexelCopyTextureInfoFFI.MipLevel"/>
     public uint MipLevel = 0;
     /// <summary>
@@ -21,6 +22,11 @@ public struct TexelCopyTextureInfo :
 
     public TexelCopyTextureInfo()
     {
+    }
+
+    public static void UnsafeConvertToFFI(in TexelCopyTextureInfo input, WebGpuAllocatorHandle allocator, out TexelCopyTextureInfoFFI dest)
+    {
+        throw new NotImplementedException();
     }
 
     static void IWebGpuFFIConvertibleAlloc<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>.UnsafeConvertToFFI(

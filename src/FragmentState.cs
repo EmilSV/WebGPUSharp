@@ -1,6 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -9,7 +9,7 @@ public partial struct FragmentState :
     IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
 {
     /// <inheritdoc cref="FragmentStateFFI.Module"/>
-    public required ShaderModuleBase Module;
+    public required ShaderModule Module;
     /// <inheritdoc cref="FragmentStateFFI.EntryPoint"/>
     public string? EntryPoint;
     /// <inheritdoc cref="FragmentStateFFI.Constants"/>

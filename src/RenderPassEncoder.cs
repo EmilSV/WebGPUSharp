@@ -61,17 +61,17 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         );
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.DrawIndexedIndirect(BufferBase, ulong)"/>
+    /// <inheritdoc cref="RenderPassEncoderHandle.DrawIndexedIndirect(Buffer, ulong)"/>
     public void DrawIndexedIndirect(
-        BufferBase indirectBuffer, ulong indirectOffset)
+        Buffer indirectBuffer, ulong indirectOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.DrawIndexedIndirect(indirectBuffer, indirectOffset);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.DrawIndirect(BufferBase, ulong)"/>
+    /// <inheritdoc cref="RenderPassEncoderHandle.DrawIndirect(Buffer, ulong)"/>
     public void DrawIndirect(
-        BufferBase indirectBuffer, ulong indirectOffset)
+        Buffer indirectBuffer, ulong indirectOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.DrawIndirect(indirectBuffer, indirectOffset);
@@ -92,8 +92,8 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.EndOcclusionQuery();
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.ExecuteBundle(RenderBundleBase)"/>
-    public void ExecuteBundle(RenderBundleBase bundle)
+    /// <inheritdoc cref="RenderPassEncoderHandle.ExecuteBundle(RenderBundle)"/>
+    public void ExecuteBundle(RenderBundle bundle)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.ExecuteBundle(bundle);
@@ -127,22 +127,22 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.PushDebugGroup(groupLabel);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetBindGroup(uint, BindGroupBase)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group)
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetBindGroup(uint, BindGroup)"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetBindGroup(groupIndex, group);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetBindGroup(uint, BindGroupBase, uint)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetBindGroup(uint, BindGroup, uint)"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetBindGroup(groupIndex, group, dynamicOffset);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetBindGroup(uint, BindGroupBase, ReadOnlySpan{uint})"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetBindGroup(uint, BindGroup, ReadOnlySpan{uint})"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetBindGroup(groupIndex, group, dynamicOffsets);
@@ -155,15 +155,15 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.SetBlendConstant(color);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(BufferBase, IndexFormat, ulong, ulong)"/>
-    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(Buffer, IndexFormat, ulong, ulong)"/>
+    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetIndexBuffer(buffer, format, offset, size);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(BufferBase, IndexFormat, ulong)"/>
-    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(Buffer, IndexFormat, ulong)"/>
+    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset = 0)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetIndexBuffer(buffer, format, offset);
@@ -176,8 +176,8 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.SetLabel(label);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetPipeline(RenderPipelineBase)"/>
-    public void SetPipeline(RenderPipelineBase pipeline)
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetPipeline(RenderPipeline)"/>
+    public void SetPipeline(RenderPipeline pipeline)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetPipeline(pipeline);
@@ -197,17 +197,17 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _pooledHandle.handle.SetStencilReference(reference);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetVertexBuffer(uint, BufferBase, ulong, ulong)"/>
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetVertexBuffer(uint, Buffer, ulong, ulong)"/>
     public void SetVertexBuffer(
-        uint slot, BufferBase buffer, ulong offset, ulong size)
+        uint slot, Buffer buffer, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset, size);
     }
 
-    /// <inheritdoc cref="RenderPassEncoderHandle.SetVertexBuffer(uint, BufferBase, ulong)"/>
+    /// <inheritdoc cref="RenderPassEncoderHandle.SetVertexBuffer(uint, Buffer, ulong)"/>
     public void SetVertexBuffer(
-     uint slot, BufferBase buffer, ulong offset = 0)
+     uint slot, Buffer buffer, ulong offset = 0)
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.SetVertexBuffer(slot, buffer, offset);

@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Win32.SafeHandles;
 using WebGpuSharp.FFI;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 

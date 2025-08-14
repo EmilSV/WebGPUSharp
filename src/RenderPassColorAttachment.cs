@@ -11,11 +11,11 @@ public struct RenderPassColorAttachment :
 {
 
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.View"/>
-    public required TextureViewBase? View;
+    public required TextureView? View;
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.DepthSlice"/>
     public uint? DepthSlice;
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.ResolveTarget"/>
-    public TextureViewBase? ResolveTarget;
+    public TextureView? ResolveTarget;
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.ClearValue"/>
     public Color ClearValue;
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.LoadOp"/>

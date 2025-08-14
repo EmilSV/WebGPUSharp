@@ -18,20 +18,33 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         public DisposableHandle DisposableHandle;
     }
 
+
+
     [StructLayout(LayoutKind.Auto)]
     private struct LogicBlock
     {
-        public unsafe struct StackModeData
+        public enum LogicBlockFlags
         {
-            public byte* Memory;
-            public nuint RemainingBytes;
+            None = 0,
+            Stack = 1 << 0,
+            IsLogicBlockHeapAllocated = 1 << 1,
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public unsafe struct StackModeData
+        {
+            public required byte* Memory;
+            public required uint RemainingBytes;
+            public required LogicBlockFlags Flags;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
         public unsafe struct HeapModeData
         {
-            public void** AllocPtr;
-            public int Size;
-            public int Count;
+            public required void** AllocPtr;
+            public required ushort Size;
+            public required ushort Count;
+            public required LogicBlockFlags Flags;
         }
 
         [StructLayout(LayoutKind.Explicit)]
@@ -46,38 +59,53 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         public WebGpuAllocator* Allocator;
         public ModeData Data;
         public DisposableHandleArrayItem* DisposableHandles;
-        public bool IsInStackMode { get; private set; }
-        public bool IsLogicBlockHeapAllocated { get; private set; }
+        public readonly bool IsInStackMode
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (Data.Stack.Flags & LogicBlockFlags.Stack) != 0;
+        }
+        public readonly bool IsLogicBlockHeapAllocated
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (Data.Heap.Flags & LogicBlockFlags.IsLogicBlockHeapAllocated) != 0;
+        }
 
         public void SetupStackMemory(
             WebGpuAllocator* allocator,
             void* memory,
             nuint remainingBytes)
         {
-            IsInStackMode = true;
-            IsLogicBlockHeapAllocated = false;
             Allocator = allocator;
             DisposableHandles = null;
-            Data.Stack.Memory = (byte*)memory;
-            Data.Stack.RemainingBytes = remainingBytes;
+            Data.Stack = new()
+            {
+                Memory = (byte*)memory,
+                RemainingBytes = (uint)remainingBytes,
+                Flags = LogicBlockFlags.Stack
+            };
         }
 
         public void SetupHeapMemory(WebGpuAllocator* allocator)
         {
-            IsInStackMode = false;
-            IsLogicBlockHeapAllocated = true;
             DisposableHandles = null;
-            Data.Heap.AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4);
-            Data.Heap.Size = 4;
-            Data.Heap.Count = 0;
+            Data.Heap = new()
+            {
+                AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4),
+                Size = 4,
+                Count = 0,
+                Flags = LogicBlockFlags.None
+            };
         }
 
         private void SwitchToHeapMemory()
         {
-            IsInStackMode = false;
-            Data.Heap.AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4);
-            Data.Heap.Size = 4;
-            Data.Heap.Count = 0;
+            Data.Heap = new()
+            {
+                AllocPtr = (void**)Allocator->Alloc((nuint)sizeof(void*) * 4),
+                Size = 4,
+                Count = 0,
+                Flags = LogicBlockFlags.None
+            };
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -93,7 +121,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             }
 
             Data.Stack.Memory = (byte*)((nuint)alignedMemory + byteAmount);
-            Data.Stack.RemainingBytes = remainingSize - byteAmount;
+            Data.Stack.RemainingBytes = (uint)(remainingSize - byteAmount);
             return (T*)alignedMemory;
         }
 
@@ -111,7 +139,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
                 if (newAllocSize <= Data.Stack.RemainingBytes)
                 {
                     Data.Stack.Memory = (byte*)((nuint)previousMemory + newSize);
-                    Data.Stack.RemainingBytes -= newAllocSize;
+                    Data.Stack.RemainingBytes -= (uint)newAllocSize;
                     return (T*)Data.Stack.Memory;
                 }
             }
@@ -134,7 +162,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             {
                 var newSize = Data.Heap.Size * 2;
                 Data.Heap.AllocPtr = (void**)Allocator->Realloc(Data.Heap.AllocPtr, (nuint)(newSize * sizeof(void**)));
-                Data.Heap.Size = newSize;
+                Data.Heap.Size = (ushort)newSize;
                 Data.Heap.AllocPtr[Data.Heap.Count] = newMemory;
                 Data.Heap.Count++;
             }

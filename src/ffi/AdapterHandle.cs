@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 

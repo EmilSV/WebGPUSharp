@@ -1,5 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
@@ -8,7 +9,7 @@ public struct RequestAdapterOptions :
     IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>
 {
     /// <inheritdoc cref="RequestAdapterOptionsFFI.CompatibleSurface"/>
-    public required SurfaceBase CompatibleSurface;
+    public required Surface CompatibleSurface;
     /// <inheritdoc cref="RequestAdapterOptionsFFI.PowerPreference"/>
     public PowerPreference PowerPreference;
     /// <inheritdoc cref="RequestAdapterOptionsFFI.BackendType"/>

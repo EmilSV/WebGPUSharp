@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -7,13 +8,13 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     IDisposable, IWebGpuHandle<RenderBundleEncoderHandle>
 {
     /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
-    public void DrawIndexedIndirect(BufferBase indirectBuffer, ulong indirectOffset)
+    public void DrawIndexedIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
     }
 
     /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
-    public void DrawIndirect(BufferBase indirectBuffer, ulong indirectOffset)
+    public void DrawIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
     }
@@ -30,7 +31,9 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     /// <inheritdoc cref="Finish(RenderBundleDescriptorFFI*)"/>
     public RenderBundleHandle Finish(in RenderBundleDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var labelUtf8Span = ToUtf8Span(descriptor.label, allocator, addNullTerminator: true);
         fixed (byte* labelPtr = labelUtf8Span)
         {
@@ -48,8 +51,9 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var labelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
@@ -61,8 +65,9 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
 
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
@@ -81,7 +86,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     }
 
     /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffsets)
+    public void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffsets)
     {
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(
             renderBundleEncoder: this,
@@ -93,7 +98,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     }
 
     /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group)
+    public void SetBindGroup(uint groupIndex, BindGroup group)
     {
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(
             renderBundleEncoder: this,
@@ -105,7 +110,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     }
 
     /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffset)
+    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffset)
     {
         fixed (uint* dynamicOffsetPtr = dynamicOffset)
         {
@@ -114,13 +119,13 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     }
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
-    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
+    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
     }
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
-    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
+    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
         WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
@@ -129,8 +134,9 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
@@ -140,19 +146,19 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     }
 
     /// <inheritdoc cref="SetPipeline(RenderPipelineHandle)"/>
-    public void SetPipeline(RenderPipelineBase pipeline)
+    public void SetPipeline(RenderPipeline pipeline)
     {
         WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetBorrowHandle(pipeline));
     }
 
     /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
-    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
+    public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
     }
 
     /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
-    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset = 0)
+    public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
         WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);

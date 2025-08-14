@@ -1,5 +1,6 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
@@ -8,7 +9,7 @@ public struct PassTimestampWrites :
     IWebGpuFFIConvertible<PassTimestampWrites, PassTimestampWritesFFI>
 {
     /// <inheritdoc cref="PassTimestampWritesFFI.QuerySet"/>
-    public required QuerySetBase QuerySet;
+    public required QuerySet QuerySet;
     /// <inheritdoc cref="PassTimestampWritesFFI.BeginningOfPassWriteIndex"/>
     public uint BeginningOfPassWriteIndex;
     /// <inheritdoc cref="PassTimestampWritesFFI.EndOfPassWriteIndex"/>

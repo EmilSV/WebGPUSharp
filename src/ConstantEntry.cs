@@ -1,13 +1,13 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
 
 /// <inheritdoc cref="ConstantEntryFFI" />
-public unsafe partial struct ConstantEntry : IWebGpuMarshallable<ConstantEntry, ConstantEntryFFI>
+public unsafe partial struct ConstantEntry : IWebGpuMarshallableAlloc<ConstantEntry, ConstantEntryFFI>
 {
     /// <inheritdoc cref="ConstantEntryFFI.Key" />
     public required string Key;
@@ -25,7 +25,7 @@ public unsafe partial struct ConstantEntry : IWebGpuMarshallable<ConstantEntry, 
         Value = value;
     }
 
-    static void IWebGpuMarshallable<ConstantEntry, ConstantEntryFFI>.MarshalToFFI(
+    static void IWebGpuMarshallableAlloc<ConstantEntry, ConstantEntryFFI>.MarshalToFFI(
         in ConstantEntry input, WebGpuAllocatorHandle allocator, out ConstantEntryFFI dest)
     {
         dest = new()

@@ -20,4 +20,18 @@ public static unsafe class WebGpuMarshallingMemory
         _asyncLocalAllocator.Value = new WebGpuAllocatorPtr { Allocator = allocator };
     }
 
+
+    public const int DefaultStartStackSize = 32;
+
+    public static WebGpuAllocatorHandle GetAllocatorHandle(void* stackMemory, nuint size)
+    {
+        WebGpuAllocator* allocator = _defaultAllocator;
+        if (allocator == null)
+        {
+            allocator = _asyncLocalAllocator.Value.Allocator;
+        }
+
+        return new WebGpuAllocatorHandle(allocator, stackMemory, size);
+    }
+
 }

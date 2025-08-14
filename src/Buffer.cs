@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Transactions;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;

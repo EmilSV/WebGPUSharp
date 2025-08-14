@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -8,7 +9,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 {
     /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndexedIndirect(
-        BufferBase indirectBuffer, ulong indirectOffset)
+        Buffer indirectBuffer, ulong indirectOffset)
     {
         WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(
             renderPassEncoder: this,
@@ -19,7 +20,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndirect(
-        BufferBase indirectBuffer, ulong indirectOffset)
+        Buffer indirectBuffer, ulong indirectOffset)
 
     {
         WebGPU_FFI.RenderPassEncoderDrawIndirect(
@@ -41,7 +42,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     /// <inheritdoc cref="ExecuteBundle(RenderBundleHandle)"/>
-    public void ExecuteBundle(RenderBundleBase bundle)
+    public void ExecuteBundle(RenderBundle bundle)
     {
         RenderBundleHandle handle = GetBorrowHandle(bundle);
         WebGPU_FFI.RenderPassEncoderExecuteBundles(
@@ -65,21 +66,29 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     /// <inheritdoc cref="ExecuteBundles(nuint, RenderBundleHandle*)"/>
+    [SkipLocalsInit]
     public void ExecuteBundles(ReadOnlySpan<RenderBundle> bundles)
     {
-        using var allocator = WebGpuAllocatorHandle.Get();
-        var (ptr, length) = GetBorrowHandlesAsPtrAndLength<RenderBundleHandle, RenderBundle>(bundles, allocator);
-        WebGPU_FFI.RenderPassEncoderExecuteBundles(
-            renderPassEncoder: this,
-            bundleCount: length,
-            bundles: ptr
-        );
+        unsafe
+        {
+            const int stackAllocSize = 8 * sizeof(long) + WebGpuMarshallingMemory.DefaultStartStackSize;
+            byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+            using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+            var (ptr, length) = GetBorrowHandlesAsPtrAndLength<RenderBundleHandle, RenderBundle>(bundles, allocator);
+            WebGPU_FFI.RenderPassEncoderExecuteBundles(
+                renderPassEncoder: this,
+                bundleCount: length,
+                bundles: ptr
+            );
+        }
     }
 
     /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
-        using var allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
         fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
@@ -93,7 +102,9 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
-        using var allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
@@ -145,19 +156,19 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
-    public readonly void SetBindGroup(uint groupIndex, BindGroupBase group)
+    public readonly void SetBindGroup(uint groupIndex, BindGroup group)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group));
     }
 
     /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, uint)"/>
-    public readonly void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
+    public readonly void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffset);
     }
 
     /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
-    public readonly void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
+    public readonly void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
     {
         SetBindGroup(groupIndex, GetBorrowHandle(group), dynamicOffsets);
     }
@@ -173,7 +184,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public readonly void SetIndexBuffer(
-        BufferBase buffer, IndexFormat format, ulong offset, ulong size)
+        Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {
         WebGPU_FFI.RenderPassEncoderSetIndexBuffer(
             renderPassEncoder: this,
@@ -186,7 +197,7 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public readonly void SetIndexBuffer(
-    BufferBase buffer, IndexFormat format, ulong offset = 0)
+    Buffer buffer, IndexFormat format, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
         WebGPU_FFI.RenderPassEncoderSetIndexBuffer(
@@ -201,7 +212,9 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
-        using var allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
@@ -213,19 +226,19 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     }
 
     /// <inheritdoc cref="SetPipeline(RenderPipelineHandle)"/>
-    public readonly void SetPipeline(RenderPipelineBase pipeline) =>
+    public readonly void SetPipeline(RenderPipeline pipeline) =>
         SetPipeline(GetBorrowHandle(pipeline));
 
     /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public readonly void SetVertexBuffer(
-        uint slot, BufferBase buffer, ulong offset, ulong size)
+        uint slot, Buffer buffer, ulong offset, ulong size)
     {
         SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);
     }
 
     /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public readonly void SetVertexBuffer(
-        uint slot, BufferBase buffer, ulong offset = 0)
+        uint slot, Buffer buffer, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
         SetVertexBuffer(slot, GetBorrowHandle(buffer), offset, size);

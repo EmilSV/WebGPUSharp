@@ -59,17 +59,17 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         );
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.DrawIndexedIndirect(BufferBase, ulong)"/>
+    /// <inheritdoc cref="RenderBundleEncoderHandle.DrawIndexedIndirect(Buffer, ulong)"/>
     public void DrawIndexedIndirect(
-        BufferBase indirectBuffer, ulong indirectOffset)
+        Buffer indirectBuffer, ulong indirectOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.DrawIndexedIndirect(indirectBuffer, indirectOffset);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.DrawIndirect(BufferBase, ulong)"/>
+    /// <inheritdoc cref="RenderBundleEncoderHandle.DrawIndirect(Buffer, ulong)"/>
     public void DrawIndirect(
-        BufferBase indirectBuffer, ulong indirectOffset)
+        Buffer indirectBuffer, ulong indirectOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.DrawIndirect(indirectBuffer, indirectOffset);
@@ -113,36 +113,36 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         _originalHandle.PushDebugGroup(groupLabel);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetBindGroup(uint, BindGroupBase)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetBindGroup(uint, BindGroup)"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetBindGroup(groupIndex, group);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetBindGroup(uint, BindGroupBase, uint)"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, uint dynamicOffset)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetBindGroup(uint, BindGroup, uint)"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group, uint dynamicOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetBindGroup(groupIndex, group, dynamicOffset);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetBindGroup(uint, BindGroupBase, ReadOnlySpan{uint})"/>
-    public void SetBindGroup(uint groupIndex, BindGroupBase group, ReadOnlySpan<uint> dynamicOffsets)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetBindGroup(uint, BindGroup, ReadOnlySpan{uint})"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetBindGroup(groupIndex, group, dynamicOffsets);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetIndexBuffer(BufferBase, IndexFormat, ulong, ulong)"/>
-    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset, ulong size)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetIndexBuffer(Buffer, IndexFormat, ulong, ulong)"/>
+    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetIndexBuffer(buffer, format, offset, size);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetIndexBuffer(BufferBase, IndexFormat, ulong)"/>
-    public void SetIndexBuffer(BufferBase buffer, IndexFormat format, ulong offset = 0)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetIndexBuffer(Buffer, IndexFormat, ulong)"/>
+    public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset = 0)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetIndexBuffer(buffer, format, offset);
@@ -155,22 +155,22 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         _originalHandle.SetLabel(label);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetPipeline(RenderPipelineBase)"/>
-    public void SetPipeline(RenderPipelineBase pipeline)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetPipeline(RenderPipeline)"/>
+    public void SetPipeline(RenderPipeline pipeline)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetPipeline(pipeline);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetVertexBuffer(uint, BufferBase, ulong, ulong)"/>
-    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset, ulong size)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetVertexBuffer(uint, Buffer, ulong, ulong)"/>
+    public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetVertexBuffer(slot, buffer, offset, size);
     }
 
-    /// <inheritdoc cref="RenderBundleEncoderHandle.SetVertexBuffer(uint, BufferBase, ulong)"/>
-    public void SetVertexBuffer(uint slot, BufferBase buffer, ulong offset = 0)
+    /// <inheritdoc cref="RenderBundleEncoderHandle.SetVertexBuffer(uint, Buffer, ulong)"/>
+    public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset = 0)
     {
         _pooledHandle.VerifyToken(_localToken);
         _originalHandle.SetVertexBuffer(slot, buffer, offset);
