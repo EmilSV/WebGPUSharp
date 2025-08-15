@@ -54,6 +54,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+        
         var labelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)

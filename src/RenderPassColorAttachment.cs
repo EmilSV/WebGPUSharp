@@ -1,13 +1,15 @@
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="RenderPassColorAttachmentFFI"/>
 [StructLayout(LayoutKind.Auto)]
 public struct RenderPassColorAttachment :
-    IWebGpuFFIConvertibleAlloc<RenderPassColorAttachment, RenderPassColorAttachmentFFI>
+    IWebGpuMarshallable<RenderPassColorAttachment, RenderPassColorAttachmentFFI>
 {
 
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.View"/>
@@ -23,16 +25,15 @@ public struct RenderPassColorAttachment :
     /// <inheritdoc cref="RenderPassColorAttachmentFFI.StoreOp"/>
     public required StoreOp StoreOp;
 
-    static void IWebGpuFFIConvertibleAlloc<RenderPassColorAttachment, RenderPassColorAttachmentFFI>.UnsafeConvertToFFI(
+    static void IWebGpuMarshallable<RenderPassColorAttachment, RenderPassColorAttachmentFFI>.MarshalToFFI(
         in RenderPassColorAttachment input,
-        WebGpuAllocatorHandle allocator,
         out RenderPassColorAttachmentFFI dest)
     {
         dest = new()
         {
-            View = allocator.GetHandle(input.View),
+            View = GetBorrowHandle(input.View),
             DepthSlice = input.DepthSlice ?? WebGPU_FFI.DEPTH_SLICE_UNDEFINED,
-            ResolveTarget = allocator.GetHandle(input.ResolveTarget),
+            ResolveTarget = GetBorrowHandle(input.ResolveTarget),
             LoadOp = input.LoadOp,
             StoreOp = input.StoreOp,
             ClearValue = input.ClearValue

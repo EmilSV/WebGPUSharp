@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp.FFI;
 
@@ -46,7 +47,10 @@ public unsafe readonly partial struct ComputePipelineHandle :
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
-        using var allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+        
         var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {

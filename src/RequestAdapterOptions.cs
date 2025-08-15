@@ -2,11 +2,13 @@ using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
+
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="RequestAdapterOptionsFFI"/>
 public struct RequestAdapterOptions :
-    IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>
+    IWebGpuMarshallable<RequestAdapterOptions, RequestAdapterOptionsFFI>
 {
     /// <inheritdoc cref="RequestAdapterOptionsFFI.CompatibleSurface"/>
     public required Surface CompatibleSurface;
@@ -21,21 +23,15 @@ public struct RequestAdapterOptions :
     {
     }
 
-    static unsafe void IWebGpuFFIConvertible<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(
+    static unsafe void IWebGpuMarshallable<RequestAdapterOptions, RequestAdapterOptionsFFI>.MarshalToFFI(
         in RequestAdapterOptions input, out RequestAdapterOptionsFFI dest)
     {
         dest = new()
         {
-            CompatibleSurface = WebGPUMarshal.GetBorrowHandle(input.CompatibleSurface),
+            CompatibleSurface = GetBorrowHandle(input.CompatibleSurface),
             PowerPreference = input.PowerPreference,
             BackendType = input.BackendType,
             ForceFallbackAdapter = input.ForceFallbackAdapter
         };
-    }
-
-    static void IWebGpuFFIConvertibleAlloc<RequestAdapterOptions, RequestAdapterOptionsFFI>.UnsafeConvertToFFI(
-        in RequestAdapterOptions input, WebGpuAllocatorHandle allocator, out RequestAdapterOptionsFFI dest)
-    {
-        WebGPUMarshal.ToFFI(input, out dest);
     }
 }

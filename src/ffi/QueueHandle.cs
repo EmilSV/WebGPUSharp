@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
@@ -11,7 +12,9 @@ public readonly unsafe partial struct QueueHandle :
     /// <inheritdoc cref ="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
 
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
 
@@ -42,8 +45,11 @@ public readonly unsafe partial struct QueueHandle :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly void Submit(ReadOnlySpan<CommandBuffer> commands)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-        var commandBufferHandles = allocator.AllocAsSpan<CommandBufferHandle>((nuint)commands.Length);
+        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+
+        var commandBufferHandles = allocator.AllocAsSpan<CommandBufferHandle>(commands.Length);
         for (int i = 0; i < commands.Length; i++)
         {
             commands[i]._pooledHandle.VerifyToken(commands[i]._localToken);

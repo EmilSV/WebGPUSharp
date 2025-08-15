@@ -1,12 +1,13 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="FragmentStateFFI"/>
 public partial struct FragmentState :
-    IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>
+    IWebGpuMarshallableAlloc<FragmentState, FragmentStateFFI>
 {
     /// <inheritdoc cref="FragmentStateFFI.Module"/>
     public required ShaderModule Module;
@@ -17,7 +18,7 @@ public partial struct FragmentState :
     /// <inheritdoc cref="FragmentStateFFI.Targets"/>
     public required WebGpuManagedSpan<ColorTargetState> Targets;
 
-    static unsafe void IWebGpuFFIConvertibleAlloc<FragmentState, FragmentStateFFI>.UnsafeConvertToFFI(
+    static unsafe void IWebGpuMarshallableAlloc<FragmentState, FragmentStateFFI>.MarshalToFFI(
         in FragmentState input,
         WebGpuAllocatorHandle allocator,
         out FragmentStateFFI dest)

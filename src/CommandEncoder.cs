@@ -1,5 +1,7 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -41,9 +43,9 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.handle.CopyBufferToBuffer(
-            WebGPUMarshal.GetBorrowHandle(source),
+            GetBorrowHandle(source),
             sourceOffset,
-            WebGPUMarshal.GetBorrowHandle(destination),
+            GetBorrowHandle(destination),
             destinationOffset,
             size
         );

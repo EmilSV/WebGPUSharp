@@ -1,12 +1,13 @@
 using WebGpuSharp.FFI;
-using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
+
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="TexelCopyTextureInfoFFI"/>
 public struct TexelCopyTextureInfo :
-    IWebGpuFFIConvertibleAlloc<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>
+    IWebGpuMarshallable<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>
 {
     /// <inheritdoc cref="TexelCopyTextureInfoFFI.Texture"/>
     public required Texture Texture;
@@ -23,18 +24,13 @@ public struct TexelCopyTextureInfo :
     public TexelCopyTextureInfo()
     {
     }
-
-    public static void UnsafeConvertToFFI(in TexelCopyTextureInfo input, WebGpuAllocatorHandle allocator, out TexelCopyTextureInfoFFI dest)
-    {
-        throw new NotImplementedException();
-    }
-
-    static void IWebGpuFFIConvertibleAlloc<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>.UnsafeConvertToFFI(
-        in TexelCopyTextureInfo input, WebGpuAllocatorHandle allocator, out TexelCopyTextureInfoFFI dest)
+    
+    static void IWebGpuMarshallable<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>.MarshalToFFI(
+        in TexelCopyTextureInfo input, out TexelCopyTextureInfoFFI dest)
     {
         dest = new()
         {
-            Texture = allocator.GetHandle(input.Texture),
+            Texture = GetBorrowHandle(input.Texture),
             MipLevel = input.MipLevel,
             Origin = input.Origin,
             Aspect = input.Aspect

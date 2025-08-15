@@ -1,11 +1,12 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="VertexBufferLayoutFFI" />
 public struct VertexBufferLayout :
-    IWebGpuFFIConvertibleAlloc<VertexBufferLayout, VertexBufferLayoutFFI>
+    IWebGpuMarshallableAlloc<VertexBufferLayout, VertexBufferLayoutFFI>
 {
     /// <inheritdoc cref="VertexBufferLayoutFFI.ArrayStride" />
     public required ulong ArrayStride;
@@ -19,7 +20,7 @@ public struct VertexBufferLayout :
 
     }
 
-    static unsafe void IWebGpuFFIConvertibleAlloc<VertexBufferLayout, VertexBufferLayoutFFI>.UnsafeConvertToFFI(
+    static unsafe void IWebGpuMarshallableAlloc<VertexBufferLayout, VertexBufferLayoutFFI>.MarshalToFFI(
         in VertexBufferLayout input,
         WebGpuAllocatorHandle allocator,
         out VertexBufferLayoutFFI dest)

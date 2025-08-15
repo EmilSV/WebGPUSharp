@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
@@ -114,7 +115,9 @@ public unsafe readonly partial struct AdapterHandle :
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * 2 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: false);
@@ -157,7 +160,9 @@ public unsafe readonly partial struct AdapterHandle :
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        const int stackAllocSize = 16 * 2 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
 
         void* userData = null;
         try

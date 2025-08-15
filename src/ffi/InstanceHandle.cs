@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Unicode;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
@@ -82,7 +83,10 @@ public readonly unsafe partial struct InstanceHandle :
     {
         unsafe
         {
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+            const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+            byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+            using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+
             ref var next = ref descriptor._next;
 
             var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
