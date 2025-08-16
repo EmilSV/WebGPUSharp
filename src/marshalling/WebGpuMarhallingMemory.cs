@@ -29,8 +29,26 @@ public static unsafe class WebGpuMarshallingMemory
 
     internal static void SetAsyncContextAllocator(WebGpuAllocator* allocator)
     {
+        if (_asyncLocalAllocator.Value.Allocator != null)
+        {
+            throw new InvalidOperationException("Async context allocator is already set.");
+        }
+
         _asyncLocalAllocator.Value = new WebGpuAllocatorPtr { Allocator = allocator };
     }
+
+    internal static void RemoveAsyncContextAllocator(WebGpuAllocator* allocator)
+    {
+        if (_asyncLocalAllocator.Value.Allocator == allocator)
+        {
+            _asyncLocalAllocator.Value = new WebGpuAllocatorPtr { Allocator = null };
+        }
+        else
+        {
+            throw new InvalidOperationException("The provided allocator does not match the current async context allocator.");
+        }
+    }
+
 
     public const int DefaultStartStackSize = 32;
 
