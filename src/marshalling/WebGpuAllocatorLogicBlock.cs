@@ -16,19 +16,11 @@ public unsafe struct WebGpuAllocatorLogicBlock
         public DisposableHandle DisposableHandle;
     }
 
-    internal enum LogicBlockFlags
-    {
-        None = 0,
-        Stack = 1 << 0,
-        IsLogicBlockHeapAllocated = 1 << 1,
-    }
-
     [StructLayout(LayoutKind.Sequential)]
     internal unsafe struct StackModeData
     {
         public required byte* Memory;
         public required uint RemainingBytes;
-        public required LogicBlockFlags Flags;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -37,7 +29,6 @@ public unsafe struct WebGpuAllocatorLogicBlock
         public required void** AllocPtr;
         public required ushort Size;
         public required ushort Count;
-        public required LogicBlockFlags Flags;
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -51,17 +42,8 @@ public unsafe struct WebGpuAllocatorLogicBlock
 
     private WebGpuAllocator* _allocator;
     private ModeData _data;
+    private bool _isInStackMode;
     private DisposableHandleArrayItem* _disposableHandles;
-    internal readonly bool IsInStackMode
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (_data.Stack.Flags & LogicBlockFlags.Stack) != 0;
-    }
-    internal readonly bool IsLogicBlockHeapAllocated
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => (_data.Heap.Flags & LogicBlockFlags.IsLogicBlockHeapAllocated) != 0;
-    }
 
     internal void SetupStackMemory(
         WebGpuAllocator* allocator,
@@ -74,8 +56,8 @@ public unsafe struct WebGpuAllocatorLogicBlock
         {
             Memory = memory,
             RemainingBytes = remainingBytes,
-            Flags = LogicBlockFlags.Stack
         };
+        _isInStackMode = true;
     }
 
     internal void SetupHeapMemory(WebGpuAllocator* allocator)
@@ -86,8 +68,8 @@ public unsafe struct WebGpuAllocatorLogicBlock
             AllocPtr = (void**)_allocator->Alloc((nuint)sizeof(void*) * 4),
             Size = 4,
             Count = 0,
-            Flags = LogicBlockFlags.None
         };
+        _isInStackMode = false;
     }
 
     internal void SwitchToHeapMemory()
@@ -97,8 +79,8 @@ public unsafe struct WebGpuAllocatorLogicBlock
             AllocPtr = (void**)_allocator->Alloc((nuint)sizeof(void*) * 4),
             Size = 4,
             Count = 0,
-            Flags = LogicBlockFlags.None
         };
+        _isInStackMode = false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -106,7 +88,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
         where T : unmanaged
     {
         nuint byteAmount = amount * (nuint)sizeof(T);
-        void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), amount, _data.Stack.Memory, out nuint remainingSize);
+        void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), _data.Stack.RemainingBytes, _data.Stack.Memory, out nuint remainingSize);
         if (alignedMemory == null || remainingSize < byteAmount)
         {
             SwitchToHeapMemory();
@@ -187,7 +169,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
     internal T* Alloc<T>(nuint amount)
         where T : unmanaged
     {
-        if (IsInStackMode)
+        if (_isInStackMode)
         {
             return AllocStack<T>(amount);
         }
@@ -201,7 +183,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
     internal T* Realloc<T>(T* previousMemory, nuint previousSize, nuint newSize)
         where T : unmanaged
     {
-        if (IsInStackMode)
+        if (_isInStackMode)
         {
             return ReallocStack(previousMemory, previousSize, newSize);
         }
@@ -243,7 +225,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
             _allocator->Free(_disposableHandles);
         }
 
-        if (!IsInStackMode)
+        if (!_isInStackMode)
         {
             for (int i = 0; i < _data.Heap.Count; i++)
             {
