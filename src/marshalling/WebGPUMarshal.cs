@@ -220,7 +220,7 @@ public unsafe static partial class WebGPUMarshal
         }
 
         int utf16Length = text.Length;
-        int allocSize = utf16Length + utf16Length / 2 + (addNullTerminator ? 1 : 0);
+        int allocSize = utf16Length + (addNullTerminator ? 1 : 0);
         Span<byte> resultSpan = allocator.AllocAsSpan<byte>(allocSize);
         OperationStatus status;
         int totalCharsRead = 0;
