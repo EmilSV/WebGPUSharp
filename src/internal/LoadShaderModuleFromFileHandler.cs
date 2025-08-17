@@ -15,9 +15,15 @@ internal unsafe static class LoadShaderModuleFromFileHandler
             label = path;
         }
 
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
         const int stackAllocSize = 1024 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
         var (data, dataPtrAllocType) = ReadAllBytesUnsafe(path, allocator);
 
         if (dataPtrAllocType != ResultType.Success)

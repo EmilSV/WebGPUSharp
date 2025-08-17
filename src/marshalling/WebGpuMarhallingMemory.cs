@@ -48,11 +48,9 @@ public static unsafe class WebGpuMarshallingMemory
         }
     }
 
-
-    public const int DefaultStartStackSize = 32;
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static WebGpuAllocatorHandle GetAllocatorHandle(void* stackMemory, nuint size)
+    public static WebGpuAllocatorHandle GetAllocatorHandle(
+        ref WebGpuAllocatorLogicBlock logicBlock, byte* stackMemory, uint size)
     {
         WebGpuAllocator* allocator = _asyncLocalAllocator.Value.Allocator;
         if (allocator == null)
@@ -64,6 +62,6 @@ public static unsafe class WebGpuMarshallingMemory
             _defaultAllocator = allocator = _builtinAllocator.Value.Allocator;
         }
 
-        return new WebGpuAllocatorHandle(allocator, stackMemory, size);
+        return new WebGpuAllocatorHandle(ref logicBlock, allocator, stackMemory, size);
     }
 }

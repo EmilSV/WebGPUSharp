@@ -69,26 +69,37 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     [SkipLocalsInit]
     public void ExecuteBundles(ReadOnlySpan<RenderBundle> bundles)
     {
-        unsafe
-        {
-            const int stackAllocSize = 8 * sizeof(long) + WebGpuMarshallingMemory.DefaultStartStackSize;
-            byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-            using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
-            var (ptr, length) = GetBorrowHandlesAsPtrAndLength<RenderBundleHandle, RenderBundle>(bundles, allocator);
-            WebGPU_FFI.RenderPassEncoderExecuteBundles(
-                renderPassEncoder: this,
-                bundleCount: length,
-                bundles: ptr
-            );
-        }
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 8 * sizeof(long) ;
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+     
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+     
+        var (ptr, length) = GetBorrowHandlesAsPtrAndLength<RenderBundleHandle, RenderBundle>(bundles, allocator);
+        WebGPU_FFI.RenderPassEncoderExecuteBundles(
+            renderPassEncoder: this,
+            bundleCount: length,
+            bundles: ptr
+        );
     }
 
     /// <inheritdoc cref="InsertDebugMarker(StringViewFFI)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
-        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte) ;
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
         var markerLabelUtf8Span = ToUtf8Span(markerLabel, allocator, addNullTerminator: false);
         fixed (byte* markerLabelPtr = markerLabelUtf8Span)
         {
@@ -102,9 +113,16 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     /// <inheritdoc cref="PushDebugGroup(StringViewFFI)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
-        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte) ;
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
         var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
@@ -212,9 +230,16 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
-        const int stackAllocSize = 16 * sizeof(byte) + WebGpuMarshallingMemory.DefaultStartStackSize;
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte) ;
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(stackAllocPtr, stackAllocSize);
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
         fixed (byte* labelPtr = labelUtf8Span)
         {
