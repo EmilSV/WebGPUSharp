@@ -113,7 +113,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             where T : unmanaged
         {
             nuint byteAmount = amount * (nuint)sizeof(T);
-            void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), amount, Data.Stack.Memory, out nuint remainingSize);
+            void* alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<T>(), Data.Stack.RemainingBytes, Data.Stack.Memory, out nuint remainingSize);
             if (alignedMemory == null || remainingSize < byteAmount)
             {
                 SwitchToHeapMemory();
@@ -251,15 +251,20 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
         }
 
         var alignedMemory = WebGpuAlignment.GetAlign(WebGpuAlignment.GetAlignmentOf<LogicBlock>(), size, stackMemory, out nuint remainingSize);
-        if (alignedMemory == null)
+        if (alignedMemory == null || remainingSize < (nuint)sizeof(LogicBlock))
         {
             throw new OutOfMemoryException("Failed to allocate aligned memory for WebGpuAllocatorHandle.");
         }
+        
+
         _logicBlockPtr = (LogicBlock*)alignedMemory;
+
+        void* memory = _logicBlockPtr + sizeof(LogicBlock);
+        remainingSize -= (nuint)sizeof(LogicBlock);
 
         _logicBlock.SetupStackMemory(
             allocator: allocator,
-            memory: alignedMemory,
+            memory: memory,
             remainingBytes: remainingSize
         );
     }

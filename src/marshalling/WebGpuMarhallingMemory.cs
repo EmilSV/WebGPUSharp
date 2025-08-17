@@ -10,7 +10,6 @@ public static unsafe class WebGpuMarshallingMemory
         public WebGpuAllocator* Allocator;
     }
 
-    private static int _isBuiltInAllocatorInitialized = 0;
     private readonly static Lazy<WebGpuAllocatorPtr> _builtinAllocator = new(() =>
     {
         var allocator = (WebGpuAllocator*)NativeMemory.AllocZeroed(1, (nuint)sizeof(WebGpuAllocator));
@@ -19,7 +18,7 @@ public static unsafe class WebGpuMarshallingMemory
         return new WebGpuAllocatorPtr { Allocator = allocator };
 
     }, isThreadSafe: true);
-    private static WebGpuAllocator* _defaultAllocator;
+    private static WebGpuAllocator* _defaultAllocator = null;
     private static readonly AsyncLocal<WebGpuAllocatorPtr> _asyncLocalAllocator = new AsyncLocal<WebGpuAllocatorPtr>();
 
     public static void SetDefaultAllocator(WebGpuAllocator* allocator)
@@ -62,7 +61,7 @@ public static unsafe class WebGpuMarshallingMemory
         }
         if (allocator == null)
         {
-            _defaultAllocator = allocator = _asyncLocalAllocator.Value.Allocator;
+            _defaultAllocator = allocator = _builtinAllocator.Value.Allocator;
         }
 
         return new WebGpuAllocatorHandle(allocator, stackMemory, size);

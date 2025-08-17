@@ -6,19 +6,17 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
-internal static class WebGpuManagedSpanBuilder
+public static class WebGpuManagedSpanBuilder
 {
-    internal static WebGpuManagedSpan<T> Create<T>(ReadOnlySpan<T> span)
+    public static WebGpuManagedSpan<T> Create<T>(ReadOnlySpan<T> span)
     {
         return new WebGpuManagedSpan<T>(span.ToArray());
     }
 }
 
-[CollectionBuilder(typeof(WebGpuManagedSpanBuilder), "Create")]
-public readonly struct WebGpuManagedSpan<T>
+[CollectionBuilder(typeof(WebGpuManagedSpanBuilder), nameof(WebGpuManagedSpanBuilder.Create))]
+public readonly struct WebGpuManagedSpan<T> : IEnumerable<T>
 {
-
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public struct NullRef { }
 
@@ -123,6 +121,48 @@ public readonly struct WebGpuManagedSpan<T>
         else
         {
             throw new InvalidOperationException("Unsupported type for WebGpuManagedSpan.");
+        }
+    }
+
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable<T>)this).GetEnumerator();
+    }
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        return new Enumerator(_listLike ?? Array.Empty<T>(), _start, _count >= 0 ? _count : (_listLike?.Count ?? 0) - _start);
+    }
+
+    public struct Enumerator : IEnumerator<T>
+    {
+        private readonly IReadOnlyList<T> _list;
+        private int _index;
+        private readonly int _length;
+
+        internal Enumerator(IReadOnlyList<T> list, int start, int count)
+        {
+            _list = list ?? throw new ArgumentNullException(nameof(list), "Span must not be null.");
+            _index = start - 1;
+            _length = count;
+        }
+
+        public T Current => _list[_index];
+
+        object? IEnumerator.Current => Current;
+
+        public void Dispose() { }
+
+        public bool MoveNext()
+        {
+            _index++;
+            return _index < _length;
+        }
+
+        public void Reset()
+        {
+            _index = -1;
         }
     }
 }
