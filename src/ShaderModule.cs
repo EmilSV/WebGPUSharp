@@ -12,7 +12,7 @@ public sealed class ShaderModule :
     private ShaderModule(ShaderModuleHandle handle) : base(handle)
     {
     }
-    
+
     public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
         Handle.GetCompilationInfo(callback);

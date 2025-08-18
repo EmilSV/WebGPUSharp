@@ -396,4 +396,28 @@ public enum TextureFormat
     /// Block compressed texture. 16 bytes per block. <see cref="FeatureName.TextureCompressionASTC" /> must be enabled to use this texture format.
     /// </summary>
     ASTC12x12UnormSrgb = 95,
+    /// <summary>
+    /// Red channel only. 16 bit integer per channel. [0, 65535] converted to/from float [0, 1] in shader. <see cref="FeatureName.TextureFormat16BitNorm" /> must be enabled to use this texture format.
+    /// </summary>
+    R16Unorm = 327680,
+    /// <summary>
+    /// Red and green channels. 16 bit integer per channel. [0, 65535] converted to/from float [0, 1] in shader. <see cref="FeatureName.TextureFormat16BitNorm" /> must be enabled to use this texture format.
+    /// </summary>
+    RG16Unorm = 327681,
+    /// <summary>
+    /// Red, green, blue, and alpha channels. 16 bit integer per channel. [0, 65535] converted to/from float [0, 1] in shader. <see cref="FeatureName.TextureFormat16BitNorm" /> must be enabled to use this texture format.
+    /// </summary>
+    RGBA16Unorm = 327682,
+    /// <summary>
+    /// Red channel only. 16 bit integer per channel. [0, 65535] converted to/from float [-1, 1] in shader. <see cref="FeatureName.TextureFormat16BitNorm" /> must be enabled to use this texture format.
+    /// </summary>
+    R16Snorm = 327683,
+    /// <summary>
+    /// Red and green channels. 16 bit integer per channel. [0, 65535] converted to/from float [-1, 1] in shader. <see cref="FeatureName.TextureFormat16BitNorm" /> must be enabled to use this texture format.
+    /// </summary>
+    RG16Snorm = 327684,
+    /// <summary>
+    /// Red, green, blue, and alpha. 16 bit integer per channel. [0, 65535] converted to/from float [-1, 1] in shader. <see cref="FeatureName.TextureFormat16BitNorm" /> must be enabled to use this texture format.
+    /// </summary>
+    RGBA16Snorm = 327685,
 }

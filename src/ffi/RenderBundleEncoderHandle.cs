@@ -32,7 +32,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public RenderBundleHandle Finish(in RenderBundleDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -59,7 +59,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -80,7 +80,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -156,7 +156,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(

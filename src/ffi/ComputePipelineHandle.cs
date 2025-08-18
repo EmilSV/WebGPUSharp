@@ -48,7 +48,7 @@ public unsafe readonly partial struct ComputePipelineHandle :
     public void SetLabel(WGPURefText label)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(

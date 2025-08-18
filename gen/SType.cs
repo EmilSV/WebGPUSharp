@@ -16,8 +16,8 @@ public enum SType
     SurfaceSourceXCBWindow = 9,
     SurfaceColorManagement = 10,
     RequestAdapterWebXROptions = 11,
-    AdapterPropertiesSubgroups = 12,
-    TextureBindingViewDimensionDescriptor = 131072,
+    CompatibilityModeLimits = 131072,
+    TextureBindingViewDimensionDescriptor = 131073,
     EmscriptenSurfaceSourceCanvasHTMLSelector = 262144,
     SurfaceDescriptorFromWindowsCoreWindow = 327680,
     ExternalTextureBindingEntry = 327681,
@@ -88,4 +88,5 @@ public enum SType
     DawnHostMappedPointerLimits = 327747,
     RenderPassDescriptorResolveRect = 327748,
     RequestAdapterWebGPUBackendOptions = 327749,
+    DawnFakeDeviceInitializeErrorForTesting = 327750,
 }

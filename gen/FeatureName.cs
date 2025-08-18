@@ -172,4 +172,5 @@ public enum FeatureName
     /// </summary>
     Subgroups = 17,
     CoreFeaturesAndLimits = 18,
+    TextureFormatsTier1 = 327738,
 }

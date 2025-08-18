@@ -24,7 +24,7 @@ public struct TexelCopyTextureInfo :
     public TexelCopyTextureInfo()
     {
     }
-    
+
     static void IWebGpuMarshallable<TexelCopyTextureInfo, TexelCopyTextureInfoFFI>.MarshalToFFI(
         in TexelCopyTextureInfo input, out TexelCopyTextureInfoFFI dest)
     {

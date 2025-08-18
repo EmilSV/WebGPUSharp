@@ -145,26 +145,6 @@ public unsafe partial struct Limits
     /// </summary>
     public uint MaxComputeWorkgroupsPerDimension = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
     public uint MaxImmediateSize = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
-    /// <summary>
-    /// Maximum number of storage buffers that can be accessed from the vertex stage.
-    /// Defaults to 0 in compatibility mode and matches <see cref="MaxStorageBuffersPerShaderStage" /> in core mode.
-    /// </summary>
-    public uint MaxStorageBuffersInVertexStage = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
-    /// <summary>
-    /// Maximum number of storage textures that can be accessed from the vertex stage.
-    /// Defaults to 0 in compatibility mode and matches <see cref="MaxStorageTexturesPerShaderStage" /> in core mode.
-    /// </summary>
-    public uint MaxStorageTexturesInVertexStage = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
-    /// <summary>
-    /// Maximum number of storage buffers that can be accessed from the fragment stage.
-    /// Defaults to 4 in compatibility mode and matches <see cref="MaxStorageBuffersPerShaderStage" /> in core mode.
-    /// </summary>
-    public uint MaxStorageBuffersInFragmentStage = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
-    /// <summary>
-    /// Maximum number of storage textures that can be accessed from the fragment stage.
-    /// Defaults to 4 in compatibility mode and matches <see cref="MaxStorageTexturesPerShaderStage" /> in core mode.
-    /// </summary>
-    public uint MaxStorageTexturesInFragmentStage = FFI.WebGPU_FFI.LIMIT_U32_UNDEFINED;
 
     public Limits() { }
 

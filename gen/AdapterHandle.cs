@@ -128,7 +128,7 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
     /// <param name="callbackInfo">The callback to call when the device is ready</param>
     /// <param name="options">The device descriptor to use.</param>
-    public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, options, callbackInfo);
+    public Future RequestDevice(DeviceDescriptorFFI* descriptor, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, descriptor, callbackInfo);
 
     /// <summary>
     /// Increments the reference count of the <see cref="AdapterHandle"/>.

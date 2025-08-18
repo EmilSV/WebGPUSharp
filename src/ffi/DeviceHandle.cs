@@ -22,7 +22,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BindGroupHandle CreateBindGroup(in BindGroupDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 512 * sizeof(byte) ;
+        const int stackAllocSize = 512 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -63,7 +63,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 32 * sizeof(byte) ;
+        const int stackAllocSize = 32 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -91,7 +91,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BufferHandle CreateBuffer(ref BufferDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -116,7 +116,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public BufferHandle CreateBuffer(BufferDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 32 * sizeof(byte) ;
+        const int stackAllocSize = 32 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -139,7 +139,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public CommandEncoderHandle CreateCommandEncoder(in CommandEncoderDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 32 * sizeof(byte) ;
+        const int stackAllocSize = 32 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -174,7 +174,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public ComputePipelineHandle CreateComputePipeline(in ComputePipelineDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * 2 * sizeof(byte) ;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -228,7 +228,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * 2 * sizeof(byte) ;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -282,7 +282,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             in ComputePipelineDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * 2 * sizeof(byte) ;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -334,7 +334,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -375,7 +375,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public QuerySetHandle CreateQuerySet(in QuerySetDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
             ref allocatorLogicBlock,
@@ -411,7 +411,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public RenderBundleEncoderHandle CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -498,7 +498,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -539,7 +539,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -571,7 +571,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public SamplerHandle CreateSampler(ref SamplerDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * 2 * sizeof(byte) ;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -596,7 +596,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public SamplerHandle CreateSampler(SamplerDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -646,7 +646,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public TextureHandle CreateTexture(ref TextureDescriptor textureDescriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -675,7 +675,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public TextureHandle CreateTexture(TextureDescriptor textureDescriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 32 * sizeof(byte) ;
+        const int stackAllocSize = 32 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -774,7 +774,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public void SetLabel(WGPURefText label)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(

@@ -21,7 +21,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -44,7 +44,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
@@ -52,7 +52,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
             stackAllocPtr,
             stackAllocSize
         );
-    
+
         var groupLabelUtf8Span = ToUtf8Span(groupLabel, allocator, addNullTerminator: false);
         fixed (byte* groupLabelPtr = groupLabelUtf8Span)
         {
@@ -114,7 +114,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     public void SetLabel(WGPURefText label)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte) ;
+        const int stackAllocSize = 16 * sizeof(byte);
         byte* stackAllocPtr = stackalloc byte[stackAllocSize];
 
         using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
