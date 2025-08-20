@@ -109,8 +109,8 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// Schedules the execution of the command buffers by the GPU on this queue.
     /// Submitted command buffers cannot be used again.
     /// </summary>
-    /// <param name="commands">The command buffers to submit.</param>
     /// <param name="commandCount">The number of command buffers to submit.</param>
+    /// <param name="commands">The command buffers to submit.</param>
     public void Submit(nuint commandCount, CommandBufferHandle* commands) => WebGPU_FFI.QueueSubmit(this, commandCount, commands);
 
     /// <summary>

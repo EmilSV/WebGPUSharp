@@ -171,6 +171,12 @@ public enum FeatureName
     /// Subgroups enable SIMD-level parallelism by allowing threads in a workgroup to communicate and perform collective math operations (e.g., summing 16 numbers).
     /// </summary>
     Subgroups = 17,
+    /// <summary>
+    /// Allows all Core WebGPU features and limits to be used.
+    /// <remarks>
+    /// This is currently available on all adapters and enabled automatically on all devices even if not requested.
+    /// </remarks>
+    /// </summary>
     CoreFeaturesAndLimits = 18,
     TextureFormatsTier1 = 327738,
 }

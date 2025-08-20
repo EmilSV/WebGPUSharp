@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 /// <summary>
 /// Specific type of a sample in a texture binding.
 /// 
-/// For use in BindingType::StorageTexture.
+/// For use in <see cref="WebGpuSharp.BindingType.StorageTexture" />.
 /// </summary>
 public enum StorageTextureAccess
 {

@@ -16,19 +16,19 @@ public enum TextureUsage : ulong
     /// </summary>
     None = 0,
     /// <summary>
-    /// Allows a texture to be the source in a [CommandEncoder::copy_texture_to_buffer] or [CommandEncoder::copy_texture_to_texture] operation.
+    /// Allows a texture to be the source in a <see cref="FFI.CommandEncoderHandle.CopyTextureToBuffer" /> or <see cref="FFI.CommandEncoderHandle.CopyTextureToTexture" /> operation.
     /// </summary>
     CopySrc = 1,
     /// <summary>
-    /// Allows a texture to be the destination in a [CommandEncoder::copy_buffer_to_texture], [CommandEncoder::copy_texture_to_texture], or [Queue::write_texture] operation.
+    /// Allows a texture to be the destination in a <see cref="FFI.CommandEncoderHandle.CopyBufferToTexture" />, <see cref="FFI.CommandEncoderHandle.CopyTextureToTexture" />, or <see cref="FFI.QueueHandle.WriteTexture" /> operation.
     /// </summary>
     CopyDst = 2,
     /// <summary>
-    /// Allows a texture to be a BindingType::Texture in a bind group.
+    /// Allows a texture to be a <see cref="WebGpuSharp.BindingType.Texture" /> in a bind group.
     /// </summary>
     TextureBinding = 4,
     /// <summary>
-    /// Allows a texture to be a BindingType::StorageTexture in a bind group.
+    /// Allows a texture to be a <see cref="WebGpuSharp.BindingType.StorageTexture" /> in a bind group.
     /// </summary>
     StorageBinding = 8,
     /// <summary>

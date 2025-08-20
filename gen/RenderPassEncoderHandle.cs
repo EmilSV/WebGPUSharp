@@ -137,8 +137,8 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// 
     /// This is like calling <see cref="DrawIndexed" /> but the contents of the call are specified in the indirectBuffer.
     /// </summary>
-    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters</param>
     /// <param name="indirectOffset">Offset in bytes into indirectBuffer where the drawing data begins.</param>
+    /// <param name="indirectBuffer">Buffer containing the indirect drawIndexed parameters</param>
     public void DrawIndexedIndirect(BufferHandle indirectBuffer, ulong indirectOffset) => WebGPU_FFI.RenderPassEncoderDrawIndexedIndirect(this, indirectBuffer, indirectOffset);
 
     /// <summary>
@@ -264,9 +264,9 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
     /// </summary>
     /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
-    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     /// <param name="offset">Offset in bytes into buffer where the vertex data begins. Defaults to 0.</param>
+    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size) => WebGPU_FFI.RenderPassEncoderSetVertexBuffer(this, slot, buffer, offset, size);
 
     /// <summary>

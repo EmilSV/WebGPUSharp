@@ -5,8 +5,8 @@ namespace WebGpuSharp.FFI;
 
 /// <summary>
 /// Handle to a physical graphics and/or compute device.
-/// Adapters can be created using Instance::request_adapter or other Instance methods.
-/// Adapters can be used to open a connection to the corresponding Device on the host system by using Adapter::request_device.
+/// Adapters can be created using <see cref="InstanceHandle.RequestAdapter" /> or other Instance methods.
+/// Adapters can be used to open a connection to the corresponding Device on the host system by using <see cref="RequestDevice" />.
 /// Does not have to be kept alive.
 /// </summary>
 public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>

@@ -51,9 +51,6 @@ public unsafe partial struct AdapterInfoFFI
     /// This generally is a 16-bit PCI vendor ID in the least significant bytes of this field.
     /// However, more significant bytes may be non-zero if the backend uses a different
     /// representation.
-    /// 
-    /// For Vulkan backend, the VkPhysicalDeviceProperties::vendorID is used, which is a
-    /// superset of PCI IDs.
     /// </summary>
     public uint VendorID;
     /// <summary>
@@ -62,9 +59,6 @@ public unsafe partial struct AdapterInfoFFI
     /// This generally is a 16-bit PCI device ID in the least significant bytes of this field.
     /// However, more significant bytes may be non-zero if the backend uses a different
     /// representation.
-    /// 
-    /// For Vulkan backend, the VkPhysicalDeviceProperties::vendorID is used, which is a
-    /// superset of PCI IDs.
     /// </summary>
     public uint DeviceID;
     /// <summary>
