@@ -30,8 +30,8 @@ public sealed class Adapter :
     public bool HasFeature(FeatureName feature) => Handle.HasFeature(feature);
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor)"/>
-    public Task<Device?> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        Handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(incrementRefCount: false));
+    public Task<Device> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
+        Handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(incrementRefCount: false)!);
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor, Action{Device?})"/>
     public void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<Device?> callback) =>
