@@ -205,6 +205,7 @@ public sealed class Buffer :
     /// <inheritdoc cref="GetConstMappedRange{T, TState}(nuint, nuint, ReadContextDelegateWithState{T, TState}, ref TState)"/>
     public unsafe TResult GetConstMappedRange<TResult, T, TState>(nuint offset, nuint size, Func<ReadOnlySpan<T>, TState, TResult> callback, TState state)
         where T : unmanaged
+        where TState : allows ref struct
     {
         _readWriteStateChangeLock.AddReadWriteLock();
         try
@@ -217,6 +218,13 @@ public sealed class Buffer :
         {
             _readWriteStateChangeLock.RemoveReadWriteLock();
         }
+    }
+
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
+    public unsafe void GetConstMappedRange<T>(Action<ReadOnlySpan<T>> callback)
+        where T : unmanaged
+    {
+        GetConstMappedRange(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
     }
 
     /// <param name="callback">The callback to be called with the mapped range.</param>
@@ -277,6 +285,7 @@ public sealed class Buffer :
     /// <inheritdoc cref="GetMappedRange{T}(nuint, nuint, Action{Span{T}})"/>
     public unsafe void GetMappedRange<T, TState>(nuint offset, nuint size, Action<Span<T>, TState> callback, TState state)
         where T : unmanaged
+        where TState : allows ref struct
     {
         _readWriteStateChangeLock.AddReadWriteLock();
         try
@@ -293,6 +302,7 @@ public sealed class Buffer :
 
     /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, Action{Span{T}, TState}, TState)"/>
     public unsafe void GetMappedRange<TState>(nuint offset, nuint size, Action<Span<byte>, TState> callback, TState state)
+        where TState : allows ref struct
     {
         GetMappedRange<byte, TState>(offset, size, callback, state);
     }
@@ -300,6 +310,7 @@ public sealed class Buffer :
     /// <inheritdoc cref="GetMappedRange{T, TState}(nuint, nuint, Action{Span{T}, TState}, TState)"/>
     public unsafe TResult GetMappedRange<TResult, T, TState>(nuint offset, nuint size, Func<Span<T>, TState, TResult> callback, TState state)
         where T : unmanaged
+        where TState : allows ref struct
     {
         _readWriteStateChangeLock.AddReadWriteLock();
         try
@@ -328,7 +339,6 @@ public sealed class Buffer :
         try
         {
             Handle.Unmap();
-            _readWriteStateChangeLock.RemoveStateChangeLock();
         }
         finally
         {
