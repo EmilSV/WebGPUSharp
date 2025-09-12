@@ -113,7 +113,7 @@ public unsafe partial struct SurfaceHandle : IEquatable<SurfaceHandle>
     /// <summary>
     /// Presents the surface.
     /// </summary>
-    public void Present() => WebGPU_FFI.SurfacePresent(this);
+    public Status Present() => WebGPU_FFI.SurfacePresent(this);
 
     /// <summary>
     /// Sets the label of the surface.

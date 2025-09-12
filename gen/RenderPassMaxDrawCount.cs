@@ -15,7 +15,7 @@ public partial struct RenderPassMaxDrawCount
     /// <summary>
     /// The maximum number of draw calls that can be submitted to a render pass.
     /// </summary>
-    public ulong MaxDrawCount;
+    public ulong MaxDrawCount = 50000000;
 
     public RenderPassMaxDrawCount() { }
 

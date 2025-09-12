@@ -31,7 +31,7 @@ public unsafe partial struct ComputeStateFFI
     /// <summary>
     /// The number of item in the <see cref="WebGpuSharp.WebGpuSharp.FFI.ComputeStateFFI.Constants" /> sequence
     /// </summary>
-    public nuint ConstantCount;
+    public nuint ConstantCount = 0;
     /// <summary>
     /// Specifies the values of pipeline-overridable constants in the shader module module.
     /// Each such pipeline-overridable constant is uniquely identified by a single pipeline-overridable constant identifier string,

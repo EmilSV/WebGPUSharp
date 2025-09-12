@@ -89,4 +89,7 @@ public enum SType
     RenderPassDescriptorResolveRect = 327748,
     RequestAdapterWebGPUBackendOptions = 327749,
     DawnFakeDeviceInitializeErrorForTesting = 327750,
+    TextureComponentSwizzleDescriptor = 327751,
+    SharedTextureMemoryD3D11BeginState = 327752,
+    DawnConsumeAdapterDescriptor = 327753,
 }

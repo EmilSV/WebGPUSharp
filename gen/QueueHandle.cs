@@ -135,8 +135,8 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// <param name="destination">The texture subresource and origin to write to.</param>
     /// <param name="data">Data to write into <paramref name="destination"/>.</param>
     /// <param name="dataLayout">Layout of the content in <paramref name="data"/>.</param>
-    /// <param name="dataSize">The size of the data to write.</param>
     /// <param name="writeSize">Extents of the content to write from <paramref name="data" /> to <paramref name="destination" />.</param>
+    /// <param name="dataSize">The size of the data to write.</param>
     public void WriteTexture(TexelCopyTextureInfoFFI* destination, void* data, nuint dataSize, TexelCopyBufferLayout* dataLayout, Extent3D* writeSize) => WebGPU_FFI.QueueWriteTexture(this, destination, data, dataSize, dataLayout, writeSize);
 
     /// <summary>

@@ -23,7 +23,7 @@ public unsafe partial struct RequestAdapterOptionsFFI
     /// <summary>
     /// The feature level of the resulting adapter.
     /// </summary>
-    public FeatureLevel FeatureLevel;
+    public FeatureLevel FeatureLevel = FeatureLevel.Core;
     /// <summary>
     /// Power preference for the adapter.
     /// </summary>

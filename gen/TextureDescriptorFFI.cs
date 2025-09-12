@@ -52,7 +52,7 @@ public unsafe partial struct TextureDescriptorFFI
     /// <summary>
     /// The number of entries in the <see cref="ViewFormats" /> sequence.
     /// </summary>
-    public nuint ViewFormatCount;
+    public nuint ViewFormatCount = 0;
     /// <summary>
     /// Specifies what view  <see cref="TextureViewDescriptor.Format"/> values will be allowed when calling
     ///  <see cref="Texture.CreateView"/> on this texture (in addition to the texture's actual
@@ -74,7 +74,7 @@ public unsafe partial struct TextureDescriptorFFI
     /// Similar caveats exist for other formats and pairs of formats on other systems.
     /// 
     /// </remarks>
-    public TextureFormat* ViewFormats;
+    public TextureFormat* ViewFormats = null;
 
     public TextureDescriptorFFI() { }
 

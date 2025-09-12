@@ -39,7 +39,7 @@ public unsafe partial struct TextureViewDescriptorFFI
     /// How many mipmap levels, starting with  <see cref="TextureViewDescriptor.BaseMipLevel"/>, are accessible to
     /// the texture view.
     /// </summary>
-    public uint MipLevelCount;
+    public uint MipLevelCount = WebGPU_FFI.MIP_LEVEL_COUNT_UNDEFINED;
     /// <summary>
     /// The index of the first array layer accessible to the texture view.
     /// </summary>
@@ -48,7 +48,7 @@ public unsafe partial struct TextureViewDescriptorFFI
     /// How many array layers, starting with  <see cref="TextureViewDescriptor.BaseArrayLayer"/>, are accessible
     /// to the texture view.
     /// </summary>
-    public uint ArrayLayerCount;
+    public uint ArrayLayerCount = WebGPU_FFI.ARRAY_LAYER_COUNT_UNDEFINED;
     /// <summary>
     /// Which  <see cref="TextureAspect">aspect(s)</see> of the texture are accessible to the texture view.
     /// </summary>

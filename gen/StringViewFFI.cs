@@ -15,7 +15,7 @@ public unsafe partial struct StringViewFFI
     /// <summary>
     /// The length of the string view
     /// </summary>
-    public nuint Length;
+    public nuint Length = WebGPU_FFI.STRLEN;
     /// <summary>
     /// A null string view
     /// </summary>

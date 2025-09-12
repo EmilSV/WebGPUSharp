@@ -3,10 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WebGpuSharp;
 
-/// <summary>
-/// The descriptor for the creation of an <see cref="Instance" />
-/// </summary>
-public unsafe partial struct InstanceDescriptor
+public unsafe partial struct InstanceLimits
 {
     /// <summary>
     /// Pointer to the first element in a chain of structures that extends this descriptor.
@@ -18,11 +15,8 @@ public unsafe partial struct InstanceDescriptor
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
-    /// <summary>
-    /// Instance capabilities to enable.
-    /// </summary>
-    public InstanceCapabilities Capabilities = new();
+    public nuint TimedWaitAnyMaxCount = 0;
 
-    public InstanceDescriptor() { }
+    public InstanceLimits() { }
 
 }

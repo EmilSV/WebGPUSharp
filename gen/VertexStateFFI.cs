@@ -39,7 +39,7 @@ public unsafe partial struct VertexStateFFI
     /// <summary>
     /// The number of constants in the sequence.
     /// </summary>
-    public nuint ConstantCount;
+    public nuint ConstantCount = 0;
     /// <summary>
     /// A sequence of unique key value pair, representing override values for
     /// <see href="https://gpuweb.github.io/gpuweb/#typedefdef-gpupipelineconstantvalue">WGSL constants that can be overridden in the pipeline.</see>
@@ -48,7 +48,7 @@ public unsafe partial struct VertexStateFFI
     /// <summary>
     /// The number of buffers in the sequence.
     /// </summary>
-    public nuint BufferCount;
+    public nuint BufferCount = 0;
     /// <summary>
     /// A list of  <see cref="VertexBufferLayout"/>s, each defining the layout of vertex attribute data in a
     /// vertex buffer used by this pipeline.

@@ -11,11 +11,11 @@ public unsafe partial struct TexelCopyTextureInfoFFI
     /// <summary>
     /// The texture to be copied to/from.
     /// </summary>
-    public TextureHandle Texture;
+    public required TextureHandle Texture;
     /// <summary>
     /// The target mip level of the texture.
     /// </summary>
-    public uint MipLevel;
+    public uint MipLevel = 0;
     /// <summary>
     /// The base texel of the texture in the selected <see cref="MipLevel" />.
     /// Together with the copySize argument to copy functions, defines the sub-region of the texture to copy.
@@ -24,7 +24,7 @@ public unsafe partial struct TexelCopyTextureInfoFFI
     /// <summary>
     /// The copy aspect.
     /// </summary>
-    public TextureAspect Aspect;
+    public TextureAspect Aspect = TextureAspect.All;
 
     public TexelCopyTextureInfoFFI() { }
 

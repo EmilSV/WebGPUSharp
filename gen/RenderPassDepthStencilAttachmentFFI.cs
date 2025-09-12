@@ -19,8 +19,9 @@ public unsafe partial struct RenderPassDepthStencilAttachmentFFI
     /// </remarks>
     public ChainedStruct* NextInChain;
     /// <summary>
-    /// A  <see cref="TextureView"/> describing the texture subresource that will be output to
-    /// and read from for this depth/stencil attachment.
+    /// Describes the texture subresource that will be output to and read from for this
+    /// depth/stencil attachment.
+    /// The subresource is determined by calling get as texture view( <see cref="RenderPassDepthStencilAttachment.View"/>).
     /// </summary>
     public required TextureViewHandle View;
     /// <summary>
@@ -40,7 +41,7 @@ public unsafe partial struct RenderPassDepthStencilAttachmentFFI
     /// is not  <see cref="LoadOp.Clear"/>. Must be between 0.0 and 1.0, inclusive.
     /// 
     /// </summary>
-    public float DepthClearValue;
+    public float DepthClearValue = WebGPU_FFI.DEPTH_CLEAR_VALUE_UNDEFINED;
     /// <summary>
     /// Indicates that the depth component of  <see cref="RenderPassDepthStencilAttachment.View"/>
     /// is read only.

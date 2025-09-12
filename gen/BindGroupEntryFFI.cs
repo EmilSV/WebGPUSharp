@@ -33,11 +33,11 @@ public unsafe partial struct BindGroupEntryFFI
     /// <summary>
     /// The offset, in bytes, from the beginning of the buffer to the beginning of the range exposed to the shader by the buffer binding.
     /// </summary>
-    public ulong Offset;
+    public ulong Offset = 0;
     /// <summary>
     /// The size, in bytes, of the buffer binding
     /// </summary>
-    public ulong Size;
+    public ulong Size = WebGPU_FFI.WHOLE_SIZE;
     /// <summary>
     /// The Sampler object you want to bind.
     /// </summary>

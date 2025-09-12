@@ -21,19 +21,19 @@ public unsafe partial struct RenderPassColorAttachmentFFI
     /// </remarks>
     public ChainedStruct* NextInChain;
     /// <summary>
-    /// A  <see cref="TextureView"/> describing the texture subresource that will be output to for this
-    /// color attachment.
+    /// Describes the texture subresource that will be output to for this color attachment.
+    /// The subresource is determined by calling get as texture view( <see cref="RenderPassColorAttachment.View"/>).
     /// </summary>
     public required TextureViewHandle View;
     /// <summary>
     /// Indicates the depth slice index of  <see cref="TextureViewDimension.D3"/>  <see cref="RenderPassColorAttachment.View"/>
     /// that will be output to for this color attachment.
     /// </summary>
-    public uint DepthSlice;
+    public uint DepthSlice = WebGPU_FFI.DEPTH_SLICE_UNDEFINED;
     /// <summary>
-    /// A  <see cref="TextureView"/> describing the texture subresource that will receive the resolved
-    /// output for this color attachment if  <see cref="RenderPassColorAttachment.View"/> is
-    /// multisampled.
+    /// Describes the texture subresource that will receive the resolved output for this color
+    /// attachment if  <see cref="RenderPassColorAttachment.View"/> is multisampled.
+    /// The subresource is determined by calling get as texture view( <see cref="RenderPassColorAttachment.ResolveTarget"/>).
     /// </summary>
     public TextureViewHandle ResolveTarget;
     /// <summary>

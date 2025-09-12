@@ -33,27 +33,23 @@ public unsafe partial struct BindGroupLayoutEntry
     /// <summary>
     /// If non-zero, this entry defines a binding array with this size.
     /// </summary>
-    public uint BindingArraySize;
+    public uint BindingArraySize = 0;
     /// <summary>
-    /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is BufferBinding.
+    /// When provided, indicates the binding resource type for this <see cref="BindGroupLayoutEntry" /> is BufferBinding.
     /// </summary>
     public BufferBindingLayout Buffer = default;
     /// <summary>
-    /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is  <see cref="WebGpuSharp.Sampler"/>.
+    /// When provided, indicates the binding resource type for this <see cref="BindGroupLayoutEntry" /> is <see cref="WebGpuSharp.Sampler" />.
     /// </summary>
     public SamplerBindingLayout Sampler = default;
     /// <summary>
-    /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is  <see cref="TextureView"/>.
+    /// When provided, indicates the binding resource type for this <see cref="BindGroupLayoutEntry" /> is <see cref="TextureView" />.
     /// </summary>
     public TextureBindingLayout Texture = default;
     /// <summary>
-    /// When provided, indicates the binding resource type for this  <see cref="BindGroupLayoutEntry"/>
-    /// is  <see cref="TextureView"/>.
+    /// When provided, indicates the binding resource type for this <see cref="BindGroupLayoutEntry" /> is a storage texture.
     /// </summary>
-    public StorageTextureBindingLayout StorageTexture;
+    public StorageTextureBindingLayout StorageTexture = default;
 
     public BindGroupLayoutEntry() { }
 

@@ -30,7 +30,7 @@ public unsafe partial struct PipelineLayoutDescriptorFFI
     /// Bind groups that this pipeline uses. The first entry will provide all the bindings for “set = 0”, second entry will provide all the bindings for “set = 1” etc.
     /// </summary>
     public required BindGroupLayoutHandle* BindGroupLayouts;
-    public uint ImmediateSize;
+    public uint ImmediateSize = 0;
 
     public PipelineLayoutDescriptorFFI() { }
 
