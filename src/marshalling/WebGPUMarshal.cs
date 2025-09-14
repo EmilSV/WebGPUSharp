@@ -12,12 +12,12 @@ namespace WebGpuSharp.Marshalling;
 public unsafe static partial class WebGPUMarshal
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ToFFI<TFrom, TTo>(WGPUNullableRef<TFrom> input, out TTo dest)
-        where TFrom : struct, IWebGpuMarshallable<TFrom, TTo>
+    public static void ToFFI<TFrom, TTo>(in TFrom? input, out TTo dest)
+    where TFrom : struct, IWebGpuMarshallable<TFrom, TTo>
     {
         if (input.HasValue)
         {
-            TFrom.MarshalToFFI(in input.Value, out dest);
+            TFrom.MarshalToFFI(in Nullable.GetValueRefOrDefaultRef(in input), out dest);
         }
         else
         {
@@ -26,12 +26,12 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TTo ToFFI<TFrom, TTo>(WGPUNullableRef<TFrom> input)
-        where TFrom : struct, IWebGpuMarshallable<TFrom, TTo>
+    public static TTo ToFFI<TFrom, TTo>(TFrom? input)
+            where TFrom : struct, IWebGpuMarshallable<TFrom, TTo>
     {
         if (input.HasValue)
         {
-            TFrom.MarshalToFFI(in input.Value, out var dest);
+            TFrom.MarshalToFFI(in Nullable.GetValueRefOrDefaultRef(in input), out var dest);
             return dest;
         }
         else
@@ -42,12 +42,12 @@ public unsafe static partial class WebGPUMarshal
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ToFFI<TFrom, TTo>(
-        WGPUNullableRef<TFrom> input, WebGpuAllocatorHandle allocator, out TTo dest)
+        in TFrom? input, WebGpuAllocatorHandle allocator, out TTo dest)
         where TFrom : struct, IWebGpuMarshallableAlloc<TFrom, TTo>
     {
         if (input.HasValue)
         {
-            TFrom.MarshalToFFI(in input.Value, allocator, out dest);
+            TFrom.MarshalToFFI(in Nullable.GetValueRefOrDefaultRef(in input), allocator, out dest);
         }
         else
         {
@@ -57,14 +57,14 @@ public unsafe static partial class WebGPUMarshal
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void ToFFI<TFrom, TTo>(
-        WGPUNullableRef<TFrom> input, WebGpuAllocatorHandle allocator, out TTo* dest)
+        in TFrom? input, WebGpuAllocatorHandle allocator, out TTo* dest)
         where TFrom : struct, IWebGpuMarshallableAlloc<TFrom, TTo>
         where TTo : unmanaged
     {
         if (input.HasValue)
         {
             TTo* newDestPtr = allocator.Alloc<TTo>(1);
-            TFrom.MarshalToFFI(in input.Value, allocator, out Unsafe.AsRef<TTo>(newDestPtr));
+            TFrom.MarshalToFFI(in Nullable.GetValueRefOrDefaultRef(in input), allocator, out Unsafe.AsRef<TTo>(newDestPtr));
             dest = newDestPtr;
         }
         else

@@ -9,9 +9,13 @@ public struct PassTimestampWrites :
 {
     /// <inheritdoc cref="PassTimestampWritesFFI.QuerySet"/>
     public required QuerySet QuerySet;
-    /// <inheritdoc cref="PassTimestampWritesFFI.BeginningOfPassWriteIndex"/>
+        /// <summary>
+    /// If defined, indicates the query index in <see cref="QuerySet" /> into which the timestamp at the beginning of the render pass will be written.
+    /// </summary>
     public uint BeginningOfPassWriteIndex;
-    /// <inheritdoc cref="PassTimestampWritesFFI.EndOfPassWriteIndex"/>
+    /// <summary>
+    /// If defined, indicates the query index in <see cref="QuerySet" /> into which the timestamp at the end of the render pass will be written.
+    /// </summary>
     public uint EndOfPassWriteIndex;
 
     static void IWebGpuMarshallable<PassTimestampWrites, PassTimestampWritesFFI>.MarshalToFFI(

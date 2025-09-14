@@ -15,11 +15,11 @@ public ref struct RenderPipelineDescriptor
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Primitive"/>
     public PrimitiveState Primitive = new();
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.DepthStencil"/>
-    public WGPUNullableRef<DepthStencilState> DepthStencil;
+    public DepthStencilState? DepthStencil;
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Multisample"/>
     public MultisampleState Multisample = new();
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Fragment"/>
-    public WGPUNullableRef<FragmentState> Fragment;
+    public FragmentState? Fragment;
 
     public RenderPipelineDescriptor()
     {

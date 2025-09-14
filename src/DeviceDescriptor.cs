@@ -10,7 +10,7 @@ public ref partial struct DeviceDescriptor
     /// <inheritdoc cref="FFI.DeviceDescriptorFFI.RequiredFeatures"/>
     public Span<FeatureName> RequiredFeatures;
     /// <inheritdoc cref="FFI.DeviceDescriptorFFI.RequiredLimits"/>
-    public WGPUNullableRef<Limits> RequiredLimits;
+    public Limits? RequiredLimits;
     /// <inheritdoc cref="FFI.DeviceDescriptorFFI.DefaultQueue"/>
     public QueueDescriptor DefaultQueue;
 

@@ -466,14 +466,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
-        fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
+        fixed (DepthStencilState* depthStencilPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencil))
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
-            descriptorFFI.DepthStencil = depthStencilPtr;
+            descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
             descriptorFFI.Multisample = descriptor.Multisample;
             ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
 
@@ -510,14 +510,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
-        fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
+        fixed (DepthStencilState* depthStencilPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencil))
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
-            descriptorFFI.DepthStencil = depthStencilPtr;
+            descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
             descriptorFFI.Multisample = descriptor.Multisample;
             ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
 
@@ -551,14 +551,14 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
-        fixed (DepthStencilState* depthStencilPtr = descriptor.DepthStencil)
+        fixed (DepthStencilState* depthStencilPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencil))
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
-            descriptorFFI.DepthStencil = depthStencilPtr;
+            descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
             descriptorFFI.Multisample = descriptor.Multisample;
             ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
 

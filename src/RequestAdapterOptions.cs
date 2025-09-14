@@ -10,14 +10,17 @@ namespace WebGpuSharp;
 public struct RequestAdapterOptions :
     IWebGpuMarshallable<RequestAdapterOptions, RequestAdapterOptionsFFI>
 {
-    /// <inheritdoc cref="RequestAdapterOptionsFFI.CompatibleSurface"/>
-    public required Surface CompatibleSurface;
+
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.FeatureLevel"/>
+    public FeatureLevel FeatureLevel = FeatureLevel.Core;
     /// <inheritdoc cref="RequestAdapterOptionsFFI.PowerPreference"/>
     public PowerPreference PowerPreference;
-    /// <inheritdoc cref="RequestAdapterOptionsFFI.BackendType"/>
-    public BackendType BackendType;
     /// <inheritdoc cref="RequestAdapterOptionsFFI.ForceFallbackAdapter"/>
     public bool ForceFallbackAdapter = false;
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.BackendType"/>
+    public BackendType BackendType;
+    /// <inheritdoc cref="RequestAdapterOptionsFFI.CompatibleSurface"/>
+    public required Surface CompatibleSurface;
 
     public RequestAdapterOptions()
     {
@@ -28,10 +31,11 @@ public struct RequestAdapterOptions :
     {
         dest = new()
         {
-            CompatibleSurface = GetBorrowHandle(input.CompatibleSurface),
+            FeatureLevel = input.FeatureLevel,
             PowerPreference = input.PowerPreference,
+            ForceFallbackAdapter = input.ForceFallbackAdapter,
             BackendType = input.BackendType,
-            ForceFallbackAdapter = input.ForceFallbackAdapter
+            CompatibleSurface = GetBorrowHandle(input.CompatibleSurface),
         };
     }
 }

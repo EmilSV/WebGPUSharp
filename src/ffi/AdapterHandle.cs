@@ -131,7 +131,7 @@ public unsafe readonly partial struct AdapterHandle :
         fixed (byte* deviceDescriptorLabelPtr = labelUtf8Span)
         fixed (byte* queueLabelPtr = queueLabelUtf8Span)
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
-        fixed (Limits* requiredLimitsPtr = descriptor.RequiredLimits)
+        fixed (Limits* requiredLimitsPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.RequiredLimits))
         {
             var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
             var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
@@ -141,7 +141,7 @@ public unsafe readonly partial struct AdapterHandle :
                 Label = StringViewFFI.CreateExplicitlySized(deviceDescriptorLabelPtr, labelUtf8Span.Length),
                 RequiredFeatures = requiredFeaturesPtr,
                 RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
-                RequiredLimits = requiredLimitsPtr,
+                RequiredLimits = descriptor.RequiredLimits.HasValue ? requiredLimitsPtr : null,
                 DefaultQueue = {
                     Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)
                 },
@@ -185,7 +185,7 @@ public unsafe readonly partial struct AdapterHandle :
             fixed (byte* deviceDescriptorLabelPtr = deviceDescriptorLabelUtf8Span)
             fixed (byte* queueLabelPtr = queueLabelUtf8Span)
             fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
-            fixed (Limits* requiredLimitsPtr = descriptor.RequiredLimits)
+            fixed (Limits* requiredLimitsPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.RequiredLimits))
             {
                 var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
                 var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
@@ -196,7 +196,7 @@ public unsafe readonly partial struct AdapterHandle :
                     Label = StringViewFFI.CreateExplicitlySized(deviceDescriptorLabelPtr, deviceDescriptorLabelUtf8Span.Length),
                     RequiredFeatures = requiredFeaturesPtr,
                     RequiredFeatureCount = (uint)descriptor.RequiredFeatures.Length,
-                    RequiredLimits = requiredLimitsPtr,
+                    RequiredLimits = descriptor.RequiredLimits.HasValue ? requiredLimitsPtr : null,
                     DefaultQueue = new()
                     {
                         Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)

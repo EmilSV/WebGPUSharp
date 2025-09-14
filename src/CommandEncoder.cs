@@ -35,10 +35,27 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     /// <inheritdoc cref="CommandEncoderHandle.CopyBufferToBuffer(Buffer, ulong, Buffer, ulong, ulong)"/>
     public void CopyBufferToBuffer(
         Buffer source,
+        Buffer destination,
+        ulong? size = null
+    )
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.handle.CopyBufferToBuffer(
+            GetBorrowHandle(source),
+            0,
+            GetBorrowHandle(destination),
+            0,
+            size ?? source.GetSize()
+        );
+    }
+
+    /// <inheritdoc cref="CommandEncoderHandle.CopyBufferToBuffer(Buffer, ulong, Buffer, ulong, ulong)"/>
+    public void CopyBufferToBuffer(
+        Buffer source,
         ulong sourceOffset,
         Buffer destination,
         ulong destinationOffset,
-        ulong size
+        ulong? size = null
     )
     {
         _pooledHandle.VerifyToken(_localToken);
@@ -47,7 +64,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
             sourceOffset,
             GetBorrowHandle(destination),
             destinationOffset,
-            size
+            size ?? (source.GetSize() - sourceOffset)
         );
     }
 

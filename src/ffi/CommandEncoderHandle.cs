@@ -33,7 +33,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
         RenderPassDepthStencilAttachmentFFI* depthStencilAttachmentPtr = null;
         if (descriptor.DepthStencilAttachment.HasValue)
         {
-            ref readonly var depthStencilAttachment = ref descriptor.DepthStencilAttachment.Value;
+            ref readonly var depthStencilAttachment = ref Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencilAttachment);
             depthStencilAttachmentFFI = new()
             {
                 View = GetBorrowHandle(depthStencilAttachment.View),
@@ -57,7 +57,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             PassTimestampWritesFFI* timestampWritesFFIPtr;
             if (descriptor.TimestampWrites.HasValue)
             {
-                ref readonly var timestampWrites = ref descriptor.TimestampWrites.Value;
+                ref readonly var timestampWrites = ref Nullable.GetValueRefOrDefaultRef(in descriptor.TimestampWrites);
                 ToFFI(timestampWrites, out timestampWritesFFI);
                 timestampWritesFFIPtr = &timestampWritesFFI;
             }
