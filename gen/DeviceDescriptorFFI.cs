@@ -25,14 +25,14 @@ public unsafe partial struct DeviceDescriptorFFI
     /// <summary>
     /// the number of items in the <see cref="RequiredFeatures" /> sequence.
     /// </summary>
-    public nuint RequiredFeatureCount;
+    public nuint RequiredFeatureCount = 0;
     /// <summary>
     /// Specifies the features that are required by the device request.
     /// The request will fail if the adapter cannot provide these features.
     /// Exactly the specified set of features, and no more or less, will be allowed in validation
     /// of API calls on the resulting device.
     /// </summary>
-    public FeatureName* RequiredFeatures;
+    public FeatureName* RequiredFeatures = null;
     /// <summary>
     /// Specifies the limits that are required by the device request.
     /// The request will fail if the adapter cannot provide these limits.

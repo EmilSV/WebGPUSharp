@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp.FFI;
 
@@ -40,7 +41,15 @@ public readonly unsafe partial struct CommandBufferHandle :
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = WebGPUMarshal.ToUtf8Span(label, allocator, addNullTerminator: false);
 

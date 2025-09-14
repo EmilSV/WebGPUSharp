@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -17,9 +18,19 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateBindGroup(BindGroupDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public BindGroupHandle CreateBindGroup(in BindGroupDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 512 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
         ToFFI(
             input: descriptor.Entries,
             allocator: allocator,
@@ -48,9 +59,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateBindGroupLayout(BindGroupLayoutDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public BindGroupLayoutHandle CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 32 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -67,9 +87,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateBuffer(BufferDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public BufferHandle CreateBuffer(ref BufferDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -83,9 +112,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     /// <inheritdoc cref="CreateBuffer(BufferDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [SkipLocalsInit]
     public BufferHandle CreateBuffer(BufferDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 32 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -97,9 +135,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateCommandEncoder(CommandEncoderDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public CommandEncoderHandle CreateCommandEncoder(in CommandEncoderDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 32 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -123,9 +170,19 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateComputePipeline(ComputePipelineDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public ComputePipelineHandle CreateComputePipeline(in ComputePipelineDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
 
@@ -165,11 +222,20 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     /// <returns/>
     /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
+    [SkipLocalsInit]
     public void CreateComputePipelineAsync(
-        in ComputePipelineDescriptor descriptor,
-        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
+            in ComputePipelineDescriptor descriptor,
+            Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
@@ -211,10 +277,19 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     /// <returns>The <see cref="ComputePipelineHandle"/></returns>
     /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
+    [SkipLocalsInit]
     public Task<ComputePipelineHandle> CreateComputePipelineAsync(
-        in ComputePipelineDescriptor descriptor)
+            in ComputePipelineDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
@@ -255,9 +330,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreatePipelineLayout(PipelineLayoutDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -271,6 +355,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
             descriptorFFI.BindGroupLayouts = ptr;
             descriptorFFI.BindGroupLayoutCount = length;
+            descriptorFFI.ImmediateSize = descriptor.ImmediateSize;
 
             return CreatePipelineLayout(descriptorFFI);
         }
@@ -286,9 +371,17 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateQuerySet(QuerySetDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public QuerySetHandle CreateQuerySet(in QuerySetDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -314,9 +407,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateRenderBundleEncoder(RenderBundleEncoderDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public RenderBundleEncoderHandle CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -348,9 +450,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateRenderPipeline(RenderPipelineDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public RenderPipelineHandle CreateRenderPipeline(in RenderPipelineDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 256 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -381,11 +492,20 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     /// <returns></returns>
     /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
+    [SkipLocalsInit]
     public void CreateRenderPipelineAsync(
-        in RenderPipelineDescriptor descriptor,
-        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
+            in RenderPipelineDescriptor descriptor,
+            Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -415,9 +535,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     /// <returns>The <see cref="RenderPipelineHandle"/></returns>
     /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
+    [SkipLocalsInit]
     public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -438,9 +567,19 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateSampler(SamplerDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public SamplerHandle CreateSampler(ref SamplerDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
         SamplerDescriptorFFI descriptorFFI = descriptor._unsafeDescriptor;
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
@@ -453,9 +592,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     //// <inheritdoc cref="CreateSampler(SamplerDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public SamplerHandle CreateSampler(SamplerDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
@@ -494,9 +642,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="CreateTexture(TextureDescriptorFFI*)"/>
+    [SkipLocalsInit]
     public TextureHandle CreateTexture(ref TextureDescriptor textureDescriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(textureDescriptor.Label, allocator, addNullTerminator: false);
 
@@ -514,9 +671,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     /// <inheritdoc cref="CreateTexture(TextureDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [SkipLocalsInit]
     public TextureHandle CreateTexture(TextureDescriptor textureDescriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 32 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(textureDescriptor.Label, allocator, addNullTerminator: false);
 
@@ -604,9 +770,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return DevicePopErrorScopeHandler.DevicePopErrorScope(this);
     }
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
+    [SkipLocalsInit]
     public void SetLabel(WGPURefText label)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(label, allocator, addNullTerminator: false);
 
@@ -616,9 +791,18 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
     /// <inheritdoc cref="CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
+    [SkipLocalsInit]
     private ShaderModuleHandle CreateShaderModuleWgsl(in ShaderModuleDescriptor descriptor, WGPURefText code)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 1024 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var codeUtf8Span = ToUtf8Span(code, allocator, addNullTerminator: false);

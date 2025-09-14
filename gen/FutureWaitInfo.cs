@@ -15,7 +15,7 @@ public partial struct FutureWaitInfo
     /// <summary>
     /// Whether or not the future completed.
     /// </summary>
-    public WebGPUBool Completed = new();
+    public WebGPUBool Completed = false;
 
     public FutureWaitInfo() { }
 

@@ -1,3 +1,5 @@
+using WebGpuSharp.FFI;
+
 namespace WebGpuSharp;
 
 
@@ -180,11 +182,6 @@ public static class LimitsDefaults
     /// </summary>
     public const uint MAX_COMPUTE_WORKGROUPS_PER_DIMENSION = 65535;
 
-    public const uint MAX_STORAGE_TEXTURES_IN_VERTEX_STAGE = 0;
-    public const uint MAX_STORAGE_BUFFERS_IN_VERTEX_STAGE = 0;
-    public const uint MAX_STORAGE_BUFFERS_IN_FRAGMENT_STAGE = 4;
-    public const uint MAX_STORAGE_TEXTURES_IN_FRAGMENT_STAGE = 4;
-
     public static void SetToDefaultValues(out Limits limits)
     {
         limits = new()
@@ -220,11 +217,7 @@ public static class LimitsDefaults
             MaxComputeWorkgroupSizeZ = MAX_COMPUTE_WORKGROUP_SIZE_Z,
             MaxComputeWorkgroupsPerDimension = MAX_COMPUTE_WORKGROUPS_PER_DIMENSION,
             MaxBindGroupsPlusVertexBuffers = MAX_BIND_GROUPS_PLUS_VERTEX_BUFFERS,
-
-            MaxStorageTexturesInVertexStage = MAX_STORAGE_TEXTURES_IN_VERTEX_STAGE,
-            MaxStorageBuffersInVertexStage = MAX_STORAGE_BUFFERS_IN_VERTEX_STAGE,
-            MaxStorageBuffersInFragmentStage = MAX_STORAGE_BUFFERS_IN_FRAGMENT_STAGE,
-            MaxStorageTexturesInFragmentStage = MAX_STORAGE_TEXTURES_IN_FRAGMENT_STAGE,
+            MaxImmediateSize = WebGPU_FFI.LIMIT_U32_UNDEFINED
         };
     }
 

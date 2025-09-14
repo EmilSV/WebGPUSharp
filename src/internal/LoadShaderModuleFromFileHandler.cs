@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using Microsoft.Win32.SafeHandles;
 using WebGpuSharp.FFI;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
@@ -14,7 +15,15 @@ internal unsafe static class LoadShaderModuleFromFileHandler
             label = path;
         }
 
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 1024 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
         var (data, dataPtrAllocType) = ReadAllBytesUnsafe(path, allocator);
 
         if (dataPtrAllocType != ResultType.Success)
@@ -94,7 +103,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
 
         int index = 0;
         int count = (int)fileLength;
-        uint allocSize = (uint)count + 1;
+        int allocSize = count + 1;
         byte* bufferPtr = null;
         try
         {
@@ -134,7 +143,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
                 if (bytesRead == buffer.Length)
                 {
                     uint oldLength = (uint)buffer.Length;
-                    uint newLength = oldLength + 512;
+                    int newLength = (int)(oldLength + 512);
                     if (newLength > Array.MaxLength)
                     {
                         return new(default, ResultType.FailedFileToBig);
@@ -156,7 +165,7 @@ internal unsafe static class LoadShaderModuleFromFileHandler
                     else
                     {
                         uint oldLength = (uint)buffer.Length;
-                        uint newLength = oldLength + 1;
+                        int newLength = (int)(oldLength + 1);
                         if (newLength > Array.MaxLength)
                         {
                             return new(default, ResultType.FailedFileToBig);

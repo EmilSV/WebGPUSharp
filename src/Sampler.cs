@@ -1,22 +1,18 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref="SamplerHandle"/>
 public unsafe sealed class Sampler :
-    SamplerBase,
+    WebGPUManagedHandleBase<SamplerHandle>,
     IFromHandle<Sampler, SamplerHandle>
 {
-    private readonly WebGpuSafeHandle<SamplerHandle> _safeHandle;
-
-    protected override SamplerHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private Sampler(SamplerHandle handle)
+    private Sampler(SamplerHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<SamplerHandle>(handle);
     }
+
 
     static Sampler? IFromHandle<Sampler, SamplerHandle>.FromHandle(
         SamplerHandle handle)

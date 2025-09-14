@@ -4,7 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
@@ -90,7 +91,7 @@ public unsafe readonly partial struct AdapterHandle :
 
             WebGPU_FFI.AdapterRequestDevice(
                adapter: this,
-               options: descriptor,
+               descriptor: descriptor,
                callbackInfo: new()
                {
                    Mode = CallbackMode.AllowSpontaneous,
@@ -114,7 +115,15 @@ public unsafe readonly partial struct AdapterHandle :
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var queueLabelUtf8Span = ToUtf8Span(descriptor.DefaultQueue.Label, allocator, addNullTerminator: false);
@@ -157,7 +166,15 @@ public unsafe readonly partial struct AdapterHandle :
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
     {
-        using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * 2 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
 
         void* userData = null;
         try
@@ -202,7 +219,7 @@ public unsafe readonly partial struct AdapterHandle :
                 userData = AllocUserData(callback);
                 WebGPU_FFI.AdapterRequestDevice(
                    adapter: this,
-                   options: &deviceDescriptor,
+                   descriptor: &deviceDescriptor,
                    callbackInfo: new()
                    {
                        Mode = CallbackMode.AllowSpontaneous,

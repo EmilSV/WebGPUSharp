@@ -78,7 +78,7 @@ public readonly ref struct WGPURefText
 
     public bool TryGetByteSpan(out ReadOnlySpan<byte> outSpan)
     {
-        if (Is16BitSize)
+        if (!Is16BitSize)
         {
             ref var refChar = ref Unsafe.AsRef(in _reference);
             outSpan = MemoryMarshal.CreateReadOnlySpan(in _reference, Length);

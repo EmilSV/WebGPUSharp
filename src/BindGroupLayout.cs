@@ -1,21 +1,16 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref="BindGroupLayoutHandle"/>
 public sealed class BindGroupLayout :
-    BindGroupLayoutBase,
+    WebGPUManagedHandleBase<BindGroupLayoutHandle>,
     IFromHandle<BindGroupLayout, BindGroupLayoutHandle>
 {
-    private readonly WebGpuSafeHandle<BindGroupLayoutHandle> _safeHandle;
-
-    protected override BindGroupLayoutHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private BindGroupLayout(BindGroupLayoutHandle handle)
+    private BindGroupLayout(BindGroupLayoutHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<BindGroupLayoutHandle>(handle);
     }
 
     static BindGroupLayout? IFromHandle<BindGroupLayout, BindGroupLayoutHandle>.FromHandle(

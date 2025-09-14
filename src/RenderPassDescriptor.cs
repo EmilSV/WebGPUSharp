@@ -12,7 +12,7 @@ public ref partial struct RenderPassDescriptor
     /// <inheritdoc cref="RenderPassDescriptorFFI.DepthStencilAttachment"/>
     public WGPUNullableRef<RenderPassDepthStencilAttachment> DepthStencilAttachment;
     /// <inheritdoc cref="RenderPassDescriptorFFI.OcclusionQuerySet"/>
-    public QuerySetBase? OcclusionQuerySet;
+    public QuerySet? OcclusionQuerySet;
     /// <inheritdoc cref="RenderPassDescriptorFFI.TimestampWrites"/>
     public WGPUNullableRef<PassTimestampWrites> TimestampWrites;
 }

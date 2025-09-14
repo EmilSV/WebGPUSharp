@@ -105,10 +105,10 @@ public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundle
     /// 
     /// Errors if vertices Range is outside of the range of the vertices range of any set vertex buffer.
     /// </summary>
-    /// <param name="firstInstance">The index of the first instance to draw.</param>
     /// <param name="firstVertex">The index of the first vertex to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
     /// <param name="vertexCount">The number of vertices to draw.</param>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
     public void Draw(uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance) => WebGPU_FFI.RenderBundleEncoderDraw(this, vertexCount, instanceCount, firstVertex, firstInstance);
 
     /// <summary>
@@ -210,10 +210,10 @@ public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundle
     /// 
     /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
     /// </summary>
-    /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     /// <param name="offset">Offset in bytes into buffer where the vertex data begins.</param>
     /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
+    /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     public void SetVertexBuffer(uint slot, BufferHandle buffer, ulong offset, ulong size) => WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, buffer, offset, size);
 
     /// <summary>

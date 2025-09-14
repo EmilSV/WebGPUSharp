@@ -15,7 +15,7 @@ public unsafe partial struct TexelCopyBufferInfoFFI
     /// <summary>
     /// The buffer to be copied to/from.
     /// </summary>
-    public BufferHandle Buffer;
+    public required BufferHandle Buffer;
 
     public TexelCopyBufferInfoFFI() { }
 

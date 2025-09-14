@@ -1,22 +1,18 @@
 
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc />
+/// <inheritdoc cref ="TextureViewHandle" />
 public sealed class TextureView :
-    TextureViewBase,
+    WebGPUManagedHandleBase<TextureViewHandle>,
     IFromHandle<TextureView, TextureViewHandle>
 {
-    private readonly WebGpuSafeHandle<TextureViewHandle> _safeHandle;
 
-    protected override TextureViewHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private TextureView(TextureViewHandle handle)
+    private TextureView(TextureViewHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<TextureViewHandle>(handle);
     }
 
     static TextureView? IFromHandle<TextureView, TextureViewHandle>.FromHandle(

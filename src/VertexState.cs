@@ -1,22 +1,23 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="VertexStateFFI" />
-public struct VertexState : IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>
-{   
+public struct VertexState : IWebGpuMarshallableAlloc<VertexState, VertexStateFFI>
+{
     /// <inheritdoc cref="VertexStateFFI.Module" />
     public required ShaderModule Module;
     /// <inheritdoc cref="VertexStateFFI.EntryPoint" />
     public string? EntryPoint;
     /// <inheritdoc cref="VertexStateFFI.Constants" />
-    public ConstantEntryList? Constants;
+    public WebGpuManagedSpan<ConstantEntry> Constants;
     /// <inheritdoc cref="VertexStateFFI.Buffers" />
-    public VertexBufferLayoutList? Buffers;
+    public WebGpuManagedSpan<VertexBufferLayout> Buffers;
 
-    static unsafe void IWebGpuFFIConvertibleAlloc<VertexState, VertexStateFFI>.UnsafeConvertToFFI(
+    static unsafe void IWebGpuMarshallableAlloc<VertexState, VertexStateFFI>.MarshalToFFI(
         in VertexState input, WebGpuAllocatorHandle allocator, out VertexStateFFI dest)
     {
         dest = default;

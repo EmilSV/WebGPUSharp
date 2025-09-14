@@ -6,7 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Unicode;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 namespace WebGpuSharp.FFI;
 
 
@@ -80,23 +81,29 @@ public readonly unsafe partial struct InstanceHandle :
     /// <inheritdoc cref="CreateSurface(SurfaceDescriptorFFI*)"/>
     public SurfaceHandle CreateSurface(SurfaceDescriptor descriptor)
     {
-        unsafe
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 16 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+
+        ref var next = ref descriptor._next;
+
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
+
+        fixed (byte* labelPtr = labelUtf8Span)
+        fixed (ChainedStruct* nextPtr = &next)
         {
-            using WebGpuAllocatorHandle allocator = WebGpuAllocatorHandle.Get();
-            ref var next = ref descriptor._next;
-
-            var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: true);
-
-            fixed (byte* labelPtr = labelUtf8Span)
-            fixed (ChainedStruct* nextPtr = &next)
+            SurfaceDescriptorFFI surfaceDescriptor = new()
             {
-                SurfaceDescriptorFFI surfaceDescriptor = new()
-                {
-                    NextInChain = nextPtr,
-                    Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length)
-                };
-                return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
-            }
+                NextInChain = nextPtr,
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length)
+            };
+            return WebGPU_FFI.InstanceCreateSurface(this, &surfaceDescriptor);
         }
     }
 

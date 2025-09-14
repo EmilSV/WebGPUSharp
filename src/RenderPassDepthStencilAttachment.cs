@@ -1,13 +1,16 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
+
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="RenderPassDepthStencilAttachmentFFI"/>
 public struct RenderPassDepthStencilAttachment :
-     IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>
+     IWebGpuMarshallable<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>
 {
     /// <inheritdoc cref="RenderPassDepthStencilAttachmentFFI.View"/>
-    public required TextureViewBase View;
+    public required TextureView View;
     /// <inheritdoc cref="RenderPassDepthStencilAttachmentFFI.DepthLoadOp"/>
     public LoadOp DepthLoadOp;
     /// <inheritdoc cref="RenderPassDepthStencilAttachmentFFI.DepthStoreOp"/>
@@ -29,11 +32,11 @@ public struct RenderPassDepthStencilAttachment :
     {
     }
 
-    static void IWebGpuFFIConvertibleAlloc<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.UnsafeConvertToFFI(
-        in RenderPassDepthStencilAttachment input, WebGpuAllocatorHandle allocator, out RenderPassDepthStencilAttachmentFFI dest)
+    static void IWebGpuMarshallable<RenderPassDepthStencilAttachment, RenderPassDepthStencilAttachmentFFI>.MarshalToFFI(
+        in RenderPassDepthStencilAttachment input, out RenderPassDepthStencilAttachmentFFI dest)
     {
         dest = default;
-        dest.View = allocator.GetHandle(input.View);
+        dest.View = GetBorrowHandle(input.View);
         dest.DepthLoadOp = input.DepthLoadOp;
         dest.DepthStoreOp = input.DepthStoreOp;
         dest.DepthClearValue = input.DepthClearValue;

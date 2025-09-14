@@ -101,7 +101,7 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// </summary>
     /// <param name="features">A pointer to struct to fill with supported extension</param>
     /// <returns>The status of the operation</returns>
-    public Status GetWGSLLanguageFeatures(SupportedWGSLLanguageFeaturesFFI* features) => WebGPU_FFI.InstanceGetWGSLLanguageFeatures(this, features);
+    public void GetWGSLLanguageFeatures(SupportedWGSLLanguageFeaturesFFI* features) => WebGPU_FFI.InstanceGetWGSLLanguageFeatures(this, features);
 
     /// <summary>
     /// check if a WGSL language extensions is supported by this instance.
@@ -125,9 +125,9 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// <summary>
     /// Wait for at least one Future in `futures` to complete, and call callbacks of the respective completed asynchronous operations.
     /// </summary>
-    /// <param name="timeoutNS">The timeout in nanoseconds</param>
     /// <param name="futures">The futures to wait for</param>
     /// <param name="futureCount">The number of futures to wait for</param>
+    /// <param name="timeoutNS">The timeout in nanoseconds</param>
     public WaitStatus WaitAny(nuint futureCount, FutureWaitInfo* futures, ulong timeoutNS) => WebGPU_FFI.InstanceWaitAny(this, futureCount, futures, timeoutNS);
 
     /// <summary>

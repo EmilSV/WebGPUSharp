@@ -32,7 +32,7 @@ public unsafe partial struct SurfaceConfigurationFFI
     /// <summary>
     /// The usage of the swap chain.
     /// </summary>
-    public TextureUsage Usage;
+    public TextureUsage Usage = TextureUsage.RenderAttachment;
     /// <summary>
     /// Width of the swap chain. Must be the same size as the surface, and nonzero.
     /// 
@@ -52,22 +52,22 @@ public unsafe partial struct SurfaceConfigurationFFI
     /// <summary>
     /// The number of view formats in the <see cref="ViewFormats" /> sequence.
     /// </summary>
-    public nuint ViewFormatCount;
+    public nuint ViewFormatCount = 0;
     /// <summary>
     /// Specifies what view formats will be allowed when calling <see cref="TextureHandle.CreateView" /> on the texture returned by <see cref="SurfaceHandle.GetCurrentTexture" />.
     /// View formats of the same format as the texture are always allowed.
     /// </summary>
-    public TextureFormat* ViewFormats;
+    public TextureFormat* ViewFormats = null;
     /// <summary>
     /// Specifies how the alpha channel of the textures should be handled during compositing.
     /// </summary>
-    public CompositeAlphaMode AlphaMode;
+    public CompositeAlphaMode AlphaMode = CompositeAlphaMode.Auto;
     /// <summary>
     /// Presentation mode of the swap chain.
     /// Fifo is the only mode guaranteed to be supported. FifoRelaxed, Immediate,
     /// and Mailbox will crash if unsupported.
     /// </summary>
-    public PresentMode PresentMode;
+    public PresentMode PresentMode = PresentMode.Fifo;
 
     public SurfaceConfigurationFFI() { }
 

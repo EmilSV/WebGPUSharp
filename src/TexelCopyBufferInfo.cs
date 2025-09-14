@@ -1,17 +1,18 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="TexelCopyBufferInfoFFI"/>
-public struct TexelCopyBufferInfo : IWebGpuFFIConvertible<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>
+public struct TexelCopyBufferInfo : IWebGpuMarshallable<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>
 {
     /// <inheritdoc cref="TexelCopyBufferInfoFFI.Layout"/>
     public TexelCopyBufferLayout Layout;
     /// <inheritdoc cref="TexelCopyBufferInfoFFI.Buffer"/>
-    public required BufferBase Buffer;
+    public required Buffer Buffer;
 
-    static void IWebGpuFFIConvertible<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>.UnsafeConvertToFFI(
+    static void IWebGpuMarshallable<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>.MarshalToFFI(
         in TexelCopyBufferInfo input, out TexelCopyBufferInfoFFI dest)
     {
         dest = new()
@@ -19,11 +20,5 @@ public struct TexelCopyBufferInfo : IWebGpuFFIConvertible<TexelCopyBufferInfo, T
             Layout = input.Layout,
             Buffer = WebGPUMarshal.GetBorrowHandle(input.Buffer)
         };
-    }
-
-    static void IWebGpuFFIConvertibleAlloc<TexelCopyBufferInfo, TexelCopyBufferInfoFFI>.UnsafeConvertToFFI(
-        in TexelCopyBufferInfo input, WebGpuAllocatorHandle allocator, out TexelCopyBufferInfoFFI dest)
-    {
-        WebGPUMarshal.ToFFI(input, out dest);
     }
 }

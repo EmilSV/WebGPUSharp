@@ -1,21 +1,28 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref="ComputePipelineHandle"/>
 public sealed class ComputePipeline :
-    ComputePipelineBase,
+    WebGPUManagedHandleBase<ComputePipelineHandle>,
     IFromHandle<ComputePipeline, ComputePipelineHandle>
 {
-    private readonly WebGpuSafeHandle<ComputePipelineHandle> _safeHandle;
-
-    protected override ComputePipelineHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private ComputePipeline(ComputePipelineHandle handle)
+    private ComputePipeline(ComputePipelineHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<ComputePipelineHandle>(handle);
+    }
+
+    /// <inheritdoc cref="ComputePipelineHandle.GetBindGroupLayout(uint)"/>
+    public BindGroupLayout? GetBindGroupLayout(uint groupIndex)
+    {
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false);
+    }
+
+    /// <inheritdoc cref="ComputePipelineHandle.SetLabel(WGPURefText)"/>
+    public void SetLabel(WGPURefText label)
+    {
+        Handle.SetLabel(label);
     }
 
     static ComputePipeline? IFromHandle<ComputePipeline, ComputePipelineHandle>.FromHandle(

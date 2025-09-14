@@ -1,21 +1,39 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
 /// <inheritdoc cref />
 public sealed class QuerySet :
-    QuerySetBase,
+    WebGPUManagedHandleBase<QuerySetHandle>,
     IFromHandle<QuerySet, QuerySetHandle>
 {
-    private readonly WebGpuSafeHandle<QuerySetHandle> _safeHandle;
-
-    protected override QuerySetHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private QuerySet(QuerySetHandle handle)
+    private QuerySet(QuerySetHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<QuerySetHandle>(handle);
+    }
+
+    /// <inheritdoc cref="QuerySetHandle.Destroy()" />
+    public void Destroy()
+    {
+        Handle.Destroy();
+    }
+    /// <inheritdoc cref="QuerySetHandle.GetCount" />
+    public uint GetCount()
+    {
+        return Handle.GetCount();
+    }
+
+    /// <inheritdoc cref="QuerySetHandle.GetQueryType" />
+    public QueryType GetQueryType()
+    {
+        return Handle.GetQueryType();
+    }
+
+    /// <inheritdoc cref="QuerySetHandle.SetLabel(WGPURefText)" />
+    public void SetLabel(WGPURefText label)
+    {
+        Handle.SetLabel(label);
     }
 
     static QuerySet? IFromHandle<QuerySet, QuerySetHandle>.FromHandle(

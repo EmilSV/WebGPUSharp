@@ -5,8 +5,8 @@ namespace WebGpuSharp.FFI;
 
 /// <summary>
 /// Handle to a physical graphics and/or compute device.
-/// Adapters can be created using Instance::request_adapter or other Instance methods.
-/// Adapters can be used to open a connection to the corresponding Device on the host system by using Adapter::request_device.
+/// Adapters can be created using <see cref="InstanceHandle.RequestAdapter" /> or other Instance methods.
+/// Adapters can be used to open a connection to the corresponding Device on the host system by using <see cref="RequestDevice" />.
 /// Does not have to be kept alive.
 /// </summary>
 public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
@@ -128,7 +128,7 @@ public unsafe partial struct AdapterHandle : IEquatable<AdapterHandle>
     /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
     /// <param name="callbackInfo">The callback to call when the device is ready</param>
     /// <param name="options">The device descriptor to use.</param>
-    public Future RequestDevice(DeviceDescriptorFFI* options, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, options, callbackInfo);
+    public Future RequestDevice(DeviceDescriptorFFI* descriptor, RequestDeviceCallbackInfoFFI callbackInfo) => WebGPU_FFI.AdapterRequestDevice(this, descriptor, callbackInfo);
 
     /// <summary>
     /// Increments the reference count of the <see cref="AdapterHandle"/>.

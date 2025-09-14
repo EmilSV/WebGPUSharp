@@ -109,8 +109,8 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// Schedules the execution of the command buffers by the GPU on this queue.
     /// Submitted command buffers cannot be used again.
     /// </summary>
-    /// <param name="commands">The command buffers to submit.</param>
     /// <param name="commandCount">The number of command buffers to submit.</param>
+    /// <param name="commands">The command buffers to submit.</param>
     public void Submit(nuint commandCount, CommandBufferHandle* commands) => WebGPU_FFI.QueueSubmit(this, commandCount, commands);
 
     /// <summary>
@@ -135,8 +135,8 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// <param name="destination">The texture subresource and origin to write to.</param>
     /// <param name="data">Data to write into <paramref name="destination"/>.</param>
     /// <param name="dataLayout">Layout of the content in <paramref name="data"/>.</param>
-    /// <param name="dataSize">The size of the data to write.</param>
     /// <param name="writeSize">Extents of the content to write from <paramref name="data" /> to <paramref name="destination" />.</param>
+    /// <param name="dataSize">The size of the data to write.</param>
     public void WriteTexture(TexelCopyTextureInfoFFI* destination, void* data, nuint dataSize, TexelCopyBufferLayout* dataLayout, Extent3D* writeSize) => WebGPU_FFI.QueueWriteTexture(this, destination, data, dataSize, dataLayout, writeSize);
 
     /// <summary>

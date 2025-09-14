@@ -40,7 +40,7 @@ public unsafe partial struct RenderBundleEncoderDescriptorFFI
     /// <summary>
     /// The sample count of the render targets.
     /// </summary>
-    public uint SampleCount;
+    public uint SampleCount = 1;
     /// <summary>
     /// If `true`, indicates that the render bundle does not modify the depth component of the
     ///  <see cref="RenderPassDepthStencilAttachment"/> of any render pass the render bundle is executed

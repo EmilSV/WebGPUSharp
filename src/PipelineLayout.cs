@@ -1,21 +1,16 @@
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
+using WebGpuSharp.Marshalling;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref ="PipelineLayoutHandle"/>
 public sealed class PipelineLayout :
-    PipelineLayoutBase,
+    WebGPUManagedHandleBase<PipelineLayoutHandle>,
     IFromHandle<PipelineLayout, PipelineLayoutHandle>
 {
-    private readonly WebGpuSafeHandle<PipelineLayoutHandle> _safeHandle;
-
-    protected override PipelineLayoutHandle Handle => _safeHandle.Handle;
-    protected override bool HandleWrapperSameLifetime => true;
-
-    private PipelineLayout(PipelineLayoutHandle handle)
+    private PipelineLayout(PipelineLayoutHandle handle) : base(handle)
     {
-        _safeHandle = new WebGpuSafeHandle<PipelineLayoutHandle>(handle);
     }
 
     static PipelineLayout? IFromHandle<PipelineLayout, PipelineLayoutHandle>.FromHandle(

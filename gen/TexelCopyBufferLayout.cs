@@ -11,7 +11,7 @@ public partial struct TexelCopyBufferLayout
     /// <summary>
     /// Offset into the buffer that is the start of the texture. Must be a multiple of texture block size. For non-compressed textures, this is 1.
     /// </summary>
-    public ulong Offset;
+    public ulong Offset = 0;
     /// <summary>
     /// Bytes per “row” in an image.
     /// A row is one row of pixels or of compressed blocks in the x direction.
@@ -21,7 +21,7 @@ public partial struct TexelCopyBufferLayout
     /// <see cref="Queue.WriteTexture" /> does not have this requirement.
     /// Must be a multiple of the texture block size. For non-compressed textures, this is 1.
     /// </summary>
-    public uint BytesPerRow;
+    public uint BytesPerRow = FFI.WebGPU_FFI.COPY_STRIDE_UNDEFINED;
     /// <summary>
     /// “Rows” that make up a single “image”.
     /// A row is one row of pixels or of compressed blocks in the x direction.
@@ -29,7 +29,7 @@ public partial struct TexelCopyBufferLayout
     /// The amount of rows per image may be larger than the actual amount of rows of data.
     /// Required if there are multiple images (i.e. the depth is more than one).
     /// </summary>
-    public uint RowsPerImage;
+    public uint RowsPerImage = FFI.WebGPU_FFI.COPY_STRIDE_UNDEFINED;
 
     public TexelCopyBufferLayout() { }
 

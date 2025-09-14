@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
-using static WebGpuSharp.FFI.WebGPUMarshal;
+using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
@@ -58,7 +58,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    public static void OnCallback(
+    private static void OnCallback(
         CompilationInfoRequestStatus status, CompilationInfoFFI* compilationInfo, void* userdata, void* _)
     {
         try

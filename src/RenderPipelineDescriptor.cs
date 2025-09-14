@@ -9,7 +9,7 @@ public ref struct RenderPipelineDescriptor
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Label"/>
     public WGPURefText Label;
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Layout"/>
-    public required PipelineLayoutBase? Layout;
+    public required PipelineLayout? Layout;
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Vertex"/>
     public required ref readonly VertexState Vertex;
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Primitive"/>
