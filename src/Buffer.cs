@@ -227,6 +227,14 @@ public sealed class Buffer :
         GetConstMappedRange(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback);
     }
 
+    /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
+    public unsafe void GetConstMappedRange<T,TState>(Action<ReadOnlySpan<T>, TState> callback, TState state)
+        where T : unmanaged
+        where TState : allows ref struct
+    {
+        GetConstMappedRange(0, (nuint)(GetSize() / (ulong)sizeof(T)), callback, state);
+    }
+
     /// <param name="callback">The callback to be called with the mapped range.</param>
     /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
     public unsafe void GetMappedRange<T>(nuint offset, nuint size, Action<Span<T>> callback)
