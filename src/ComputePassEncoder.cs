@@ -5,70 +5,127 @@ using WebGpuSharp.Marshalling;
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="ComputePassEncoderHandle"/>
-public sealed class ComputePassEncoder :
-    WebGPUManagedHandleBase<ComputePassEncoderHandle>,
-    IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>
+public readonly struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
+    IDebugCommands
 {
-    private ComputePassEncoder(ComputePassEncoderHandle handle) : base(handle)
+    private readonly ulong _localToken;
+    private readonly ComputePassEncoderHandle _originalHandle;
+    private readonly PooledHandle<ComputePassEncoderHandle> _pooledHandle;
+
+
+    private ComputePassEncoder(PooledHandle<ComputePassEncoderHandle> handle)
     {
+        _originalHandle = handle.Handle;
+        _localToken = handle.Token;
+        _pooledHandle = handle;
+    }
+
+    internal static ComputePassEncoder FromHandle(ComputePassEncoderHandle handle)
+    {
+        var newComputePassEncoderPooledHandle = PooledHandle<ComputePassEncoderHandle>.Get(handle);
+        return new ComputePassEncoder(newComputePassEncoderPooledHandle);
+    }
+
+    internal ComputePassEncoderHandle GetOwnedHandle()
+    {
+        return _pooledHandle.GetOwnedHandle(_localToken);
     }
 
     /// <inheritdoc cref="ComputePassEncoderHandle.DispatchWorkgroups(uint, uint, uint)"/>
-    public void DispatchWorkgroups(uint workgroupCountX, uint workgroupCountY, uint workgroupCountZ) =>
-        Handle.DispatchWorkgroups(workgroupCountX, workgroupCountY, workgroupCountZ);
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.DispatchWorkgroupsIndirect(Buffer, ulong)"/>
-    public void DispatchWorkgroupsIndirect(Buffer indirectBuffer, ulong indirectOffset) =>
-        Handle.DispatchWorkgroupsIndirect(indirectBuffer, indirectOffset);
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.End()"/>
-    public void End() => Handle.End();
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.InsertDebugMarker(WGPURefText)"/>
-    public void InsertDebugMarker(WGPURefText markerLabel) =>
-        Handle.InsertDebugMarker(markerLabel);
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.PopDebugGroup()"/>
-    public void PopDebugGroup() =>
-        Handle.PopDebugGroup();
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.PushDebugGroup(WGPURefText)"/>
-    public void PushDebugGroup(WGPURefText groupLabel) =>
-        Handle.PushDebugGroup(groupLabel);
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.SetBindGroup(uint, BindGroup, ReadOnlySpan{uint})"/>
-    public void SetBindGroup(
-        uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets) =>
-        Handle.SetBindGroup(groupIndex, group, dynamicOffsets);
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.SetLabel(WGPURefText)"/>
-    public void SetLabel(WGPURefText label) =>
-        Handle.SetLabel(label);
-
-    /// <inheritdoc cref="ComputePassEncoderHandle.SetPipeline(ComputePipeline)"/>
-    public void SetPipeline(ComputePipeline pipeline) =>
-        Handle.SetPipeline(pipeline);
-
-    static ComputePassEncoder? IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>.FromHandle(
-        ComputePassEncoderHandle handle)
+    public void DispatchWorkgroups(uint workgroupCountX, uint workgroupCountY = 1, uint workgroupCountZ = 1)
     {
-        if (ComputePassEncoderHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        ComputePassEncoderHandle.Reference(handle);
-        return new(handle);
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.DispatchWorkgroups(workgroupCountX, workgroupCountY, workgroupCountZ);
     }
 
-    static ComputePassEncoder? IFromHandle<ComputePassEncoder, ComputePassEncoderHandle>.FromHandleNoRefIncrement(
-        ComputePassEncoderHandle handle)
+    /// <inheritdoc cref="ComputePassEncoderHandle.DispatchWorkgroupsIndirect(Buffer, ulong)"/>
+    public void DispatchWorkgroupsIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
-        if (ComputePassEncoderHandle.IsNull(handle))
-        {
-            return null;
-        }
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.DispatchWorkgroupsIndirect(indirectBuffer, indirectOffset);
+    }
 
-        return new(handle);
+    /// <inheritdoc cref="ComputePassEncoderHandle.End()"/>
+    public void End()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.End();
+        PooledHandle<ComputePassEncoderHandle>.Return(_pooledHandle);
+    }
+
+    /// <inheritdoc cref="ComputePassEncoderHandle.InsertDebugMarker(WGPURefText)"/>
+    public void InsertDebugMarker(WGPURefText markerLabel)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.InsertDebugMarker(markerLabel);
+    }
+    /// <inheritdoc cref="ComputePassEncoderHandle.PopDebugGroup()"/>
+    public void PopDebugGroup()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.PopDebugGroup();
+    }
+
+    /// <inheritdoc cref="ComputePassEncoderHandle.PushDebugGroup(WGPURefText)"/>
+    public void PushDebugGroup(WGPURefText groupLabel)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.PushDebugGroup(groupLabel);
+    }
+
+    /// <inheritdoc cref="ComputePassEncoderHandle.SetBindGroup(uint, BindGroup, ReadOnlySpan{uint})"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group, ReadOnlySpan<uint> dynamicOffsets)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.SetBindGroup(groupIndex, group, dynamicOffsets);
+    }
+
+    /// <inheritdoc cref="ComputePassEncoderHandle.SetBindGroup(uint, BindGroup)"/>
+    public void SetBindGroup(uint groupIndex, BindGroup group)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.SetBindGroup(groupIndex, group);
+    }
+
+
+    /// <inheritdoc cref="ComputePassEncoderHandle.SetLabel(WGPURefText)"/>
+    public void SetLabel(WGPURefText label)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.SetLabel(label);
+    }
+
+    /// <inheritdoc cref="ComputePassEncoderHandle.SetPipeline(ComputePipeline)"/>
+    public void SetPipeline(ComputePipeline pipeline)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _pooledHandle.Handle.SetPipeline(pipeline);
+    }
+
+    public bool Equals(ComputePassEncoder other)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        other._pooledHandle.VerifyToken(other._localToken);
+        return _originalHandle.Equals(other._originalHandle);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is ComputePassEncoder other && Equals(other);
+    }
+
+    public static bool operator ==(ComputePassEncoder left, ComputePassEncoder right)
+    {
+        return left._originalHandle == right._originalHandle;
+    }
+
+    public static bool operator !=(ComputePassEncoder left, ComputePassEncoder right)
+    {
+        return left._originalHandle != right._originalHandle;
+    }
+
+    public override int GetHashCode()
+    {
+        return _originalHandle.GetHashCode();
     }
 }

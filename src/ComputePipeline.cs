@@ -14,9 +14,9 @@ public sealed class ComputePipeline :
     }
 
     /// <inheritdoc cref="ComputePipelineHandle.GetBindGroupLayout(uint)"/>
-    public BindGroupLayout? GetBindGroupLayout(uint groupIndex)
+    public BindGroupLayout GetBindGroupLayout(uint groupIndex)
     {
-        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false);
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false)!;
     }
 
     /// <inheritdoc cref="ComputePipelineHandle.SetLabel(WGPURefText)"/>

@@ -109,6 +109,20 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
+    /// <inheritdoc cref="SetBindGroup(uint, BindGroupHandle, nuint, uint*)"/>
+    public void SetBindGroup(
+        uint groupIndex, BindGroup group)
+    {
+        WebGPU_FFI.ComputePassEncoderSetBindGroup(
+            computePassEncoder: this,
+            groupIndex: groupIndex,
+            group: GetBorrowHandle(group),
+            dynamicOffsetCount: 0,
+            dynamicOffsets: null
+        );
+    }
+
+
 
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)
@@ -151,16 +165,9 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         }
     }
 
-    public ComputePassEncoder? ToSafeHandle(bool incrementRefCount)
+    public ComputePassEncoder ToSafeHandle()
     {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<ComputePassEncoder, ComputePassEncoderHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<ComputePassEncoder, ComputePassEncoderHandle>(this);
-        }
+        return ComputePassEncoder.FromHandle(this);
     }
 
     public static ref UIntPtr AsPointer(ref ComputePassEncoderHandle handle)

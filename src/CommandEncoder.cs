@@ -14,8 +14,8 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 
     private CommandEncoder(PooledHandle<CommandEncoderHandle> pooledHandle)
     {
-        _originalHandle = pooledHandle.handle;
-        _localToken = pooledHandle.token;
+        _originalHandle = pooledHandle.Handle;
+        _localToken = pooledHandle.Token;
         _pooledHandle = pooledHandle;
     }
 
@@ -25,10 +25,18 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         return new CommandEncoder(newCommandEncoderPooledHandle);
     }
 
+    /// <inheritdoc cref="CommandEncoderHandle.BeginComputePass(ComputePassDescriptorFFI*)"/>
+    public ComputePassEncoder BeginComputePass(in ComputePassDescriptor descriptor)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        return _pooledHandle.Handle.BeginComputePass(descriptor).ToSafeHandle();
+    }
+
+    /// <inheritdoc cref="CommandEncoderHandle.BeginRenderPass(RenderPassDescriptorFFI*)"/>
     public RenderPassEncoder BeginRenderPass(in RenderPassDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
-        return _pooledHandle.handle.BeginRenderPass(descriptor).ToSafeHandle();
+        return _pooledHandle.Handle.BeginRenderPass(descriptor).ToSafeHandle();
     }
 
 
@@ -40,7 +48,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     )
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.CopyBufferToBuffer(
+        _pooledHandle.Handle.CopyBufferToBuffer(
             GetBorrowHandle(source),
             0,
             GetBorrowHandle(destination),
@@ -59,7 +67,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     )
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.CopyBufferToBuffer(
+        _pooledHandle.Handle.CopyBufferToBuffer(
             GetBorrowHandle(source),
             sourceOffset,
             GetBorrowHandle(destination),
@@ -72,49 +80,49 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.ClearBuffer(buffer, offset, size);
+        _pooledHandle.Handle.ClearBuffer(buffer, offset, size);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyBufferToTexture(in TexelCopyBufferInfo, in TexelCopyTextureInfo, in Extent3D)"/>
     public void CopyBufferToTexture(in TexelCopyBufferInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.CopyBufferToTexture(source, destination, copySize);
+        _pooledHandle.Handle.CopyBufferToTexture(source, destination, copySize);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyTextureToBuffer(in TexelCopyTextureInfo, in TexelCopyBufferInfo, in Extent3D)"/>
     public void CopyTextureToBuffer(in TexelCopyTextureInfo source, in TexelCopyBufferInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.CopyTextureToBuffer(source, destination, copySize);
+        _pooledHandle.Handle.CopyTextureToBuffer(source, destination, copySize);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyTextureToTexture(in TexelCopyTextureInfo, in TexelCopyTextureInfo, in Extent3D)"/>
     public void CopyTextureToTexture(in TexelCopyTextureInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.CopyTextureToTexture(source, destination, copySize);
+        _pooledHandle.Handle.CopyTextureToTexture(source, destination, copySize);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.InsertDebugMarker(WGPURefText)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.InsertDebugMarker(markerLabel);
+        _pooledHandle.Handle.InsertDebugMarker(markerLabel);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.PopDebugGroup"/>
     public void PopDebugGroup()
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.PopDebugGroup();
+        _pooledHandle.Handle.PopDebugGroup();
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.PushDebugGroup(WGPURefText)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.PushDebugGroup(groupLabel);
+        _pooledHandle.Handle.PushDebugGroup(groupLabel);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.ResolveQuerySet(QuerySet, uint, uint, Buffer, ulong)"/>
@@ -123,21 +131,21 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         Buffer destination, ulong destinationOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.ResolveQuerySet(querySet, firstQuery, queryCount, destination, destinationOffset);
+        _pooledHandle.Handle.ResolveQuerySet(querySet, firstQuery, queryCount, destination, destinationOffset);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.SetLabel(WGPURefText)"/>
     public void SetLabel(WGPURefText label)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.handle.SetLabel(label);
+        _pooledHandle.Handle.SetLabel(label);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.Finish(in CommandBufferDescriptor)"/>
     public CommandBuffer Finish(in CommandBufferDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
-        var commandBufferHandle = _pooledHandle.handle.Finish(descriptor);
+        var commandBufferHandle = _pooledHandle.Handle.Finish(descriptor);
         PooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
         return commandBufferHandle.ToSafeHandle();
     }
@@ -146,7 +154,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     public CommandBuffer Finish()
     {
         _pooledHandle.VerifyToken(_localToken);
-        var commandBufferHandle = _pooledHandle.handle.Finish();
+        var commandBufferHandle = _pooledHandle.Handle.Finish();
         PooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
         return commandBufferHandle.ToSafeHandle();
     }
@@ -155,7 +163,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         other._pooledHandle.VerifyToken(other._localToken);
-        return _pooledHandle.handle == other._pooledHandle.handle;
+        return _pooledHandle.Handle == other._pooledHandle.Handle;
     }
 
     public override bool Equals(object? obj)
@@ -177,4 +185,6 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         return _originalHandle.GetHashCode();
     }
+
+
 }

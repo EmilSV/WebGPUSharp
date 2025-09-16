@@ -8,6 +8,52 @@ namespace WebGpuSharp.FFI;
 public readonly unsafe partial struct CommandEncoderHandle :
     IDisposable, IWebGpuHandle<CommandEncoderHandle>
 {
+    /// <inheritdoc cref="BeginComputePass(ComputePassDescriptorFFI*)"/>
+    [SkipLocalsInit]
+    public ComputePassEncoderHandle BeginComputePass(in ComputePassDescriptor descriptor)
+    {
+        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
+        const int stackAllocSize = 256 * sizeof(byte);
+        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
+
+        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
+            ref allocatorLogicBlock,
+            stackAllocPtr,
+            stackAllocSize
+        );
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
+        fixed (byte* labelPtr = labelUtf8Span)
+        {
+            PassTimestampWritesFFI timestampWritesFFI;
+            PassTimestampWritesFFI* timestampWritesFFIPtr;
+            if (descriptor.TimestampWrites.HasValue)
+            {
+                ref readonly var timestampWrites = ref Nullable.GetValueRefOrDefaultRef(in descriptor.TimestampWrites);
+                ToFFI(timestampWrites, out timestampWritesFFI);
+                timestampWritesFFIPtr = &timestampWritesFFI;
+            }
+            else
+            {
+                timestampWritesFFIPtr = null;
+            }
+
+            ComputePassDescriptorFFI descriptorFFI = new()
+            {
+                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
+                TimestampWrites = timestampWritesFFIPtr
+            };
+            return BeginComputePass(in descriptorFFI);
+        }
+    }
+    /// <inheritdoc cref="BeginComputePass(ComputePassDescriptorFFI*)"/>
+    public ComputePassEncoderHandle BeginComputePass(in ComputePassDescriptorFFI descriptor)
+    {
+        fixed (ComputePassDescriptorFFI* descriptorPtr = &descriptor)
+        {
+            return WebGPU_FFI.CommandEncoderBeginComputePass(this, descriptorPtr);
+        }
+    }
+
     /// <inheritdoc cref="BeginRenderPass(RenderPassDescriptorFFI*)"/>
     [SkipLocalsInit]
     public RenderPassEncoderHandle BeginRenderPass(in RenderPassDescriptor descriptor)
@@ -88,6 +134,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             return WebGPU_FFI.CommandEncoderBeginRenderPass(this, descriptorPtr);
         }
     }
+
 
     /// <inheritdoc cref="ClearBuffer(BufferHandle, ulong, ulong)"/>
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)

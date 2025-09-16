@@ -19,8 +19,8 @@ internal unsafe sealed class PooledHandle<T>
 
         if (_pool.TryDequeue(out var result))
         {
-            result.token = token;
-            result.handle = handle;
+            result.Token = token;
+            result.Handle = handle;
             return result;
         }
 
@@ -29,8 +29,8 @@ internal unsafe sealed class PooledHandle<T>
 
     public static void Return(PooledHandle<T> pooledHandle)
     {
-        var oldHandle = pooledHandle.handle;
-        ref var ptr = ref T.AsPointer(ref pooledHandle.handle);
+        var oldHandle = pooledHandle.Handle;
+        ref var ptr = ref T.AsPointer(ref pooledHandle.Handle);
         var oldPtr = T.AsPointer(ref oldHandle);
         if (oldPtr == UIntPtr.Zero)
         {
@@ -43,24 +43,24 @@ internal unsafe sealed class PooledHandle<T>
         }
 
         T.Release(oldHandle);
-        pooledHandle.token = 0;
+        pooledHandle.Token = 0;
 
         _pool.Enqueue(pooledHandle);
     }
 
-    public ulong token;
-    public T handle;
+    public ulong Token;
+    public T Handle;
 
     private PooledHandle(ulong token, T handle)
     {
-        this.token = token;
-        this.handle = handle;
+        this.Token = token;
+        this.Handle = handle;
     }
 
 
     public void VerifyToken(ulong localToken)
     {
-        if (Interlocked.Read(ref token) != localToken)
+        if (Interlocked.Read(ref Token) != localToken)
         {
             throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid.");
         }
@@ -69,7 +69,7 @@ internal unsafe sealed class PooledHandle<T>
     public T GetOwnedHandle(ulong localToken)
     {
         VerifyToken(localToken);
-        var oldHandle = handle;
+        var oldHandle = Handle;
         if (T.IsNull(oldHandle))
         {
             throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid.");
@@ -80,9 +80,9 @@ internal unsafe sealed class PooledHandle<T>
 
     ~PooledHandle()
     {
-        if (!T.IsNull(handle))
+        if (!T.IsNull(Handle))
         {
-            T.Release(handle);
+            T.Release(Handle);
         }
     }
 }

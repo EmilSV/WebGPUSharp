@@ -65,7 +65,7 @@ public readonly unsafe partial struct QueueHandle :
         for (int i = 0; i < commands.Length; i++)
         {
             commands[i]._pooledHandle.VerifyToken(commands[i]._localToken);
-            commandBufferHandles[i] = commands[i]._pooledHandle.handle;
+            commandBufferHandles[i] = commands[i]._pooledHandle.Handle;
         }
         fixed (CommandBufferHandle* commandBuffersPtr = commandBufferHandles)
         {
@@ -83,7 +83,7 @@ public readonly unsafe partial struct QueueHandle :
     public readonly void Submit(CommandBuffer command)
     {
         command._pooledHandle.VerifyToken(command._localToken);
-        CommandBufferHandle handle = command._pooledHandle.handle;
+        CommandBufferHandle handle = command._pooledHandle.Handle;
         WebGPU_FFI.QueueSubmit(this, 1, &handle);
         PooledHandle<CommandBufferHandle>.Return(command._pooledHandle);
     }

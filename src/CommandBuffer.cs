@@ -12,8 +12,8 @@ public readonly struct CommandBuffer : IEquatable<CommandBuffer>
 
     private CommandBuffer(PooledHandle<CommandBufferHandle> pooledHandle)
     {
-        _originalHandle = pooledHandle.handle;
-        _localToken = pooledHandle.token;
+        _originalHandle = pooledHandle.Handle;
+        _localToken = pooledHandle.Token;
         _pooledHandle = pooledHandle;
     }
 
@@ -27,7 +27,7 @@ public readonly struct CommandBuffer : IEquatable<CommandBuffer>
     {
         _pooledHandle.VerifyToken(_localToken);
         other._pooledHandle.VerifyToken(other._localToken);
-        return _pooledHandle.handle == other._pooledHandle.handle;
+        return _pooledHandle.Handle == other._pooledHandle.Handle;
     }
 
     public override bool Equals(object? obj)
