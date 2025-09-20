@@ -32,6 +32,13 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         return _pooledHandle.Handle.BeginComputePass(descriptor).ToSafeHandle();
     }
 
+    /// <inheritdoc cref="CommandEncoderHandle.BeginComputePass(ComputePassDescriptorFFI*)"/>
+    public unsafe ComputePassEncoder BeginComputePass()
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        return _pooledHandle.Handle.BeginComputePass(null).ToSafeHandle();
+    }
+
     /// <inheritdoc cref="CommandEncoderHandle.BeginRenderPass(RenderPassDescriptorFFI*)"/>
     public RenderPassEncoder BeginRenderPass(in RenderPassDescriptor descriptor)
     {
