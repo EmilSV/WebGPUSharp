@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
@@ -19,6 +20,7 @@ public unsafe partial struct ConstantEntry : IWebGpuMarshallableAlloc<ConstantEn
     {
     }
 
+    [SetsRequiredMembers]
     public ConstantEntry(string key, double value)
     {
         Key = key;
