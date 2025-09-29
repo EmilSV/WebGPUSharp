@@ -61,6 +61,11 @@ public readonly ref struct WGPURefText
         Debug.Assert((length & SIGNED_BIT_MASK) == length);
     }
 
+    public WGPURefText(string? text) : this(text != null ? text.AsSpan() : [])
+    {
+    }
+
+
     public bool TryGetCharSpan(out ReadOnlySpan<char> outSpan)
     {
         if (Is16BitSize)
@@ -127,7 +132,7 @@ public readonly ref struct WGPURefText
         return value is null ? default : new WGPURefText(value);
     }
 
-    public static implicit operator WGPURefText(string value)
+    public static implicit operator WGPURefText(string? value)
     {
         return value is null ? default : new WGPURefText(value);
     }
