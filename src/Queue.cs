@@ -76,6 +76,14 @@ public sealed class Queue :
         Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
     }
 
+    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, in T)" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteBuffer<T>(Buffer buffer, in T data)
+         where T : unmanaged
+    {
+        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), 0, data);
+    }
+
 
     /// <inheritdoc cref="QueueHandle.WriteTexture{T}(in TexelCopyTextureInfo, List{T}, in TexelCopyBufferLayout, in Extent3D)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
