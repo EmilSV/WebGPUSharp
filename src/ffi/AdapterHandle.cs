@@ -111,6 +111,10 @@ public unsafe readonly partial struct AdapterHandle :
         return taskCompletionSource.Task;
     }
 
+    /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly Task<DeviceHandle> RequestDeviceAsync() => RequestDeviceAsync((DeviceDescriptorFFI*)null);
+
 
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor)
