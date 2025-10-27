@@ -55,4 +55,5 @@ public enum BufferUsage : ulong
     /// Allow a buffer to be the destination buffer for a <see cref="CommandEncoder.ResolveQuerySet" /> operation
     /// </summary>
     QueryResolve = 512,
+    TexelBuffer = 1024,
 }

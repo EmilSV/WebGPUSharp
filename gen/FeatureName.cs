@@ -95,7 +95,7 @@ public enum FeatureName
     /// 
     /// This feature allows the use of
     /// 
-    /// <see cref="RenderPassDescriptor.TimestampWrites" /><see cref="WebGpuSharp.ComputePassDescriptor.TimestampWrites" />
+    /// <see cref="RenderPassDescriptor.TimestampWrites" /><see cref="ComputePassDescriptor.TimestampWrites" />
     /// to write out timestamps.
     /// 
     /// For arbitrary timestamp write commands on encoders refer to
@@ -180,4 +180,6 @@ public enum FeatureName
     Subgroups = 18,
     TextureFormatsTier1 = 19,
     TextureFormatsTier2 = 20,
+    PrimitiveIndex = 21,
+    TextureComponentSwizzle = 327738,
 }

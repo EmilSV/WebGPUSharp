@@ -228,7 +228,7 @@ public sealed class Buffer :
     }
 
     /// <inheritdoc cref="GetConstMappedRange{T}(nuint, nuint, Action{ReadOnlySpan{T}})"/>
-    public unsafe void GetConstMappedRange<T,TState>(Action<ReadOnlySpan<T>, TState> callback, TState state)
+    public unsafe void GetConstMappedRange<T, TState>(Action<ReadOnlySpan<T>, TState> callback, TState state)
         where T : unmanaged
         where TState : allows ref struct
     {

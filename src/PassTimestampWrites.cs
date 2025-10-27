@@ -9,7 +9,7 @@ public struct PassTimestampWrites :
 {
     /// <inheritdoc cref="PassTimestampWritesFFI.QuerySet"/>
     public required QuerySet QuerySet;
-        /// <summary>
+    /// <summary>
     /// If defined, indicates the query index in <see cref="QuerySet" /> into which the timestamp at the beginning of the render pass will be written.
     /// </summary>
     public uint BeginningOfPassWriteIndex;

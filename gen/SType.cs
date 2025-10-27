@@ -92,4 +92,9 @@ public enum SType
     TextureComponentSwizzleDescriptor = 327751,
     SharedTextureMemoryD3D11BeginState = 327752,
     DawnConsumeAdapterDescriptor = 327753,
+    BindGroupLayoutDynamicBindingArray = 327754,
+    DynamicBindingArrayLimits = 327755,
+    BindGroupDynamicBindingArray = 327756,
+    TexelBufferBindingEntry = 327757,
+    TexelBufferBindingLayout = 327758,
 }
