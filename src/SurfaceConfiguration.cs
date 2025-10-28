@@ -4,19 +4,23 @@ namespace WebGpuSharp;
 public ref struct SurfaceConfiguration
 {
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.Device" />
-    public Device Device;
+    public required Device Device;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.Format" />
-    public TextureFormat Format;
+    public required TextureFormat Format;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.Usage" />
-    public TextureUsage Usage;
+    public TextureUsage Usage = TextureUsage.RenderAttachment;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.ViewFormats" />
     public ReadOnlySpan<TextureFormat> ViewFormats;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.AlphaMode" />
-    public CompositeAlphaMode AlphaMode;
+    public CompositeAlphaMode AlphaMode = CompositeAlphaMode.Auto;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.Width" />
-    public uint Width;
+    public required uint Width;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.Height" />
-    public uint Height;
+    public required uint Height;
     /// <inheritdoc cref="FFI.SurfaceConfigurationFFI.PresentMode" />
-    public PresentMode PresentMode;
+    public PresentMode PresentMode = PresentMode.Fifo;
+
+    public SurfaceConfiguration()
+    {
+    }
 }
