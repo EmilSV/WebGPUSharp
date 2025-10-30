@@ -63,6 +63,10 @@ public sealed class Device :
         Handle.CreateRenderPipeline(descriptor).ToSafeHandle(false)!;
 
     /// <inheritdoc cref="DeviceHandle.CreateSampler(ref SamplerDescriptor)" />
+    public unsafe Sampler? CreateSampler() =>
+     Handle.CreateSampler(null).ToSafeHandle(false);
+
+    /// <inheritdoc cref="DeviceHandle.CreateSampler(ref SamplerDescriptor)" />
     public Sampler? CreateSampler(ref SamplerDescriptor descriptor) =>
      Handle.CreateSampler(ref descriptor).ToSafeHandle(false);
 
