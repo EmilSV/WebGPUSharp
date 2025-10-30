@@ -44,7 +44,7 @@ public sealed class Queue :
         Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
     }
 
-    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, T[]) />
+    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, T[])" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, T[] data)
          where T : unmanaged
@@ -52,7 +52,7 @@ public sealed class Queue :
         Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
     }
 
-    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, Span{T}) />
+    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, Span{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining), OverloadResolutionPriority(1)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, Span<T> data)
              where T : unmanaged
@@ -60,7 +60,7 @@ public sealed class Queue :
         Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
     }
 
-    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, ReadOnlySpan{T}) />
+    /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, ReadOnlySpan{T})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining), OverloadResolutionPriority(2)]
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, ReadOnlySpan<T> data)
          where T : unmanaged
