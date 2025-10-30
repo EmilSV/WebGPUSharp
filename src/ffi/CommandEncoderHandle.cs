@@ -95,7 +95,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             depthStencilAttachmentPtr = &depthStencilAttachmentFFI;
         }
 
-        var labelUtf8Span = ToUtf8Span(descriptor.label, allocator, addNullTerminator: false);
+        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
 
         fixed (byte* labelPtr = labelUtf8Span)
         {

@@ -6,7 +6,7 @@ namespace WebGpuSharp;
 public ref partial struct RenderPassDescriptor
 {
     /// <inheritdoc cref="RenderPassDescriptorFFI.Label"/>
-    public WGPURefText label;
+    public WGPURefText Label;
     /// <inheritdoc cref="RenderPassDescriptorFFI.ColorAttachments"/>
     public required ReadOnlySpan<RenderPassColorAttachment> ColorAttachments;
     /// <inheritdoc cref="RenderPassDescriptorFFI.DepthStencilAttachment"/>
