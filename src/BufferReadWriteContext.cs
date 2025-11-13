@@ -51,7 +51,32 @@ public readonly unsafe ref struct BufferReadWriteContext
         throw new WebGPUNotInReadWriteContextException("Buffer is not in read/write context");
     }
 
+
     /// <param name="buffer">The buffer to get const mapped range from.</param>
+    /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
+    public readonly ReadOnlySpan<T> GetConstMappedRange<T>(Buffer buffer)
+        where T : unmanaged
+    {
+        ulong bufferSize = buffer.GetSize();
+
+        foreach (Buffer item in _buffersUsedInContext)
+        {
+            if (item == buffer)
+            {
+                void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetConstMappedRange(0, (nuint)bufferSize);
+                if (ptr == null)
+                {
+                    return [];
+                }
+
+                return new ReadOnlySpan<T>(ptr, (int)bufferSize / sizeof(T));
+            }
+        }
+
+        throw new WebGPUNotInReadWriteContextException("Buffer is not in read/write context");
+    }
+
+    /// <param name="buffer">The buffer to get mapped range from.</param>
     /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
     public readonly Span<T> GetMappedRange<T>(Buffer buffer, nuint offset, nuint size)
         where T : unmanaged
@@ -70,6 +95,29 @@ public readonly unsafe ref struct BufferReadWriteContext
                 }
 
                 return new Span<T>(ptr, (int)size);
+            }
+        }
+
+        throw new WebGPUNotInReadWriteContextException("Buffer is not in read/write context");
+    }
+
+    /// <param name="buffer">The buffer to get mapped range from.</param>
+    /// <inheritdoc cref="BufferHandle.GetMappedRange(nuint, nuint)"/>
+    public readonly Span<T> GetMappedRange<T>(Buffer buffer)
+        where T : unmanaged
+    {
+        ulong bufferSize = buffer.GetSize();
+        foreach (var item in _buffersUsedInContext)
+        {
+            if (item == buffer)
+            {
+                void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(0, (nuint)bufferSize);
+                if (ptr == null)
+                {
+                    return [];
+                }
+
+                return new Span<T>(ptr, (int)bufferSize / sizeof(T));
             }
         }
 
