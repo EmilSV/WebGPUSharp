@@ -371,7 +371,8 @@ public sealed class Buffer :
     )
     {
         using MangedArrayPoolRentInstance<Buffer> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
-        var rentBufferSpan = rentedBuffers.Span;
+        var rentBufferSpan = rentedBuffers.Span[..buffers.Length];
+        buffers.CopyTo(rentBufferSpan);
 
         int i = 0;
         try
@@ -385,11 +386,11 @@ public sealed class Buffer :
         }
         finally
         {
-            do
+            while (i != 0)
             {
                 i--;
                 rentBufferSpan[i]._readWriteStateChangeLock.RemoveReadWriteLock();
-            } while (i != 0);
+            }
         }
     }
 
@@ -405,7 +406,9 @@ public sealed class Buffer :
     )
     {
         using MangedArrayPoolRentInstance<Buffer> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
-        var rentBufferSpan = rentedBuffers.Span;
+        var rentBufferSpan = rentedBuffers.Span[..buffers.Length];
+        buffers.CopyTo(rentBufferSpan);
+
 
         int i = 0;
         try
@@ -419,11 +422,11 @@ public sealed class Buffer :
         }
         finally
         {
-            do
+            while (i != 0)
             {
                 i--;
                 rentBufferSpan[i]._readWriteStateChangeLock.RemoveReadWriteLock();
-            } while (i != 0);
+            }
         }
     }
 
@@ -442,7 +445,8 @@ public sealed class Buffer :
      where TUserdata : allows ref struct
     {
         using MangedArrayPoolRentInstance<Buffer> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
-        var rentBufferSpan = rentedBuffers.Span;
+        var rentBufferSpan = rentedBuffers.Span[..buffers.Length];
+        buffers.CopyTo(rentBufferSpan);
 
         int i = 0;
         try
@@ -456,11 +460,11 @@ public sealed class Buffer :
         }
         finally
         {
-            do
+            while (i != 0)
             {
                 i--;
                 rentBufferSpan[i]._readWriteStateChangeLock.RemoveReadWriteLock();
-            } while (i != 0);
+            }
         }
     }
 
@@ -478,7 +482,8 @@ public sealed class Buffer :
     )
     {
         using MangedArrayPoolRentInstance<Buffer> rentedBuffers = new(ArrayPool<object?>.Shared, buffers.Length);
-        var rentBufferSpan = rentedBuffers.Span;
+        var rentBufferSpan = rentedBuffers.Span[..buffers.Length];
+        buffers.CopyTo(rentBufferSpan);
 
         int i = 0;
         try
@@ -492,11 +497,11 @@ public sealed class Buffer :
         }
         finally
         {
-            do
+            while (i != 0)
             {
                 i--;
                 rentBufferSpan[i]._readWriteStateChangeLock.RemoveReadWriteLock();
-            } while (i != 0);
+            }
         }
     }
 
