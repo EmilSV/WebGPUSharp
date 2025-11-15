@@ -832,6 +832,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         }
     }
 
+    [Obsolete("This api will be removed in a future versions, as this method is not part of the official WebGPU specification")]
     public ShaderModuleHandle LoadShaderModuleFromFile(string path, WGPURefText label = default)
     {
         return LoadShaderModuleFromFileHandler.LoadShaderModuleFromFile(this, path, label);

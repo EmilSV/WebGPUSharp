@@ -124,6 +124,7 @@ public sealed class Device :
     /// <inheritdoc cref="DeviceHandle.HasFeature(FeatureName)" />
     public bool HasFeature(FeatureName feature) => Handle.HasFeature(feature);
 
+    [Obsolete("This api will be removed in a future versions, as this method is not part of the official WebGPU specification")]
     /// <inheritdoc cref="DeviceHandle.LoadShaderModuleFromFile(string, WGPURefText)" />
     public ShaderModule? LoadShaderModuleFromFile(string path, WGPURefText label = default)
     {

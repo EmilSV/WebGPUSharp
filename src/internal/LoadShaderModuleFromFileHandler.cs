@@ -6,6 +6,7 @@ using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.Internal;
 
+[Obsolete("This api will be removed in a future versions")]
 internal unsafe static class LoadShaderModuleFromFileHandler
 {
     public static ShaderModuleHandle LoadShaderModuleFromFile(DeviceHandle device, string path, WGPURefText label = default)
