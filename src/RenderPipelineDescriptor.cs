@@ -11,7 +11,7 @@ public ref struct RenderPipelineDescriptor
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Layout"/>
     public required PipelineLayout? Layout;
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Vertex"/>
-    public required ref readonly VertexState Vertex;
+    public required VertexState Vertex;
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.Primitive"/>
     public PrimitiveState Primitive = new();
     /// <inheritdoc cref="FFI.RenderPipelineDescriptorFFI.DepthStencil"/>
