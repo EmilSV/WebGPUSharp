@@ -181,5 +181,5 @@ public enum FeatureName
     TextureFormatsTier1 = 19,
     TextureFormatsTier2 = 20,
     PrimitiveIndex = 21,
-    TextureComponentSwizzle = 327738,
+    TextureComponentSwizzle = 22,
 }
