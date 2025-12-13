@@ -194,7 +194,7 @@ static unsafe Surface? SDL_GetWGPUSurface(Instance instance, nint window)
         };
         SurfaceDescriptor descriptor_surface = new(ref xlibDescriptor);
         return instance.CreateSurface(descriptor_surface);
-    }
+    } 
     else if (windowWMInfo.subsystem == SDL_SYSWM_TYPE.SDL_SYSWM_COCOA)
     {
         //Sadly macos is to long to show in this snippet see:
@@ -206,26 +206,70 @@ static unsafe Surface? SDL_GetWGPUSurface(Instance instance, nint window)
 ```
 
 ## Examples
-You can find more examples in the [WebGPUSharp-Examples](https://github.com/EmilSV/Webgpusharp-examples) repository they are all ports of the official [WebGPU samples](https://webgpu.github.io/webgpu-samples) to C# and WebGPUSharp.
+You can find more examples in the [WebGPUSharp-Examples](https://github.com/EmilSV/Webgpusharp-examples) repository they are all ports of the official [WebGPU samples](https://webgpu.github.io/webgpu-samples) to C# using WebGPUSharp.
 
 
 ## Buffers
-WebGPUSharps Buffers are different from multiple ways first C# has struct so when your read and write to buffers you can use structs to represent the data layout in the buffer instead of manually calculating offsets here an example of writing a struct to a buffer:
+WebGPUSharps Buffers are different from their javascript two ways
+
+* When you get the mapped data you get it thought a callback via a span this is for safety reasons as if you just got a span you cloud unmap the buffer while still holding a reference to the span causing undefined behavior.
+```csharp
+
+var buffer = device.CreateBuffer(new()
+{
+    Size = 1024,
+    Usage = BufferUsage.Vertex | BufferUsage.CopyDst,
+    MappedAtCreation = true // Create the buffer in a mapped state
+});
+
+// If it was not using callbacks it would look like this unsafe code:
+
+var span = buffer.GetMappedRange<float>()
+
+buffer.Unmap();
+
+span[0] = 1.0f; // This would be undefined behavior as the buffer is unmapped
+
+// instead we have to do it like this:
+buffer.GetMappedRange<float>(data =>
+{
+    data[0] = 1.0f; // Safe to use data here
+
+    //if we unmap here it would would just throw as the buffer is begging used
+    // this would not be possible without callbacks a the callback is the way we know the buffer is being used
+    // buffer.Unmap(); // This would throw
+
+});
+buffer.Unmap();
+
+```
+
+
+* C# has struct so when your read and write to buffers you can use structs to represent the data layout in the buffer instead of manually calculating offsets here an example of writing an array of structs to a buffer:
+
 
 ```csharp
+
+// a vertex struct with padding to ensure 16 byte alignment
+// you can use https://eliemichel.github.io/WebGPU-AutoLayout/ to help with calculating padding
+[StructLayout(LayoutKind.Sequential)]
 public struct Vertex
 {
     public Vector3 Position;
+    private float _pad1; // Padding to align to 16 bytes
     public Vector3 Normal;
+    private float _pad2; // Padding to align to 16 bytes
     public Vector2 Uv;
+    private float _pad3; 
+    private float _pad4; // Padding to align to 16 bytes
 }
 
-var vertices = new Vertex[]
-{
-    new Vertex { Position = new Vector3(0, 1, 0), Normal = new Vector3(0, 0, 1), Uv = new Vector2(0.5f, 1) },
-    new Vertex { Position = new Vector3(-1, -1, 0), Normal = new Vector3(0, 0, 1), Uv = new Vector2(0, 0) },
-    new Vertex { Position = new Vector3(1, -1, 0), Normal = new Vector3(0, 0, 1), Uv = new Vector2(1, 0) },
-};
+Vertex[] vertices =
+[
+    new Vertex { Position = new(0, 1, 0), Normal = new(0, 0, 1), Uv = new(0.5f, 1) },
+    new Vertex { Position = new(-1, -1, 0), Normal = new(0, 0, 1), Uv = new(0, 0) },
+    new Vertex { Position = new(1, -1, 0), Normal = new(0, 0, 1), Uv = new(1, 0) },
+];
 
 var vertexBuffer = device.CreateBuffer(new BufferDescriptor
 {
@@ -237,3 +281,14 @@ var vertexBuffer = device.CreateBuffer(new BufferDescriptor
 vertexBuffer.GetMappedRange<Vertex>(data => ((ReadOnlySpan<Vertex>)vertices).CopyTo(data));
 vertexBuffer.Unmap();
 ```
+
+
+## Manged vs Unmanged/unsafe API
+
+
+## License
+WebGPUSharp is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+WebGPUSharp is using dawn as the native WebGPU implementation which is licensed under BSD 3-Clause License. See the [dawn LICENSE](https://dawn.googlesource.com/dawn/+/HEAD/LICENSE) for more information.
+
+
+
