@@ -343,7 +343,7 @@ public unsafe static partial class WebGPUMarshal
         where TSafeHandle : IFromHandle<TSafeHandle, THandle>
          where THandle : unmanaged, IWebGpuHandle<THandle>
     {
-        return TSafeHandle.FromHandleNoRefIncrement(handle);
+        return TSafeHandle.FromHandle(handle);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
