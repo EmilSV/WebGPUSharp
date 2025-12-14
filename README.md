@@ -271,7 +271,7 @@ Vertex[] vertices =
     new Vertex { Position = new(1, -1, 0), Normal = new(0, 0, 1), Uv = new(1, 0) },
 ];
 
-var vertexBuffer = device.CreateBuffer(new BufferDescriptor
+var vertexBuffer = device.CreateBuffer(new()
 {
     Size = (ulong)(Unsafe.SizeOf<Vertex>() * vertices.Length),
     Usage = BufferUsage.Vertex | BufferUsage.CopyDst,
@@ -281,10 +281,76 @@ var vertexBuffer = device.CreateBuffer(new BufferDescriptor
 vertexBuffer.GetMappedRange<Vertex>(data => ((ReadOnlySpan<Vertex>)vertices).CopyTo(data));
 vertexBuffer.Unmap();
 ```
+## Read/Writing from multiple Buffers
+When read/writing from multiple buffers `GetMappedRange` can be rader cumbersome as you have to nest the callbacks which do not work well with spans.
+To solve this WebGpuSharp provides the `Buffer.DoReadWriteOperation` methods which allows you to read/write from multiple buffers in a single callback:
+```csharp
 
+var bufferA = device.CreateBuffer(new()
+{
+    Size = 1024,
+    Usage = BufferUsage.MapRead | BufferUsage.CopyDst,
+    MappedAtCreation = true
+});
 
-## Manged vs Unmanged/unsafe API
+var bufferB = device.CreateBuffer(new()
+{
+    Size = 1024,
+    Usage = BufferUsage.MapWrite | BufferUsage.CopyDst,
+    MappedAtCreation = true
+});
 
+Buffer.DoReadWriteOperation([bufferA, bufferB]/*The buffers to operate on*/, context =>
+{
+    var spanA = context.GetConstMappedRange<float>(bufferA);
+    var spanB = context.GetMappedRange<float>(bufferB);
+
+    // Read from bufferA and write to bufferB
+    for (int i = 0; i < spanA.Length; i++)
+    {
+        spanB[i] = spanA[i] * 2.0f;
+    }
+});
+```
+
+## Managed vs Unmanaged/unsafe API
+There is two API levels in WebGPUSharp the unmanaged unsafe API and a managed safe API build on top of the unmanaged one. You can tell them apart as the unmanaged API lives in the `WebGpuSharp.FFI` namespace and uses raw handles for resource while the managed API lives in the `WebGpuSharp` namespace and uses classes for resource. For example here is how to create a buffer using the unmanaged API:
+
+```csharp
+using WebGpuSharp.FFI;
+
+BufferDescriptorFFI bufferDescriptor = new()
+{
+    Size = 1024,
+    Usage = BufferUsageFFI.Vertex | BufferUsageFFI.CopyDst,
+    MappedAtCreation = true
+};
+
+using BufferHandle buffer = device.CreateBuffer(&bufferDescriptor);
+float* data = (float*)buffer.GetMappedRange(0, 1024);
+for (int i = 0; i < 256; i++)
+{
+    data[i] = i * 1.0f;
+}
+buffer.Unmap();
+
+```
+You can convert a Managed object to an unmanaged handle using the `WebGPUMarshal.GetBorrowHandle` or the `WebGPUMarshal.GetOwnedHandle` methods. And you can convert an unmanaged handle to a managed object using the `WebGPUMarshal.ToSafeHandle` and `WebGPUMarshal.ToSafeHandleNoRefIncrement` method. The difference between Borrow and Owned is that an owned handle will increment the reference count of the unmanaged resource while a borrowed handle will not. So an owned handle should be used when you want to keep a reference to the resource while a borrowed handle should be used when you just need to use the resource temporarily.
+
+```csharp
+using WebGpuSharp;
+Buffer buffer = device.CreateBuffer(new()
+{
+    Size = 1024,
+    Usage = BufferUsage.Vertex | BufferUsage.CopyDst,
+    MappedAtCreation = true
+});
+
+// Convert to unmanaged owned handle
+BufferHandle ownedHandle = WebGPUMarshal.GetOwnedHandle(buffer);
+// Convert back to managed object
+Buffer managedBuffer = WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(ownedHandle);
+```
 
 ## License
 WebGPUSharp is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
