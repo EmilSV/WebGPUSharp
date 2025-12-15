@@ -5,11 +5,20 @@ WebGPU native bindings with a safe C# wrapper API on top mirroring the JavaScrip
 WebGPUSharp provides low-level bindings to the native WebGPU API through P/Invoke [without runtime marshalling](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/disabled-marshalling). Along with a high-level C# wrapper that closely follows the WebGPU JavaScript API. This allows developers to write GPU-accelerated applications in C# with a familiar API surface and to translate WebGPU JavaScript code to C# easily.
 
 ## Installation
-WebGPUSharp requires .NET 9 or later. You can install the package via NuGet:
+WebGPUSharp requires .NET 10 or later. You can install the package via NuGet:
 
 ```bash
 dotnet add package WebGPUSharp
 ```
+
+## Platform Support
+WebGPUSharp includes native binaries of [Dawn](https://dawn.googlesource.com/dawn) for the following platforms:
+
+- **Windows**: x64, ARM64
+- **macOS**: x64 (Intel), ARM64 (Apple Silicon)
+- **Linux**: x64, ARM64
+
+For any other platforms, you will need to build Dawn from source and provide the native binaries yourself. You can use https://github.com/EmilSV/webgpu-dawn-build to help with building dawn for other platforms.
 
 ## Getting Started
 Here is a simple hello world triangle example using WebGPUSharp and SDL2(via ppy.SDL2-CS) for window creation and surface handling:
@@ -197,7 +206,7 @@ static unsafe Surface? SDL_GetWGPUSurface(Instance instance, nint window)
     } 
     else if (windowWMInfo.subsystem == SDL_SYSWM_TYPE.SDL_SYSWM_COCOA)
     {
-        //Sadly macos is to long to show in this snippet see:
+        // Sadly macOS is too long to show in this snippet. See:
         // https://github.com/EmilSV/Webgpusharp-examples/blob/main/Setup/SDLWebgpu.cs
     }
 
@@ -210,9 +219,9 @@ You can find more examples in the [WebGPUSharp-Examples](https://github.com/Emil
 
 
 ## Buffers
-WebGPUSharps Buffers are different from their javascript two ways
+WebGPUSharp's buffers are different from their JavaScript counterparts in two ways:
 
-* When you get the mapped data you get it thought a callback via a span this is for safety reasons as if you just got a span you cloud unmap the buffer while still holding a reference to the span causing undefined behavior.
+* When you get the mapped data, you get it through a callback via a span. This is for safety reasons: if you just got a span, you could unmap the buffer while still holding a reference to the span, causing undefined behavior.
 ```csharp
 
 var buffer = device.CreateBuffer(new()
@@ -235,8 +244,8 @@ buffer.GetMappedRange<float>(data =>
 {
     data[0] = 1.0f; // Safe to use data here
 
-    //if we unmap here it would would just throw as the buffer is begging used
-    // this would not be possible without callbacks as the callback is the way we know the buffer is being used
+    // If we unmap here it would just throw as the buffer is being used.
+    // This would not be possible without callbacks as the callback is the way we know the buffer is being used.
     // buffer.Unmap(); // This would throw
 
 });
@@ -245,13 +254,13 @@ buffer.Unmap();
 ```
 
 
-* C# has struct so when your read and write to buffers you can use structs to represent the data layout in the buffer instead of manually calculating offsets here an example of writing an array of structs to a buffer:
+* C# has structs, so when you read and write to buffers, you can use structs to represent the data layout in the buffer instead of manually calculating offsets. Here's an example of writing an array of structs to a buffer:
 
 
 ```csharp
 
-// a vertex struct with padding to ensure 16 byte alignment
-// you can use https://eliemichel.github.io/WebGPU-AutoLayout/ to help with calculating padding
+// A vertex struct with padding to ensure 16-byte alignment
+// You can use https://eliemichel.github.io/WebGPU-AutoLayout/ to help with calculating padding
 [StructLayout(LayoutKind.Sequential)]
 public struct Vertex
 {
@@ -281,9 +290,9 @@ var vertexBuffer = device.CreateBuffer(new()
 vertexBuffer.GetMappedRange<Vertex>(data => ((ReadOnlySpan<Vertex>)vertices).CopyTo(data));
 vertexBuffer.Unmap();
 ```
-## Read/Writing from multiple Buffers
-When read/writing from multiple buffers `GetMappedRange` can be rader cumbersome as you have to nest the callbacks which do not work well with spans.
-To solve this WebGpuSharp provides the `Buffer.DoReadWriteOperation` methods which allows you to read/write from multiple buffers in a single callback:
+## Reading/Writing from Multiple Buffers
+When reading/writing from multiple buffers, `GetMappedRange` can be rather cumbersome as you have to nest the callbacks, which do not work well with spans.
+To solve this, WebGPUSharp provides the `Buffer.DoReadWriteOperation` methods, which allow you to read/write from multiple buffers in a single callback:
 ```csharp
 
 var bufferA = device.CreateBuffer(new()
@@ -300,7 +309,7 @@ var bufferB = device.CreateBuffer(new()
     MappedAtCreation = true
 });
 
-Buffer.DoReadWriteOperation([bufferA, bufferB]/*The buffers to operate on*/, context =>
+Buffer.DoReadWriteOperation([bufferA, bufferB] /* The buffers to operate on */, context =>
 {
     var spanA = context.GetConstMappedRange<float>(bufferA);
     var spanB = context.GetMappedRange<float>(bufferB);
@@ -313,8 +322,8 @@ Buffer.DoReadWriteOperation([bufferA, bufferB]/*The buffers to operate on*/, con
 });
 ```
 
-## Managed vs Unmanaged/unsafe API
-There is two API levels in WebGPUSharp the unmanaged unsafe API and a managed safe API build on top of the unmanaged one. You can tell them apart as the unmanaged API lives in the `WebGpuSharp.FFI` namespace and uses raw handles for resource while the managed API lives in the `WebGpuSharp` namespace and uses classes for resource. For example here is how to create a buffer using the unmanaged API:
+## Managed vs Unmanaged/Unsafe API
+There are two API levels in WebGPUSharp: the unmanaged unsafe API and a managed safe API built on top of the unmanaged one. You can tell them apart as the unmanaged API lives in the `WebGpuSharp.FFI` namespace and uses raw handles for resources, while the managed API lives in the `WebGpuSharp` namespace and uses classes for resources. For example, here is how to create a buffer using the unmanaged API:
 
 ```csharp
 using WebGpuSharp.FFI;
@@ -335,7 +344,7 @@ for (int i = 0; i < 256; i++)
 buffer.Unmap();
 
 ```
-You can convert a Managed object to an unmanaged handle using the `WebGPUMarshal.GetBorrowHandle` or the `WebGPUMarshal.GetOwnedHandle` methods. And you can convert an unmanaged handle to a managed object using the `WebGPUMarshal.ToSafeHandle` and `WebGPUMarshal.ToSafeHandleNoRefIncrement` method. The difference between Borrow and Owned is that an owned handle will increment the reference count of the unmanaged resource while a borrowed handle will not. So an owned handle should be used when you want to keep a reference to the resource while a borrowed handle should be used when you just need to use the resource temporarily.
+You can convert a managed object to an unmanaged handle using the `WebGPUMarshal.GetBorrowHandle` or `WebGPUMarshal.GetOwnedHandle` methods. You can convert an unmanaged handle to a managed object using the `WebGPUMarshal.ToSafeHandle` and `WebGPUMarshal.ToSafeHandleNoRefIncrement` methods. The difference between Borrow and Owned is that an owned handle will increment the reference count of the unmanaged resource, while a borrowed handle will not. An owned handle should be used when you want to keep a reference to the resource, while a borrowed handle should be used when you just need to use the resource temporarily.
 
 ```csharp
 using WebGpuSharp;
@@ -352,6 +361,10 @@ BufferHandle ownedHandle = WebGPUMarshal.GetOwnedHandle(buffer);
 Buffer managedBuffer = WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(ownedHandle);
 ```
 
+## Generated Code
+Most of the low-level unmanaged API in the `WebGpuSharp.FFI` namespace is generated using https://github.com/EmilSV/webgpu-dawn-build, which generates C# P/Invoke bindings from the C headers from Dawn and [WebGPU Headers](https://github.com/webgpu-native/webgpu-headers). All generated code is in the gen folder.
+
+
 ## License
 WebGPUSharp is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-WebGPUSharp is using dawn as the native WebGPU implementation which is licensed under BSD 3-Clause License. See the [dawn LICENSE](https://dawn.googlesource.com/dawn/+/HEAD/LICENSE) for more information.
+WebGPUSharp uses Dawn as the native WebGPU implementation, which is licensed under the BSD 3-Clause License. See the [Dawn LICENSE](https://dawn.googlesource.com/dawn/+/HEAD/LICENSE) for more information.
