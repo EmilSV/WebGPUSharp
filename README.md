@@ -236,7 +236,7 @@ buffer.GetMappedRange<float>(data =>
     data[0] = 1.0f; // Safe to use data here
 
     //if we unmap here it would would just throw as the buffer is begging used
-    // this would not be possible without callbacks a the callback is the way we know the buffer is being used
+    // this would not be possible without callbacks as the callback is the way we know the buffer is being used
     // buffer.Unmap(); // This would throw
 
 });
@@ -355,6 +355,3 @@ Buffer managedBuffer = WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(ownedHan
 ## License
 WebGPUSharp is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 WebGPUSharp is using dawn as the native WebGPU implementation which is licensed under BSD 3-Clause License. See the [dawn LICENSE](https://dawn.googlesource.com/dawn/+/HEAD/LICENSE) for more information.
-
-
-
