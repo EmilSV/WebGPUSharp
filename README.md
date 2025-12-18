@@ -1,3 +1,14 @@
+
+<div align="center">
+
+  [![NuGet](https://img.shields.io/nuget/v/WebGPUSharp.svg)](https://www.nuget.org/packages/WebGPUSharp/)
+  [![Downloads](https://img.shields.io/nuget/dt/WebGPUSharp.svg)](https://www.nuget.org/packages/WebGPUSharp/)
+  [![Stars](https://img.shields.io/github/stars/EmilSV/WebGPUSharp?color=brightgreen)](https://github.com/EmilSV/WebGPUSharp)
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/EmilSV/WebGPUSharp/blob/master/LICENSE)
+
+</div>
+
+
 # WebGPUSharp
 WebGPU native bindings with a safe C# wrapper API on top mirroring the JavaScript API in the browser.
 
