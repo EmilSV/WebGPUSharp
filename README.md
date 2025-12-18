@@ -2,7 +2,7 @@
 WebGPU native bindings with a safe C# wrapper API on top mirroring the JavaScript API in the browser.
 
 ## Overview
-WebGPUSharp provides low-level bindings to the native WebGPU API through P/Invoke [without runtime marshalling](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/disabled-marshalling). Along with a high-level C# wrapper that closely follows the WebGPU JavaScript API. This allows developers to write GPU-accelerated applications in C# with a familiar API surface and to translate WebGPU JavaScript code to C# easily.
+WebGPUSharp provides low-level bindings to the native WebGPU API through P/Invoke [without runtime marshalling](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/disabled-marshalling). Along with a high-level C# wrapper that closely follows the WebGPU JavaScript API. This allows developers to write GPU-accelerated applications in C# with a safe managed API surface and to translate WebGPU JavaScript code to C# easily.
 
 ## Installation
 WebGPUSharp requires .NET 10 or later. You can install the package via NuGet:
@@ -62,7 +62,7 @@ if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 }
 
 var instance = WebGPU.CreateInstance()!;
-var window = SDL_CreateWindow("Hello world!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, (SDL_WindowFlags)0);
+var window = SDL_CreateWindow("Hello Triangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, (SDL_WindowFlags)0);
 var surface = SDL_GetWGPUSurface(instance, window)!;
 
 // SDL2 do not like async/await as it can switch threads, so we block here
@@ -214,8 +214,14 @@ static unsafe Surface? SDL_GetWGPUSurface(Instance instance, nint window)
 }
 ```
 
+This code will create a window and render a red triangle to it using WebGPU.
+![A image of the triangle rendered by the above code](./docs/img/hello_triangle.png)
+
+
 ## Examples
 You can find more examples in the [WebGPUSharp-Examples](https://github.com/EmilSV/Webgpusharp-examples) repository they are all ports of the official [WebGPU samples](https://webgpu.github.io/webgpu-samples) to C# using WebGPUSharp.
+
+![A fractal cube example](./docs/img/fractal_cube.webp) ![deferred rendering example](./docs/img/deferred_rendering.webp) ![lightmap generated using software ray-tracing.](./docs/img/cornell.webp) ![normal map example](./docs/img/normal_map.webp) ![gpu particles example](docs/img/particles.webp) ![render bundles example](docs/img/render_bundles.webp)
 
 
 ## Buffers
