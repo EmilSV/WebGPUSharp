@@ -334,10 +334,12 @@ There are two API levels in WebGPUSharp: the unmanaged unsafe API and a managed 
 ```csharp
 using WebGpuSharp.FFI;
 
+DeviceHandle device = /* Get device handle from somewhere */;
+
 BufferDescriptorFFI bufferDescriptor = new()
 {
     Size = 1024,
-    Usage = BufferUsageFFI.Vertex | BufferUsageFFI.CopyDst,
+    Usage = BufferUsage.Vertex | BufferUsage.CopyDst,
     MappedAtCreation = true
 };
 
