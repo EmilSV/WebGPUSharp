@@ -31,6 +31,9 @@ WebGPUSharp includes native binaries of [Dawn](https://dawn.googlesource.com/daw
 
 For any other platforms, you will need to build Dawn from source and provide the native binaries yourself. You can use https://github.com/EmilSV/webgpu-dawn-build to help with building dawn for other platforms.
 
+## AOT Support
+WebGPUSharp fully supports AOT as it doesn't use dynamic code generation or reflection. You can also statically link the native Dawn binaries into your application but doing so requires building Dawn from source.
+
 ## Getting Started
 Here is a simple hello world triangle example using WebGPUSharp and SDL2(via ppy.SDL2-CS) for window creation and surface handling:
 
