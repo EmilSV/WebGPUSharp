@@ -384,6 +384,15 @@ Buffer managedBuffer = WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(ownedHan
 Most of the low-level unmanaged API in the `WebGpuSharp.FFI` namespace is generated using https://github.com/EmilSV/webgpu-dawn-build, which generates C# P/Invoke bindings from the C headers from Dawn and [WebGPU Headers](https://github.com/webgpu-native/webgpu-headers). All generated code is in the gen folder.
 
 
+## Contributing
+You are welcome to contribute to WebGPUSharp! Please see the [CONTRIBUTING](CONTRIBUTING.md) file for more information on how to get started.
+
 ## License
 WebGPUSharp is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 WebGPUSharp uses Dawn as the native WebGPU implementation, which is licensed under the BSD 3-Clause License. See the [Dawn LICENSE](https://dawn.googlesource.com/dawn/+/HEAD/LICENSE) for more information.
+
+## Credit
+WebGPUSharp has used code and take inspiration from the following projects:
+- [Dawn](https://dawn.googlesource.com/dawn) - The native WebGPU implementation used by WebGPUSharp.
+- [WebGPU Headers](https://github.com/webgpu-native/webgpu-headers) - The C headers for the WebGPU API used to generate bindings.
+- [wgpu](https://github.com/gfx-rs/wgpu) - A Rust implementation of the WebGPU API, used as bases for the documentation.
