@@ -10,7 +10,7 @@ This means that contributors should not try to add api that are not part of the 
 WebGPUSharp is using multiple repositories to manage the codebase. The main repository is
 - [WebGPUSharp](https://github.com/EmilSV/WebGPUSharp) - The main C# binding for WebGPU.
 
-ther repositories include:
+Supporting repositories include:
 - [webgpu-dawn-build](https://github.com/EmilSV/webgpu-dawn-build) - A repository for building Dawn native binaries for WebGPUSharp and other projects.
 - [Webgpusharp-examples](https://github.com/EmilSV/Webgpusharp-examples) - A repository for examples and sample code using WebGPUSharp.
 - [Webgpu Bindgen](https://github.com/EmilSV/WebgpuBindgen) - A repository for generating low-level unsafe C# bindings for WebGPU from the C headers. Also holds the documentation comments for the unsafe low-level bindings.
