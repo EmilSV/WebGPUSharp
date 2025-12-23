@@ -24,15 +24,4 @@ public sealed class PipelineLayout :
         PipelineLayoutHandle.Reference(handle);
         return new(handle);
     }
-
-    static PipelineLayout? IFromHandle<PipelineLayout, PipelineLayoutHandle>.FromHandleNoRefIncrement(
-        PipelineLayoutHandle handle)
-    {
-        if (PipelineLayoutHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

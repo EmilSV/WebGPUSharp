@@ -39,15 +39,4 @@ public sealed class ShaderModule :
         ShaderModuleHandle.Reference(handle);
         return new(handle);
     }
-
-    static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandleNoRefIncrement(
-        ShaderModuleHandle handle)
-    {
-        if (ShaderModuleHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

@@ -65,15 +65,5 @@ public readonly unsafe partial struct BindGroupHandle :
         WebGPU_FFI.BindGroupRelease(handle);
     }
 
-    public BindGroup? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<BindGroup, BindGroupHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<BindGroup, BindGroupHandle>(this);
-        }
-    }
+    public BindGroup? ToSafeHandle() => ToSafeHandle<BindGroup, BindGroupHandle>(this);
 }

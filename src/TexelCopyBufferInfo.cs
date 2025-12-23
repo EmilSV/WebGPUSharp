@@ -18,7 +18,7 @@ public struct TexelCopyBufferInfo : IWebGpuMarshallable<TexelCopyBufferInfo, Tex
         dest = new()
         {
             Layout = input.Layout,
-            Buffer = WebGPUMarshal.GetBorrowHandle(input.Buffer)
+            Buffer = WebGPUMarshal.GetHandle(input.Buffer)
         };
     }
 }

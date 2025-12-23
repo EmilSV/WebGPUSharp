@@ -282,7 +282,7 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetBorrowHandle<T>(WebGPUManagedHandleBase<T>? safeHandle)
+    public static T GetHandle<T>(WebGPUManagedHandleBase<T>? safeHandle)
         where T : unmanaged, IWebGpuHandle<T>, IEquatable<T>
     {
         if (safeHandle == null)
@@ -293,20 +293,7 @@ public unsafe static partial class WebGPUMarshal
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T GetOwnedHandle<T>(WebGPUManagedHandleBase<T> safeHandle)
-        where T : unmanaged, IWebGpuHandle<T>, IEquatable<T>
-    {
-        if (safeHandle == null)
-        {
-            return T.Null;
-        }
-        var handle = safeHandle.GetHandle();
-        T.Reference(handle);
-        return handle;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static PtrAndLength<THandle> GetBorrowHandlesAsPtrAndLength<THandle, TWrapper>(
+    public static PtrAndLength<THandle> GetHandlesAsPtrAndLength<THandle, TWrapper>(
         ReadOnlySpan<TWrapper> safeHandles,
         WebGpuAllocatorHandle allocatorHandle)
         where TWrapper : WebGPUManagedHandleBase<THandle>
@@ -321,21 +308,21 @@ public unsafe static partial class WebGPUMarshal
         THandle* handles = allocatorHandle.Alloc<THandle>(length);
         for (int i = 0; i < safeHandles.Length; i++)
         {
-            handles[i] = GetBorrowHandle(safeHandles[i]);
+            handles[i] = GetHandle(safeHandles[i]);
         }
         return new(handles, length);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RenderPassEncoderHandle GetOwnedHandle(RenderPassEncoder safeHandle)
+    public static RenderPassEncoderHandle GetHandle(RenderPassEncoder safeHandle)
     {
-        return safeHandle.GetOwnedHandle();
+        return safeHandle.GetHandle();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RenderBundleEncoderHandle GetOwnedHandle(RenderBundleEncoder safeHandle)
+    public static RenderBundleEncoderHandle GetHandle(RenderBundleEncoder safeHandle)
     {
-        return safeHandle.GetOwnedHandle();
+        return safeHandle.GetHandle();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -343,14 +330,7 @@ public unsafe static partial class WebGPUMarshal
         where TSafeHandle : IFromHandle<TSafeHandle, THandle>
          where THandle : unmanaged, IWebGpuHandle<THandle>
     {
-        return TSafeHandle.FromHandleNoRefIncrement(handle);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TSafeHandle? ToSafeHandleNoRefIncrement<TSafeHandle, THandle>(THandle handle)
-        where TSafeHandle : IFromHandle<TSafeHandle, THandle>
-    {
-        return TSafeHandle.FromHandleNoRefIncrement(handle);
+        return TSafeHandle.FromHandle(handle);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

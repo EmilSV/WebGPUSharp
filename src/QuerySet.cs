@@ -47,15 +47,4 @@ public sealed class QuerySet :
         QuerySetHandle.Reference(handle);
         return new(handle);
     }
-
-    static QuerySet? IFromHandle<QuerySet, QuerySetHandle>.FromHandleNoRefIncrement(
-        QuerySetHandle handle)
-    {
-        if (QuerySetHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

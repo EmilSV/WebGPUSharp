@@ -67,15 +67,5 @@ public unsafe readonly partial struct SamplerHandle :
     }
 
 
-    public Sampler? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<Sampler, SamplerHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<Sampler, SamplerHandle>(this);
-        }
-    }
+    public Sampler? ToSafeHandle() => ToSafeHandle<Sampler, SamplerHandle>(this);
 }

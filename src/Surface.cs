@@ -15,7 +15,7 @@ public sealed class Surface :
 
     public Status GetCapabilities(Adapter adapter, SurfaceCapabilities outCapabilities)
     {
-        return outCapabilities.SetInternalSurfaceCapabilities(Handle, WebGPUMarshal.GetBorrowHandle(adapter));
+        return outCapabilities.SetInternalSurfaceCapabilities(Handle, WebGPUMarshal.GetHandle(adapter));
     }
 
     /// <inheritdoc cref="SurfaceHandle.GetCapabilities(AdapterHandle, SurfaceCapabilitiesFFI*)"/>
@@ -64,16 +64,6 @@ public sealed class Surface :
         }
 
         SurfaceHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Surface? IFromHandle<Surface, SurfaceHandle>.FromHandleNoRefIncrement(SurfaceHandle handle)
-    {
-        if (SurfaceHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

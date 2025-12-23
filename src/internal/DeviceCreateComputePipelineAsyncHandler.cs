@@ -7,19 +7,20 @@ namespace WebGpuSharp.Internal;
 
 internal unsafe static class DeviceCreateComputePipelineAsyncHandler
 {
-    public static void DeviceCreateComputePipelineAsync(
+    public static Future DeviceCreateComputePipelineAsync(
         DeviceHandle device,
         in ComputePipelineDescriptorFFI descriptor,
-        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
+        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback,
+        CallbackMode mode)
     {
         fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
-            WebGPU_FFI.DeviceCreateComputePipelineAsync(
+            return WebGPU_FFI.DeviceCreateComputePipelineAsync(
                 device: device,
                 descriptor: descriptorPtr,
                 callbackInfo: new()
                 {
-                    Mode = CallbackMode.AllowSpontaneous,
+                    Mode = mode,
                     Callback = &OnCallbackDelegate,
                     Userdata1 = AllocUserData(callback),
                     Userdata2 = null
@@ -30,22 +31,24 @@ internal unsafe static class DeviceCreateComputePipelineAsyncHandler
 
     public static Task<ComputePipelineHandle> DeviceCreateComputePipelineAsync(
         DeviceHandle device,
-        in ComputePipelineDescriptorFFI descriptor)
+        in ComputePipelineDescriptorFFI descriptor,
+        CallbackMode mode,
+        out Future future)
     {
         fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
             TaskCompletionSource<ComputePipelineHandle> taskCompletionSource = new();
-            WebGPU_FFI.DeviceCreateComputePipelineAsync(
-                device: device,
-                descriptor: descriptorPtr,
-                callbackInfo: new()
-                {
-                    Mode = CallbackMode.AllowSpontaneous,
-                    Callback = &OnCallbackTask,
-                    Userdata1 = AllocUserData(taskCompletionSource),
-                    Userdata2 = null
-                }
-            );
+            future = WebGPU_FFI.DeviceCreateComputePipelineAsync(
+                  device: device,
+                  descriptor: descriptorPtr,
+                  callbackInfo: new()
+                  {
+                      Mode = mode,
+                      Callback = &OnCallbackTask,
+                      Userdata1 = AllocUserData(taskCompletionSource),
+                      Userdata2 = null
+                  }
+              );
 
             return taskCompletionSource.Task;
         }

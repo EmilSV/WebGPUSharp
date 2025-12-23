@@ -10,7 +10,8 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
     public static void DeviceCreateRenderPipelineAsync(
         DeviceHandle device,
         in RenderPipelineDescriptorFFI descriptor,
-        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
+        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback,
+        CallbackMode mode)
     {
         fixed (RenderPipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
@@ -19,7 +20,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
                 descriptor: descriptorPtr,
                 callbackInfo: new()
                 {
-                    Mode = CallbackMode.AllowSpontaneous,
+                    Mode = mode,
                     Callback = &OnCallbackDelegate,
                     Userdata1 = AllocUserData(callback),
                     Userdata2 = null
@@ -30,7 +31,8 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
 
     public static Task<RenderPipelineHandle> DeviceCreateRenderPipelineAsync(
         DeviceHandle device,
-        in RenderPipelineDescriptorFFI descriptor)
+        in RenderPipelineDescriptorFFI descriptor,
+        CallbackMode mode)
     {
         fixed (RenderPipelineDescriptorFFI* descriptorPtr = &descriptor)
         {
@@ -40,7 +42,7 @@ internal unsafe static class DeviceCreateRenderPipelineAsyncHandler
                 descriptor: descriptorPtr,
                 callbackInfo: new()
                 {
-                    Mode = CallbackMode.AllowSpontaneous,
+                    Mode = mode,
                     Callback = &OnCallbackTask,
                     Userdata1 = AllocUserData(taskCompletionSource),
                     Userdata2 = null

@@ -31,11 +31,11 @@ public sealed class Adapter :
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor)"/>
     public Task<Device> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        Handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(incrementRefCount: false)!);
+        Handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle()!);
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor)"/>
     public unsafe Task<Device> RequestDeviceAsync() =>
-        Handle.RequestDeviceAsync().ContinueWith(static task => task.Result.ToSafeHandle(incrementRefCount: false)!);
+        Handle.RequestDeviceAsync().ContinueWith(static task => task.Result.ToSafeHandle()!);
 
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor, Action{Device?})"/>
@@ -52,17 +52,6 @@ public sealed class Adapter :
         }
 
         AdapterHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Adapter? IFromHandle<Adapter, AdapterHandle>.FromHandleNoRefIncrement(
-        AdapterHandle handle)
-    {
-        if (AdapterHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

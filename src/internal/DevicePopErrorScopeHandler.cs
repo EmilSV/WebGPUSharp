@@ -8,14 +8,17 @@ namespace WebGpuSharp.Internal;
 
 internal unsafe static class DevicePopErrorScopeHandler
 {
-    public static void DevicePopErrorScope(DeviceHandle device, Action<ErrorType, ReadOnlySpan<byte>> callback)
+    public static void DevicePopErrorScope(
+        DeviceHandle device,
+        Action<ErrorType, ReadOnlySpan<byte>> callback,
+        CallbackMode mode)
     {
         WebGPU_FFI.DevicePopErrorScope(
            device: device,
            callbackInfo: new()
            {
                NextInChain = null,
-               Mode = CallbackMode.AllowSpontaneous,
+               Mode = mode,
                Callback = &OnDevicePopErrorScopeDelegate,
                Userdata1 = AllocUserData(callback),
                Userdata2 = null
@@ -23,16 +26,19 @@ internal unsafe static class DevicePopErrorScopeHandler
         );
     }
 
-    public static Task<(ErrorType errorType, string message)> DevicePopErrorScope(DeviceHandle device)
+    public static Task<(ErrorType errorType, string message)> DevicePopErrorScope(
+        DeviceHandle device,
+        CallbackMode mode,
+        out Future future)
     {
         TaskCompletionSource<(ErrorType errorType, string message)> taskCompletionSource = new();
 
-        WebGPU_FFI.DevicePopErrorScope(
+        future = WebGPU_FFI.DevicePopErrorScope(
             device: device,
             callbackInfo: new()
             {
                 NextInChain = null,
-                Mode = CallbackMode.AllowSpontaneous,
+                Mode = mode,
                 Callback = &OnDevicePopErrorScopeTask,
                 Userdata1 = AllocUserData(taskCompletionSource),
                 Userdata2 = null

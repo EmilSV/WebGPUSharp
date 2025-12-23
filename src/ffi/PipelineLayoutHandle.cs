@@ -68,15 +68,5 @@ public unsafe readonly partial struct PipelineLayoutHandle :
     }
 
 
-    public PipelineLayout? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<PipelineLayout, PipelineLayoutHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<PipelineLayout, PipelineLayoutHandle>(this);
-        }
-    }
+    public PipelineLayout? ToSafeHandle() => ToSafeHandle<PipelineLayout, PipelineLayoutHandle>(this);
 }

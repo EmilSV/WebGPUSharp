@@ -581,14 +581,4 @@ public sealed class Buffer :
         BufferHandle.Reference(handle);
         return new(handle);
     }
-
-    static Buffer? IFromHandle<Buffer, BufferHandle>.FromHandleNoRefIncrement(BufferHandle handle)
-    {
-        if (BufferHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

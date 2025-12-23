@@ -44,15 +44,5 @@ public readonly partial struct BindGroupLayoutHandle :
         }
     }
 
-    public BindGroupLayout? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<BindGroupLayout, BindGroupLayoutHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<BindGroupLayout, BindGroupLayoutHandle>(this);
-        }
-    }
+    public BindGroupLayout? ToSafeHandle() => ToSafeHandle<BindGroupLayout, BindGroupLayoutHandle>(this);
 }

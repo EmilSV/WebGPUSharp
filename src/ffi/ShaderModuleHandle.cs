@@ -17,13 +17,13 @@ public readonly partial struct ShaderModuleHandle :
     /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
     public Task GetCompilationInfoAsync(Action<CompilationInfoRequestStatus, CompilationInfo> callbackInfo)
     {
-        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callbackInfo);
+        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callbackInfo);
     }
 
     /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
     public Task<T> GetCompilationInfoAsync<T>(Func<CompilationInfoRequestStatus, CompilationInfo, T> callbackInfo)
     {
-        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfoAsync(this, callbackInfo);
+        return ShaderModuleGetCompilationInfoHandler.GetCompilationInfo(this, callbackInfo);
     }
 
 
@@ -66,15 +66,5 @@ public readonly partial struct ShaderModuleHandle :
         }
     }
 
-    public ShaderModule? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<ShaderModule, ShaderModuleHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<ShaderModule, ShaderModuleHandle>(this);
-        }
-    }
+    public ShaderModule? ToSafeHandle() => ToSafeHandle<ShaderModule, ShaderModuleHandle>(this);
 }

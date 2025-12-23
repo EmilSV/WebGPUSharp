@@ -24,15 +24,4 @@ public sealed class BindGroup :
         BindGroupHandle.Reference(handle);
         return new(handle);
     }
-
-    static BindGroup? IFromHandle<BindGroup, BindGroupHandle>.FromHandleNoRefIncrement(
-        BindGroupHandle handle)
-    {
-        if (BindGroupHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

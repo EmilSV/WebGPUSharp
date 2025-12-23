@@ -37,16 +37,9 @@ public readonly partial struct TextureViewHandle :
         return new TextureViewHandle(pointer);
     }
 
-    public TextureView? ToSafeHandle(bool incrementRefCount)
+    public TextureView? ToSafeHandle()
     {
-        if (incrementRefCount)
-        {
-            return WebGPUMarshal.ToSafeHandle<TextureView, TextureViewHandle>(this);
-        }
-        else
-        {
-            return WebGPUMarshal.ToSafeHandleNoRefIncrement<TextureView, TextureViewHandle>(this);
-        }
+        return WebGPUMarshal.ToSafeHandle<TextureView, TextureViewHandle>(this);
     }
 
     public void Dispose()

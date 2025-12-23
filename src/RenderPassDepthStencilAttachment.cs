@@ -36,7 +36,7 @@ public struct RenderPassDepthStencilAttachment :
         in RenderPassDepthStencilAttachment input, out RenderPassDepthStencilAttachmentFFI dest)
     {
         dest = default;
-        dest.View = GetBorrowHandle(input.View);
+        dest.View = GetHandle(input.View);
         dest.DepthLoadOp = input.DepthLoadOp;
         dest.DepthStoreOp = input.DepthStoreOp;
         dest.DepthClearValue = input.DepthClearValue;

@@ -35,7 +35,7 @@ public struct RequestAdapterOptions :
             PowerPreference = input.PowerPreference,
             ForceFallbackAdapter = input.ForceFallbackAdapter,
             BackendType = input.BackendType,
-            CompatibleSurface = GetBorrowHandle(input.CompatibleSurface),
+            CompatibleSurface = GetHandle(input.CompatibleSurface),
         };
     }
 }

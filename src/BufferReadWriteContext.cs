@@ -38,7 +38,7 @@ public readonly unsafe ref struct BufferReadWriteContext
         {
             if (item == buffer)
             {
-                void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetConstMappedRange(offsetInBytes, sizeInBytes);
+                void* ptr = WebGPUMarshal.GetHandle(buffer).GetConstMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)
                 {
                     return [];
@@ -63,7 +63,7 @@ public readonly unsafe ref struct BufferReadWriteContext
         {
             if (item == buffer)
             {
-                void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetConstMappedRange(0, (nuint)bufferSize);
+                void* ptr = WebGPUMarshal.GetHandle(buffer).GetConstMappedRange(0, (nuint)bufferSize);
                 if (ptr == null)
                 {
                     return [];
@@ -88,7 +88,7 @@ public readonly unsafe ref struct BufferReadWriteContext
         {
             if (item == buffer)
             {
-                void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(offsetInBytes, sizeInBytes);
+                void* ptr = WebGPUMarshal.GetHandle(buffer).GetMappedRange(offsetInBytes, sizeInBytes);
                 if (ptr == null)
                 {
                     return [];
@@ -111,7 +111,7 @@ public readonly unsafe ref struct BufferReadWriteContext
         {
             if (item == buffer)
             {
-                void* ptr = WebGPUMarshal.GetBorrowHandle(buffer).GetMappedRange(0, (nuint)bufferSize);
+                void* ptr = WebGPUMarshal.GetHandle(buffer).GetMappedRange(0, (nuint)bufferSize);
                 if (ptr == null)
                 {
                     return [];

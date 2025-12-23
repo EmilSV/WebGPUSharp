@@ -15,7 +15,7 @@ public readonly unsafe partial struct InstanceHandle :
     IDisposable, IWebGpuHandle<InstanceHandle, Instance>
 {
     /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
-    public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptionsFFI options)
+    public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptionsFFI options, CallbackMode mode, out Future future)
     {
         unsafe
         {
@@ -26,12 +26,12 @@ public readonly unsafe partial struct InstanceHandle :
                 taskCompletionSource = new TaskCompletionSource<AdapterHandle>();
                 fixed (RequestAdapterOptionsFFI* optionsPtr = &options)
                 {
-                    WebGPU_FFI.InstanceRequestAdapter(
+                    future = WebGPU_FFI.InstanceRequestAdapter(
                        instance: this,
                        options: optionsPtr,
                        callbackInfo: new()
                        {
-                           Mode = CallbackMode.AllowSpontaneous,
+                           Mode = mode,
                            Callback = &OnAdapterRequestEnded,
                            Userdata1 = AllocUserData(taskCompletionSource),
                            Userdata2 = null
@@ -46,11 +46,18 @@ public readonly unsafe partial struct InstanceHandle :
                 {
                     handle.Free();
                 }
+                future = default;
                 return Task.FromResult(AdapterHandle.Null);
             }
 
             return taskCompletionSource.Task;
         }
+    }
+    
+    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
+    public Task<AdapterHandle> RequestAdapterAsync(in RequestAdapterOptionsFFI options)
+    {
+        return RequestAdapterAsync(options, CallbackMode.AllowSpontaneous, out _);
     }
 
     /// <returns> A task that will complete when the adapter is ready.</returns>
@@ -173,15 +180,5 @@ public readonly unsafe partial struct InstanceHandle :
         WebGPU_FFI.InstanceRelease(handle);
     }
 
-    public Instance? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<Instance, InstanceHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<Instance, InstanceHandle>(this);
-        }
-    }
+    public Instance? ToSafeHandle() => ToSafeHandle<Instance, InstanceHandle>(this);
 }

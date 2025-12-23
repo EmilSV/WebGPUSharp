@@ -24,9 +24,9 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         return new RenderBundleEncoder(newRenderBundleEncoderPooledHandle);
     }
 
-    internal RenderBundleEncoderHandle GetOwnedHandle()
+    internal RenderBundleEncoderHandle GetHandle()
     {
-        return _pooledHandle.GetOwnedHandle(_localToken);
+        return _pooledHandle.GetHandle(_localToken);
     }
 
 
@@ -79,7 +79,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
     public RenderBundle Finish(in RenderBundleDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
-        var result = _originalHandle.Finish(descriptor).ToSafeHandle(false)!;
+        var result = _originalHandle.Finish(descriptor).ToSafeHandle()!;
         PooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
         return result;
     }
@@ -87,7 +87,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
     public RenderBundle Finish()
     {
         _pooledHandle.VerifyToken(_localToken);
-        var result = _originalHandle.Finish().ToSafeHandle(false)!;
+        var result = _originalHandle.Finish().ToSafeHandle()!;
         PooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
         return result;
     }

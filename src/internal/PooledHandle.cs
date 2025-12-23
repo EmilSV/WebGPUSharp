@@ -66,7 +66,7 @@ internal unsafe sealed class PooledHandle<T>
         }
     }
 
-    public T GetOwnedHandle(ulong localToken)
+    public T GetHandle(ulong localToken)
     {
         VerifyToken(localToken);
         var oldHandle = Handle;
@@ -74,7 +74,6 @@ internal unsafe sealed class PooledHandle<T>
         {
             throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid.");
         }
-        T.Reference(oldHandle);
         return oldHandle;
     }
 

@@ -23,7 +23,7 @@ public struct PassTimestampWrites :
     {
         dest = new()
         {
-            QuerySet = WebGPUMarshal.GetBorrowHandle(input.QuerySet),
+            QuerySet = WebGPUMarshal.GetHandle(input.QuerySet),
             BeginningOfPassWriteIndex = input.BeginningOfPassWriteIndex,
             EndOfPassWriteIndex = input.EndOfPassWriteIndex
         };

@@ -66,15 +66,5 @@ public unsafe readonly partial struct RenderPipelineHandle :
         }
     }
 
-    public RenderPipeline? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<RenderPipeline, RenderPipelineHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<RenderPipeline, RenderPipelineHandle>(this);
-        }
-    }
+    public RenderPipeline? ToSafeHandle() => ToSafeHandle<RenderPipeline, RenderPipelineHandle>(this);
 }

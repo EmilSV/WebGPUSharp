@@ -15,7 +15,7 @@ public sealed class RenderPipeline :
 
     public BindGroupLayout GetBindGroupLayout(uint groupIndex)
     {
-        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false)!;
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle()!;
     }
 
     public void SetLabel(WGPURefText label)
@@ -32,17 +32,6 @@ public sealed class RenderPipeline :
         }
 
         RenderPipelineHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static RenderPipeline? IFromHandle<RenderPipeline, RenderPipelineHandle>.FromHandleNoRefIncrement(
-        RenderPipelineHandle handle)
-    {
-        if (RenderPipelineHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

@@ -8,11 +8,14 @@ namespace WebGpuSharp;
 
 public unsafe static class ShaderModuleGetCompilationInfoHandler
 {
-    public static void GetCompilationInfo(ShaderModuleHandle handle, Action<CompilationInfoRequestStatus, CompilationInfo> callback)
+    public static void GetCompilationInfo(
+        ShaderModuleHandle handle, 
+        Action<CompilationInfoRequestStatus, CompilationInfo> callback,
+        CallbackMode mode = CallbackMode.AllowSpontaneous)
     {
         WebGPU_FFI.ShaderModuleGetCompilationInfo(handle, new()
         {
-            Mode = CallbackMode.AllowSpontaneous,
+            Mode = mode,
             Callback = &OnCallback,
             Userdata1 = AllocUserData(callback),
             Userdata2 = null
@@ -20,7 +23,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
     }
 
 
-    public static Task<T> GetCompilationInfoAsync<T>(ShaderModuleHandle handle, Func<CompilationInfoRequestStatus, CompilationInfo, T> callback)
+    public static Task<T> GetCompilationInfo<T>(ShaderModuleHandle handle, Func<CompilationInfoRequestStatus, CompilationInfo, T> callback)
     {
         TaskCompletionSource<T> tcs = new();
         void innerCallback(CompilationInfoRequestStatus status, CompilationInfo info)
@@ -38,7 +41,7 @@ public unsafe static class ShaderModuleGetCompilationInfoHandler
         return tcs.Task;
     }
 
-    public static Task GetCompilationInfoAsync(ShaderModuleHandle handle, Action<CompilationInfoRequestStatus, CompilationInfo> callback)
+    public static Task GetCompilationInfo(ShaderModuleHandle handle, Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
         TaskCompletionSource tcs = new();
         void innerCallback(CompilationInfoRequestStatus status, CompilationInfo info)

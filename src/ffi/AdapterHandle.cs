@@ -80,7 +80,7 @@ public unsafe readonly partial struct AdapterHandle :
     /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
     /// <returns>A task that resolve into a device.</returns>
     /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*, RequestDeviceCallbackInfoFFI)"/>
-    private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor)
+    private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor, CallbackMode mode, out Future future)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
         void* userData = default;
@@ -89,12 +89,12 @@ public unsafe readonly partial struct AdapterHandle :
             taskCompletionSource = new TaskCompletionSource<DeviceHandle>();
             userData = AllocUserData(taskCompletionSource);
 
-            WebGPU_FFI.AdapterRequestDevice(
+            future = WebGPU_FFI.AdapterRequestDevice(
                adapter: this,
                descriptor: descriptor,
                callbackInfo: new()
                {
-                   Mode = CallbackMode.AllowSpontaneous,
+                   Mode = mode,
                    Callback = &OnDeviceRequestEndedTaskCompletionSource,
                    Userdata1 = userData,
                    Userdata2 = null
@@ -105,6 +105,7 @@ public unsafe readonly partial struct AdapterHandle :
         {
             Console.Error.WriteLine(e);
             FreeUserData(userData);
+            future = default;
             return Task.FromResult(default(DeviceHandle));
         }
 
@@ -113,11 +114,11 @@ public unsafe readonly partial struct AdapterHandle :
 
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly Task<DeviceHandle> RequestDeviceAsync() => RequestDeviceAsync((DeviceDescriptorFFI*)null);
+    public readonly Task<DeviceHandle> RequestDeviceAsync() => RequestDeviceAsync((DeviceDescriptorFFI*)null, CallbackMode.AllowSpontaneous, out _);
 
 
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
-    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor)
+    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor, CallbackMode mode, out Future future)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
         const int stackAllocSize = 16 * 2 * sizeof(byte);
@@ -161,14 +162,17 @@ public unsafe readonly partial struct AdapterHandle :
                     Userdata2 = null
                 }
             };
-            return RequestDeviceAsync(&deviceDescriptor);
+            return RequestDeviceAsync(&deviceDescriptor, CallbackMode.AllowSpontaneous, out future);
         }
     }
+
+    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor) => 
+        RequestDeviceAsync(descriptor, CallbackMode.AllowSpontaneous, out _);
 
     /// <param name="callback">The callback to call when the device is ready</param>
     /// <returns/>
     /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
-    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback)
+    public readonly Future RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback, CallbackMode mode = CallbackMode.AllowSpontaneous)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
         const int stackAllocSize = 16 * 2 * sizeof(byte);
@@ -221,17 +225,17 @@ public unsafe readonly partial struct AdapterHandle :
                 };
 
                 userData = AllocUserData(callback);
-                WebGPU_FFI.AdapterRequestDevice(
-                   adapter: this,
-                   descriptor: &deviceDescriptor,
-                   callbackInfo: new()
-                   {
-                       Mode = CallbackMode.AllowSpontaneous,
-                       Callback = &OnDeviceRequestEndedDelegate,
-                       Userdata1 = userData,
-                       Userdata2 = null
-                   }
-                );
+                return WebGPU_FFI.AdapterRequestDevice(
+                    adapter: this,
+                    descriptor: &deviceDescriptor,
+                    callbackInfo: new()
+                    {
+                        Mode = mode,
+                        Callback = &OnDeviceRequestEndedDelegate,
+                        Userdata1 = userData,
+                        Userdata2 = null
+                    }
+                 );
             }
         }
         catch (Exception e)
@@ -239,6 +243,7 @@ public unsafe readonly partial struct AdapterHandle :
             Console.Error.WriteLine(e);
             FreeUserData(userData);
             callback(default);
+            return default;
         }
     }
 
@@ -253,7 +258,7 @@ public unsafe readonly partial struct AdapterHandle :
             }
             else
             {
-                callback(ToSafeHandleNoRefIncrement<Device, DeviceHandle>(device));
+                callback(ToSafeHandle<Device, DeviceHandle>(device));
             }
         });
     }
@@ -354,16 +359,9 @@ public unsafe readonly partial struct AdapterHandle :
         return new AdapterHandle(pointer);
     }
 
-    public Adapter? ToSafeHandle(bool incrementRefCount)
+    public Adapter? ToSafeHandle()
     {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<Adapter, AdapterHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<Adapter, AdapterHandle>(this);
-        }
+        return ToSafeHandle<Adapter, AdapterHandle>(this);
     }
 
     public static void Reference(AdapterHandle handle)

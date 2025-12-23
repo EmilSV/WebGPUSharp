@@ -44,16 +44,9 @@ public unsafe readonly partial struct BufferHandle :
         WebGPU_FFI.BufferRelease(handle);
     }
 
-    public Buffer? ToSafeHandle(bool incrementRefCount)
+    public Buffer? ToSafeHandle()
     {
-        if (incrementRefCount)
-        {
-            return WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(this);
-        }
-        else
-        {
-            return WebGPUMarshal.ToSafeHandleNoRefIncrement<Buffer, BufferHandle>(this);
-        }
+        return WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(this);
     }
 
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>

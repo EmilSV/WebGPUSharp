@@ -17,7 +17,7 @@ public sealed class Instance :
     {
         return Handle.RequestAdapterAsync(options).ContinueWith(static task =>
         {
-            return task.Result.ToSafeHandle(false)!;
+            return task.Result.ToSafeHandle()!;
         });
     }
 
@@ -30,7 +30,7 @@ public sealed class Instance :
     ///<inheritdoc cref="InstanceHandle.CreateSurface(SurfaceDescriptor)"/>
     public Surface? CreateSurface(SurfaceDescriptor descriptor)
     {
-        return Handle.CreateSurface(descriptor).ToSafeHandle(false);
+        return Handle.CreateSurface(descriptor).ToSafeHandle();
     }
 
     static Instance? IFromHandle<Instance, InstanceHandle>.FromHandle(InstanceHandle handle)
@@ -41,16 +41,6 @@ public sealed class Instance :
         }
 
         InstanceHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Instance? IFromHandle<Instance, InstanceHandle>.FromHandleNoRefIncrement(InstanceHandle handle)
-    {
-        if (InstanceHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

@@ -24,15 +24,4 @@ public sealed class RenderBundle :
         RenderBundleHandle.Reference(handle);
         return new(handle);
     }
-
-    static RenderBundle? IFromHandle<RenderBundle, RenderBundleHandle>.FromHandleNoRefIncrement(
-        RenderBundleHandle handle)
-    {
-        if (RenderBundleHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

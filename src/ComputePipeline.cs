@@ -16,7 +16,7 @@ public sealed class ComputePipeline :
     /// <inheritdoc cref="ComputePipelineHandle.GetBindGroupLayout(uint)"/>
     public BindGroupLayout GetBindGroupLayout(uint groupIndex)
     {
-        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle(false)!;
+        return Handle.GetBindGroupLayout(groupIndex).ToSafeHandle()!;
     }
 
     /// <inheritdoc cref="ComputePipelineHandle.SetLabel(WGPURefText)"/>
@@ -34,17 +34,6 @@ public sealed class ComputePipeline :
         }
 
         ComputePipelineHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static ComputePipeline? IFromHandle<ComputePipeline, ComputePipelineHandle>.FromHandleNoRefIncrement(
-        ComputePipelineHandle handle)
-    {
-        if (ComputePipelineHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

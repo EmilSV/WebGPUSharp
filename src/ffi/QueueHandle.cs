@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
@@ -254,13 +255,51 @@ public readonly unsafe partial struct QueueHandle :
     {
         TexelCopyTextureInfoFFI destinationFFI = new()
         {
-            Texture = GetBorrowHandle(destination.Texture),
+            Texture = GetHandle(destination.Texture),
             MipLevel = destination.MipLevel,
             Origin = destination.Origin,
             Aspect = destination.Aspect
         };
         WriteTexture(destinationFFI, data, dataLayout, writeSize);
     }
+
+    /// <inheritdoc cref="OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
+    public Future OnSubmittedWorkDone(
+        Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback,
+        CallbackMode mode = CallbackMode.AllowSpontaneous)
+    {
+        QueueWorkDoneCallbackInfoFFI callbackInfoFFI = new()
+        {
+            Mode = mode,
+            Callback = &OnSubmittedWorkDoneFunctions.DelegateCallback,
+            Userdata1 = AllocUserData(callback),
+            Userdata2 = null,
+        };
+        return WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfoFFI);
+    }
+
+    /// <inheritdoc cref="OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
+    public Task OnSubmittedWorkDone(CallbackMode mode, out Future future)
+    {
+        TaskCompletionSource taskCompletionSource = new();
+        QueueWorkDoneCallbackInfoFFI callbackInfoFFI = new()
+        {
+            Mode = mode,
+            Callback = &OnSubmittedWorkDoneFunctions.TaskCallback,
+            Userdata1 = AllocUserData(taskCompletionSource),
+            Userdata2 = null,
+        };
+        future = WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfoFFI);
+        return taskCompletionSource.Task;
+    }
+
+    /// <inheritdoc cref="OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task OnSubmittedWorkDone()
+    {
+        return OnSubmittedWorkDone(CallbackMode.AllowSpontaneous, out var _);
+    }
+
 
     public readonly void Dispose()
     {
@@ -290,16 +329,9 @@ public readonly unsafe partial struct QueueHandle :
         return new QueueHandle(pointer);
     }
 
-    public Queue? ToSafeHandle(bool incrementRefCount)
+    public Queue? ToSafeHandle()
     {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<Queue, QueueHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<Queue, QueueHandle>(this);
-        }
+        return ToSafeHandle<Queue, QueueHandle>(this);
     }
 
     public static void Reference(QueueHandle handle)
@@ -311,4 +343,49 @@ public readonly unsafe partial struct QueueHandle :
     {
         WebGPU_FFI.QueueRelease(handle);
     }
+}
+
+
+file unsafe static class OnSubmittedWorkDoneFunctions
+{
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    public static void DelegateCallback(
+        QueueWorkDoneStatus status, StringViewFFI message,
+        void* userdata1, void* _)
+    {
+        try
+        {
+            var callback = (Action<QueueWorkDoneStatus, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
+            callback?.Invoke(status, message.AsSpan());
+        }
+        catch
+        {
+
+        }
+    }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    public static void TaskCallback(
+            QueueWorkDoneStatus status, StringViewFFI message,
+            void* userdata1, void* _)
+    {
+        TaskCompletionSource? taskCompletionSource = null;
+        try
+        {
+            taskCompletionSource = (TaskCompletionSource?)ConsumeUserDataIntoObject(userdata1);
+            if (status != QueueWorkDoneStatus.Success)
+            {
+                string messageStr = Encoding.UTF8.GetString(message.AsSpan());
+                taskCompletionSource?.SetException(new WebGPUException(messageStr));
+                return;
+            }
+
+            taskCompletionSource?.SetResult();
+        }
+        catch (Exception e)
+        {
+            taskCompletionSource?.SetException(e);
+        }
+    }
+
 }
