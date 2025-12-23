@@ -126,7 +126,12 @@ public unsafe partial struct QuerySetHandle : IEquatable<QuerySetHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.QuerySetAddRef(this);
+    /// <returns>The same <see cref="QuerySetHandle"/> instance with an incremented reference count.</returns>
+    public QuerySetHandle AddRef()
+    {
+        WebGPU_FFI.QuerySetAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="QuerySetHandle"/>. When the reference count reaches zero, the <see cref="QuerySetHandle"/> and associated resources may be freed.

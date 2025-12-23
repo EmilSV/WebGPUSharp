@@ -106,7 +106,12 @@ public unsafe partial struct PipelineLayoutHandle : IEquatable<PipelineLayoutHan
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.PipelineLayoutAddRef(this);
+    /// <returns>The same <see cref="PipelineLayoutHandle"/> instance with an incremented reference count.</returns>
+    public PipelineLayoutHandle AddRef()
+    {
+        WebGPU_FFI.PipelineLayoutAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="PipelineLayoutHandle"/>. When the reference count reaches zero, the <see cref="PipelineLayoutHandle"/> and associated resources may be freed.

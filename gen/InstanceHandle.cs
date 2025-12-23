@@ -125,9 +125,9 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// <summary>
     /// Wait for at least one Future in `futures` to complete, and call callbacks of the respective completed asynchronous operations.
     /// </summary>
+    /// <param name="timeoutNS">The timeout in nanoseconds</param>
     /// <param name="futures">The futures to wait for</param>
     /// <param name="futureCount">The number of futures to wait for</param>
-    /// <param name="timeoutNS">The timeout in nanoseconds</param>
     public WaitStatus WaitAny(nuint futureCount, FutureWaitInfo* futures, ulong timeoutNS) => WebGPU_FFI.InstanceWaitAny(this, futureCount, futures, timeoutNS);
 
     /// <summary>
@@ -141,7 +141,12 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.InstanceAddRef(this);
+    /// <returns>The same <see cref="InstanceHandle"/> instance with an incremented reference count.</returns>
+    public InstanceHandle AddRef()
+    {
+        WebGPU_FFI.InstanceAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="InstanceHandle"/>. When the reference count reaches zero, the <see cref="InstanceHandle"/> and associated resources may be freed.

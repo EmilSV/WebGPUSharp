@@ -106,7 +106,12 @@ public unsafe partial struct BindGroupHandle : IEquatable<BindGroupHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.BindGroupAddRef(this);
+    /// <returns>The same <see cref="BindGroupHandle"/> instance with an incremented reference count.</returns>
+    public BindGroupHandle AddRef()
+    {
+        WebGPU_FFI.BindGroupAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="BindGroupHandle"/>. When the reference count reaches zero, the <see cref="BindGroupHandle"/> and associated resources may be freed.

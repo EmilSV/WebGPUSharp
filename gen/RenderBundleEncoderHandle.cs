@@ -227,7 +227,12 @@ public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundle
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.RenderBundleEncoderAddRef(this);
+    /// <returns>The same <see cref="RenderBundleEncoderHandle"/> instance with an incremented reference count.</returns>
+    public RenderBundleEncoderHandle AddRef()
+    {
+        WebGPU_FFI.RenderBundleEncoderAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="RenderBundleEncoderHandle"/>. When the reference count reaches zero, the <see cref="RenderBundleEncoderHandle"/> and associated resources may be freed.

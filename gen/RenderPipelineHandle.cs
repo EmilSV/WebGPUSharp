@@ -119,7 +119,12 @@ public unsafe partial struct RenderPipelineHandle : IEquatable<RenderPipelineHan
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.RenderPipelineAddRef(this);
+    /// <returns>The same <see cref="RenderPipelineHandle"/> instance with an incremented reference count.</returns>
+    public RenderPipelineHandle AddRef()
+    {
+        WebGPU_FFI.RenderPipelineAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="RenderPipelineHandle"/>. When the reference count reaches zero, the <see cref="RenderPipelineHandle"/> and associated resources may be freed.

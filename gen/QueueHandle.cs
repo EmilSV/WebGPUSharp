@@ -109,8 +109,8 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// Schedules the execution of the command buffers by the GPU on this queue.
     /// Submitted command buffers cannot be used again.
     /// </summary>
-    /// <param name="commandCount">The number of command buffers to submit.</param>
     /// <param name="commands">The command buffers to submit.</param>
+    /// <param name="commandCount">The number of command buffers to submit.</param>
     public void Submit(nuint commandCount, CommandBufferHandle* commands) => WebGPU_FFI.QueueSubmit(this, commandCount, commands);
 
     /// <summary>
@@ -150,7 +150,12 @@ public unsafe partial struct QueueHandle : IEquatable<QueueHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.QueueAddRef(this);
+    /// <returns>The same <see cref="QueueHandle"/> instance with an incremented reference count.</returns>
+    public QueueHandle AddRef()
+    {
+        WebGPU_FFI.QueueAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="QueueHandle"/>. When the reference count reaches zero, the <see cref="QueueHandle"/> and associated resources may be freed.
