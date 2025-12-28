@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -902,20 +903,41 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 }
 
 
-file static class CreateComputePipelineAsyncCallbackFunctions
+file unsafe static class CreateComputePipelineAsyncCallbackFunctions
 {
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static void DelegateCallback(
-        CreateComputePipelineAsyncStatus status,
+        CreatePipelineAsyncStatus status,
         ComputePipelineHandle pipeline,
         StringViewFFI message,
         void* userdata1,
-        void* userdata2)
+        void* _)
     {
-        var callback = DeviceCreateComputePipelineAsyncHandler.RetrieveAndFreeCallback(
-            userdata1
+        var callback = (Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
+        if (callback == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
+        message.AsSpan().CopyTo(messageBufferArraySegment);
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (status, pipeline, messageBufferArraySegment, callback),
+            callBack: static state =>
+            {
+                var (status, pipeline, message, callback) = state;
+                try
+                {
+                    callback(status, pipeline, message.AsSpan());
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(message.Array!);
+                }
+            },
+            preferLocal: false
         );
-        ReadOnlySpan<byte> messageSpan = StringViewToReadOnlySpanByte(message);
-        callback(status, pipeline, messageSpan);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Transactions;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
@@ -16,7 +17,7 @@ public sealed class Buffer :
     WebGPUManagedHandleBase<BufferHandle>,
     IFromHandle<Buffer, BufferHandle>
 {
-    private readonly ReadWriteStateChangeHandleLock _readWriteStateChangeLock;
+    internal readonly ReadWriteStateChangeHandleLock _readWriteStateChangeLock;
 
     private Buffer(BufferHandle handle) : base(handle)
     {
@@ -44,7 +45,7 @@ public sealed class Buffer :
                 size: size,
                 callbackInfo: new()
                 {
-                    Callback = &BufferCallbackHandler.OnBufferMapCallback_Action,
+                    Callback = &BufferMapCallbackFunctions.DelegateCallback,
                     Userdata1 = bufferBaseUserData,
                     Userdata2 = callbackUserData,
                     Mode = CallbackMode.AllowSpontaneous,
@@ -94,7 +95,7 @@ public sealed class Buffer :
                 size: size,
                 callbackInfo: new()
                 {
-                    Callback = &BufferCallbackHandler.OnBufferMapCallback_TaskCompletionSource,
+                    Callback = &BufferMapCallbackFunctions.TaskCallback,
                     Userdata1 = bufferBaseHandle,
                     Userdata2 = taskCompletionSourceHandle,
                     Mode = CallbackMode.AllowSpontaneous,
@@ -507,70 +508,6 @@ public sealed class Buffer :
 
 
 
-    private static unsafe class BufferCallbackHandler
-    {
-        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-        public static void OnBufferMapCallback_TaskCompletionSource(
-            MapAsyncStatus status, StringViewFFI _, void* userdata1, void* userdata2)
-        {
-            try
-            {
-                var bufferBase = (Buffer?)ConsumeUserDataIntoObject(userdata1);
-                var taskCompletionSource = (TaskCompletionSource<MapAsyncStatus>?)ConsumeUserDataIntoObject(userdata2);
-
-                if (bufferBase == null || taskCompletionSource == null)
-                {
-                    Console.Error.WriteLine("Invalid buffer map callback");
-                    return;
-                }
-
-                bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
-                taskCompletionSource.SetResult(status);
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    Console.Error.WriteLine($"Invalid buffer map callback{nameof(OnBufferMapCallback_TaskCompletionSource)}");
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-        }
-
-        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-        public static void OnBufferMapCallback_Action(
-            MapAsyncStatus status, StringViewFFI _, void* userdata1, void* userdata2)
-        {
-            try
-            {
-                var bufferBase = (Buffer?)ConsumeUserDataIntoObject(userdata1);
-                var callback = (Action<MapAsyncStatus>?)ConsumeUserDataIntoObject(userdata2);
-                if (bufferBase == null || callback == null)
-                {
-                    Console.Error.WriteLine("Invalid buffer map callback");
-                    return;
-                }
-
-                bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
-                callback(status);
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    Console.Error.WriteLine($"Invalid buffer map callback{nameof(OnBufferMapCallback_Action)}");
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-        }
-    }
-
     static Buffer? IFromHandle<Buffer, BufferHandle>.FromHandle(BufferHandle handle)
     {
         if (BufferHandle.IsNull(handle))
@@ -580,5 +517,101 @@ public sealed class Buffer :
 
         BufferHandle.Reference(handle);
         return new(handle);
+    }
+}
+
+
+file static unsafe class BufferMapCallbackFunctions
+{
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    public static void DelegateCallback(
+        MapAsyncStatus status, StringViewFFI message, void* userdata1, void* userdata2)
+    {
+        try
+        {
+            var bufferBase = (Buffer?)ConsumeUserDataIntoObject(userdata1);
+            var callback = (Action<MapAsyncStatus, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata2);
+            if (bufferBase == null || callback == null)
+            {
+                Console.Error.WriteLine("Invalid buffer map callback");
+                return;
+            }
+
+            byte[]? messageBuffer = null;
+            messageBuffer = ArrayPool<byte>.Shared.Rent((int)message.Length);
+            var messageBufferArraySegment = new ArraySegment<byte>(messageBuffer, 0, (int)message.Length);
+            message.AsSpan().CopyTo(messageBufferArraySegment);
+
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (status, messageBufferArraySegment, callback!, bufferBase),
+                callBack: static state =>
+                {
+                    var (status, messageBufferArraySegment, callback, bufferBase) = state;
+                    bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
+                    try
+                    {
+                        callback(status, messageBufferArraySegment);
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
+                    }
+                },
+                preferLocal: false
+            );
+        }
+        catch { }
+    }
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    public static void TaskCallback(
+        MapAsyncStatus status, StringViewFFI message, void* userdata1, void* userdata2)
+    {
+        try
+        {
+            var bufferBase = (Buffer?)ConsumeUserDataIntoObject(userdata1);
+            var taskCompletionSource = (TaskCompletionSource<MapAsyncStatus>?)ConsumeUserDataIntoObject(userdata2);
+
+            if (bufferBase == null || taskCompletionSource == null)
+            {
+                Console.Error.WriteLine("Invalid buffer map callback");
+                return;
+            }
+            byte[]? messageBuffer = null;
+            messageBuffer = ArrayPool<byte>.Shared.Rent((int)message.Length);
+            var messageBufferArraySegment = new ArraySegment<byte>(messageBuffer, 0, (int)message.Length);
+            message.AsSpan().CopyTo(messageBufferArraySegment);
+
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (status, messageBufferArraySegment, taskCompletionSource!, bufferBase),
+                callBack: static state =>
+                {
+                    var (status, messageBufferArraySegment, tsc, bufferBase) = state;
+                    bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
+                    try
+                    {
+                        switch (status)
+                        {
+                            case MapAsyncStatus.Success:
+                            case MapAsyncStatus.Aborted:
+                                tsc?.SetResult(status);
+                                break;
+                            case MapAsyncStatus.Error:
+                            case MapAsyncStatus.CallbackCancelled:
+                            default:
+                                tsc?.SetException(new WebGPUException(Encoding.UTF8.GetString(messageBufferArraySegment)));
+                                break;
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
+                    }
+                },
+                preferLocal: false
+            );
+        }
+        catch { }
     }
 }

@@ -81,7 +81,7 @@ public unsafe readonly partial struct AdapterHandle :
     /// <param name="descriptor">Description of the  <see cref="Device"/> to request.</param>
     /// <returns>A task that resolve into a device.</returns>
     /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*, RequestDeviceCallbackInfoFFI)"/>
-    private readonly unsafe Task<DeviceHandle> RequestDeviceAsync(DeviceDescriptorFFI* descriptor, CallbackMode mode, out Future future)
+    private readonly unsafe Task<DeviceHandle> RequestDevice(DeviceDescriptorFFI* descriptor)
     {
         TaskCompletionSource<DeviceHandle> taskCompletionSource;
         void* userData = default;
@@ -90,13 +90,13 @@ public unsafe readonly partial struct AdapterHandle :
             taskCompletionSource = new TaskCompletionSource<DeviceHandle>();
             userData = AllocUserData(taskCompletionSource);
 
-            future = WebGPU_FFI.AdapterRequestDevice(
+            WebGPU_FFI.AdapterRequestDevice(
                adapter: this,
                descriptor: descriptor,
                callbackInfo: new()
                {
-                   Mode = mode,
-                   Callback = &OnDeviceRequestEndedTaskCompletionSource,
+                   Mode = CallbackMode.AllowSpontaneous,
+                   Callback = &RequestDeviceFunctions.TaskCallback,
                    Userdata1 = userData,
                    Userdata2 = null
                }
@@ -106,20 +106,19 @@ public unsafe readonly partial struct AdapterHandle :
         {
             Console.Error.WriteLine(e);
             FreeUserData(userData);
-            future = default;
             return Task.FromResult(default(DeviceHandle));
         }
 
         return taskCompletionSource.Task;
     }
 
-    /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
+    /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly Task<DeviceHandle> RequestDeviceAsync() => RequestDeviceAsync((DeviceDescriptorFFI*)null, CallbackMode.AllowSpontaneous, out _);
+    public readonly Task<DeviceHandle> RequestDevice() => RequestDevice((DeviceDescriptorFFI*)null);
 
 
-    /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
-    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor, CallbackMode mode, out Future future)
+    /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*)"/>
+    public readonly Task<DeviceHandle> RequestDevice(in DeviceDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
         const int stackAllocSize = 16 * 2 * sizeof(byte);
@@ -139,8 +138,8 @@ public unsafe readonly partial struct AdapterHandle :
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
         fixed (Limits* requiredLimitsPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.RequiredLimits))
         {
-                var deviceLostUserData = descriptor.DeviceLostCallback != null ? AllocUserData(descriptor.DeviceLostCallback) : null;
-                var uncapturedErrorUserData = descriptor.UncapturedErrorCallback != null ? AllocUserData(descriptor.UncapturedErrorCallback) : null;
+            var deviceLostUserData = descriptor.DeviceLostCallback != null ? AllocUserData(descriptor.DeviceLostCallback) : null;
+            var uncapturedErrorUserData = descriptor.UncapturedErrorCallback != null ? AllocUserData(descriptor.UncapturedErrorCallback) : null;
 
             DeviceDescriptorFFI deviceDescriptor = new()
             {
@@ -163,17 +162,17 @@ public unsafe readonly partial struct AdapterHandle :
                     Userdata2 = null
                 }
             };
-            return RequestDeviceAsync(&deviceDescriptor, CallbackMode.AllowSpontaneous, out future);
+            return RequestDevice(&deviceDescriptor);
         }
     }
 
     public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        RequestDeviceAsync(descriptor, CallbackMode.AllowSpontaneous, out _);
+        RequestDeviceAsync(descriptor);
 
     /// <param name="callback">The callback to call when the device is ready</param>
     /// <returns/>
-    /// <inheritdoc cref="RequestDeviceAsync(DeviceDescriptorFFI*)"/>
-    public readonly Future RequestDeviceAsync(in DeviceDescriptor descriptor, Action<DeviceHandle> callback, CallbackMode mode = CallbackMode.AllowSpontaneous)
+    /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*)"/>
+    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, DeviceHandle, ReadOnlySpan<byte>> callback)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
         const int stackAllocSize = 16 * 2 * sizeof(byte);
@@ -226,13 +225,13 @@ public unsafe readonly partial struct AdapterHandle :
                 };
 
                 userData = AllocUserData(callback);
-                return WebGPU_FFI.AdapterRequestDevice(
+                WebGPU_FFI.AdapterRequestDevice(
                     adapter: this,
                     descriptor: &deviceDescriptor,
                     callbackInfo: new()
                     {
-                        Mode = mode,
-                        Callback = &OnDeviceRequestEndedDelegate,
+                        Mode = CallbackMode.AllowSpontaneous,
+                        Callback = &RequestDeviceFunctions.DelegateCallback,
                         Userdata1 = userData,
                         Userdata2 = null
                     }
@@ -243,94 +242,24 @@ public unsafe readonly partial struct AdapterHandle :
         {
             Console.Error.WriteLine(e);
             FreeUserData(userData);
-            callback(default);
-            return default;
         }
     }
 
     /// <inheritdoc cref="RequestDeviceAsync(in DeviceDescriptor, Action{DeviceHandle})"/>
-    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<Device?> callback)
+    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback)
     {
-        RequestDeviceAsync(descriptor, (DeviceHandle device) =>
+        RequestDeviceAsync(descriptor, (RequestDeviceStatus status, DeviceHandle device, ReadOnlySpan<byte> message) =>
         {
             if (DeviceHandle.IsNull(device))
             {
-                callback(null);
+                callback(status, null, message);
             }
             else
             {
-                callback(ToSafeHandle<Device, DeviceHandle>(device));
+                callback(status, ToSafeHandle<Device, DeviceHandle>(device), message);
             }
         });
     }
-
-    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static unsafe void OnDeviceRequestEndedDelegate(
-      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message,
-      void* userdata, void* _)
-    {
-        Action<DeviceHandle>? callback = null;
-        try
-        {
-            callback = (Action<DeviceHandle>?)ConsumeUserDataIntoObject(userdata);
-
-            if (callback == null)
-            {
-                return;
-            }
-
-            if (status == RequestDeviceStatus.Success)
-            {
-                callback(device);
-            }
-            else
-            {
-                string? messageStr = Encoding.UTF8.GetString(message.AsSpan());
-                Console.WriteLine($"Could not get WebGPU device: {messageStr ?? "Failed to get error message"}");
-                callback(default);
-            }
-        }
-        catch (Exception)
-        {
-            device.Dispose();
-            callback?.Invoke(default);
-        }
-    }
-
-
-    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static unsafe void OnDeviceRequestEndedTaskCompletionSource(
-      RequestDeviceStatus status, DeviceHandle device, StringViewFFI message, void* userdata, void* _)
-    {
-        TaskCompletionSource<DeviceHandle>? taskCompletionSource = null;
-        try
-        {
-
-            taskCompletionSource = (TaskCompletionSource<DeviceHandle>?)ConsumeUserDataIntoObject(userdata);
-
-            if (taskCompletionSource == null)
-            {
-                return;
-            }
-
-            if (status == RequestDeviceStatus.Success)
-            {
-                taskCompletionSource.SetResult(device);
-            }
-            else
-            {
-                string? messageStr = Encoding.UTF8.GetString(message.AsSpan());
-                Console.WriteLine($"Could not get WebGPU device: {messageStr ?? "Failed to get error message"}");
-                taskCompletionSource.SetResult(DeviceHandle.Null);
-            }
-        }
-        catch (Exception)
-        {
-            taskCompletionSource?.SetResult(DeviceHandle.Null);
-            device.Dispose();
-        }
-    }
-
 
     public void Dispose()
     {
@@ -379,7 +308,7 @@ public unsafe readonly partial struct AdapterHandle :
 file static class RequestDeviceFunctions
 {
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static unsafe void DelegateCallback(
+    public static unsafe void DelegateCallback(
         RequestDeviceStatus status, DeviceHandle device, StringViewFFI message,
         void* userdata, void* _)
     {
@@ -418,7 +347,7 @@ file static class RequestDeviceFunctions
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static unsafe void TaskCallback(
+    public static unsafe void TaskCallback(
         RequestDeviceStatus status, DeviceHandle device, StringViewFFI message,
         void* userdata, void* _)
     {
@@ -430,8 +359,8 @@ file static class RequestDeviceFunctions
             {
                 return;
             }
-            var length = message.Length;
-            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
+            int length = (int)message.Length;
+            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
             message.AsSpan().CopyTo(arraySegment);
             ThreadPool.UnsafeQueueUserWorkItem(
                 state: (status, arraySegment, device, tcs),
@@ -509,7 +438,7 @@ file static class DeviceErrorFunctions
       DeviceHandle* device, ErrorType type, StringViewFFI message, void* userdata, void* _)
     {
         try
-        {   
+        {
             //Keep userdata alive
             var callback = (Action<DeviceHandle, ErrorType, ReadOnlySpan<byte>>?)GetObjectFromUserData(userdata);
 

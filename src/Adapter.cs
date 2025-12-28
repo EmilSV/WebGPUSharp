@@ -35,7 +35,7 @@ public sealed class Adapter :
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor)"/>
     public unsafe Task<Device> RequestDeviceAsync() =>
-        Handle.RequestDeviceAsync().ContinueWith(static task => task.Result.ToSafeHandle()!);
+        Handle.RequestDevice().ContinueWith(static task => task.Result.ToSafeHandle()!);
 
 
     /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor, Action{Device?})"/>
