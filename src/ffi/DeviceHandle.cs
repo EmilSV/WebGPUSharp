@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
@@ -265,6 +266,27 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptorFFI, callback);
         }
 
+    }
+
+    public void CreateComputePipelineAsync(
+        in ComputePipelineDescriptorFFI descriptor,
+        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback
+    )
+    {
+        fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
+        {
+            return WebGPU_FFI.DeviceCreateComputePipelineAsync(
+                device: this,
+                descriptor: descriptorPtr,
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &OnCallbackDelegate,
+                    Userdata1 = AllocUserData(callback),
+                    Userdata2 = null
+                }
+            );
+        }
     }
 
     /// <returns>The <see cref="ComputePipelineHandle"/></returns>
@@ -876,5 +898,24 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public static void Release(DeviceHandle handle)
     {
         WebGPU_FFI.DeviceRelease(handle);
+    }
+}
+
+
+file static class CreateComputePipelineAsyncCallbackFunctions
+{
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void DelegateCallback(
+        CreateComputePipelineAsyncStatus status,
+        ComputePipelineHandle pipeline,
+        StringViewFFI message,
+        void* userdata1,
+        void* userdata2)
+    {
+        var callback = DeviceCreateComputePipelineAsyncHandler.RetrieveAndFreeCallback(
+            userdata1
+        );
+        ReadOnlySpan<byte> messageSpan = StringViewToReadOnlySpanByte(message);
+        callback(status, pipeline, messageSpan);
     }
 }

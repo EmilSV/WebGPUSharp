@@ -164,18 +164,11 @@ public sealed class Queue :
         QueueHandle.Reference(handle);
         return new(handle);
     }
-    
-    /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Future OnSubmittedWorkDone(
-            Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback,
-            CallbackMode mode = CallbackMode.AllowSpontaneous
-        ) => Handle.OnSubmittedWorkDone(callback, mode);
 
     /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task OnSubmittedWorkDone(CallbackMode mode, out Future future) =>
-        Handle.OnSubmittedWorkDone(mode, out future);
+    public void OnSubmittedWorkDone(Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback
+        ) => Handle.OnSubmittedWorkDone(callback);
 
     /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

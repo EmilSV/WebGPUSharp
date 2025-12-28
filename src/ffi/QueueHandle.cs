@@ -1,9 +1,11 @@
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
+
 
 namespace WebGpuSharp.FFI;
 
@@ -264,42 +266,33 @@ public readonly unsafe partial struct QueueHandle :
     }
 
     /// <inheritdoc cref="OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
-    public Future OnSubmittedWorkDone(
-        Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback,
-        CallbackMode mode = CallbackMode.AllowSpontaneous)
+    public void OnSubmittedWorkDone(
+        Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback)
     {
         QueueWorkDoneCallbackInfoFFI callbackInfoFFI = new()
         {
-            Mode = mode,
+            Mode = CallbackMode.AllowSpontaneous,
             Callback = &OnSubmittedWorkDoneFunctions.DelegateCallback,
             Userdata1 = AllocUserData(callback),
             Userdata2 = null,
         };
-        return WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfoFFI);
+        WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfoFFI);
     }
 
     /// <inheritdoc cref="OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
-    public Task OnSubmittedWorkDone(CallbackMode mode, out Future future)
+    public Task OnSubmittedWorkDone()
     {
         TaskCompletionSource taskCompletionSource = new();
         QueueWorkDoneCallbackInfoFFI callbackInfoFFI = new()
         {
-            Mode = mode,
+            Mode = CallbackMode.AllowSpontaneous,
             Callback = &OnSubmittedWorkDoneFunctions.TaskCallback,
             Userdata1 = AllocUserData(taskCompletionSource),
             Userdata2 = null,
         };
-        future = WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfoFFI);
+        WebGPU_FFI.QueueOnSubmittedWorkDone(this, callbackInfoFFI);
         return taskCompletionSource.Task;
     }
-
-    /// <inheritdoc cref="OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task OnSubmittedWorkDone()
-    {
-        return OnSubmittedWorkDone(CallbackMode.AllowSpontaneous, out var _);
-    }
-
 
     public readonly void Dispose()
     {
@@ -345,7 +338,6 @@ public readonly unsafe partial struct QueueHandle :
     }
 }
 
-
 file unsafe static class OnSubmittedWorkDoneFunctions
 {
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -356,12 +348,33 @@ file unsafe static class OnSubmittedWorkDoneFunctions
         try
         {
             var callback = (Action<QueueWorkDoneStatus, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-            callback?.Invoke(status, message.AsSpan());
-        }
-        catch
-        {
+            if (callback == null)
+            {
+                return;
+            }
+            var length = (int)message.Length;
+            var buffer = ArrayPool<byte>.Shared.Rent(length);
+            var messageSpan = message.AsSpan();
+            messageSpan.CopyTo(buffer.AsSpan(0, length));
 
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (status, new ArraySegment<byte>(buffer, 0, length), callback!),
+                callBack: static state =>
+                {
+                    var (status, message, callback) = state;
+                    try
+                    {
+                        callback?.Invoke(status, message.AsSpan());
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(message.Array!);
+                    }
+                },
+                preferLocal: false
+            );
         }
+        catch { }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -369,23 +382,46 @@ file unsafe static class OnSubmittedWorkDoneFunctions
             QueueWorkDoneStatus status, StringViewFFI message,
             void* userdata1, void* _)
     {
-        TaskCompletionSource? taskCompletionSource = null;
         try
         {
-            taskCompletionSource = (TaskCompletionSource?)ConsumeUserDataIntoObject(userdata1);
-            if (status != QueueWorkDoneStatus.Success)
+            var tsc = (TaskCompletionSource?)ConsumeUserDataIntoObject(userdata1);
+            if (tsc == null)
             {
-                string messageStr = Encoding.UTF8.GetString(message.AsSpan());
-                taskCompletionSource?.SetException(new WebGPUException(messageStr));
                 return;
             }
+            var length = (int)message.Length;
+            var buffer = ArrayPool<byte>.Shared.Rent(length);
+            var messageSpan = message.AsSpan();
+            messageSpan.CopyTo(buffer.AsSpan(0, length));
 
-            taskCompletionSource?.SetResult();
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (status, new ArraySegment<byte>(buffer, 0, length), tsc!),
+                callBack: static state =>
+                {
+                    var (status, message, tsc) = state;
+                    try
+                    {
+                        switch (status)
+                        {
+                            case QueueWorkDoneStatus.Success:
+                                tsc?.SetResult();
+                                break;
+                            case QueueWorkDoneStatus.Error:
+                            case QueueWorkDoneStatus.CallbackCancelled:
+                            default:
+                                tsc?.SetException(new WebGPUException(Encoding.UTF8.GetString(message)));
+                                break;
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(message.Array!);
+                    }
+                },
+                preferLocal: false
+            );
         }
-        catch (Exception e)
-        {
-            taskCompletionSource?.SetException(e);
-        }
+        catch { }
     }
 
 }

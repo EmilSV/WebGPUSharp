@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -138,8 +139,8 @@ public unsafe readonly partial struct AdapterHandle :
         fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
         fixed (Limits* requiredLimitsPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.RequiredLimits))
         {
-            var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
-            var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
+                var deviceLostUserData = descriptor.DeviceLostCallback != null ? AllocUserData(descriptor.DeviceLostCallback) : null;
+                var uncapturedErrorUserData = descriptor.UncapturedErrorCallback != null ? AllocUserData(descriptor.UncapturedErrorCallback) : null;
 
             DeviceDescriptorFFI deviceDescriptor = new()
             {
@@ -152,13 +153,13 @@ public unsafe readonly partial struct AdapterHandle :
                 },
                 DeviceLostCallbackInfo = {
                     Mode = descriptor.DeviceLostCallbackMode,
-                    Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
-                    Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id,
+                    Callback = &DeviceLostFunctions.DelegateCallback,
+                    Userdata1 = deviceLostUserData,
                     Userdata2 = null
                 },
                 UncapturedErrorCallbackInfo = {
-                    Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                    Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id,
+                    Callback = &DeviceErrorFunctions.DelegateCallback,
+                    Userdata1 = uncapturedErrorUserData,
                     Userdata2 = null
                 }
             };
@@ -166,7 +167,7 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor) => 
+    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
         RequestDeviceAsync(descriptor, CallbackMode.AllowSpontaneous, out _);
 
     /// <param name="callback">The callback to call when the device is ready</param>
@@ -195,8 +196,8 @@ public unsafe readonly partial struct AdapterHandle :
             fixed (FeatureName* requiredFeaturesPtr = descriptor.RequiredFeatures)
             fixed (Limits* requiredLimitsPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.RequiredLimits))
             {
-                var deviceLostCallbackFuncPtrAndId = DeviceLostCallbackHandler.AddDeviceLostCallback(descriptor.DeviceLostCallback);
-                var uncapturedErrorCallbackFuncPtrAndId = UncapturedErrorDelegateHandler.AddUncapturedErrorCallback(descriptor.UncapturedErrorCallback);
+                var deviceLostUserData = descriptor.DeviceLostCallback != null ? AllocUserData(descriptor.DeviceLostCallback) : null;
+                var uncapturedErrorUserData = descriptor.UncapturedErrorCallback != null ? AllocUserData(descriptor.UncapturedErrorCallback) : null;
 
                 DeviceDescriptorFFI deviceDescriptor = new()
                 {
@@ -212,14 +213,14 @@ public unsafe readonly partial struct AdapterHandle :
                     DeviceLostCallbackInfo = new()
                     {
                         Mode = descriptor.DeviceLostCallbackMode,
-                        Callback = deviceLostCallbackFuncPtrAndId.funcPtr,
-                        Userdata1 = (void*)deviceLostCallbackFuncPtrAndId.id,
+                        Callback = &DeviceLostFunctions.DelegateCallback,
+                        Userdata1 = deviceLostUserData,
                         Userdata2 = null
                     },
                     UncapturedErrorCallbackInfo = new()
                     {
-                        Callback = uncapturedErrorCallbackFuncPtrAndId.funcPtr,
-                        Userdata1 = (void*)uncapturedErrorCallbackFuncPtrAndId.id,
+                        Callback = &DeviceErrorFunctions.DelegateCallback,
+                        Userdata1 = uncapturedErrorUserData,
                         Userdata2 = null
                     }
                 };
@@ -375,75 +376,167 @@ public unsafe readonly partial struct AdapterHandle :
     }
 }
 
-
-file static class DeviceLostCallbackHandler
+file static class RequestDeviceFunctions
 {
-    public unsafe struct FuncPtrAndId
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static unsafe void DelegateCallback(
+        RequestDeviceStatus status, DeviceHandle device, StringViewFFI message,
+        void* userdata, void* _)
     {
-        public delegate* unmanaged[Cdecl]<DeviceHandle*, DeviceLostReason, StringViewFFI, void*, void*, void> funcPtr;
-        public nuint id;
-    }
-
-    private static volatile uint deviceLostCallbackId = 0;
-    private static readonly ConcurrentDictionary<nuint, Action<DeviceLostReason, ReadOnlySpan<byte>>> deviceLostCallbacks = new();
-
-    public unsafe static FuncPtrAndId AddDeviceLostCallback(Action<DeviceLostReason, ReadOnlySpan<byte>>? callback)
-    {
-        if (callback == null)
+        try
         {
-            return new FuncPtrAndId { funcPtr = null, id = 0 };
-        }
+            var callback = (Action<RequestDeviceStatus, DeviceHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata);
 
-        nuint id = Interlocked.Increment(ref deviceLostCallbackId);
-        deviceLostCallbacks.TryAdd(id, callback);
-        return new FuncPtrAndId { funcPtr = &DeviceLostCallback, id = id };
+            if (callback == null)
+            {
+                return;
+            }
+            var length = message.Length;
+            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
+            message.AsSpan().CopyTo(arraySegment);
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (status, arraySegment, device, callback),
+                callBack: static state =>
+                {
+                    var (status, arraySegment, device, callback) = state;
+                    try
+                    {
+                        callback(status, device, arraySegment.AsSpan());
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(arraySegment.Array!);
+                    }
+                },
+                preferLocal: false
+            );
+        }
+        catch
+        {
+            device.Dispose();
+        }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static unsafe void DeviceLostCallback(
-      DeviceHandle* device, DeviceLostReason lostReason, StringViewFFI message, void* id, void* _)
+    private static unsafe void TaskCallback(
+        RequestDeviceStatus status, DeviceHandle device, StringViewFFI message,
+        void* userdata, void* _)
     {
-        nuint callbackId = (nuint)id;
-        if (deviceLostCallbacks.TryGetValue(callbackId, out var callback))
+        try
         {
-            callback(lostReason, message.AsSpan());
+            var tcs = (TaskCompletionSource<DeviceHandle>?)ConsumeUserDataIntoObject(userdata);
+
+            if (tcs == null)
+            {
+                return;
+            }
+            var length = message.Length;
+            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
+            message.AsSpan().CopyTo(arraySegment);
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (status, arraySegment, device, tcs),
+                callBack: static state =>
+                {
+                    var (status, arraySegment, device, tcs) = state;
+                    try
+                    {
+                        switch (status)
+                        {
+                            case RequestDeviceStatus.Success:
+                                tcs.SetResult(device);
+                                break;
+                            case RequestDeviceStatus.Error:
+                            case RequestDeviceStatus.CallbackCancelled:
+                            default:
+                                tcs.SetException(new WebGPUException(Encoding.UTF8.GetString(arraySegment.AsSpan())));
+                                break;
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(arraySegment.Array!);
+                    }
+                },
+                preferLocal: false
+            );
         }
+        catch { }
     }
 }
 
-file static class UncapturedErrorDelegateHandler
+file static class DeviceLostFunctions
 {
-    public unsafe struct FuncPtrAndId
-    {
-        public delegate* unmanaged[Cdecl]<DeviceHandle*, ErrorType, StringViewFFI, void*, void*, void> funcPtr;
-        public nuint id;
-    }
-
-
-    private static volatile uint uncapturedErrorCallbackId = 0;
-    private static readonly ConcurrentDictionary<nuint, Action<ErrorType, ReadOnlySpan<byte>>> uncapturedErrorCallbacks = new();
-
-    public unsafe static FuncPtrAndId AddUncapturedErrorCallback(Action<ErrorType, ReadOnlySpan<byte>>? callback)
-    {
-        if (callback == null)
-        {
-            return new FuncPtrAndId { funcPtr = null, id = 0 };
-        }
-
-        nuint id = Interlocked.Increment(ref uncapturedErrorCallbackId);
-        uncapturedErrorCallbacks.TryAdd(id, callback);
-        return new FuncPtrAndId { funcPtr = &UncapturedErrorCallback, id = id };
-    }
-
-
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static unsafe void UncapturedErrorCallback(
-       DeviceHandle* _1, ErrorType type, StringViewFFI message, void* id, void* _)
+    public static unsafe void DelegateCallback(
+      DeviceHandle* device, DeviceLostReason lostReason, StringViewFFI message, void* userdata, void* _)
     {
-        nuint callbackId = (nuint)id;
-        if (uncapturedErrorCallbacks.TryGetValue(callbackId, out var callback))
+        try
         {
-            callback(type, message.AsSpan());
+            var callback = (Action<DeviceHandle, DeviceLostReason, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata);
+
+            if (callback == null)
+            {
+                return;
+            }
+            var length = message.Length;
+            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
+            message.AsSpan().CopyTo(arraySegment);
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (*device, lostReason, arraySegment, callback),
+                callBack: static state =>
+                {
+                    var (device, lostReason, arraySegment, callback) = state;
+                    try
+                    {
+                        callback(device, lostReason, arraySegment.AsSpan());
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(arraySegment.Array!);
+                    }
+                },
+                preferLocal: false
+            );
         }
+        catch { }
+    }
+}
+
+file static class DeviceErrorFunctions
+{
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    public static unsafe void DelegateCallback(
+      DeviceHandle* device, ErrorType type, StringViewFFI message, void* userdata, void* _)
+    {
+        try
+        {   
+            //Keep userdata alive
+            var callback = (Action<DeviceHandle, ErrorType, ReadOnlySpan<byte>>?)GetObjectFromUserData(userdata);
+
+            if (callback == null)
+            {
+                return;
+            }
+            var length = message.Length;
+            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
+            message.AsSpan().CopyTo(arraySegment);
+            ThreadPool.UnsafeQueueUserWorkItem(
+                state: (*device, type, arraySegment, callback),
+                callBack: static state =>
+                {
+                    var (device, type, arraySegment, callback) = state;
+                    try
+                    {
+                        callback(device, type, arraySegment.AsSpan());
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(arraySegment.Array!);
+                    }
+                },
+                preferLocal: false
+            );
+        }
+        catch { }
     }
 }
