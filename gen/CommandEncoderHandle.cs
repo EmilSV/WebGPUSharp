@@ -215,7 +215,12 @@ public unsafe partial struct CommandEncoderHandle : IEquatable<CommandEncoderHan
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.CommandEncoderAddRef(this);
+    /// <returns>The same <see cref="CommandEncoderHandle"/> instance with an incremented reference count.</returns>
+    public CommandEncoderHandle AddRef()
+    {
+        WebGPU_FFI.CommandEncoderAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="CommandEncoderHandle"/>. When the reference count reaches zero, the <see cref="CommandEncoderHandle"/> and associated resources may be freed.

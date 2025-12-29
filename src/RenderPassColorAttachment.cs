@@ -31,9 +31,9 @@ public struct RenderPassColorAttachment :
     {
         dest = new()
         {
-            View = GetBorrowHandle(input.View),
+            View = GetHandle(input.View),
             DepthSlice = input.DepthSlice ?? WebGPU_FFI.DEPTH_SLICE_UNDEFINED,
-            ResolveTarget = GetBorrowHandle(input.ResolveTarget),
+            ResolveTarget = GetHandle(input.ResolveTarget),
             LoadOp = input.LoadOp,
             StoreOp = input.StoreOp,
             ClearValue = input.ClearValue

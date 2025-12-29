@@ -82,7 +82,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
             ref readonly var depthStencilAttachment = ref Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencilAttachment);
             depthStencilAttachmentFFI = new()
             {
-                View = GetBorrowHandle(depthStencilAttachment.View),
+                View = GetHandle(depthStencilAttachment.View),
                 DepthLoadOp = depthStencilAttachment.DepthLoadOp,
                 DepthStoreOp = depthStencilAttachment.DepthStoreOp,
                 DepthClearValue = depthStencilAttachment.DepthClearValue,
@@ -119,7 +119,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
                 ColorAttachmentCount = colorAttachmentsCount,
                 ColorAttachments = colorAttachmentsPtr,
                 DepthStencilAttachment = depthStencilAttachmentPtr,
-                OcclusionQuerySet = GetBorrowHandle(descriptor.OcclusionQuerySet),
+                OcclusionQuerySet = GetHandle(descriptor.OcclusionQuerySet),
                 TimestampWrites = timestampWritesFFIPtr
             };
             return BeginRenderPass(in descriptorFFI);
@@ -140,7 +140,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
     {
         ClearBuffer(
-            buffer: GetBorrowHandle(buffer),
+            buffer: GetHandle(buffer),
             offset: offset,
             size: size
         );
@@ -154,9 +154,9 @@ public readonly unsafe partial struct CommandEncoderHandle :
     )
     {
         CopyBufferToBuffer(
-            GetBorrowHandle(source),
+            GetHandle(source),
             sourceOffset,
-            GetBorrowHandle(destination),
+            GetHandle(destination),
             destinationOffset,
             size
         );
@@ -172,7 +172,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         TexelCopyTextureInfoFFI destinationFFI = new()
         {
-            Texture = GetBorrowHandle(destination.Texture),
+            Texture = GetHandle(destination.Texture),
             MipLevel = destination.MipLevel,
             Origin = destination.Origin,
             Aspect = destination.Aspect
@@ -211,7 +211,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     {
         TexelCopyTextureInfoFFI sourceFFI = new()
         {
-            Texture = GetBorrowHandle(source.Texture),
+            Texture = GetHandle(source.Texture),
             MipLevel = source.MipLevel,
             Origin = source.Origin,
             Aspect = source.Aspect
@@ -271,7 +271,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
     {
         TexelCopyTextureInfoFFI sourceFFI = new()
         {
-            Texture = GetBorrowHandle(source.Texture),
+            Texture = GetHandle(source.Texture),
             MipLevel = source.MipLevel,
             Origin = source.Origin,
             Aspect = source.Aspect
@@ -279,7 +279,7 @@ public readonly unsafe partial struct CommandEncoderHandle :
 
         TexelCopyTextureInfoFFI destinationFFI = new()
         {
-            Texture = GetBorrowHandle(destination.Texture),
+            Texture = GetHandle(destination.Texture),
             MipLevel = destination.MipLevel,
             Origin = destination.Origin,
             Aspect = destination.Aspect
@@ -378,10 +378,10 @@ public readonly unsafe partial struct CommandEncoderHandle :
     {
         WebGPU_FFI.CommandEncoderResolveQuerySet(
             commandEncoder: this,
-            querySet: GetBorrowHandle(querySet),
+            querySet: GetHandle(querySet),
             firstQuery: firstQuery,
             queryCount: queryCount,
-            destination: GetBorrowHandle(destination),
+            destination: GetHandle(destination),
             destinationOffset: destinationOffset
         );
     }

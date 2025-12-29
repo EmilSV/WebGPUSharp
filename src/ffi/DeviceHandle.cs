@@ -1,5 +1,8 @@
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
@@ -42,7 +45,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             BindGroupDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
-            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
+            descriptorFFI.Layout = GetHandle(descriptor.Layout);
             descriptorFFI.EntryCount = entriesCount;
             descriptorFFI.Entries = entriesPtr;
             return WebGPU_FFI.DeviceCreateBindGroup(this, &descriptorFFI);
@@ -198,10 +201,10 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
                 Label = StringViewFFI.CreateExplicitlySized(LabelPtr, labelUtf8Span.Length),
-                Layout = GetBorrowHandle(descriptor.Layout),
+                Layout = GetHandle(descriptor.Layout),
                 Compute = new()
                 {
-                    Module = GetBorrowHandle(descriptor.Compute.Module),
+                    Module = GetHandle(descriptor.Compute.Module),
                     EntryPoint = StringViewFFI.CreateExplicitlySized(EntryPointPtr, entryPointUtf8Span.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
@@ -210,14 +213,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             return WebGPU_FFI.DeviceCreateComputePipeline(this, &descriptorFFI);
         }
-    }
-    /// <returns/>
-    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
-    public void CreateComputePipelineAsync(
-        in ComputePipelineDescriptorFFI descriptor,
-        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
-    {
-        DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptor, callback);
     }
 
     /// <returns/>
@@ -252,27 +247,40 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
                 Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
-                Layout = GetBorrowHandle(descriptor.Layout),
+                Layout = GetHandle(descriptor.Layout),
                 Compute = new()
                 {
-                    Module = GetBorrowHandle(descriptor.Compute.Module),
+                    Module = GetHandle(descriptor.Compute.Module),
                     EntryPoint = StringViewFFI.CreateExplicitlySized(entryPointPtr, entryPointUtf8Span.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
             };
 
-            DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptorFFI, callback);
+            CreateComputePipelineAsync(descriptorFFI, callback);
         }
 
     }
 
-    /// <returns>The <see cref="ComputePipelineHandle"/></returns>
-    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
-    public Task<ComputePipelineHandle> CreateComputePipelineAsync(
-        in ComputePipelineDescriptorFFI descriptor)
+    public void CreateComputePipelineAsync(
+        in ComputePipelineDescriptorFFI descriptor,
+        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback
+    )
     {
-        return DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptor);
+        fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
+        {
+            WebGPU_FFI.DeviceCreateComputePipelineAsync(
+                device: this,
+                descriptor: descriptorPtr,
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &CreateComputePipelineAsyncCallbackFunctions.DelegateCallback,
+                    Userdata1 = AllocUserData(callback),
+                    Userdata2 = null
+                }
+            );
+        }
     }
 
     /// <returns>The <see cref="ComputePipelineHandle"/></returns>
@@ -293,6 +301,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
+        var tsc = new TaskCompletionSource<ComputePipelineHandle>();
 
         fixed (byte* labelPtr = labelUtf8Span)
         fixed (byte* entryPointPtr = entryPointUtf8Span)
@@ -306,18 +315,30 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
             ComputePipelineDescriptorFFI descriptorFFI = new()
             {
                 Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
-                Layout = GetBorrowHandle(descriptor.Layout),
+                Layout = GetHandle(descriptor.Layout),
                 Compute = new()
                 {
-                    Module = GetBorrowHandle(descriptor.Compute.Module),
+                    Module = GetHandle(descriptor.Compute.Module),
                     EntryPoint = StringViewFFI.CreateExplicitlySized(entryPointPtr, entryPointUtf8Span.Length),
                     Constants = constantEntryPtr,
                     ConstantCount = constantEntryCount
                 }
             };
 
-            return DeviceCreateComputePipelineAsyncHandler.DeviceCreateComputePipelineAsync(this, descriptorFFI);
+            WebGPU_FFI.DeviceCreateComputePipelineAsync(
+                device: this,
+                descriptor: &descriptorFFI,
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &CreateComputePipelineAsyncCallbackFunctions.TaskCallback,
+                    Userdata1 = AllocUserData(tsc),
+                    Userdata2 = null
+                }
+            );
         }
+
+        return tsc.Task;
     }
 
     /// <inheritdoc cref="CreatePipelineLayout(PipelineLayoutDescriptorFFI*)"/>
@@ -347,7 +368,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
         fixed (byte* labelPtr = labelUtf8Span)
         {
-            var (ptr, length) = GetBorrowHandlesAsPtrAndLength<BindGroupLayoutHandle, BindGroupLayout>(
+            var (ptr, length) = GetHandlesAsPtrAndLength<BindGroupLayoutHandle, BindGroupLayout>(
                 descriptor.BindGroupLayouts,
                 allocator
             );
@@ -470,7 +491,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
-            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
+            descriptorFFI.Layout = GetHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
             descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
@@ -479,15 +500,6 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
             return CreateRenderPipeline(descriptorFFI);
         }
-    }
-
-    /// <returns></returns>
-    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
-    public void CreateRenderPipelineAsync(
-        in RenderPipelineDescriptorFFI descriptor,
-        Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
-    {
-        DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptor, callback);
     }
 
     /// <returns></returns>
@@ -514,23 +526,25 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
-            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
+            descriptorFFI.Layout = GetHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
             descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
             descriptorFFI.Multisample = descriptor.Multisample;
             ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
 
-            DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptorFFI, callback);
+            WebGPU_FFI.DeviceCreateRenderPipelineAsync(
+                device: this,
+                descriptor: &descriptorFFI,
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &CreateRenderPipelineAsyncCallbackFunctions.DelegateCallback,
+                    Userdata1 = AllocUserData(callback),
+                    Userdata2 = null
+                }
+            );
         }
-    }
-
-
-    /// <returns>The <see cref="RenderPipelineHandle"/></returns>
-    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
-    public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptorFFI descriptor)
-    {
-        return DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptor);
     }
 
     /// <returns>The <see cref="RenderPipelineHandle"/></returns>
@@ -549,20 +563,33 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         );
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
+        var tsc = new TaskCompletionSource<RenderPipelineHandle>();
 
         fixed (byte* labelPtr = labelUtf8Span)
         fixed (DepthStencilState* depthStencilPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencil))
         {
             RenderPipelineDescriptorFFI descriptorFFI = default;
             descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
-            descriptorFFI.Layout = GetBorrowHandle(descriptor.Layout);
+            descriptorFFI.Layout = GetHandle(descriptor.Layout);
             ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
             descriptorFFI.Primitive = descriptor.Primitive;
             descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
             descriptorFFI.Multisample = descriptor.Multisample;
             ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
 
-            return DeviceCreateRenderPipelineAsyncHandler.DeviceCreateRenderPipelineAsync(this, descriptorFFI);
+            WebGPU_FFI.DeviceCreateRenderPipelineAsync(
+                device: this,
+                descriptor: &descriptorFFI,
+                callbackInfo: new()
+                {
+                    Mode = CallbackMode.AllowSpontaneous,
+                    Callback = &CreateRenderPipelineAsyncCallbackFunctions.TaskCallback,
+                    Userdata1 = AllocUserData(tsc),
+                    Userdata2 = null
+                }
+            );
+
+            return tsc.Task;
         }
     }
 
@@ -593,6 +620,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
 
     //// <inheritdoc cref="CreateSampler(SamplerDescriptorFFI*)"/>
     [SkipLocalsInit]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SamplerHandle CreateSampler(SamplerDescriptor descriptor)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
@@ -758,17 +786,41 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     }
 
     /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
-    public void PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callbackInfo)
+    public void PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callback)
     {
-        DevicePopErrorScopeHandler.DevicePopErrorScope(this, callbackInfo);
+        WebGPU_FFI.DevicePopErrorScope(
+           device: this,
+           callbackInfo: new()
+           {
+               NextInChain = null,
+               Mode = CallbackMode.AllowSpontaneous,
+               Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
+               Userdata1 = AllocUserData(callback),
+               Userdata2 = null
+           }
+        );
     }
 
     /// <returns>The <see cref="ErrorType"/> and the error message</returns>
     /// /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
     public Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
     {
-        return DevicePopErrorScopeHandler.DevicePopErrorScope(this);
+        var tsc = new TaskCompletionSource<(ErrorType errorType, string message)>();
+        WebGPU_FFI.DevicePopErrorScope(
+            device: this,
+            callbackInfo: new()
+            {
+                NextInChain = null,
+                Mode = CallbackMode.AllowSpontaneous,
+                Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
+                Userdata1 = AllocUserData(tsc),
+                Userdata2 = null
+            }
+        );
+        return tsc.Task;
     }
+
+
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     [SkipLocalsInit]
     public void SetLabel(WGPURefText label)
@@ -866,17 +918,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return new DeviceHandle(pointer);
     }
 
-    public Device? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<Device, DeviceHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<Device, DeviceHandle>(this);
-        }
-    }
+    public Device? ToSafeHandle() => ToSafeHandle<Device, DeviceHandle>(this);
 
     public static void Reference(DeviceHandle handle)
     {
@@ -886,5 +928,226 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
     public static void Release(DeviceHandle handle)
     {
         WebGPU_FFI.DeviceRelease(handle);
+    }
+}
+
+file unsafe static class PopErrorScopeCallbackFunctions
+{
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void DelegateCallback(
+        PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
+        void* userdata1, void* _)
+    {
+        var callback = (Action<ErrorType, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
+        if (callback == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
+        message.AsSpan().CopyTo(messageBufferArraySegment);
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (errorType, messageBufferArraySegment, callback),
+            callBack: static state =>
+            {
+                var (errorType, message, callback) = state;
+                try
+                {
+                    callback(errorType, message.AsSpan());
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(message.Array!);
+                }
+            },
+            preferLocal: false
+        );
+    }
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void TaskCallback(
+        PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
+        void* userdata1, void* _)
+    {
+        var tsc = (TaskCompletionSource<(ErrorType errorType, string message)>?)ConsumeUserDataIntoObject(userdata1);
+        if (tsc == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var str = Encoding.UTF8.GetString(message.AsSpan());
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (errorScopeStatus, errorType, str, tsc),
+            callBack: static state =>
+            {
+                var (errorScopeStatus, errorType, str, tsc) = state;
+                switch (errorScopeStatus)
+                {
+                    case PopErrorScopeStatus.Success:
+                        tsc.SetResult((errorType, str));
+                        break;
+                    case PopErrorScopeStatus.CallbackCancelled:
+                    case PopErrorScopeStatus.Error:
+                    default:
+                        tsc.SetException(new WebGPUException(str));
+                        break;
+                }
+            },
+            preferLocal: false
+        );
+    }
+}
+
+file unsafe static class CreateRenderPipelineAsyncCallbackFunctions
+{
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void DelegateCallback(
+        CreatePipelineAsyncStatus status,
+        RenderPipelineHandle pipeline,
+        StringViewFFI message,
+        void* userdata1,
+        void* _)
+    {
+        var callback = (Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
+        if (callback == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
+        message.AsSpan().CopyTo(messageBufferArraySegment);
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (status, pipeline, messageBufferArraySegment, callback),
+            callBack: static state =>
+            {
+                var (status, pipeline, message, callback) = state;
+                try
+                {
+                    callback(status, pipeline, message.AsSpan());
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(message.Array!);
+                }
+            },
+            preferLocal: false
+        );
+    }
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void TaskCallback(
+        CreatePipelineAsyncStatus status,
+        RenderPipelineHandle pipeline,
+        StringViewFFI message,
+        void* userdata1,
+        void* _)
+    {
+        var tsc = (TaskCompletionSource<RenderPipelineHandle>?)ConsumeUserDataIntoObject(userdata1);
+        if (tsc == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
+        message.AsSpan().CopyTo(messageBufferArraySegment);
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (status, pipeline, messageBufferArraySegment, tsc),
+            callBack: static state =>
+            {
+                var (status, pipeline, messageBufferArraySegment, tsc) = state;
+                try
+                {
+                    tsc.SetResult(pipeline);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
+                }
+            },
+            preferLocal: false
+        );
+    }
+}
+
+file unsafe static class CreateComputePipelineAsyncCallbackFunctions
+{
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void DelegateCallback(
+        CreatePipelineAsyncStatus status,
+        ComputePipelineHandle pipeline,
+        StringViewFFI message,
+        void* userdata1,
+        void* _)
+    {
+        var callback = (Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
+        if (callback == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
+        message.AsSpan().CopyTo(messageBufferArraySegment);
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (status, pipeline, messageBufferArraySegment, callback),
+            callBack: static state =>
+            {
+                var (status, pipeline, message, callback) = state;
+                try
+                {
+                    callback(status, pipeline, message.AsSpan());
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(message.Array!);
+                }
+            },
+            preferLocal: false
+        );
+    }
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    public static void TaskCallback(
+        CreatePipelineAsyncStatus status,
+        ComputePipelineHandle pipeline,
+        StringViewFFI message,
+        void* userdata1,
+        void* _)
+    {
+        var tsc = (TaskCompletionSource<ComputePipelineHandle>?)ConsumeUserDataIntoObject(userdata1);
+        if (tsc == null)
+        {
+            return;
+        }
+
+        int length = (int)message.Length;
+        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
+        message.AsSpan().CopyTo(messageBufferArraySegment);
+
+        ThreadPool.UnsafeQueueUserWorkItem(
+            state: (status, pipeline, messageBufferArraySegment, tsc),
+            callBack: static state =>
+            {
+                var (status, pipeline, messageBufferArraySegment, tsc) = state;
+                try
+                {
+                    tsc.SetResult(pipeline);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
+                }
+            },
+            preferLocal: false
+        );
     }
 }

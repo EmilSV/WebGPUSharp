@@ -26,10 +26,10 @@ public sealed class Texture :
     /// It can be created with <see cref="DeviceHandle.CreateTexture(TextureDescriptor)" />.
     /// </summary>
     public TextureView CreateView(in TextureViewDescriptor textureViewDescriptor) =>
-        Handle.CreateView(textureViewDescriptor).ToSafeHandle(false)!;
+        Handle.CreateView(textureViewDescriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="TextureHandle.CreateView"/>
-    public TextureView CreateView() => Handle.CreateView().ToSafeHandle(false)!;
+    public TextureView CreateView() => Handle.CreateView().ToSafeHandle()!;
     /// <inheritdoc cref="TextureHandle.Destroy"/>
     public void Destroy() => Handle.Destroy();
     /// <inheritdoc cref="TextureHandle.GetDepthOrArrayLayers"/>
@@ -60,17 +60,6 @@ public sealed class Texture :
         }
 
         TextureHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Texture? IFromHandle<Texture, TextureHandle>.FromHandleNoRefIncrement(
-        TextureHandle handle)
-    {
-        if (TextureHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

@@ -112,7 +112,12 @@ public unsafe partial struct SamplerHandle : IEquatable<SamplerHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.SamplerAddRef(this);
+    /// <returns>The same <see cref="SamplerHandle"/> instance with an incremented reference count.</returns>
+    public SamplerHandle AddRef()
+    {
+        WebGPU_FFI.SamplerAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="SamplerHandle"/>. When the reference count reaches zero, the <see cref="SamplerHandle"/> and associated resources may be freed.

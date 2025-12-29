@@ -24,9 +24,9 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         return new RenderPassEncoder(newRenderPassEncoderPooledHandle);
     }
 
-    internal RenderPassEncoderHandle GetOwnedHandle()
+    internal RenderPassEncoderHandle GetHandle()
     {
-        return _pooledHandle.GetOwnedHandle(_localToken);
+        return _pooledHandle.GetHandle(_localToken);
     }
 
     /// <inheritdoc cref="RenderPassEncoderHandle.BeginOcclusionQuery(uint)"/>

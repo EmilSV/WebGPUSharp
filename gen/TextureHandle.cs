@@ -171,7 +171,12 @@ public unsafe partial struct TextureHandle : IEquatable<TextureHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.TextureAddRef(this);
+    /// <returns>The same <see cref="TextureHandle"/> instance with an incremented reference count.</returns>
+    public TextureHandle AddRef()
+    {
+        WebGPU_FFI.TextureAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="TextureHandle"/>. When the reference count reaches zero, the <see cref="TextureHandle"/> and associated resources may be freed.

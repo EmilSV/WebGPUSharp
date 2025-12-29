@@ -40,11 +40,11 @@ public struct BindGroupEntry : IWebGpuMarshallable<BindGroupEntry, BindGroupEntr
         dest = new()
         {
             Binding = input.Binding,
-            Buffer = GetBorrowHandle(input.Buffer),
+            Buffer = GetHandle(input.Buffer),
             Offset = input.Offset,
             Size = size,
-            Sampler = GetBorrowHandle(input.Sampler),
-            TextureView = GetBorrowHandle(input.TextureView)
+            Sampler = GetHandle(input.Sampler),
+            TextureView = GetHandle(input.TextureView)
         };
     }
 }

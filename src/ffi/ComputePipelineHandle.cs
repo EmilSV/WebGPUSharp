@@ -27,17 +27,7 @@ public unsafe readonly partial struct ComputePipelineHandle :
         WebGPU_FFI.ComputePipelineRelease(handle);
     }
 
-    public ComputePipeline? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return WebGPUMarshal.ToSafeHandle<ComputePipeline, ComputePipelineHandle>(this);
-        }
-        else
-        {
-            return WebGPUMarshal.ToSafeHandleNoRefIncrement<ComputePipeline, ComputePipelineHandle>(this);
-        }
-    }
+    public ComputePipeline? ToSafeHandle() => WebGPUMarshal.ToSafeHandle<ComputePipeline, ComputePipelineHandle>(this);
 
     public static ComputePipelineHandle UnsafeFromPointer(nuint pointer)
     {

@@ -39,15 +39,5 @@ public unsafe readonly partial struct RenderBundleHandle :
         }
     }
 
-    public RenderBundle? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<RenderBundle, RenderBundleHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<RenderBundle, RenderBundleHandle>(this);
-        }
-    }
+    public RenderBundle? ToSafeHandle() => ToSafeHandle<RenderBundle, RenderBundleHandle>(this);
 }

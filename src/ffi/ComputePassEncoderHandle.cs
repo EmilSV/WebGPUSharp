@@ -12,7 +12,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     {
         WebGPU_FFI.ComputePassEncoderDispatchWorkgroupsIndirect(
             computePassEncoder: this,
-            indirectBuffer: GetBorrowHandle(indirectBuffer),
+            indirectBuffer: GetHandle(indirectBuffer),
             indirectOffset: indirectOffset
         );
     }
@@ -86,7 +86,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         WebGPU_FFI.ComputePassEncoderSetBindGroup(
             computePassEncoder: this,
             groupIndex: groupIndex,
-            group: GetBorrowHandle(group),
+            group: GetHandle(group),
             dynamicOffsetCount: dynamicOffsetCount,
             dynamicOffsets: dynamicOffsets
         );
@@ -102,7 +102,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
             WebGPU_FFI.ComputePassEncoderSetBindGroup(
                 computePassEncoder: this,
                 groupIndex: groupIndex,
-                group: GetBorrowHandle(group),
+                group: GetHandle(group),
                 dynamicOffsetCount: (nuint)dynamicOffsets.Length,
                 dynamicOffsets: dynamicOffsetsPtr
             );
@@ -116,7 +116,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         WebGPU_FFI.ComputePassEncoderSetBindGroup(
             computePassEncoder: this,
             groupIndex: groupIndex,
-            group: GetBorrowHandle(group),
+            group: GetHandle(group),
             dynamicOffsetCount: 0,
             dynamicOffsets: null
         );
@@ -152,7 +152,7 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
     {
         WebGPU_FFI.ComputePassEncoderSetPipeline(
             computePassEncoder: this,
-            pipeline: GetBorrowHandle(pipeline)
+            pipeline: GetHandle(pipeline)
         );
     }
 

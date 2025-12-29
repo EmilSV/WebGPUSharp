@@ -30,7 +30,7 @@ public struct TexelCopyTextureInfo :
     {
         dest = new()
         {
-            Texture = GetBorrowHandle(input.Texture),
+            Texture = GetHandle(input.Texture),
             MipLevel = input.MipLevel,
             Origin = input.Origin,
             Aspect = input.Aspect

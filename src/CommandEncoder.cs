@@ -56,9 +56,9 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.Handle.CopyBufferToBuffer(
-            GetBorrowHandle(source),
+            GetHandle(source),
             0,
-            GetBorrowHandle(destination),
+            GetHandle(destination),
             0,
             size ?? source.GetSize()
         );
@@ -75,9 +75,9 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.Handle.CopyBufferToBuffer(
-            GetBorrowHandle(source),
+            GetHandle(source),
             sourceOffset,
-            GetBorrowHandle(destination),
+            GetHandle(destination),
             destinationOffset,
             size ?? (source.GetSize() - sourceOffset)
         );

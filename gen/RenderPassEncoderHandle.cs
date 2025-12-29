@@ -292,7 +292,12 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.RenderPassEncoderAddRef(this);
+    /// <returns>The same <see cref="RenderPassEncoderHandle"/> instance with an incremented reference count.</returns>
+    public RenderPassEncoderHandle AddRef()
+    {
+        WebGPU_FFI.RenderPassEncoderAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="RenderPassEncoderHandle"/>. When the reference count reaches zero, the <see cref="RenderPassEncoderHandle"/> and associated resources may be freed.

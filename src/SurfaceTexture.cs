@@ -14,7 +14,7 @@ public unsafe struct SurfaceTexture
     internal void InternalSetSurfaceTextureFFI(SurfaceHandle surface)
     {
         surface.GetCurrentTexture(ref _innerSurfaceTextureFFI);
-        Texture = _innerSurfaceTextureFFI.Texture.ToSafeHandle(false);
+        Texture = _innerSurfaceTextureFFI.Texture.ToSafeHandle();
         _innerSurfaceTextureFFI.Texture = default;
     }
 }

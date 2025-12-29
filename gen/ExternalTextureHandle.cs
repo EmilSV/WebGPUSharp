@@ -99,7 +99,12 @@ public readonly unsafe partial struct ExternalTextureHandle : IEquatable<Externa
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.ExternalTextureAddRef(this);
+    /// <returns>The same <see cref="ExternalTextureHandle"/> instance with an incremented reference count.</returns>
+    public ExternalTextureHandle AddRef()
+    {
+        WebGPU_FFI.ExternalTextureAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="ExternalTextureHandle"/>. When the reference count reaches zero, the <see cref="ExternalTextureHandle"/> and associated resources may be freed.

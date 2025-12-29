@@ -13,12 +13,24 @@ public sealed class Instance :
     {
     }
 
+    ///<inheritdoc cref="InstanceHandle.RequestAdapter(in RequestAdapterOptions)"/>
     public Task<Adapter> RequestAdapterAsync(in RequestAdapterOptions options)
     {
-        return Handle.RequestAdapterAsync(options).ContinueWith(static task =>
+        return Handle.RequestAdapter(options).ContinueWith(static task =>
         {
-            return task.Result.ToSafeHandle(false)!;
+            return task.Result.ToSafeHandle()!;
         });
+    }
+
+    ///<inheritdoc cref="InstanceHandle.RequestAdapter(in RequestAdapterOptions, Action{RequestAdapterStatus, AdapterHandle, ReadOnlySpan{byte}})"/>
+    public void RequestAdapterAsync(in RequestAdapterOptions options, Action<RequestAdapterStatus, Adapter, ReadOnlySpan<byte>> callback)
+    {
+        void innerCallback(RequestAdapterStatus status, AdapterHandle adapterHandle, ReadOnlySpan<byte> message)
+        {
+            var adapter = adapterHandle.ToSafeHandle()!;
+            callback(status, adapter, message);
+        }
+        Handle.RequestAdapter(options, innerCallback);
     }
 
     ///<inheritdoc cref="InstanceHandle.ProcessEvents()"/>
@@ -30,7 +42,7 @@ public sealed class Instance :
     ///<inheritdoc cref="InstanceHandle.CreateSurface(SurfaceDescriptor)"/>
     public Surface? CreateSurface(SurfaceDescriptor descriptor)
     {
-        return Handle.CreateSurface(descriptor).ToSafeHandle(false);
+        return Handle.CreateSurface(descriptor).ToSafeHandle();
     }
 
     static Instance? IFromHandle<Instance, InstanceHandle>.FromHandle(InstanceHandle handle)
@@ -41,16 +53,6 @@ public sealed class Instance :
         }
 
         InstanceHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Instance? IFromHandle<Instance, InstanceHandle>.FromHandleNoRefIncrement(InstanceHandle handle)
-    {
-        if (InstanceHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

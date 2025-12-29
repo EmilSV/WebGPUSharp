@@ -23,7 +23,7 @@ public unsafe readonly partial struct SurfaceHandle :
         {
             SurfaceConfigurationFFI surfaceConfigurationFFI = new()
             {
-                Device = GetBorrowHandle(configuration.Device),
+                Device = GetHandle(configuration.Device),
                 Format = configuration.Format,
                 Usage = configuration.Usage,
                 ViewFormatCount = (nuint)configuration.ViewFormats.Length,
@@ -99,15 +99,5 @@ public unsafe readonly partial struct SurfaceHandle :
         WebGPU_FFI.SurfaceRelease(handle);
     }
 
-    public Surface? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<Surface, SurfaceHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<Surface, SurfaceHandle>(this);
-        }
-    }
+    public Surface? ToSafeHandle() => ToSafeHandle<Surface, SurfaceHandle>(this);
 }

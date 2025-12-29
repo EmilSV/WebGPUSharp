@@ -18,14 +18,9 @@ public sealed class ShaderModule :
         Handle.GetCompilationInfo(callback);
     }
 
-    public Task GetCompilationInfoAsync(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
-    {
-        return Handle.GetCompilationInfoAsync(callback);
-    }
-
     public Task<T> GetCompilationInfoAsync<T>(Func<CompilationInfoRequestStatus, CompilationInfo, T> callback)
     {
-        return Handle.GetCompilationInfoAsync(callback);
+        return Handle.GetCompilationInfo(callback);
     }
 
     static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandle(
@@ -37,17 +32,6 @@ public sealed class ShaderModule :
         }
 
         ShaderModuleHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandleNoRefIncrement(
-        ShaderModuleHandle handle)
-    {
-        if (ShaderModuleHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

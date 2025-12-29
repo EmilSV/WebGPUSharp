@@ -26,9 +26,9 @@ public readonly struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
         return new ComputePassEncoder(newComputePassEncoderPooledHandle);
     }
 
-    internal ComputePassEncoderHandle GetOwnedHandle()
+    internal ComputePassEncoderHandle GetHandle()
     {
-        return _pooledHandle.GetOwnedHandle(_localToken);
+        return _pooledHandle.GetHandle(_localToken);
     }
 
     /// <inheritdoc cref="ComputePassEncoderHandle.DispatchWorkgroups(uint, uint, uint)"/>

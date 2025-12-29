@@ -24,15 +24,4 @@ public sealed class BindGroupLayout :
         BindGroupLayoutHandle.Reference(handle);
         return new(handle);
     }
-
-    static BindGroupLayout? IFromHandle<BindGroupLayout, BindGroupLayoutHandle>.FromHandleNoRefIncrement(
-        BindGroupLayoutHandle handle)
-    {
-        if (BindGroupLayoutHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

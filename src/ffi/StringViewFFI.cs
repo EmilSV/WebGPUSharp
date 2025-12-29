@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace WebGpuSharp.FFI;
 
 
@@ -9,8 +12,19 @@ public unsafe partial struct StringViewFFI
         Length = length;
     }
 
-    public ReadOnlySpan<byte> AsSpan()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly ReadOnlySpan<byte> AsSpan()
     {
+        if (Data == null && Length == STRLEN)
+        {
+            return [];
+        }
+
+        if (Length == WebGPU_FFI.STRLEN)
+        {
+            return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(Data);
+        }
+
         return new(Data, (int)Length);
     }
 

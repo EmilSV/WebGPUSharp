@@ -19,20 +19,20 @@ public sealed class Device :
 
     /// <inheritdoc cref="DeviceHandle.CreateBindGroup(in BindGroupDescriptor)" />
     public BindGroup CreateBindGroup(in BindGroupDescriptor descriptor) =>
-        Handle.CreateBindGroup(descriptor).ToSafeHandle(false)!;
+        Handle.CreateBindGroup(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateBindGroupLayout(in BindGroupLayoutDescriptor)" />
     public BindGroupLayout CreateBindGroupLayout(in BindGroupLayoutDescriptor descriptor) =>
-        Handle.CreateBindGroupLayout(descriptor).ToSafeHandle(false)!;
+        Handle.CreateBindGroupLayout(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateBuffer(ref BufferDescriptor)" />
     public Buffer CreateBuffer(ref BufferDescriptor descriptor) =>
-        Handle.CreateBuffer(descriptor).ToSafeHandle(false)!;
+        Handle.CreateBuffer(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateBuffer(BufferDescriptor)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Buffer CreateBuffer(BufferDescriptor descriptor) =>
-        Handle.CreateBuffer(descriptor).ToSafeHandle(false)!;
+        Handle.CreateBuffer(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateCommandEncoder" />
     public CommandEncoder CreateCommandEncoder() =>
@@ -44,15 +44,15 @@ public sealed class Device :
 
     /// <inheritdoc cref="DeviceHandle.CreateComputePipeline(in ComputePipelineDescriptor)" />
     public ComputePipeline CreateComputePipeline(in ComputePipelineDescriptor descriptor) =>
-        Handle.CreateComputePipeline(descriptor).ToSafeHandle(false)!;
+        Handle.CreateComputePipeline(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreatePipelineLayout(in PipelineLayoutDescriptor)" />
     public PipelineLayout CreatePipelineLayout(in PipelineLayoutDescriptor descriptor) =>
-        Handle.CreatePipelineLayout(descriptor).ToSafeHandle(false)!;
+        Handle.CreatePipelineLayout(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateQuerySet(in QuerySetDescriptor)" />
     public QuerySet CreateQuerySet(in QuerySetDescriptor descriptor) =>
-        Handle.CreateQuerySet(descriptor).ToSafeHandle(false)!;
+        Handle.CreateQuerySet(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor)" />
     public RenderBundleEncoder CreateRenderBundleEncoder(in RenderBundleEncoderDescriptor descriptor) =>
@@ -60,24 +60,24 @@ public sealed class Device :
 
     /// <inheritdoc cref="DeviceHandle.CreateRenderPipeline(in RenderPipelineDescriptor)" />
     public RenderPipeline CreateRenderPipeline(in RenderPipelineDescriptor descriptor) =>
-        Handle.CreateRenderPipeline(descriptor).ToSafeHandle(false)!;
+        Handle.CreateRenderPipeline(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateSampler(ref SamplerDescriptor)" />
     public unsafe Sampler? CreateSampler() =>
-     Handle.CreateSampler(null).ToSafeHandle(false);
+     Handle.CreateSampler(null).ToSafeHandle();
 
     /// <inheritdoc cref="DeviceHandle.CreateSampler(ref SamplerDescriptor)" />
     public Sampler? CreateSampler(ref SamplerDescriptor descriptor) =>
-     Handle.CreateSampler(ref descriptor).ToSafeHandle(false);
+     Handle.CreateSampler(ref descriptor).ToSafeHandle();
 
     /// <inheritdoc cref="DeviceHandle.CreateSampler(SamplerDescriptor)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Sampler? CreateSampler(SamplerDescriptor descriptor) =>
-        Handle.CreateSampler(descriptor).ToSafeHandle(false);
+        Handle.CreateSampler(descriptor).ToSafeHandle();
 
     /// <inheritdoc cref="DeviceHandle.CreateShaderModule(in ShaderModuleDescriptor)" />
     public ShaderModule CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
-        Handle.CreateShaderModule(descriptor).ToSafeHandle(false)!;
+        Handle.CreateShaderModule(descriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
     public ShaderModule CreateShaderModuleWGSL(in ShaderModuleWGSLDescriptor descriptor) =>
@@ -89,7 +89,7 @@ public sealed class Device :
 
     /// <inheritdoc cref="DeviceHandle.CreateTexture(ref TextureDescriptor)" />
     public Texture CreateTexture(in TextureDescriptor textureDescriptor) =>
-        Handle.CreateTexture(textureDescriptor).ToSafeHandle(false)!;
+        Handle.CreateTexture(textureDescriptor).ToSafeHandle()!;
 
     /// <inheritdoc cref="DeviceHandle.GetAdapterInfo(out AdapterInfo)" />
     public unsafe Status GetAdapterInfo(out AdapterInfo adapterInfo) =>
@@ -109,7 +109,7 @@ public sealed class Device :
         var queueHandel = Handle.GetQueue();
         if (_queueCache == null)
         {
-            return _queueCache = queueHandel.ToSafeHandle(false)!;
+            return _queueCache = queueHandel.ToSafeHandle()!;
         }
         else if (_queueCache.Equals(queueHandel))
         {
@@ -118,7 +118,7 @@ public sealed class Device :
         }
         else
         {
-            return _queueCache = queueHandel.ToSafeHandle(false)!;
+            return _queueCache = queueHandel.ToSafeHandle()!;
         }
     }
     /// <inheritdoc cref="DeviceHandle.HasFeature(FeatureName)" />
@@ -128,7 +128,7 @@ public sealed class Device :
     /// <inheritdoc cref="DeviceHandle.LoadShaderModuleFromFile(string, WGPURefText)" />
     public ShaderModule? LoadShaderModuleFromFile(string path, WGPURefText label = default)
     {
-        return Handle.LoadShaderModuleFromFile(path, label).ToSafeHandle(false);
+        return Handle.LoadShaderModuleFromFile(path, label).ToSafeHandle();
     }
 
     static Device? IFromHandle<Device, DeviceHandle>.FromHandle(
@@ -140,17 +140,6 @@ public sealed class Device :
         }
 
         DeviceHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Device? IFromHandle<Device, DeviceHandle>.FromHandleNoRefIncrement(
-        DeviceHandle handle)
-    {
-        if (DeviceHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

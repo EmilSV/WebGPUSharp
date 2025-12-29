@@ -169,7 +169,12 @@ public unsafe partial struct ComputePassEncoderHandle : IEquatable<ComputePassEn
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.ComputePassEncoderAddRef(this);
+    /// <returns>The same <see cref="ComputePassEncoderHandle"/> instance with an incremented reference count.</returns>
+    public ComputePassEncoderHandle AddRef()
+    {
+        WebGPU_FFI.ComputePassEncoderAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="ComputePassEncoderHandle"/>. When the reference count reaches zero, the <see cref="ComputePassEncoderHandle"/> and associated resources may be freed.

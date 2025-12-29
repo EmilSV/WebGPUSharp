@@ -110,7 +110,12 @@ public unsafe partial struct CommandBufferHandle : IEquatable<CommandBufferHandl
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.CommandBufferAddRef(this);
+    /// <returns>The same <see cref="CommandBufferHandle"/> instance with an incremented reference count.</returns>
+    public CommandBufferHandle AddRef()
+    {
+        WebGPU_FFI.CommandBufferAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="CommandBufferHandle"/>. When the reference count reaches zero, the <see cref="CommandBufferHandle"/> and associated resources may be freed.

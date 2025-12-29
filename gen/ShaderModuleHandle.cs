@@ -118,7 +118,12 @@ public unsafe partial struct ShaderModuleHandle : IEquatable<ShaderModuleHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.ShaderModuleAddRef(this);
+    /// <returns>The same <see cref="ShaderModuleHandle"/> instance with an incremented reference count.</returns>
+    public ShaderModuleHandle AddRef()
+    {
+        WebGPU_FFI.ShaderModuleAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="ShaderModuleHandle"/>. When the reference count reaches zero, the <see cref="ShaderModuleHandle"/> and associated resources may be freed.

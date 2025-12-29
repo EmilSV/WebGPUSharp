@@ -21,7 +21,7 @@ public struct VertexState : IWebGpuMarshallableAlloc<VertexState, VertexStateFFI
         in VertexState input, WebGpuAllocatorHandle allocator, out VertexStateFFI dest)
     {
         dest = default;
-        dest.Module = GetBorrowHandle(input.Module);
+        dest.Module = GetHandle(input.Module);
         dest.EntryPoint = ToStringViewFFI(input.EntryPoint, allocator);
         ToFFI(input.Constants, allocator, out dest.Constants, out dest.ConstantCount);
         ToFFI(input.Buffers, allocator, out dest.Buffers, out dest.BufferCount);

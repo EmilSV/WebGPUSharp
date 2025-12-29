@@ -41,7 +41,7 @@ public sealed class Queue :
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, List<T> data)
      where T : unmanaged
     {
-        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, (ReadOnlySpan<T>)CollectionsMarshal.AsSpan(data));
     }
 
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, T[])" />
@@ -49,7 +49,7 @@ public sealed class Queue :
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, T[] data)
          where T : unmanaged
     {
-        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
     }
 
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, Span{T})" />
@@ -57,7 +57,7 @@ public sealed class Queue :
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, Span<T> data)
              where T : unmanaged
     {
-        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, (ReadOnlySpan<T>)data);
     }
 
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, ReadOnlySpan{T})" />
@@ -65,7 +65,7 @@ public sealed class Queue :
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, ReadOnlySpan<T> data)
          where T : unmanaged
     {
-        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, data);
     }
 
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, in T)" />
@@ -73,7 +73,7 @@ public sealed class Queue :
     public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, in T data)
          where T : unmanaged
     {
-        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), bufferOffset, data);
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, data);
     }
 
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, in T)" />
@@ -81,7 +81,7 @@ public sealed class Queue :
     public void WriteBuffer<T>(Buffer buffer, in T data)
          where T : unmanaged
     {
-        Handle.WriteBuffer(WebGPUMarshal.GetBorrowHandle(buffer), 0, data);
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), 0, data);
     }
 
 
@@ -165,14 +165,13 @@ public sealed class Queue :
         return new(handle);
     }
 
-    static Queue? IFromHandle<Queue, QueueHandle>.FromHandleNoRefIncrement(
-        QueueHandle handle)
-    {
-        if (QueueHandle.IsNull(handle))
-        {
-            return null;
-        }
+    /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void OnSubmittedWorkDone(Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback
+        ) => Handle.OnSubmittedWorkDone(callback);
 
-        return new(handle);
-    }
+    /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task OnSubmittedWorkDone() =>
+        Handle.OnSubmittedWorkDone();
 }

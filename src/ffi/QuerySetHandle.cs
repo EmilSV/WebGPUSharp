@@ -75,15 +75,5 @@ public unsafe readonly partial struct QuerySetHandle :
     }
 
 
-    public QuerySet? ToSafeHandle(bool incrementRefCount)
-    {
-        if (incrementRefCount)
-        {
-            return ToSafeHandle<QuerySet, QuerySetHandle>(this);
-        }
-        else
-        {
-            return ToSafeHandleNoRefIncrement<QuerySet, QuerySetHandle>(this);
-        }
-    }
+    public QuerySet? ToSafeHandle() => ToSafeHandle<QuerySet, QuerySetHandle>(this);
 }

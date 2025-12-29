@@ -29,18 +29,18 @@ public sealed class Adapter :
     /// <inheritdoc cref="AdapterHandle.HasFeature(FeatureName)"/>
     public bool HasFeature(FeatureName feature) => Handle.HasFeature(feature);
 
-    /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor)"/>
+    /// <inheritdoc cref="AdapterHandle.RequestDevice(in DeviceDescriptor)"/>
     public Task<Device> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        Handle.RequestDeviceAsync(descriptor).ContinueWith(static task => task.Result.ToSafeHandle(incrementRefCount: false)!);
+        Handle.RequestDevice(descriptor).ContinueWith(static task => task.Result.ToSafeHandle()!);
 
-    /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor)"/>
+    /// <inheritdoc cref="AdapterHandle.RequestDevice()"/>
     public unsafe Task<Device> RequestDeviceAsync() =>
-        Handle.RequestDeviceAsync().ContinueWith(static task => task.Result.ToSafeHandle(incrementRefCount: false)!);
+        Handle.RequestDevice().ContinueWith(static task => task.Result.ToSafeHandle()!);
 
 
-    /// <inheritdoc cref="AdapterHandle.RequestDeviceAsync(in DeviceDescriptor, Action{Device?})"/>
-    public void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<Device?> callback) =>
-        Handle.RequestDeviceAsync(descriptor, callback);
+    /// <inheritdoc cref="AdapterHandle.RequestDevice(in DeviceDescriptor, Action{Device?})"/>
+    public void RequestDevice(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback) =>
+        Handle.RequestDevice(descriptor, callback);
 
 
     static Adapter? IFromHandle<Adapter, AdapterHandle>.FromHandle(
@@ -52,17 +52,6 @@ public sealed class Adapter :
         }
 
         AdapterHandle.Reference(handle);
-        return new(handle);
-    }
-
-    static Adapter? IFromHandle<Adapter, AdapterHandle>.FromHandleNoRefIncrement(
-        AdapterHandle handle)
-    {
-        if (AdapterHandle.IsNull(handle))
-        {
-            return null;
-        }
-
         return new(handle);
     }
 }

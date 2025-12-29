@@ -10,13 +10,13 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndexedIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
-        WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
+        WebGPU_FFI.RenderBundleEncoderDrawIndexedIndirect(this, GetHandle(indirectBuffer), indirectOffset);
     }
 
     /// <inheritdoc cref="DrawIndexedIndirect(BufferHandle, ulong)"/>
     public void DrawIndirect(Buffer indirectBuffer, ulong indirectOffset)
     {
-        WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, GetBorrowHandle(indirectBuffer), indirectOffset);
+        WebGPU_FFI.RenderBundleEncoderDrawIndirect(this, GetHandle(indirectBuffer), indirectOffset);
     }
 
     /// <inheritdoc cref="Finish(RenderBundleDescriptorFFI*)"/>
@@ -112,7 +112,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(
             renderBundleEncoder: this,
             groupIndex: groupIndex,
-            group: GetBorrowHandle(group),
+            group: GetHandle(group),
             dynamicOffsetCount: 1,
             dynamicOffsets: &dynamicOffsets
         );
@@ -124,7 +124,7 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         WebGPU_FFI.RenderBundleEncoderSetBindGroup(
             renderBundleEncoder: this,
             groupIndex: groupIndex,
-            group: GetBorrowHandle(group),
+            group: GetHandle(group),
             dynamicOffsetCount: 0,
             dynamicOffsets: null
         );
@@ -135,21 +135,21 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     {
         fixed (uint* dynamicOffsetPtr = dynamicOffset)
         {
-            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, GetBorrowHandle(group), (nuint)dynamicOffset.Length, dynamicOffsetPtr);
+            WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, GetHandle(group), (nuint)dynamicOffset.Length, dynamicOffsetPtr);
         }
     }
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {
-        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
+        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetHandle(buffer), format, offset, size);
     }
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
-        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetBorrowHandle(buffer), format, offset, size);
+        WebGPU_FFI.RenderBundleEncoderSetIndexBuffer(this, GetHandle(buffer), format, offset, size);
     }
 
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
@@ -176,20 +176,20 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
     /// <inheritdoc cref="SetPipeline(RenderPipelineHandle)"/>
     public void SetPipeline(RenderPipeline pipeline)
     {
-        WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetBorrowHandle(pipeline));
+        WebGPU_FFI.RenderBundleEncoderSetPipeline(this, GetHandle(pipeline));
     }
 
     /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset, ulong size)
     {
-        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
+        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetHandle(buffer), offset, size);
     }
 
     /// <inheritdoc cref="SetVertexBuffer(uint, BufferHandle, ulong, ulong)"/>
     public void SetVertexBuffer(uint slot, Buffer buffer, ulong offset = 0)
     {
         var size = buffer.GetSize() - offset;
-        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetBorrowHandle(buffer), offset, size);
+        WebGPU_FFI.RenderBundleEncoderSetVertexBuffer(this, slot, GetHandle(buffer), offset, size);
     }
 
     public static ref nuint AsPointer(ref RenderBundleEncoderHandle handle)

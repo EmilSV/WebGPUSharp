@@ -25,15 +25,4 @@ public unsafe sealed class Sampler :
         SamplerHandle.Reference(handle);
         return new(handle);
     }
-
-    static Sampler? IFromHandle<Sampler, SamplerHandle>.FromHandleNoRefIncrement(
-        SamplerHandle handle)
-    {
-        if (SamplerHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }

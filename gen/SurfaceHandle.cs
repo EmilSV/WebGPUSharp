@@ -137,7 +137,12 @@ public unsafe partial struct SurfaceHandle : IEquatable<SurfaceHandle>
     /// Applications don't need to maintain refs to WebGPU objects that are internally used by other 
     /// WebGPU objects, as the implementation maintains internal references as needed.
     /// </remarks>
-    public void AddRef() => WebGPU_FFI.SurfaceAddRef(this);
+    /// <returns>The same <see cref="SurfaceHandle"/> instance with an incremented reference count.</returns>
+    public SurfaceHandle AddRef()
+    {
+        WebGPU_FFI.SurfaceAddRef(this);
+        return this;
+    }
 
     /// <summary>
     /// Decrements the reference count of the <see cref="SurfaceHandle"/>. When the reference count reaches zero, the <see cref="SurfaceHandle"/> and associated resources may be freed.

@@ -26,15 +26,4 @@ public sealed class TextureView :
         TextureViewHandle.Reference(handle);
         return new(handle);
     }
-
-    static TextureView? IFromHandle<TextureView, TextureViewHandle>.FromHandleNoRefIncrement(
-        TextureViewHandle handle)
-    {
-        if (TextureViewHandle.IsNull(handle))
-        {
-            return null;
-        }
-
-        return new(handle);
-    }
 }
