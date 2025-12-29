@@ -166,13 +166,10 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
-    public readonly Task<DeviceHandle> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        RequestDeviceAsync(descriptor);
-
     /// <param name="callback">The callback to call when the device is ready</param>
     /// <returns/>
     /// <inheritdoc cref="RequestDevice(DeviceDescriptorFFI*)"/>
-    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, DeviceHandle, ReadOnlySpan<byte>> callback)
+    public readonly void RequestDevice(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, DeviceHandle, ReadOnlySpan<byte>> callback)
     {
         WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
         const int stackAllocSize = 16 * 2 * sizeof(byte);
@@ -246,9 +243,9 @@ public unsafe readonly partial struct AdapterHandle :
     }
 
     /// <inheritdoc cref="RequestDeviceAsync(in DeviceDescriptor, Action{DeviceHandle})"/>
-    public readonly void RequestDeviceAsync(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback)
+    public readonly void RequestDevice(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback)
     {
-        RequestDeviceAsync(descriptor, (RequestDeviceStatus status, DeviceHandle device, ReadOnlySpan<byte> message) =>
+        RequestDevice(descriptor, (RequestDeviceStatus status, DeviceHandle device, ReadOnlySpan<byte> message) =>
         {
             if (DeviceHandle.IsNull(device))
             {
