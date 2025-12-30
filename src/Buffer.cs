@@ -45,7 +45,7 @@ public sealed class Buffer :
                 size: size,
                 callbackInfo: new()
                 {
-                    Callback = &BufferMapCallbackFunctions.DelegateCallback,
+                    Callback = &BufferMapAsyncCallbackFunctions.DelegateCallback,
                     Userdata1 = bufferBaseUserData,
                     Userdata2 = callbackUserData,
                     Mode = CallbackMode.AllowSpontaneous,
@@ -80,27 +80,27 @@ public sealed class Buffer :
         nuint offset,
         nuint size)
     {
-        _readWriteStateChangeLock.AddStateChangeLock();
-        TaskCompletionSource<MapAsyncStatus> taskCompletionSource = new();
         void* bufferBaseHandle = null;
         void* taskCompletionSourceHandle = null;
         try
         {
+            _readWriteStateChangeLock.AddStateChangeLock();
+            TaskCompletionSource<MapAsyncStatus> taskCompletionSource = new();
             bufferBaseHandle = AllocUserData(this);
             taskCompletionSourceHandle = AllocUserData(taskCompletionSource);
 
-            Handle.MapAsync(
-                mode: mode,
-                offset: offset,
-                size: size,
-                callbackInfo: new()
-                {
-                    Callback = &BufferMapCallbackFunctions.TaskCallback,
-                    Userdata1 = bufferBaseHandle,
-                    Userdata2 = taskCompletionSourceHandle,
-                    Mode = CallbackMode.AllowSpontaneous,
-                }
-            );
+            var future = Handle.MapAsync(
+                  mode: mode,
+                  offset: offset,
+                  size: size,
+                  callbackInfo: new()
+                  {
+                      Callback = &BufferMapAsyncCallbackFunctions.TaskCallback,
+                      Userdata1 = bufferBaseHandle,
+                      Userdata2 = taskCompletionSourceHandle,
+                      Mode = CallbackMode.AllowSpontaneous,
+                  }
+              );
 
             return taskCompletionSource.Task;
         }
@@ -521,7 +521,7 @@ public sealed class Buffer :
 }
 
 
-file static unsafe class BufferMapCallbackFunctions
+file static unsafe class BufferMapAsyncCallbackFunctions
 {
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -583,24 +583,24 @@ file static unsafe class BufferMapCallbackFunctions
             var messageBufferArraySegment = new ArraySegment<byte>(messageBuffer, 0, (int)message.Length);
             message.AsSpan().CopyTo(messageBufferArraySegment);
 
-            ThreadPool.UnsafeQueueUserWorkItem(
-                state: (status, messageBufferArraySegment, taskCompletionSource!, bufferBase),
+            ThreadPool.QueueUserWorkItem(
+                state: (status, messageBufferArraySegment, taskCompletionSource, bufferBase),
                 callBack: static state =>
                 {
-                    var (status, messageBufferArraySegment, tsc, bufferBase) = state;
-                    bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
+                    var (status, messageBufferArraySegment, taskCompletionSource, bufferBase) = state;
+                    //bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
                     try
                     {
                         switch (status)
                         {
                             case MapAsyncStatus.Success:
-                            case MapAsyncStatus.Aborted:
-                                tsc?.SetResult(status);
+                                taskCompletionSource.SetResult(status);
                                 break;
                             case MapAsyncStatus.Error:
+                            case MapAsyncStatus.Aborted:
                             case MapAsyncStatus.CallbackCancelled:
                             default:
-                                tsc?.SetException(new WebGPUException(Encoding.UTF8.GetString(messageBufferArraySegment)));
+                                taskCompletionSource.SetException(new WebGPUException(Encoding.UTF8.GetString(messageBufferArraySegment)));
                                 break;
                         }
                     }
