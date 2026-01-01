@@ -8,10 +8,13 @@ namespace WebGpuSharp;
 /// <inheritdoc cref="AdapterHandle"/>
 public sealed class Adapter :
     WebGPUManagedHandleBase<AdapterHandle>,
-    IFromHandle<Adapter, AdapterHandle>
+    IFromHandleWithInstance<Adapter, AdapterHandle>
 {
-    private Adapter(AdapterHandle handle) : base(handle)
+    private readonly Instance _instance;
+
+    private Adapter(AdapterHandle handle, Instance instance) : base(handle)
     {
+        _instance = instance;
     }
 
     /// <inheritdoc cref="AdapterHandle.GetInfo()"/>
@@ -31,20 +34,17 @@ public sealed class Adapter :
 
     /// <inheritdoc cref="AdapterHandle.RequestDevice(in DeviceDescriptor)"/>
     public Task<Device> RequestDeviceAsync(in DeviceDescriptor descriptor) =>
-        Handle.RequestDevice(descriptor).ContinueWith(static task => task.Result.ToSafeHandle()!);
+        Handle.RequestDevice(descriptor).ContinueWith(static (task, state) => task.Result.ToSafeHandle((Instance)state!)!, _instance);
 
     /// <inheritdoc cref="AdapterHandle.RequestDevice()"/>
     public unsafe Task<Device> RequestDeviceAsync() =>
-        Handle.RequestDevice().ContinueWith(static task => task.Result.ToSafeHandle()!);
-
+        Handle.RequestDevice().ContinueWith(static (task, state) => task.Result.ToSafeHandle((Instance)state!)!, _instance);
 
     /// <inheritdoc cref="AdapterHandle.RequestDevice(in DeviceDescriptor, Action{Device?})"/>
     public void RequestDevice(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback) =>
         Handle.RequestDevice(descriptor, callback);
 
-
-    static Adapter? IFromHandle<Adapter, AdapterHandle>.FromHandle(
-        AdapterHandle handle)
+    static Adapter? IFromHandleWithInstance<Adapter, AdapterHandle>.FromHandle(AdapterHandle handle, Instance instance)
     {
         if (AdapterHandle.IsNull(handle))
         {
@@ -52,6 +52,11 @@ public sealed class Adapter :
         }
 
         AdapterHandle.Reference(handle);
-        return new(handle);
+        return new(handle, instance);
+    }
+
+    static Instance IFromHandleWithInstance<Adapter, AdapterHandle>.GetOwnerInstance(Adapter instance)
+    {
+        return instance._instance;
     }
 }

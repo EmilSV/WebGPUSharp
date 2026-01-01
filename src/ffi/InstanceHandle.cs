@@ -13,7 +13,7 @@ namespace WebGpuSharp.FFI;
 
 
 public readonly unsafe partial struct InstanceHandle :
-    IDisposable, IWebGpuHandle<InstanceHandle, Instance>
+    IDisposable, IWebGpuHandle<InstanceHandle>
 {
     /// <returns> A task that will complete when the adapter is ready.</returns>
     /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
@@ -153,8 +153,6 @@ public readonly unsafe partial struct InstanceHandle :
     {
         WebGPU_FFI.InstanceRelease(handle);
     }
-
-    public Instance? ToSafeHandle() => ToSafeHandle<Instance, InstanceHandle>(this);
 }
 
 

@@ -7,7 +7,7 @@ namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct ShaderModuleHandle :
     IDisposable,
-    IWebGpuHandle<ShaderModuleHandle, ShaderModule>
+    IWebGpuHandleNeedInstance<ShaderModuleHandle, ShaderModule>
 {
 
     /// <inheritdoc cref="GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
@@ -95,7 +95,7 @@ public unsafe readonly partial struct ShaderModuleHandle :
         }
     }
 
-    public ShaderModule? ToSafeHandle() => ToSafeHandle<ShaderModule, ShaderModuleHandle>(this);
+    public ShaderModule? ToSafeHandle(Instance instance) => ToSafeHandle<ShaderModule, ShaderModuleHandle>(this, instance);
 }
 
 

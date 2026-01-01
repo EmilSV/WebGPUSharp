@@ -7,10 +7,13 @@ namespace WebGpuSharp;
 /// <inheritdoc/>
 public sealed class ShaderModule :
     WebGPUManagedHandleBase<ShaderModuleHandle>,
-    IFromHandle<ShaderModule, ShaderModuleHandle>
+    IFromHandleWithInstance<ShaderModule, ShaderModuleHandle>
 {
-    private ShaderModule(ShaderModuleHandle handle) : base(handle)
+    private readonly Instance _instance;
+
+    private ShaderModule(ShaderModuleHandle handle, Instance instance) : base(handle)
     {
+        _instance = instance;
     }
 
     public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
@@ -23,8 +26,8 @@ public sealed class ShaderModule :
         return Handle.GetCompilationInfo(callback);
     }
 
-    static ShaderModule? IFromHandle<ShaderModule, ShaderModuleHandle>.FromHandle(
-        ShaderModuleHandle handle)
+    static ShaderModule? IFromHandleWithInstance<ShaderModule, ShaderModuleHandle>.FromHandle(
+        ShaderModuleHandle handle, Instance instance)
     {
         if (ShaderModuleHandle.IsNull(handle))
         {
@@ -32,6 +35,12 @@ public sealed class ShaderModule :
         }
 
         ShaderModuleHandle.Reference(handle);
-        return new(handle);
+        return new(handle, instance);
+    }
+
+    static Instance IFromHandleWithInstance<ShaderModule, ShaderModuleHandle>.GetOwnerInstance(
+        ShaderModule instance)
+    {
+        return instance._instance;
     }
 }

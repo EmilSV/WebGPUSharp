@@ -9,10 +9,14 @@ namespace WebGpuSharp;
 /// <inheritdoc cref="DeviceHandle" />
 public sealed class Device :
     WebGPUManagedHandleBase<DeviceHandle>,
-    IFromHandle<Device, DeviceHandle>
+    IFromHandleWithInstance<Device, DeviceHandle>
 {
-    private Device(DeviceHandle handle) : base(handle)
+
+    private readonly Instance _instance;
+
+    private Device(DeviceHandle handle, Instance instance) : base(handle)
     {
+        _instance = instance;
     }
 
     private Queue? _queueCache;
@@ -27,12 +31,12 @@ public sealed class Device :
 
     /// <inheritdoc cref="DeviceHandle.CreateBuffer(ref BufferDescriptor)" />
     public Buffer CreateBuffer(ref BufferDescriptor descriptor) =>
-        Handle.CreateBuffer(descriptor).ToSafeHandle()!;
+        Handle.CreateBuffer(descriptor).ToSafeHandle(_instance)!;
 
     /// <inheritdoc cref="DeviceHandle.CreateBuffer(BufferDescriptor)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Buffer CreateBuffer(BufferDescriptor descriptor) =>
-        Handle.CreateBuffer(descriptor).ToSafeHandle()!;
+        Handle.CreateBuffer(descriptor).ToSafeHandle(_instance)!;
 
     /// <inheritdoc cref="DeviceHandle.CreateCommandEncoder" />
     public CommandEncoder CreateCommandEncoder() =>
@@ -77,7 +81,7 @@ public sealed class Device :
 
     /// <inheritdoc cref="DeviceHandle.CreateShaderModule(in ShaderModuleDescriptor)" />
     public ShaderModule CreateShaderModule(in ShaderModuleDescriptor descriptor) =>
-        Handle.CreateShaderModule(descriptor).ToSafeHandle()!;
+        Handle.CreateShaderModule(descriptor).ToSafeHandle(_instance)!;
 
     /// <inheritdoc cref="DeviceHandle.CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
     public ShaderModule CreateShaderModuleWGSL(in ShaderModuleWGSLDescriptor descriptor) =>
@@ -128,18 +132,22 @@ public sealed class Device :
     /// <inheritdoc cref="DeviceHandle.LoadShaderModuleFromFile(string, WGPURefText)" />
     public ShaderModule? LoadShaderModuleFromFile(string path, WGPURefText label = default)
     {
-        return Handle.LoadShaderModuleFromFile(path, label).ToSafeHandle();
+        return Handle.LoadShaderModuleFromFile(path, label).ToSafeHandle(_instance);
     }
 
-    static Device? IFromHandle<Device, DeviceHandle>.FromHandle(
-        DeviceHandle handle)
+    static Device? IFromHandleWithInstance<Device, DeviceHandle>.FromHandle(DeviceHandle managedHandle, Instance instance)
     {
-        if (DeviceHandle.IsNull(handle))
+        if (DeviceHandle.IsNull(managedHandle))
         {
             return null;
         }
 
-        DeviceHandle.Reference(handle);
-        return new(handle);
+        DeviceHandle.Reference(managedHandle);
+        return new(managedHandle, instance);
+    }
+
+    static Instance IFromHandleWithInstance<Device, DeviceHandle>.GetOwnerInstance(Device managedHandle)
+    {
+        return managedHandle._instance;
     }
 }

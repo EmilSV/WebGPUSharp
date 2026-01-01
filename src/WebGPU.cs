@@ -28,7 +28,7 @@ public static unsafe partial class WebGPU
                 RequiredLimits = requiredLimitsPtr
             };
 
-            return WebGPU_FFI.CreateInstance(&ffiDescriptor).ToSafeHandle();
+            return new Instance(WebGPU_FFI.CreateInstance(&ffiDescriptor));
         }
     }
 

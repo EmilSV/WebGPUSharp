@@ -4,7 +4,7 @@ using WebGpuSharp.Marshalling;
 namespace WebGpuSharp.FFI;
 
 public unsafe readonly partial struct BufferHandle :
-    IDisposable, IWebGpuHandle<BufferHandle, Buffer>
+    IDisposable, IWebGpuHandleNeedInstance<BufferHandle, Buffer>
 {
     public void Dispose()
     {
@@ -44,9 +44,9 @@ public unsafe readonly partial struct BufferHandle :
         WebGPU_FFI.BufferRelease(handle);
     }
 
-    public Buffer? ToSafeHandle()
+    public Buffer? ToSafeHandle(Instance instance)
     {
-        return WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(this);
+        return WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(this, instance);
     }
 
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>

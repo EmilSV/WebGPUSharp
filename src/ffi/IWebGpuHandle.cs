@@ -16,3 +16,9 @@ public interface IWebGpuHandle<TSelf, TSafeHandle> : IWebGpuHandle<TSelf>
 {
     public TSafeHandle? ToSafeHandle();
 }
+
+public interface IWebGpuHandleNeedInstance<TSelf, TSafeHandle> : IWebGpuHandle<TSelf>
+    where TSelf : unmanaged, IWebGpuHandle<TSelf>
+{
+    public TSafeHandle? ToSafeHandle(Instance instance);
+}

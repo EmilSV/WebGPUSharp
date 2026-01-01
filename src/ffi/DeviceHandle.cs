@@ -9,7 +9,9 @@ using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp.FFI;
 
-public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<DeviceHandle, Device>
+public unsafe readonly partial struct DeviceHandle :
+    IDisposable,
+    IWebGpuHandleNeedInstance<DeviceHandle, Device>
 {
     /// <inheritdoc cref="CreateBindGroup(BindGroupDescriptorFFI*)"/>
     public BindGroupHandle CreateBindGroup(in BindGroupDescriptorFFI descriptor)
@@ -918,7 +920,7 @@ public unsafe readonly partial struct DeviceHandle : IDisposable, IWebGpuHandle<
         return new DeviceHandle(pointer);
     }
 
-    public Device? ToSafeHandle() => ToSafeHandle<Device, DeviceHandle>(this);
+    public Device? ToSafeHandle(Instance instance) => ToSafeHandle<Device, DeviceHandle>(this, instance);
 
     public static void Reference(DeviceHandle handle)
     {

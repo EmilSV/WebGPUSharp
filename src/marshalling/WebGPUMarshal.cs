@@ -328,9 +328,17 @@ public unsafe static partial class WebGPUMarshal
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TSafeHandle? ToSafeHandle<TSafeHandle, THandle>(THandle handle)
         where TSafeHandle : IFromHandle<TSafeHandle, THandle>
-         where THandle : unmanaged, IWebGpuHandle<THandle>
+        where THandle : unmanaged, IWebGpuHandle<THandle>
     {
         return TSafeHandle.FromHandle(handle);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TSafeHandle? ToSafeHandle<TSafeHandle, THandle>(THandle handle, Instance instance)
+        where TSafeHandle : IFromHandleWithInstance<TSafeHandle, THandle>
+        where THandle : unmanaged, IWebGpuHandle<THandle>
+    {
+        return TSafeHandle.FromHandle(handle, instance);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,9 +1,7 @@
-using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Transactions;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
@@ -15,12 +13,14 @@ namespace WebGpuSharp;
 /// <inheritdoc/>
 public sealed class Buffer :
     WebGPUManagedHandleBase<BufferHandle>,
-    IFromHandle<Buffer, BufferHandle>
+    IFromHandleWithInstance<Buffer, BufferHandle>
 {
     internal readonly ReadWriteStateChangeHandleLock _readWriteStateChangeLock;
+    private readonly Instance _instance;
 
-    private Buffer(BufferHandle handle) : base(handle)
+    private Buffer(BufferHandle handle, Instance instance) : base(handle)
     {
+        _instance = instance;
         _readWriteStateChangeLock = ReadWriteStateChangeHandleLock.Get(handle.GetAddress());
     }
 
@@ -506,9 +506,7 @@ public sealed class Buffer :
         }
     }
 
-
-
-    static Buffer? IFromHandle<Buffer, BufferHandle>.FromHandle(BufferHandle handle)
+    static Buffer? IFromHandleWithInstance<Buffer, BufferHandle>.FromHandle(BufferHandle handle, Instance instance)
     {
         if (BufferHandle.IsNull(handle))
         {
@@ -516,7 +514,12 @@ public sealed class Buffer :
         }
 
         BufferHandle.Reference(handle);
-        return new(handle);
+        return new(handle, instance);
+    }
+
+    static Instance IFromHandleWithInstance<Buffer, BufferHandle>.GetOwnerInstance(Buffer buffer)
+    {
+        return buffer._instance;
     }
 }
 
