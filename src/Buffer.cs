@@ -24,99 +24,142 @@ public sealed class Buffer :
         _readWriteStateChangeLock = ReadWriteStateChangeHandleLock.Get(handle.GetAddress());
     }
 
-    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
-    public unsafe void MapAsync(
-       MapMode mode,
-       nuint offset,
-       nuint size,
-       Action<MapAsyncStatus> callbackInfo)
+    private unsafe Future Map(
+        MapMode mode,
+        nuint offset,
+        nuint size,
+        CallbackMode callbackMode,
+        Action<MapAsyncStatus, ReadOnlySpan<byte>>? callback,
+        TaskCompletionSource<MapAsyncStatus>? tcs)
     {
         _readWriteStateChangeLock.AddStateChangeLock();
-        void* bufferBaseUserData = null;
-        void* callbackUserData = null;
+        Future future;
         try
         {
-            bufferBaseUserData = AllocUserData(this);
-            callbackUserData = AllocUserData(callbackInfo);
+            void* bufferBaseUserData = AllocUserData(this);
+            void* userdata2;
+            delegate* unmanaged[Cdecl]<MapAsyncStatus, StringViewFFI, void*, void*, void> callbackFunction;
+            if (callback != null)
+            {
+                userdata2 = AllocUserData(callback);
+                callbackFunction = &BufferMapAsyncCallbackFunctions.DelegateCallback;
+            }
+            else
+            {
+                userdata2 = AllocUserData(tcs!);
+                callbackFunction = &BufferMapAsyncCallbackFunctions.TaskCallback;
+            }
 
-            Handle.MapAsync(
+            future = Handle.MapAsync(
                 mode: mode,
                 offset: offset,
                 size: size,
                 callbackInfo: new()
                 {
-                    Callback = &BufferMapAsyncCallbackFunctions.DelegateCallback,
+                    Callback = callbackFunction,
                     Userdata1 = bufferBaseUserData,
-                    Userdata2 = callbackUserData,
-                    Mode = CallbackMode.AllowSpontaneous,
+                    Userdata2 = userdata2,
+                    Mode = callbackMode,
                 }
             );
         }
         catch (Exception)
         {
-            FreeUserData(bufferBaseUserData);
-            FreeUserData(callbackUserData);
             _readWriteStateChangeLock.RemoveStateChangeLock();
             throw;
         }
-    }
-
-
-    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
-    public void MapAsync(MapMode mode, nuint offset, Action<MapAsyncStatus> callbackInfo)
-    {
-        MapAsync(mode, offset, (nuint)GetSize() - offset, callbackInfo);
+        return future;
     }
 
     /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
-    public void MapAsync(MapMode mode, Action<MapAsyncStatus> callbackInfo)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void MapSync(
+       MapMode mode,
+       nuint offset = 0,
+       nuint? size = null,
+       ulong timeoutMilliseconds = ulong.MaxValue)
     {
-        MapAsync(mode, 0, (nuint)GetSize(), callbackInfo);
+        Exception? exception = null;
+        void Callback(MapAsyncStatus status, ReadOnlySpan<byte> message)
+        {
+            if (status != MapAsyncStatus.Success)
+            {
+                exception = new WebGPUException(Encoding.UTF8.GetString(message));
+            }
+        }
+
+        var future = Map(
+            mode: mode,
+            offset: offset,
+            size: size ?? WebGPU_FFI.WHOLE_MAP_SIZE,
+            callbackMode: CallbackMode.AllowProcessEvents,
+            callback: Callback,
+            tcs: null
+        );
+
+        _instance.WaitAny(future, timeoutMilliseconds);
+    }
+
+    /// <returns></returns>
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
+    /// <param name="callback">Callback to be called when the buffer is mapped.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Map(
+       MapMode mode,
+       nuint offset,
+       nuint size,
+       Action<MapAsyncStatus, ReadOnlySpan<byte>> callback)
+    {
+        var future = Map(
+            mode: mode,
+            offset: offset,
+            size: size,
+            callbackMode: CallbackMode.AllowProcessEvents,
+            callback: callback,
+            tcs: null
+        );
+        _instance._eventHandler.EnqueueCpuFuture(future);
+    }
+
+    /// <inheritdoc cref="Map(MapMode, nuint, nuint, Action{MapAsyncStatus, ReadOnlySpan{byte}})"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Map(MapMode mode, nuint offset, Action<MapAsyncStatus, ReadOnlySpan<byte>> callback)
+    {
+        Map(mode, offset, WebGPU_FFI.WHOLE_MAP_SIZE, callback);
+    }
+
+    /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/> 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Map(MapMode mode, Action<MapAsyncStatus, ReadOnlySpan<byte>> callback)
+    {
+        Map(mode, 0, WebGPU_FFI.WHOLE_MAP_SIZE, callback);
     }
 
     /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/>
-    public unsafe Task<MapAsyncStatus> MapAsync(
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task<MapAsyncStatus> MapAsync(
         MapMode mode,
         nuint offset,
         nuint size)
     {
-        void* bufferBaseHandle = null;
-        void* taskCompletionSourceHandle = null;
-        try
-        {
-            _readWriteStateChangeLock.AddStateChangeLock();
-            TaskCompletionSource<MapAsyncStatus> taskCompletionSource = new();
-            bufferBaseHandle = AllocUserData(this);
-            taskCompletionSourceHandle = AllocUserData(taskCompletionSource);
-
-            var future = Handle.MapAsync(
-                  mode: mode,
-                  offset: offset,
-                  size: size,
-                  callbackInfo: new()
-                  {
-                      Callback = &BufferMapAsyncCallbackFunctions.TaskCallback,
-                      Userdata1 = bufferBaseHandle,
-                      Userdata2 = taskCompletionSourceHandle,
-                      Mode = CallbackMode.AllowSpontaneous,
-                  }
-              );
-
-            return taskCompletionSource.Task;
-        }
-        catch (Exception)
-        {
-            FreeUserData(bufferBaseHandle);
-            FreeUserData(taskCompletionSourceHandle);
-            _readWriteStateChangeLock.RemoveStateChangeLock();
-            throw;
-        }
+        var tcs = new TaskCompletionSource<MapAsyncStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var future = Map(
+            mode: mode,
+            offset: offset,
+            size: size,
+            callbackMode: CallbackMode.AllowProcessEvents,
+            callback: null,
+            tcs: tcs
+        );
+        _instance._eventHandler.EnqueueCpuFuture(future);
+        return tcs.Task;
     }
 
     /// <inheritdoc cref="BufferHandle.MapAsync(MapMode, nuint, nuint, BufferMapCallbackInfoFFI)"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Task<MapAsyncStatus> MapAsync(MapMode mode, nuint offset = 0)
     {
-        return MapAsync(mode, offset, (nuint)GetSize() - offset);
+        return MapAsync(mode, offset, WebGPU_FFI.WHOLE_MAP_SIZE);
     }
 
     /// <inheritdoc cref="BufferHandle.Destroy"/>
@@ -132,7 +175,6 @@ public sealed class Buffer :
             _readWriteStateChangeLock.RemoveStateChangeLock();
         }
     }
-
 
     /// <param name="callback">The callback to be called with the mapped range.</param>
     /// <inheritdoc cref="BufferHandle.GetConstMappedRange(nuint, nuint)"/>
@@ -529,7 +571,10 @@ file static unsafe class BufferMapAsyncCallbackFunctions
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     public static void DelegateCallback(
-        MapAsyncStatus status, StringViewFFI message, void* userdata1, void* userdata2)
+        MapAsyncStatus status,
+        StringViewFFI message,
+        void* userdata1,
+        void* userdata2)
     {
         try
         {
@@ -540,36 +585,20 @@ file static unsafe class BufferMapAsyncCallbackFunctions
                 Console.Error.WriteLine("Invalid buffer map callback");
                 return;
             }
-
-            byte[]? messageBuffer = null;
-            messageBuffer = ArrayPool<byte>.Shared.Rent((int)message.Length);
-            var messageBufferArraySegment = new ArraySegment<byte>(messageBuffer, 0, (int)message.Length);
-            message.AsSpan().CopyTo(messageBufferArraySegment);
-
-            ThreadPool.UnsafeQueueUserWorkItem(
-                state: (status, messageBufferArraySegment, callback!, bufferBase),
-                callBack: static state =>
-                {
-                    var (status, messageBufferArraySegment, callback, bufferBase) = state;
-                    bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
-                    try
-                    {
-                        callback(status, messageBufferArraySegment);
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
-                    }
-                },
-                preferLocal: false
-            );
+            callback(status, message.AsSpan());
         }
-        catch { }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code
+        }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     public static void TaskCallback(
-        MapAsyncStatus status, StringViewFFI message, void* userdata1, void* userdata2)
+        MapAsyncStatus status,
+        StringViewFFI message,
+        void* userdata1,
+        void* userdata2)
     {
         try
         {
@@ -581,40 +610,22 @@ file static unsafe class BufferMapAsyncCallbackFunctions
                 Console.Error.WriteLine("Invalid buffer map callback");
                 return;
             }
-            byte[]? messageBuffer = null;
-            messageBuffer = ArrayPool<byte>.Shared.Rent((int)message.Length);
-            var messageBufferArraySegment = new ArraySegment<byte>(messageBuffer, 0, (int)message.Length);
-            message.AsSpan().CopyTo(messageBufferArraySegment);
-
-            ThreadPool.QueueUserWorkItem(
-                state: (status, messageBufferArraySegment, taskCompletionSource, bufferBase),
-                callBack: static state =>
-                {
-                    var (status, messageBufferArraySegment, taskCompletionSource, bufferBase) = state;
-                    //bufferBase._readWriteStateChangeLock.RemoveStateChangeLock();
-                    try
-                    {
-                        switch (status)
-                        {
-                            case MapAsyncStatus.Success:
-                                taskCompletionSource.SetResult(status);
-                                break;
-                            case MapAsyncStatus.Error:
-                            case MapAsyncStatus.Aborted:
-                            case MapAsyncStatus.CallbackCancelled:
-                            default:
-                                taskCompletionSource.SetException(new WebGPUException(Encoding.UTF8.GetString(messageBufferArraySegment)));
-                                break;
-                        }
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
-                    }
-                },
-                preferLocal: false
-            );
+            switch (status)
+            {
+                case MapAsyncStatus.Success:
+                    taskCompletionSource.SetResult(status);
+                    break;
+                case MapAsyncStatus.Error:
+                case MapAsyncStatus.Aborted:
+                case MapAsyncStatus.CallbackCancelled:
+                default:
+                    taskCompletionSource.SetException(new WebGPUException(Encoding.UTF8.GetString(message.AsSpan())));
+                    break;
+            }
         }
-        catch { }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code
+        }
     }
 }

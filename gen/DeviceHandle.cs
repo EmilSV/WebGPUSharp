@@ -140,7 +140,7 @@ public unsafe partial struct DeviceHandle : IEquatable<DeviceHandle>
     /// <param name="descriptor">The descriptor to use for the PipelineLayout</param>
     public PipelineLayoutHandle CreatePipelineLayout(PipelineLayoutDescriptorFFI* descriptor) => WebGPU_FFI.DeviceCreatePipelineLayout(this, descriptor);
 
-    /// <summary>
+        /// <summary>
     /// Creates a QuerySet.
     /// </summary>
     /// <param name="descriptor">The descriptor to use for the QuerySet</param>

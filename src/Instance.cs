@@ -31,18 +31,18 @@ public sealed class Instance :
         {
             ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
             TaskCompletionSource<Adapter> taskCompletionSource = new();
-            WebGPU_FFI.InstanceRequestAdapter(
+            var future = WebGPU_FFI.InstanceRequestAdapter(
               instance: Handle,
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = CallbackMode.AllowSpontaneous,
+                  Mode = CallbackMode.AllowProcessEvents,
                   Callback = &RequestAdapterCallbackFunctions.TaskCallback,
                   Userdata1 = AllocUserData(taskCompletionSource),
                   Userdata2 = AllocUserData(this)
               }
            );
-
+            _eventHandler.EnqueueCpuFuture(future);
             return taskCompletionSource.Task;
         }
     }
@@ -57,17 +57,18 @@ public sealed class Instance :
         unsafe
         {
             ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
-            WebGPU_FFI.InstanceRequestAdapter(
+            var future = WebGPU_FFI.InstanceRequestAdapter(
               instance: Handle,
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = CallbackMode.AllowSpontaneous,
+                  Mode = CallbackMode.AllowProcessEvents,
                   Callback = &RequestAdapterCallbackFunctions.DelegateCallback,
                   Userdata1 = AllocUserData(callback),
                   Userdata2 = AllocUserData(this)
               }
            );
+            _eventHandler.EnqueueCpuFuture(future);
         }
     }
 

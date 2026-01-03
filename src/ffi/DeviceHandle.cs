@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using WebGpuSharp;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
@@ -217,132 +218,6 @@ public unsafe readonly partial struct DeviceHandle :
         }
     }
 
-    /// <returns/>
-    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
-    [SkipLocalsInit]
-    public void CreateComputePipelineAsync(
-            in ComputePipelineDescriptor descriptor,
-            Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback)
-    {
-        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * 2 * sizeof(byte);
-        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
-            ref allocatorLogicBlock,
-            stackAllocPtr,
-            stackAllocSize
-        );
-
-        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
-        var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
-
-        fixed (byte* labelPtr = labelUtf8Span)
-        fixed (byte* entryPointPtr = entryPointUtf8Span)
-        {
-            ToFFI(
-                descriptor.Compute.Constants, allocator,
-                out ConstantEntryFFI* constantEntryPtr,
-                out nuint constantEntryCount
-            );
-
-            ComputePipelineDescriptorFFI descriptorFFI = new()
-            {
-                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
-                Layout = GetHandle(descriptor.Layout),
-                Compute = new()
-                {
-                    Module = GetHandle(descriptor.Compute.Module),
-                    EntryPoint = StringViewFFI.CreateExplicitlySized(entryPointPtr, entryPointUtf8Span.Length),
-                    Constants = constantEntryPtr,
-                    ConstantCount = constantEntryCount
-                }
-            };
-
-            CreateComputePipelineAsync(descriptorFFI, callback);
-        }
-
-    }
-
-    public void CreateComputePipelineAsync(
-        in ComputePipelineDescriptorFFI descriptor,
-        Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>> callback
-    )
-    {
-        fixed (ComputePipelineDescriptorFFI* descriptorPtr = &descriptor)
-        {
-            WebGPU_FFI.DeviceCreateComputePipelineAsync(
-                device: this,
-                descriptor: descriptorPtr,
-                callbackInfo: new()
-                {
-                    Mode = CallbackMode.AllowSpontaneous,
-                    Callback = &CreateComputePipelineAsyncCallbackFunctions.DelegateCallback,
-                    Userdata1 = AllocUserData(callback),
-                    Userdata2 = null
-                }
-            );
-        }
-    }
-
-    /// <returns>The <see cref="ComputePipelineHandle"/></returns>
-    /// <inheritdoc cref="CreateComputePipelineAsync(ComputePipelineDescriptorFFI*, CreateComputePipelineAsyncCallbackInfoFFI)"/>
-    [SkipLocalsInit]
-    public Task<ComputePipelineHandle> CreateComputePipelineAsync(
-            in ComputePipelineDescriptor descriptor)
-    {
-        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * 2 * sizeof(byte);
-        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
-            ref allocatorLogicBlock,
-            stackAllocPtr,
-            stackAllocSize
-        );
-
-        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
-        var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
-        var tsc = new TaskCompletionSource<ComputePipelineHandle>();
-
-        fixed (byte* labelPtr = labelUtf8Span)
-        fixed (byte* entryPointPtr = entryPointUtf8Span)
-        {
-            ToFFI(
-                descriptor.Compute.Constants, allocator,
-                out ConstantEntryFFI* constantEntryPtr,
-                out nuint constantEntryCount
-            );
-
-            ComputePipelineDescriptorFFI descriptorFFI = new()
-            {
-                Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length),
-                Layout = GetHandle(descriptor.Layout),
-                Compute = new()
-                {
-                    Module = GetHandle(descriptor.Compute.Module),
-                    EntryPoint = StringViewFFI.CreateExplicitlySized(entryPointPtr, entryPointUtf8Span.Length),
-                    Constants = constantEntryPtr,
-                    ConstantCount = constantEntryCount
-                }
-            };
-
-            WebGPU_FFI.DeviceCreateComputePipelineAsync(
-                device: this,
-                descriptor: &descriptorFFI,
-                callbackInfo: new()
-                {
-                    Mode = CallbackMode.AllowSpontaneous,
-                    Callback = &CreateComputePipelineAsyncCallbackFunctions.TaskCallback,
-                    Userdata1 = AllocUserData(tsc),
-                    Userdata2 = null
-                }
-            );
-        }
-
-        return tsc.Task;
-    }
-
     /// <inheritdoc cref="CreatePipelineLayout(PipelineLayoutDescriptorFFI*)"/>
     public PipelineLayoutHandle CreatePipelineLayout(in PipelineLayoutDescriptorFFI descriptor)
     {
@@ -501,97 +376,6 @@ public unsafe readonly partial struct DeviceHandle :
             ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
 
             return CreateRenderPipeline(descriptorFFI);
-        }
-    }
-
-    /// <returns></returns>
-    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
-    [SkipLocalsInit]
-    public void CreateRenderPipelineAsync(
-            in RenderPipelineDescriptor descriptor,
-            Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>> callback)
-    {
-        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte);
-        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
-            ref allocatorLogicBlock,
-            stackAllocPtr,
-            stackAllocSize
-        );
-
-        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
-
-        fixed (byte* labelPtr = labelUtf8Span)
-        fixed (DepthStencilState* depthStencilPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencil))
-        {
-            RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
-            descriptorFFI.Layout = GetHandle(descriptor.Layout);
-            ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
-            descriptorFFI.Primitive = descriptor.Primitive;
-            descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
-            descriptorFFI.Multisample = descriptor.Multisample;
-            ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
-
-            WebGPU_FFI.DeviceCreateRenderPipelineAsync(
-                device: this,
-                descriptor: &descriptorFFI,
-                callbackInfo: new()
-                {
-                    Mode = CallbackMode.AllowSpontaneous,
-                    Callback = &CreateRenderPipelineAsyncCallbackFunctions.DelegateCallback,
-                    Userdata1 = AllocUserData(callback),
-                    Userdata2 = null
-                }
-            );
-        }
-    }
-
-    /// <returns>The <see cref="RenderPipelineHandle"/></returns>
-    /// <inheritdoc cref="CreateRenderPipelineAsync(RenderPipelineDescriptorFFI*, CreateRenderPipelineAsyncCallbackInfoFFI)"/>
-    [SkipLocalsInit]
-    public Task<RenderPipelineHandle> CreateRenderPipelineAsync(in RenderPipelineDescriptor descriptor)
-    {
-        WebGpuAllocatorLogicBlock allocatorLogicBlock = default;
-        const int stackAllocSize = 16 * sizeof(byte);
-        byte* stackAllocPtr = stackalloc byte[stackAllocSize];
-
-        using var allocator = WebGpuMarshallingMemory.GetAllocatorHandle(
-            ref allocatorLogicBlock,
-            stackAllocPtr,
-            stackAllocSize
-        );
-
-        var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
-        var tsc = new TaskCompletionSource<RenderPipelineHandle>();
-
-        fixed (byte* labelPtr = labelUtf8Span)
-        fixed (DepthStencilState* depthStencilPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.DepthStencil))
-        {
-            RenderPipelineDescriptorFFI descriptorFFI = default;
-            descriptorFFI.Label = StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length);
-            descriptorFFI.Layout = GetHandle(descriptor.Layout);
-            ToFFI(descriptor.Vertex, allocator, out descriptorFFI.Vertex);
-            descriptorFFI.Primitive = descriptor.Primitive;
-            descriptorFFI.DepthStencil = descriptor.DepthStencil.HasValue ? depthStencilPtr : null;
-            descriptorFFI.Multisample = descriptor.Multisample;
-            ToFFI(descriptor.Fragment, allocator, out descriptorFFI.Fragment);
-
-            WebGPU_FFI.DeviceCreateRenderPipelineAsync(
-                device: this,
-                descriptor: &descriptorFFI,
-                callbackInfo: new()
-                {
-                    Mode = CallbackMode.AllowSpontaneous,
-                    Callback = &CreateRenderPipelineAsyncCallbackFunctions.TaskCallback,
-                    Userdata1 = AllocUserData(tsc),
-                    Userdata2 = null
-                }
-            );
-
-            return tsc.Task;
         }
     }
 
@@ -788,14 +572,14 @@ public unsafe readonly partial struct DeviceHandle :
     }
 
     /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
-    public void PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callback)
+    public Future PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callback)
     {
-        WebGPU_FFI.DevicePopErrorScope(
+        return WebGPU_FFI.DevicePopErrorScope(
            device: this,
            callbackInfo: new()
            {
                NextInChain = null,
-               Mode = CallbackMode.AllowSpontaneous,
+               Mode = CallbackMode.AllowProcessEvents,
                Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
                Userdata1 = AllocUserData(callback),
                Userdata2 = null
@@ -805,21 +589,19 @@ public unsafe readonly partial struct DeviceHandle :
 
     /// <returns>The <see cref="ErrorType"/> and the error message</returns>
     /// /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
-    public Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
+    public Future PopErrorScopeAsync(TaskCompletionSource<(ErrorType errorType, string message)> tsc)
     {
-        var tsc = new TaskCompletionSource<(ErrorType errorType, string message)>();
-        WebGPU_FFI.DevicePopErrorScope(
+        return WebGPU_FFI.DevicePopErrorScope(
             device: this,
             callbackInfo: new()
             {
                 NextInChain = null,
-                Mode = CallbackMode.AllowSpontaneous,
+                Mode = CallbackMode.AllowProcessEvents,
                 Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
                 Userdata1 = AllocUserData(tsc),
                 Userdata2 = null
             }
         );
-        return tsc.Task;
     }
 
 
@@ -930,226 +712,5 @@ public unsafe readonly partial struct DeviceHandle :
     public static void Release(DeviceHandle handle)
     {
         WebGPU_FFI.DeviceRelease(handle);
-    }
-}
-
-file unsafe static class PopErrorScopeCallbackFunctions
-{
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void DelegateCallback(
-        PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
-        void* userdata1, void* _)
-    {
-        var callback = (Action<ErrorType, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-        if (callback == null)
-        {
-            return;
-        }
-
-        int length = (int)message.Length;
-        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
-        message.AsSpan().CopyTo(messageBufferArraySegment);
-
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (errorType, messageBufferArraySegment, callback),
-            callBack: static state =>
-            {
-                var (errorType, message, callback) = state;
-                try
-                {
-                    callback(errorType, message.AsSpan());
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(message.Array!);
-                }
-            },
-            preferLocal: false
-        );
-    }
-
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void TaskCallback(
-        PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
-        void* userdata1, void* _)
-    {
-        var tsc = (TaskCompletionSource<(ErrorType errorType, string message)>?)ConsumeUserDataIntoObject(userdata1);
-        if (tsc == null)
-        {
-            return;
-        }
-
-        int length = (int)message.Length;
-        var str = Encoding.UTF8.GetString(message.AsSpan());
-
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (errorScopeStatus, errorType, str, tsc),
-            callBack: static state =>
-            {
-                var (errorScopeStatus, errorType, str, tsc) = state;
-                switch (errorScopeStatus)
-                {
-                    case PopErrorScopeStatus.Success:
-                        tsc.SetResult((errorType, str));
-                        break;
-                    case PopErrorScopeStatus.CallbackCancelled:
-                    case PopErrorScopeStatus.Error:
-                    default:
-                        tsc.SetException(new WebGPUException(str));
-                        break;
-                }
-            },
-            preferLocal: false
-        );
-    }
-}
-
-file unsafe static class CreateRenderPipelineAsyncCallbackFunctions
-{
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void DelegateCallback(
-        CreatePipelineAsyncStatus status,
-        RenderPipelineHandle pipeline,
-        StringViewFFI message,
-        void* userdata1,
-        void* _)
-    {
-        var callback = (Action<CreatePipelineAsyncStatus, RenderPipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-        if (callback == null)
-        {
-            return;
-        }
-
-        int length = (int)message.Length;
-        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
-        message.AsSpan().CopyTo(messageBufferArraySegment);
-
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (status, pipeline, messageBufferArraySegment, callback),
-            callBack: static state =>
-            {
-                var (status, pipeline, message, callback) = state;
-                try
-                {
-                    callback(status, pipeline, message.AsSpan());
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(message.Array!);
-                }
-            },
-            preferLocal: false
-        );
-    }
-
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void TaskCallback(
-        CreatePipelineAsyncStatus status,
-        RenderPipelineHandle pipeline,
-        StringViewFFI message,
-        void* userdata1,
-        void* _)
-    {
-        var tsc = (TaskCompletionSource<RenderPipelineHandle>?)ConsumeUserDataIntoObject(userdata1);
-        if (tsc == null)
-        {
-            return;
-        }
-
-        int length = (int)message.Length;
-        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
-        message.AsSpan().CopyTo(messageBufferArraySegment);
-
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (status, pipeline, messageBufferArraySegment, tsc),
-            callBack: static state =>
-            {
-                var (status, pipeline, messageBufferArraySegment, tsc) = state;
-                try
-                {
-                    tsc.SetResult(pipeline);
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
-                }
-            },
-            preferLocal: false
-        );
-    }
-}
-
-file unsafe static class CreateComputePipelineAsyncCallbackFunctions
-{
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void DelegateCallback(
-        CreatePipelineAsyncStatus status,
-        ComputePipelineHandle pipeline,
-        StringViewFFI message,
-        void* userdata1,
-        void* _)
-    {
-        var callback = (Action<CreatePipelineAsyncStatus, ComputePipelineHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-        if (callback == null)
-        {
-            return;
-        }
-
-        int length = (int)message.Length;
-        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
-        message.AsSpan().CopyTo(messageBufferArraySegment);
-
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (status, pipeline, messageBufferArraySegment, callback),
-            callBack: static state =>
-            {
-                var (status, pipeline, message, callback) = state;
-                try
-                {
-                    callback(status, pipeline, message.AsSpan());
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(message.Array!);
-                }
-            },
-            preferLocal: false
-        );
-    }
-
-    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    public static void TaskCallback(
-        CreatePipelineAsyncStatus status,
-        ComputePipelineHandle pipeline,
-        StringViewFFI message,
-        void* userdata1,
-        void* _)
-    {
-        var tsc = (TaskCompletionSource<ComputePipelineHandle>?)ConsumeUserDataIntoObject(userdata1);
-        if (tsc == null)
-        {
-            return;
-        }
-
-        int length = (int)message.Length;
-        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
-        message.AsSpan().CopyTo(messageBufferArraySegment);
-
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (status, pipeline, messageBufferArraySegment, tsc),
-            callBack: static state =>
-            {
-                var (status, pipeline, messageBufferArraySegment, tsc) = state;
-                try
-                {
-                    tsc.SetResult(pipeline);
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(messageBufferArraySegment.Array!);
-                }
-            },
-            preferLocal: false
-        );
     }
 }

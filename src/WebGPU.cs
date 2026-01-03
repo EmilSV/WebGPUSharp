@@ -31,6 +31,7 @@ public static unsafe partial class WebGPU
         InstanceLimits instanceFeatures = default;
         WebGPU_FFI.GetInstanceLimits(&instanceFeatures);
         var eventHandler = new WebGPUEventHandler(handle, (int)instanceFeatures.TimedWaitAnyMaxCount);
+        eventHandler.Start();
 
         return new Instance(handle, eventHandler);
     }
@@ -88,6 +89,7 @@ public static unsafe partial class WebGPU
             InstanceLimits instanceFeatures = default;
             WebGPU_FFI.GetInstanceLimits(&instanceFeatures);
             var eventHandler = new WebGPUEventHandler(handle, (int)instanceFeatures.TimedWaitAnyMaxCount);
+            eventHandler.Start();
 
             return new Instance(handle, eventHandler);
         }
