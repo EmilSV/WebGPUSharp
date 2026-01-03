@@ -12,6 +12,7 @@
         "Uncaptured",
         "Unconfigure",
         "Unmap",
+        "webgpu",
         "WGPU",
         "WGSL",
         "Workgroups"

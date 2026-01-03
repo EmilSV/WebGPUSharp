@@ -141,8 +141,6 @@ public sealed class Device :
         {
             return null;
         }
-
-        DeviceHandle.Reference(managedHandle);
         return new(managedHandle, instance);
     }
 

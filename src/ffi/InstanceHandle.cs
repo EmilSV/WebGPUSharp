@@ -15,76 +15,6 @@ namespace WebGpuSharp.FFI;
 public readonly unsafe partial struct InstanceHandle :
     IDisposable, IWebGpuHandle<InstanceHandle>
 {
-    /// <returns> A task that will complete when the adapter is ready.</returns>
-    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
-    public Task<AdapterHandle> RequestAdapter(in RequestAdapterOptionsFFI options)
-    {
-        unsafe
-        {
-            TaskCompletionSource<AdapterHandle> taskCompletionSource = new();
-            fixed (RequestAdapterOptionsFFI* optionsPtr = &options)
-            {
-                WebGPU_FFI.InstanceRequestAdapter(
-                  instance: this,
-                  options: optionsPtr,
-                  callbackInfo: new()
-                  {
-                      Mode = CallbackMode.AllowSpontaneous,
-                      Callback = &RequestAdapterCallbackFunctions.TaskCallback,
-                      Userdata1 = AllocUserData(taskCompletionSource),
-                      Userdata2 = null
-                  }
-               );
-            }
-
-            return taskCompletionSource.Task;
-        }
-    }
-
-    /// <returns> A task that will complete when the adapter is ready.</returns>
-    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
-    public Task<AdapterHandle> RequestAdapter(in RequestAdapterOptions options)
-    {
-        ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
-        return RequestAdapter(optionFFI);
-    }
-
-    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
-    public void RequestAdapter(in RequestAdapterOptionsFFI options, Action<RequestAdapterStatus, AdapterHandle, ReadOnlySpan<byte>> callback)
-    {
-        unsafe
-        {
-            fixed (RequestAdapterOptionsFFI* optionsPtr = &options)
-            {
-                WebGPU_FFI.InstanceRequestAdapter(
-                  instance: this,
-                  options: optionsPtr,
-                  callbackInfo: new()
-                  {
-                      Mode = CallbackMode.AllowSpontaneous,
-                      Callback = &RequestAdapterCallbackFunctions.DelegateCallback,
-                      Userdata1 = AllocUserData(callback),
-                      Userdata2 = null
-                  }
-               );
-            }
-        }
-    }
-
-    /// <inheritdoc cref="RequestAdapter(RequestAdapterOptionsFFI*, RequestAdapterCallbackInfoFFI)"/>
-    public void RequestAdapter(in RequestAdapterOptions options, Action<RequestAdapterStatus, AdapterHandle, ReadOnlySpan<byte>> callback)
-    {
-        ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
-        RequestAdapter(optionFFI, callback);
-    }
-
-    public void Dispose()
-    {
-        if (_ptr != UIntPtr.Zero)
-        {
-            WebGPU_FFI.InstanceRelease(this);
-        }
-    }
 
     /// <inheritdoc cref="CreateSurface(SurfaceDescriptorFFI*)"/>
     public SurfaceHandle CreateSurface(in SurfaceDescriptorFFI descriptor)
@@ -153,93 +83,14 @@ public readonly unsafe partial struct InstanceHandle :
     {
         WebGPU_FFI.InstanceRelease(handle);
     }
-}
 
-
-file unsafe static class RequestAdapterCallbackFunctions
-{
-    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    public static unsafe void DelegateCallback(
-        RequestAdapterStatus status, AdapterHandle adapter,
-        StringViewFFI message, void* userdata1, void* _)
+    
+    public void Dispose()
     {
-        try
+        if (_ptr != UIntPtr.Zero)
         {
-            var callback = (Action<RequestAdapterStatus, AdapterHandle, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-            if (callback == null)
-            {
-                return;
-            }
-            var length = message.Length;
-            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
-            message.AsSpan().CopyTo(arraySegment);
-            ThreadPool.UnsafeQueueUserWorkItem(
-                state: (status, arraySegment, adapter, callback),
-                callBack: static state =>
-                {
-                    var (status, arraySegment, adapter, callback) = state;
-                    try
-                    {
-                        callback(status, adapter, arraySegment.AsSpan());
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(arraySegment.Array!);
-                    }
-                },
-                preferLocal: false
-            );
-        }
-        catch
-        {
+            WebGPU_FFI.InstanceRelease(this);
         }
     }
 
-    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    public static unsafe void TaskCallback(
-        RequestAdapterStatus status, AdapterHandle adapter,
-        StringViewFFI message, void* userdata1, void* _)
-    {
-        try
-        {
-            var tsc = (TaskCompletionSource<AdapterHandle>?)ConsumeUserDataIntoObject(userdata1);
-            if (tsc == null)
-            {
-                return;
-            }
-            var length = message.Length;
-            var arraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent((int)length), 0, (int)length);
-            message.AsSpan().CopyTo(arraySegment);
-            ThreadPool.UnsafeQueueUserWorkItem(
-                state: (status, arraySegment, adapter, tsc),
-                callBack: static state =>
-                {
-                    var (status, arraySegment, adapter, tsc) = state;
-                    try
-                    {
-                        switch (status)
-                        {
-                            case RequestAdapterStatus.Success:
-                                tsc.SetResult(adapter);
-                                break;
-                            case RequestAdapterStatus.CallbackCancelled:
-                            case RequestAdapterStatus.Unavailable:
-                            case RequestAdapterStatus.Error:
-                            default:
-                                tsc.SetException(new WebGPUException(Encoding.UTF8.GetString(arraySegment.AsSpan())));
-                                return;
-                        }
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(arraySegment.Array!);
-                    }
-                },
-                preferLocal: false
-            );
-        }
-        catch
-        {
-        }
-    }
 }
