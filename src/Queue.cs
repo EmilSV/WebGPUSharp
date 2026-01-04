@@ -191,7 +191,7 @@ public sealed class Queue :
                Userdata2 = null,
            }
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        _instance._eventHandler.EnqueueQueueFuture(future);
     }
 
     /// <inheritdoc cref="QueueHandle.OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
@@ -241,7 +241,7 @@ public sealed class Queue :
                 Userdata2 = instanceUserData,
             }
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        _instance._eventHandler.EnqueueQueueFuture(future);
         return tsc.Task;
     }
 }
@@ -293,6 +293,9 @@ file unsafe static class OnSubmittedWorkDoneFunctions
                     break;
             }
         }
-        catch { }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code.
+        }
     }
 }

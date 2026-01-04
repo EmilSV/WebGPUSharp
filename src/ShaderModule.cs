@@ -30,7 +30,7 @@ public sealed class ShaderModule :
             return WebGPU_FFI.ShaderModuleGetCompilationInfo(Handle, new()
             {
                 Mode = mode,
-                Callback = &GetCompilationInfoCallbackFunctions.OnCallback,
+                Callback = &GetCompilationInfoCallbackFunctions.DelegateCallback,
                 Userdata1 = userdata1,
                 Userdata2 = null
             });
@@ -99,7 +99,7 @@ public sealed class ShaderModule :
 file unsafe static class GetCompilationInfoCallbackFunctions
 {
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    public static void OnCallback(
+    public static void DelegateCallback(
         CompilationInfoRequestStatus status,
         CompilationInfoFFI* compilationInfo,
         void* userdata1,
@@ -115,6 +115,9 @@ file unsafe static class GetCompilationInfoCallbackFunctions
             CompilationInfo info = new(in *compilationInfo);
             callback(status, info);
         }
-        catch { }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code
+        }
     }
 }

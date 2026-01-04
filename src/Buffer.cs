@@ -118,7 +118,7 @@ public sealed class Buffer :
             callback: callback,
             tcs: null
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        _instance._eventHandler.EnqueueQueueFuture(future);
     }
 
     /// <inheritdoc cref="Map(MapMode, nuint, nuint, Action{MapAsyncStatus, ReadOnlySpan{byte}})"/>
@@ -151,7 +151,7 @@ public sealed class Buffer :
             callback: null,
             tcs: tcs
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        _instance._eventHandler.EnqueueQueueFuture(future);
         return tcs.Task;
     }
 

@@ -135,6 +135,7 @@ file static class RequestAdapterCallbackFunctions
         }
         catch
         {
+            // Swallow exceptions to avoid crashing native code
         }
     }
 
@@ -168,6 +169,7 @@ file static class RequestAdapterCallbackFunctions
         }
         catch
         {
+            // Swallow exceptions to avoid crashing native code
         }
     }
 }

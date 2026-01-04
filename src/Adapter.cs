@@ -329,6 +329,7 @@ file static class RequestDeviceFunctions
         }
         catch
         {
+            // Swallow exceptions to avoid crashing native code
         }
     }
 
@@ -358,7 +359,10 @@ file static class RequestDeviceFunctions
                     break;
             }
         }
-        catch { }
+        catch
+        {
+             // Swallow exceptions to avoid crashing native code
+        }
     }
 }
 
