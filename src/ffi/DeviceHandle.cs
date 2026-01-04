@@ -571,40 +571,6 @@ public unsafe readonly partial struct DeviceHandle :
         }
     }
 
-    /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
-    public Future PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callback)
-    {
-        return WebGPU_FFI.DevicePopErrorScope(
-           device: this,
-           callbackInfo: new()
-           {
-               NextInChain = null,
-               Mode = CallbackMode.AllowProcessEvents,
-               Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
-               Userdata1 = AllocUserData(callback),
-               Userdata2 = null
-           }
-        );
-    }
-
-    /// <returns>The <see cref="ErrorType"/> and the error message</returns>
-    /// /// <inheritdoc cref="PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
-    public Future PopErrorScopeAsync(TaskCompletionSource<(ErrorType errorType, string message)> tsc)
-    {
-        return WebGPU_FFI.DevicePopErrorScope(
-            device: this,
-            callbackInfo: new()
-            {
-                NextInChain = null,
-                Mode = CallbackMode.AllowProcessEvents,
-                Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
-                Userdata1 = AllocUserData(tsc),
-                Userdata2 = null
-            }
-        );
-    }
-
-
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     [SkipLocalsInit]
     public void SetLabel(WGPURefText label)
@@ -626,6 +592,7 @@ public unsafe readonly partial struct DeviceHandle :
             WebGPU_FFI.DeviceSetLabel(this, StringViewFFI.CreateExplicitlySized(labelPtr, labelUtf8Span.Length));
         }
     }
+
     /// <inheritdoc cref="CreateShaderModule(ShaderModuleDescriptorFFI*)"/>
     [SkipLocalsInit]
     private ShaderModuleHandle CreateShaderModuleWgsl(in ShaderModuleDescriptor descriptor, WGPURefText code)

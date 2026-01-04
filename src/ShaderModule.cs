@@ -1,5 +1,3 @@
-using System.Buffers;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
@@ -9,7 +7,7 @@ using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
 namespace WebGpuSharp;
 
-/// <inheritdoc/>
+/// <inheritdoc cref="ShaderModuleHandle"/>
 public sealed class ShaderModule :
     WebGPUManagedHandleBase<ShaderModuleHandle>,
     IFromHandleWithInstance<ShaderModule, ShaderModuleHandle>
@@ -38,13 +36,18 @@ public sealed class ShaderModule :
             });
         }
     }
-
+    /// <param name="callback">The callback to be invoked when the compilation info is ready.</param>
+    /// <inheritdoc cref="ShaderModuleHandle.GetCompilationInfo(CompilationInfoCallbackInfoFFI)"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
         var future = GetCompilationInfo(CallbackMode.AllowProcessEvents, callback);
         _instance._eventHandler.EnqueueCpuFuture(future);
     }
 
+    /// <param name="timeoutNS">The timeout in nanoseconds to wait for the compilation info.</param>
+    /// <inheritdoc cref="GetCompilationInfo(Action{CompilationInfoRequestStatus, CompilationInfo})"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetCompilationInfoSync(
         Action<CompilationInfoRequestStatus, CompilationInfo> callback,
         ulong timeoutNS = ulong.MaxValue)
@@ -53,6 +56,9 @@ public sealed class ShaderModule :
         _instance.WaitAny(future, timeoutNS);
     }
 
+    /// <inheritdoc cref="GetCompilationInfo(Action{CompilationInfoRequestStatus, CompilationInfo})"/>
+    /// <returns>A task that represents the asynchronous operation. The task result is the value returned by the callback.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Task<T> GetCompilationInfoAsync<T>(Func<CompilationInfoRequestStatus, CompilationInfo, T> callback)
     {
         TaskCompletionSource<T> tcs = new();

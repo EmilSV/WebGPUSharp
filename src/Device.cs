@@ -334,18 +334,90 @@ public sealed class Device :
     /// <inheritdoc cref="DeviceHandle.HasFeature(FeatureName)" />
     public bool HasFeature(FeatureName feature) => Handle.HasFeature(feature);
 
-    /// <inheritdoc cref="DeviceHandle.PopErrorScope(Action{ErrorType, ReadOnlySpan{byte}})" />
-    public void PopErrorScope(Action<ErrorType, ReadOnlySpan<byte>> callback)
+
+    /// <returns></returns>
+    /// <inheritdoc cref="DeviceHandle.PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
+    /// <param name="callback">The callback called when the error scope is popped</param>
+    /// <param name="timeoutNS">The maximum time to wait for the error scope to be popped, in nanoseconds. Default is ulong.MaxValue (no timeout).</param>
+    public unsafe (ErrorType errorType, string message) PopErrorScopeSync(ulong timeoutNS = ulong.MaxValue)
     {
-        var future = Handle.PopErrorScope(callback);
+        string resultMessage = string.Empty;
+        ErrorType resultErrorType = ErrorType.NoError;
+        Exception? exception = null;
+
+        void Callback(
+            PopErrorScopeStatus status,
+            ErrorType errorType,
+            ReadOnlySpan<byte> messageSpan)
+        {
+            switch (status)
+            {
+                case PopErrorScopeStatus.Success:
+                    resultErrorType = errorType;
+                    resultMessage = Encoding.UTF8.GetString(messageSpan);
+                    break;
+                default:
+                    exception = new WebGPUException(Encoding.UTF8.GetString(messageSpan));
+                    break;
+            }
+        }
+
+        var future = WebGPU_FFI.DevicePopErrorScope(
+           device: Handle,
+           callbackInfo: new()
+           {
+               Mode = CallbackMode.AllowProcessEvents,
+               Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
+               Userdata1 = AllocUserData((Action<PopErrorScopeStatus, ErrorType, ReadOnlySpan<byte>>)Callback),
+               Userdata2 = null
+           }
+        );
+
+        _instance.WaitAny(future, timeoutNS);
+
+        if (exception != null)
+        {
+            throw exception;
+        }
+
+        return (resultErrorType, resultMessage);
+    }
+
+    /// <returns></returns>
+    /// <inheritdoc cref="DeviceHandle.PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
+    /// <param name="callback">The callback called when the error scope is popped</param>
+    public unsafe void PopErrorScope(Action<PopErrorScopeStatus, ErrorType, ReadOnlySpan<byte>> callback)
+    {
+        var future = WebGPU_FFI.DevicePopErrorScope(
+           device: Handle,
+           callbackInfo: new()
+           {
+               Mode = CallbackMode.AllowProcessEvents,
+               Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
+               Userdata1 = AllocUserData(callback),
+               Userdata2 = null
+           }
+        );
+
         _instance._eventHandler.EnqueueCpuFuture(future);
     }
 
-    /// <inheritdoc cref="DeviceHandle.PopErrorScopeAsync(TaskCompletionSource{ValueTuple{ErrorType, string}})" />
-    public Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
+    /// <returns> A Task that resolves to a <see cref="ErrorType"/> and the error message</returns>
+    /// <inheritdoc cref="DeviceHandle.PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
+    public unsafe Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
     {
         var tsc = new TaskCompletionSource<(ErrorType errorType, string message)>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var future = Handle.PopErrorScopeAsync(tsc);
+        var future = WebGPU_FFI.DevicePopErrorScope(
+           device: Handle,
+           callbackInfo: new()
+           {
+               Mode = CallbackMode.AllowProcessEvents,
+               Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
+               Userdata1 = AllocUserData(tsc),
+               Userdata2 = null
+           }
+        );
+
         _instance._eventHandler.EnqueueCpuFuture(future);
         return tsc.Task;
     }
@@ -375,57 +447,56 @@ public sealed class Device :
     }
 }
 
-internal unsafe static class PopErrorScopeCallbackFunctions
+file unsafe static class PopErrorScopeCallbackFunctions
 {
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static void DelegateCallback(
         PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
-        void* userdata1, void* userdata2)
+        void* userdata1, void* _)
     {
-        var callback = (Action<ErrorType, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-        ConsumeUserDataIntoObject(userdata2);
-        if (callback == null)
+        try
         {
-            return;
-        }
-        int length = (int)message.Length;
-        var messageBufferArraySegment = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(length), 0, length);
-        message.AsSpan().CopyTo(messageBufferArraySegment);
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (errorType, messageBufferArraySegment, callback),
-            callBack: static state =>
+            var callback = (Action<PopErrorScopeStatus, ErrorType, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
+            if (callback == null)
             {
-                var (errorType, message, callback) = state;
-                try { callback(errorType, message.AsSpan()); }
-                finally { ArrayPool<byte>.Shared.Return(message.Array!); }
-            },
-            preferLocal: false
-        );
+                return;
+            }
+
+            callback(errorScopeStatus, errorType, message.AsSpan());
+        }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code.
+        }
     }
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
     public static void TaskCallback(
         PopErrorScopeStatus errorScopeStatus, ErrorType errorType, StringViewFFI message,
-        void* userdata1, void* userdata2)
+        void* userdata1, void* _)
     {
-        var tsc = (TaskCompletionSource<(ErrorType errorType, string message)>?)ConsumeUserDataIntoObject(userdata1);
-        ConsumeUserDataIntoObject(userdata2);
-        if (tsc == null) return;
-        int length = (int)message.Length;
-        var str = Encoding.UTF8.GetString(message.AsSpan());
-        ThreadPool.UnsafeQueueUserWorkItem(
-            state: (errorScopeStatus, errorType, str, tsc),
-            callBack: static state =>
+        try
+        {
+            var tsc = (TaskCompletionSource<(ErrorType errorType, string message)>?)ConsumeUserDataIntoObject(userdata1);
+            if (tsc == null)
             {
-                var (errorScopeStatus, errorType, str, tsc) = state;
-                switch (errorScopeStatus)
-                {
-                    case PopErrorScopeStatus.Success: tsc.SetResult((errorType, str)); break;
-                    default: tsc.SetException(new WebGPUException(str)); break;
-                }
-            },
-            preferLocal: false
-        );
+                return;
+            }
+
+            switch (errorScopeStatus)
+            {
+                case PopErrorScopeStatus.Success:
+                    tsc.SetResult((errorType, Encoding.UTF8.GetString(message.AsSpan())));
+                    break;
+                default:
+                    tsc.SetException(new WebGPUException(Encoding.UTF8.GetString(message.AsSpan())));
+                    break;
+            }
+        }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code.
+        }
     }
 }
 
@@ -439,13 +510,11 @@ file unsafe static class CreateRenderPipelineAsyncCallbackFunctions
         try
         {
             var callback = (Action<CreatePipelineAsyncStatus, RenderPipeline?, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata1);
-
             if (callback == null)
             {
                 return;
             }
 
-            int length = (int)message.Length;
             callback(status, pipeline.ToSafeHandle(), message.AsSpan());
         }
         catch
@@ -462,7 +531,6 @@ file unsafe static class CreateRenderPipelineAsyncCallbackFunctions
         try
         {
             var tsc = (TaskCompletionSource<RenderPipeline>?)ConsumeUserDataIntoObject(userdata1);
-            ConsumeUserDataIntoObject(userdata2);
             if (tsc == null)
             {
                 return;
