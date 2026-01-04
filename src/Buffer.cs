@@ -578,9 +578,16 @@ file static unsafe class BufferMapAsyncCallbackFunctions
     {
         try
         {
-            var bufferBase = (Buffer?)ConsumeUserDataIntoObject(userdata1);
+            var buffer = (Buffer?)ConsumeUserDataIntoObject(userdata1);
+            if (buffer == null)
+            {
+                Console.Error.WriteLine("Invalid buffer map callback");
+                return;
+            }
+            buffer._readWriteStateChangeLock.RemoveStateChangeLock();
+
             var callback = (Action<MapAsyncStatus, ReadOnlySpan<byte>>?)ConsumeUserDataIntoObject(userdata2);
-            if (bufferBase == null || callback == null)
+            if (callback == null)
             {
                 Console.Error.WriteLine("Invalid buffer map callback");
                 return;
@@ -602,14 +609,23 @@ file static unsafe class BufferMapAsyncCallbackFunctions
     {
         try
         {
-            var bufferBase = (Buffer?)ConsumeUserDataIntoObject(userdata1);
+            var buffer = (Buffer?)ConsumeUserDataIntoObject(userdata1);
             var taskCompletionSource = (TaskCompletionSource<MapAsyncStatus>?)ConsumeUserDataIntoObject(userdata2);
 
-            if (bufferBase == null || taskCompletionSource == null)
+            if (buffer == null)
             {
                 Console.Error.WriteLine("Invalid buffer map callback");
                 return;
             }
+
+            buffer._readWriteStateChangeLock.RemoveStateChangeLock();
+
+            if (taskCompletionSource == null)
+            {
+                Console.Error.WriteLine("Invalid buffer map callback");
+                return;
+            }
+
             switch (status)
             {
                 case MapAsyncStatus.Success:
