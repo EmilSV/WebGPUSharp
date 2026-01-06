@@ -41,7 +41,7 @@ public sealed class ShaderModule :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
-        var future = GetCompilationInfo(CallbackMode.AllowProcessEvents, callback);
+        var future = GetCompilationInfo(CallbackMode.WaitAnyOnly, callback);
         _instance._eventHandler.EnqueueCpuFuture(future);
     }
 

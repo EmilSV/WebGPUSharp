@@ -5,15 +5,15 @@ using WebGpuSharp.Marshalling;
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="ComputePassEncoderHandle"/>
-public readonly struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
+public readonly ref struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
     IDebugCommands
 {
     private readonly ulong _localToken;
     private readonly ComputePassEncoderHandle _originalHandle;
-    private readonly PooledHandle<ComputePassEncoderHandle> _pooledHandle;
+    private readonly ThreadLockedPooledHandle<ComputePassEncoderHandle> _pooledHandle;
 
 
-    private ComputePassEncoder(PooledHandle<ComputePassEncoderHandle> handle)
+    private ComputePassEncoder(ThreadLockedPooledHandle<ComputePassEncoderHandle> handle)
     {
         _originalHandle = handle.Handle;
         _localToken = handle.Token;
@@ -22,7 +22,7 @@ public readonly struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
 
     internal static ComputePassEncoder FromHandle(ComputePassEncoderHandle handle)
     {
-        var newComputePassEncoderPooledHandle = PooledHandle<ComputePassEncoderHandle>.Get(handle);
+        var newComputePassEncoderPooledHandle = ThreadLockedPooledHandle<ComputePassEncoderHandle>.Get(handle);
         return new ComputePassEncoder(newComputePassEncoderPooledHandle);
     }
 
@@ -50,7 +50,7 @@ public readonly struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.Handle.End();
-        PooledHandle<ComputePassEncoderHandle>.Return(_pooledHandle);
+        ThreadLockedPooledHandle<ComputePassEncoderHandle>.Return(_pooledHandle);
     }
 
     /// <inheritdoc cref="ComputePassEncoderHandle.InsertDebugMarker(WGPURefText)"/>
@@ -111,7 +111,7 @@ public readonly struct ComputePassEncoder : IEquatable<ComputePassEncoder>,
 
     public override bool Equals(object? obj)
     {
-        return obj is ComputePassEncoder other && Equals(other);
+        return false;
     }
 
     public static bool operator ==(ComputePassEncoder left, ComputePassEncoder right)

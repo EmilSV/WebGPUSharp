@@ -33,6 +33,7 @@ public sealed class Queue :
     public void Submit(ReadOnlySpan<CommandBuffer> commands)
     {
         Handle.Submit(commands);
+        WebGPUMarshal.GetHandle(_instance).ProcessEvents();
     }
 
     /// <inheritdoc cref="QueueHandle.Submit(CommandBuffer)" />
@@ -40,6 +41,7 @@ public sealed class Queue :
     public void Submit(CommandBuffer commands)
     {
         Handle.Submit(commands);
+        WebGPUMarshal.GetHandle(_instance).ProcessEvents();
     }
 
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, List{T})" />
@@ -185,7 +187,7 @@ public sealed class Queue :
            queue: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.AllowProcessEvents,
+               Mode = CallbackMode.WaitAnyOnly,
                Callback = &OnSubmittedWorkDoneFunctions.DelegateCallback,
                Userdata1 = callbackUserData,
                Userdata2 = null,
@@ -216,7 +218,7 @@ public sealed class Queue :
            queue: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.AllowProcessEvents,
+               Mode = CallbackMode.WaitAnyOnly,
                Callback = &OnSubmittedWorkDoneFunctions.DelegateCallback,
                Userdata1 = callbackUserData,
                Userdata2 = null,
@@ -235,7 +237,7 @@ public sealed class Queue :
             queue: Handle,
             callbackInfo: new()
             {
-                Mode = CallbackMode.AllowProcessEvents,
+                Mode = CallbackMode.WaitAnyOnly,
                 Callback = &OnSubmittedWorkDoneFunctions.TaskCallback,
                 Userdata1 = tscUserData,
                 Userdata2 = instanceUserData,

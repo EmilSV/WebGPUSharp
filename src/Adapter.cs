@@ -113,7 +113,7 @@ public sealed class Adapter :
                     Label = StringViewFFI.CreateExplicitlySized(queueLabelPtr, queueLabelUtf8Span.Length)
                 },
                 DeviceLostCallbackInfo = {
-                    Mode = descriptor.DeviceLostCallbackMode,
+                    Mode = CallbackMode.AllowSpontaneous,
                     Callback = &DeviceLostFunctions.DelegateCallback,
                     Userdata1 = deviceLostUserData,
                     Userdata2 = null
@@ -158,7 +158,7 @@ public sealed class Adapter :
     {
         var tcs = new TaskCompletionSource<Device>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = RequestDevice(
-            CallbackMode.AllowProcessEvents,
+            CallbackMode.WaitAnyOnly,
             callback: null,
             tcs: tcs
         );
@@ -174,7 +174,7 @@ public sealed class Adapter :
         var tcs = new TaskCompletionSource<Device>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = RequestDevice(
             in descriptor,
-            CallbackMode.AllowProcessEvents,
+            CallbackMode.WaitAnyOnly,
             callback: null,
             tcs: tcs
         );
@@ -186,7 +186,7 @@ public sealed class Adapter :
     public void RequestDevice(Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback)
     {
         var future = RequestDevice(
-            CallbackMode.AllowProcessEvents,
+            CallbackMode.WaitAnyOnly,
             callback: callback,
             tcs: null
         );
@@ -200,7 +200,7 @@ public sealed class Adapter :
     {
         var future = RequestDevice(
             in descriptor,
-            CallbackMode.AllowProcessEvents,
+            CallbackMode.WaitAnyOnly,
             callback: callback,
             tcs: null
         );
@@ -361,7 +361,7 @@ file static class RequestDeviceFunctions
         }
         catch
         {
-             // Swallow exceptions to avoid crashing native code
+            // Swallow exceptions to avoid crashing native code
         }
     }
 }
@@ -400,7 +400,10 @@ file static class DeviceLostFunctions
                 preferLocal: false
             );
         }
-        catch { }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code
+        }
     }
 }
 
@@ -412,7 +415,6 @@ file static class DeviceErrorFunctions
     {
         try
         {
-            //Keep userdata alive
             var callback = (Action<DeviceHandle, ErrorType, ReadOnlySpan<byte>>?)GetObjectFromUserData(userdata);
 
             if (callback == null)
@@ -439,6 +441,9 @@ file static class DeviceErrorFunctions
                 preferLocal: false
             );
         }
-        catch { }
+        catch
+        {
+            // Swallow exceptions to avoid crashing native code
+        }
     }
 }

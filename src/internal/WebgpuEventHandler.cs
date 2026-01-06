@@ -78,7 +78,6 @@ internal class WebGPUEventHandler : IDisposable
                 }
             }
 
-            _instance.ProcessEvents();
             ProcessEvents(_cpuFutures);
             ProcessEvents(_queueFutures);
             Thread.Sleep(1);

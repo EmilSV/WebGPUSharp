@@ -9,9 +9,9 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
 {
     private readonly ulong _localToken;
     private readonly RenderPassEncoderHandle _originalHandle;
-    private readonly PooledHandle<RenderPassEncoderHandle> _pooledHandle;
+    private readonly ThreadLockedPooledHandle<RenderPassEncoderHandle> _pooledHandle;
 
-    private RenderPassEncoder(PooledHandle<RenderPassEncoderHandle> pooledHandle)
+    private RenderPassEncoder(ThreadLockedPooledHandle<RenderPassEncoderHandle> pooledHandle)
     {
         _originalHandle = pooledHandle.Handle;
         _localToken = pooledHandle.Token;
@@ -20,7 +20,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
 
     internal static RenderPassEncoder FromHandle(RenderPassEncoderHandle handle)
     {
-        var newRenderPassEncoderPooledHandle = PooledHandle<RenderPassEncoderHandle>.Get(handle);
+        var newRenderPassEncoderPooledHandle = ThreadLockedPooledHandle<RenderPassEncoderHandle>.Get(handle);
         return new RenderPassEncoder(newRenderPassEncoderPooledHandle);
     }
 
@@ -82,7 +82,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
     {
         _pooledHandle.VerifyToken(_localToken);
         _pooledHandle.Handle.End();
-        PooledHandle<RenderPassEncoderHandle>.Return(_pooledHandle);
+        ThreadLockedPooledHandle<RenderPassEncoderHandle>.Return(_pooledHandle);
     }
 
     /// <inheritdoc cref="RenderPassEncoderHandle.EndOcclusionQuery()"/>
@@ -238,7 +238,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
 
     public override bool Equals(object? obj)
     {
-        return obj is RenderPassEncoder encoder && Equals(encoder);
+        return false;
     }
 
     public static bool operator ==(RenderPassEncoder left, RenderPassEncoder right)

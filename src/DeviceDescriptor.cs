@@ -14,8 +14,6 @@ public ref partial struct DeviceDescriptor
     /// <inheritdoc cref="FFI.DeviceDescriptorFFI.DefaultQueue"/>
     public QueueDescriptor DefaultQueue;
 
-    public CallbackMode DeviceLostCallbackMode = CallbackMode.AllowProcessEvents;
-
     /// <inheritdoc cref="FFI.DeviceDescriptorFFI.DeviceLostCallbackInfo"/>
     public Action<DeviceLostReason, ReadOnlySpan<byte>>? DeviceLostCallback;
     /// <inheritdoc cref="FFI.DeviceDescriptorFFI.UncapturedErrorCallbackInfo"/>

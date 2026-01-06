@@ -64,7 +64,7 @@ public sealed class Device :
     {
         var future = CreateComputePipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.AllowProcessEvents,
+            mode: CallbackMode.WaitAnyOnly,
             callback: callback,
             tcs: null
         );
@@ -153,7 +153,7 @@ public sealed class Device :
         var tsc = new TaskCompletionSource<ComputePipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = CreateComputePipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.AllowProcessEvents,
+            mode: CallbackMode.WaitAnyOnly,
             callback: null,
             tcs: tsc
         );
@@ -248,7 +248,7 @@ public sealed class Device :
     {
         var future = CreateRenderPipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.AllowProcessEvents,
+            mode: CallbackMode.WaitAnyOnly,
             callback: callback,
             tcs: null
         );
@@ -264,7 +264,7 @@ public sealed class Device :
         var tcs = new TaskCompletionSource<RenderPipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = CreateRenderPipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.AllowProcessEvents,
+            mode: CallbackMode.WaitAnyOnly,
             callback: null,
             tcs: tcs
         );
@@ -366,7 +366,7 @@ public sealed class Device :
            device: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.AllowProcessEvents,
+               Mode = CallbackMode.WaitAnyOnly,
                Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
                Userdata1 = AllocUserData((Action<PopErrorScopeStatus, ErrorType, ReadOnlySpan<byte>>)Callback),
                Userdata2 = null
@@ -392,7 +392,7 @@ public sealed class Device :
            device: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.AllowProcessEvents,
+               Mode = CallbackMode.WaitAnyOnly,
                Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
                Userdata1 = AllocUserData(callback),
                Userdata2 = null
@@ -411,7 +411,7 @@ public sealed class Device :
            device: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.AllowProcessEvents,
+               Mode = CallbackMode.WaitAnyOnly,
                Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
                Userdata1 = AllocUserData(tsc),
                Userdata2 = null

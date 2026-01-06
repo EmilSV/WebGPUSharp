@@ -10,9 +10,9 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 {
     private readonly ulong _localToken;
     private readonly CommandEncoderHandle _originalHandle;
-    private readonly PooledHandle<CommandEncoderHandle> _pooledHandle;
+    private readonly ThreadLockedPooledHandle<CommandEncoderHandle> _pooledHandle;
 
-    private CommandEncoder(PooledHandle<CommandEncoderHandle> pooledHandle)
+    private CommandEncoder(ThreadLockedPooledHandle<CommandEncoderHandle> pooledHandle)
     {
         _originalHandle = pooledHandle.Handle;
         _localToken = pooledHandle.Token;
@@ -21,7 +21,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 
     internal static CommandEncoder FromHandle(CommandEncoderHandle handle)
     {
-        var newCommandEncoderPooledHandle = PooledHandle<CommandEncoderHandle>.Get(handle);
+        var newCommandEncoderPooledHandle = ThreadLockedPooledHandle<CommandEncoderHandle>.Get(handle);
         return new CommandEncoder(newCommandEncoderPooledHandle);
     }
 
@@ -153,7 +153,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         var commandBufferHandle = _pooledHandle.Handle.Finish(descriptor);
-        PooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
+        ThreadLockedPooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
         return commandBufferHandle.ToSafeHandle();
     }
 
@@ -162,7 +162,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         var commandBufferHandle = _pooledHandle.Handle.Finish();
-        PooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
+        ThreadLockedPooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
         return commandBufferHandle.ToSafeHandle();
     }
 
@@ -175,7 +175,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 
     public override bool Equals(object? obj)
     {
-        return obj is CommandEncoder encoder && Equals(encoder);
+        return false;
     }
 
     public static bool operator ==(CommandEncoder left, CommandEncoder right)

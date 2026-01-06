@@ -36,7 +36,7 @@ public sealed class Instance :
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = CallbackMode.AllowProcessEvents,
+                  Mode = CallbackMode.WaitAnyOnly,
                   Callback = &RequestAdapterCallbackFunctions.TaskCallback,
                   Userdata1 = AllocUserData(taskCompletionSource),
                   Userdata2 = AllocUserData(this)
@@ -62,7 +62,7 @@ public sealed class Instance :
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = CallbackMode.AllowProcessEvents,
+                  Mode = CallbackMode.WaitAnyOnly,
                   Callback = &RequestAdapterCallbackFunctions.DelegateCallback,
                   Userdata1 = AllocUserData(callback),
                   Userdata2 = AllocUserData(this)
@@ -70,12 +70,6 @@ public sealed class Instance :
            );
             _eventHandler.EnqueueCpuFuture(future);
         }
-    }
-
-    ///<inheritdoc cref="InstanceHandle.ProcessEvents()"/>
-    public void ProcessEvents()
-    {
-        Handle.ProcessEvents();
     }
 
     ///<inheritdoc cref="InstanceHandle.CreateSurface(SurfaceDescriptor)"/>

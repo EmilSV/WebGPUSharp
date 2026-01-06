@@ -92,7 +92,7 @@ public sealed class Buffer :
             mode: mode,
             offset: offset,
             size: size ?? WebGPU_FFI.WHOLE_MAP_SIZE,
-            callbackMode: CallbackMode.AllowProcessEvents,
+            callbackMode: CallbackMode.WaitAnyOnly,
             callback: Callback,
             tcs: null
         );
@@ -114,7 +114,7 @@ public sealed class Buffer :
             mode: mode,
             offset: offset,
             size: size,
-            callbackMode: CallbackMode.AllowProcessEvents,
+            callbackMode: CallbackMode.WaitAnyOnly,
             callback: callback,
             tcs: null
         );
@@ -147,7 +147,7 @@ public sealed class Buffer :
             mode: mode,
             offset: offset,
             size: size,
-            callbackMode: CallbackMode.AllowProcessEvents,
+            callbackMode: CallbackMode.WaitAnyOnly,
             callback: null,
             tcs: tcs
         );

@@ -9,9 +9,9 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
 {
     private readonly ulong _localToken;
     private readonly RenderBundleEncoderHandle _originalHandle;
-    private readonly PooledHandle<RenderBundleEncoderHandle> _pooledHandle;
+    private readonly ThreadLockedPooledHandle<RenderBundleEncoderHandle> _pooledHandle;
 
-    private RenderBundleEncoder(PooledHandle<RenderBundleEncoderHandle> pooledHandle)
+    private RenderBundleEncoder(ThreadLockedPooledHandle<RenderBundleEncoderHandle> pooledHandle)
     {
         _originalHandle = pooledHandle.Handle;
         _localToken = pooledHandle.Token;
@@ -20,7 +20,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
 
     internal static RenderBundleEncoder FromHandle(RenderBundleEncoderHandle handle)
     {
-        var newRenderBundleEncoderPooledHandle = PooledHandle<RenderBundleEncoderHandle>.Get(handle);
+        var newRenderBundleEncoderPooledHandle = ThreadLockedPooledHandle<RenderBundleEncoderHandle>.Get(handle);
         return new RenderBundleEncoder(newRenderBundleEncoderPooledHandle);
     }
 
@@ -80,7 +80,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
     {
         _pooledHandle.VerifyToken(_localToken);
         var result = _originalHandle.Finish(descriptor).ToSafeHandle()!;
-        PooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
+        ThreadLockedPooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
         return result;
     }
     /// <inheritdoc cref="RenderBundleEncoderHandle.Finish()"/>
@@ -88,7 +88,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
     {
         _pooledHandle.VerifyToken(_localToken);
         var result = _originalHandle.Finish().ToSafeHandle()!;
-        PooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
+        ThreadLockedPooledHandle<RenderBundleEncoderHandle>.Return(_pooledHandle);
         return result;
     }
 
@@ -184,7 +184,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
 
     public override bool Equals(object? obj)
     {
-        return obj is RenderBundleEncoder encoder && Equals(encoder);
+        return false;
     }
 
     public static bool operator ==(RenderBundleEncoder left, RenderBundleEncoder right)
