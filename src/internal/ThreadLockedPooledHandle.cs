@@ -1,95 +1,188 @@
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using WebGpuSharp.FFI;
 
 namespace WebGpuSharp.Internal;
 
-
-internal unsafe sealed class ThreadLockedPooledHandle<T>
+internal readonly struct ThreadLockedPooledHandle<T>
     where T : unmanaged, IWebGpuHandle<T>
 {
-    private static ulong nextToken = 1;
-    private static readonly ConcurrentQueue<ThreadLockedPooledHandle<T>> _pool = new();
+    private readonly ThreadLockedPooledHandleItem _item;
+
+    private ThreadLockedPooledHandle(ThreadLockedPooledHandleItem item)
+    {
+        _item = item;
+    }
+
     public static ThreadLockedPooledHandle<T> Get(T handle)
     {
-        var token = Interlocked.Increment(ref nextToken);
-        if (token == 0)
-        {
-            token = Interlocked.Increment(ref nextToken);
-        }
-
-        if (_pool.TryDequeue(out var result))
-        {
-            result.Token = token;
-            result.Handle = handle;
-            return result;
-        }
-
-        return new ThreadLockedPooledHandle<T>(token, handle);
+        return new ThreadLockedPooledHandle<T>(ThreadLockedPooledHandleItem.Get(handle));
     }
 
     public static void Return(ThreadLockedPooledHandle<T> ThreadLockedPooledHandle)
     {
-        var oldHandle = ThreadLockedPooledHandle.Handle;
-        ref var ptr = ref T.AsPointer(ref ThreadLockedPooledHandle.Handle);
-        var oldPtr = T.AsPointer(ref oldHandle);
-        if (oldPtr == UIntPtr.Zero)
-        {
-            return;
-        }
-
-        if (Interlocked.CompareExchange(ref ptr, UIntPtr.Zero, oldPtr) != oldPtr)
-        {
-            return;
-        }
-
-        T.Release(oldHandle);
-        ThreadLockedPooledHandle.Token = 0;
-
-        _pool.Enqueue(ThreadLockedPooledHandle);
+        ThreadLockedPooledHandleItem.Return<T>(ThreadLockedPooledHandle._item);
     }
 
-    public ulong Token;
-    public int ManagedThreadId;
-    public T Handle;
 
-    private ThreadLockedPooledHandle(ulong token, T handle)
-    {
-        this.Token = token;
-        this.ManagedThreadId = Environment.CurrentManagedThreadId;
-        this.Handle = handle;
-    }
-
+    public readonly ulong Token => _item.Token;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void VerifyToken(ulong localToken)
+    public readonly void VerifyToken(ulong localToken)
     {
-        if (Volatile.Read(ref Token) != localToken)
+        _item.VerifyToken<T>(localToken);
+    }
+
+    public readonly T GetHandle(ulong localToken)
+    {
+        return _item.GetHandle<T>(localToken);
+    }
+}
+
+internal unsafe sealed class ThreadLockedPooledHandleItem
+{
+
+    private static ulong _nextToken = 1;
+    [ThreadStatic] private static InlineArray4<ThreadLockedPooledHandleItem?> _pool;
+
+    private delegate*<nuint, void> _releaseFunction;
+    private nuint _handle;
+    private ulong _token;
+    private readonly int _owningThreadId;
+
+    public ulong Token => _token;
+
+    private ThreadLockedPooledHandleItem(ulong token, nuint handle, delegate*<nuint, void> releaseFunction)
+    {
+        _owningThreadId = Environment.CurrentManagedThreadId;
+        _handle = handle;
+        _token = token;
+        _releaseFunction = releaseFunction;
+    }
+
+    private static ulong GetNextToken()
+    {
+        var token = Interlocked.Increment(ref _nextToken);
+        if (token == 0)
+        {
+            token = Interlocked.Increment(ref _nextToken);
+        }
+        return token;
+    }
+
+
+    public unsafe static ThreadLockedPooledHandleItem Get<T>(T handle)
+        where T : unmanaged, IWebGpuHandle<T>
+    {
+        if (sizeof(T) != sizeof(nuint))
+        {
+            throw new InvalidOperationException("Invalid handle size.");
+        }
+
+        delegate*<T, void> releaseFunction = &T.Release;
+
+        Span<ThreadLockedPooledHandleItem?> pool = _pool;
+        for (int i = 0; i < pool.Length; i++)
+        {
+            var item = pool[i];
+            if (item != null)
+            {
+                pool[i] = null;
+                item._token = GetNextToken();
+                item._handle = Unsafe.BitCast<T, nuint>(handle);
+                item._releaseFunction = (delegate*<nuint, void>)(void*)releaseFunction;
+                return item;
+            }
+        }
+
+        return new ThreadLockedPooledHandleItem(GetNextToken(), Unsafe.BitCast<T, nuint>(handle), (delegate*<nuint, void>)(void*)releaseFunction);
+    }
+
+    public static void Return<T>(ThreadLockedPooledHandleItem item)
+        where T : unmanaged, IWebGpuHandle<T>
+    {
+        if (sizeof(T) != sizeof(nuint))
+        {
+            throw new InvalidOperationException("Invalid handle size.");
+        }
+
+        if (item._owningThreadId != Environment.CurrentManagedThreadId)
+        {
+            throw new InvalidOperationException("Cannot return handle from a different thread.");
+        }
+
+        var handle = item._handle;
+        if (handle == 0)
+        {
+            return;
+        }
+        item._handle = 0;
+
+        T.Release(Unsafe.BitCast<nuint, T>(handle));
+        item._releaseFunction = null;
+        item._token = 0;
+
+        Span<ThreadLockedPooledHandleItem?> pool = _pool;
+        for (int i = 0; i < pool.Length; i++)
+        {
+            if (pool[i] == null)
+            {
+                pool[i] = item;
+                return;
+            }
+        }
+
+        // Pool is full, let the item be collected. stop finalize from running as there is nothing to release.
+        GC.SuppressFinalize(item);
+    }
+
+
+    public T GetHandle<T>(ulong localToken)
+        where T : unmanaged, IWebGpuHandle<T>
+    {
+        if (sizeof(T) != sizeof(nuint))
+        {
+            throw new InvalidOperationException("Invalid handle size.");
+        }
+
+        if (_owningThreadId != Environment.CurrentManagedThreadId)
+        {
+            throw new InvalidOperationException("Cannot access handle from a different thread.");
+        }
+
+        if (_token != localToken)
         {
             throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid state.");
         }
-        if (Environment.CurrentManagedThreadId != ManagedThreadId)
-        {
-            throw new WebGPUUsedOnWrongThreadException($"{typeof(T).Name} is being accessed from a different thread.");
-        }
-    }
 
-    public T GetHandle(ulong localToken)
-    {
-        VerifyToken(localToken);
-        var oldHandle = Handle;
-        if (T.IsNull(oldHandle))
+        var handle = _handle;
+        if (handle == 0)
         {
             throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid state.");
         }
-        return oldHandle;
+
+        return Unsafe.BitCast<nuint, T>(handle);
     }
 
-    ~ThreadLockedPooledHandle()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void VerifyToken<T>(ulong localToken)
     {
-        if (!T.IsNull(Handle))
+        if (_owningThreadId != Environment.CurrentManagedThreadId)
         {
-            T.Release(Handle);
+            throw new InvalidOperationException("Cannot access handle from a different thread.");
+        }
+
+        if (_token != localToken)
+        {
+            throw new WebGPUInvalidStateException($"{typeof(T).Name} is in invalid state.");
+        }
+    }
+
+    ~ThreadLockedPooledHandleItem()
+    {
+        if (_releaseFunction != null)
+        {
+            _releaseFunction(_handle);
         }
     }
 }
+

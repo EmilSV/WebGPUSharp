@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using WebGpuSharp.FFI;
 using WebGpuSharp.Internal;
 using WebGpuSharp.Marshalling;
@@ -6,7 +7,7 @@ using static WebGpuSharp.Marshalling.WebGPUMarshal;
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="CommandEncoderHandle"/>
-public readonly struct CommandEncoder : IEquatable<CommandEncoder>
+public readonly ref struct CommandEncoder : IEquatable<CommandEncoder>
 {
     private readonly ulong _localToken;
     private readonly CommandEncoderHandle _originalHandle;
@@ -14,8 +15,8 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 
     private CommandEncoder(ThreadLockedPooledHandle<CommandEncoderHandle> pooledHandle)
     {
-        _originalHandle = pooledHandle.Handle;
         _localToken = pooledHandle.Token;
+        _originalHandle = pooledHandle.GetHandle(pooledHandle.Token);
         _pooledHandle = pooledHandle;
     }
 
@@ -29,21 +30,22 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     public ComputePassEncoder BeginComputePass(in ComputePassDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
-        return _pooledHandle.Handle.BeginComputePass(descriptor).ToSafeHandle();
+        return _originalHandle.BeginComputePass(descriptor).ToSafeHandle();
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.BeginComputePass(ComputePassDescriptorFFI*)"/>
     public unsafe ComputePassEncoder BeginComputePass()
     {
         _pooledHandle.VerifyToken(_localToken);
-        return _pooledHandle.Handle.BeginComputePass(null).ToSafeHandle();
+        return _originalHandle.BeginComputePass(null).ToSafeHandle();
     }
+
 
     /// <inheritdoc cref="CommandEncoderHandle.BeginRenderPass(RenderPassDescriptorFFI*)"/>
     public RenderPassEncoder BeginRenderPass(in RenderPassDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
-        return _pooledHandle.Handle.BeginRenderPass(descriptor).ToSafeHandle();
+        return _originalHandle.BeginRenderPass(descriptor).ToSafeHandle();
     }
 
 
@@ -55,13 +57,13 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     )
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.CopyBufferToBuffer(
-            GetHandle(source),
-            0,
-            GetHandle(destination),
-            0,
-            size ?? source.GetSize()
-        );
+        _originalHandle.CopyBufferToBuffer(
+             GetHandle(source),
+             0,
+             GetHandle(destination),
+             0,
+             size ?? source.GetSize()
+         );
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyBufferToBuffer(Buffer, ulong, Buffer, ulong, ulong)"/>
@@ -74,7 +76,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     )
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.CopyBufferToBuffer(
+        _originalHandle.CopyBufferToBuffer(
             GetHandle(source),
             sourceOffset,
             GetHandle(destination),
@@ -87,49 +89,49 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     public void ClearBuffer(Buffer buffer, ulong offset, ulong size)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.ClearBuffer(buffer, offset, size);
+        _originalHandle.ClearBuffer(buffer, offset, size);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyBufferToTexture(in TexelCopyBufferInfo, in TexelCopyTextureInfo, in Extent3D)"/>
     public void CopyBufferToTexture(in TexelCopyBufferInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.CopyBufferToTexture(source, destination, copySize);
+        _originalHandle.CopyBufferToTexture(source, destination, copySize);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyTextureToBuffer(in TexelCopyTextureInfo, in TexelCopyBufferInfo, in Extent3D)"/>
     public void CopyTextureToBuffer(in TexelCopyTextureInfo source, in TexelCopyBufferInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.CopyTextureToBuffer(source, destination, copySize);
+        _originalHandle.CopyTextureToBuffer(source, destination, copySize);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.CopyTextureToTexture(in TexelCopyTextureInfo, in TexelCopyTextureInfo, in Extent3D)"/>
     public void CopyTextureToTexture(in TexelCopyTextureInfo source, in TexelCopyTextureInfo destination, in Extent3D copySize)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.CopyTextureToTexture(source, destination, copySize);
+        _originalHandle.CopyTextureToTexture(source, destination, copySize);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.InsertDebugMarker(WGPURefText)"/>
     public void InsertDebugMarker(WGPURefText markerLabel)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.InsertDebugMarker(markerLabel);
+        _originalHandle.InsertDebugMarker(markerLabel);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.PopDebugGroup"/>
     public void PopDebugGroup()
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.PopDebugGroup();
+        _originalHandle.PopDebugGroup();
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.PushDebugGroup(WGPURefText)"/>
     public void PushDebugGroup(WGPURefText groupLabel)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.PushDebugGroup(groupLabel);
+        _originalHandle.PushDebugGroup(groupLabel);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.ResolveQuerySet(QuerySet, uint, uint, Buffer, ulong)"/>
@@ -138,21 +140,21 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
         Buffer destination, ulong destinationOffset)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.ResolveQuerySet(querySet, firstQuery, queryCount, destination, destinationOffset);
+        _originalHandle.ResolveQuerySet(querySet, firstQuery, queryCount, destination, destinationOffset);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.SetLabel(WGPURefText)"/>
     public void SetLabel(WGPURefText label)
     {
         _pooledHandle.VerifyToken(_localToken);
-        _pooledHandle.Handle.SetLabel(label);
+        _originalHandle.SetLabel(label);
     }
 
     /// <inheritdoc cref="CommandEncoderHandle.Finish(in CommandBufferDescriptor)"/>
     public CommandBuffer Finish(in CommandBufferDescriptor descriptor)
     {
         _pooledHandle.VerifyToken(_localToken);
-        var commandBufferHandle = _pooledHandle.Handle.Finish(descriptor);
+        var commandBufferHandle = _originalHandle.Finish(descriptor);
         ThreadLockedPooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
         return commandBufferHandle.ToSafeHandle();
     }
@@ -161,7 +163,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     public CommandBuffer Finish()
     {
         _pooledHandle.VerifyToken(_localToken);
-        var commandBufferHandle = _pooledHandle.Handle.Finish();
+        var commandBufferHandle = _originalHandle.Finish();
         ThreadLockedPooledHandle<CommandEncoderHandle>.Return(_pooledHandle);
         return commandBufferHandle.ToSafeHandle();
     }
@@ -170,7 +172,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
     {
         _pooledHandle.VerifyToken(_localToken);
         other._pooledHandle.VerifyToken(other._localToken);
-        return _pooledHandle.Handle == other._pooledHandle.Handle;
+        return _originalHandle == other._originalHandle;
     }
 
     public override bool Equals(object? obj)

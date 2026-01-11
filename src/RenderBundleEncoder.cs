@@ -13,8 +13,8 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
 
     private RenderBundleEncoder(ThreadLockedPooledHandle<RenderBundleEncoderHandle> pooledHandle)
     {
-        _originalHandle = pooledHandle.Handle;
         _localToken = pooledHandle.Token;
+        _originalHandle = pooledHandle.GetHandle(pooledHandle.Token);
         _pooledHandle = pooledHandle;
     }
 
@@ -179,7 +179,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
     public bool Equals(RenderBundleEncoder other)
     {
         _pooledHandle.VerifyToken(_localToken);
-        return _pooledHandle.Handle == other._pooledHandle.Handle;
+        return _originalHandle == other._originalHandle;
     }
 
     public override bool Equals(object? obj)
