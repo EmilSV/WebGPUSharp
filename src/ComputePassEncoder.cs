@@ -5,7 +5,7 @@ using WebGpuSharp.Marshalling;
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="ComputePassEncoderHandle"/>
-public readonly ref struct ComputePassEncoder : 
+public readonly struct ComputePassEncoder : 
     IEquatable<ComputePassEncoder>,
     IDebugCommands
 {
