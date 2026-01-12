@@ -238,7 +238,7 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
 
     public override bool Equals(object? obj)
     {
-        return false;
+        return obj is RenderPassEncoder other && Equals(other);
     }
 
     public static bool operator ==(RenderPassEncoder left, RenderPassEncoder right)

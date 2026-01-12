@@ -177,7 +177,7 @@ public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 
     public override bool Equals(object? obj)
     {
-        return false;
+        return obj is CommandEncoder other && Equals(other);
     }
 
     public static bool operator ==(CommandEncoder left, CommandEncoder right)

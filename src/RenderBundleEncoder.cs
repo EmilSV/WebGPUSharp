@@ -184,7 +184,7 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
 
     public override bool Equals(object? obj)
     {
-        return false;
+        return obj is RenderBundleEncoder other && Equals(other);
     }
 
     public static bool operator ==(RenderBundleEncoder left, RenderBundleEncoder right)

@@ -112,7 +112,7 @@ public readonly struct ComputePassEncoder :
 
     public override bool Equals(object? obj)
     {
-        return false;
+        return obj is ComputePassEncoder other && Equals(other);
     }
 
     public static bool operator ==(ComputePassEncoder left, ComputePassEncoder right)
