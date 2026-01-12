@@ -7,7 +7,7 @@ using static WebGpuSharp.Marshalling.WebGPUMarshal;
 namespace WebGpuSharp;
 
 /// <inheritdoc cref="CommandEncoderHandle"/>
-public readonly ref struct CommandEncoder : IEquatable<CommandEncoder>
+public readonly struct CommandEncoder : IEquatable<CommandEncoder>
 {
     private readonly ulong _localToken;
     private readonly CommandEncoderHandle _originalHandle;
