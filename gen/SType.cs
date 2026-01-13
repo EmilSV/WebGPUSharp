@@ -100,4 +100,6 @@ public enum SType
     SharedTextureMemoryMetalEndAccessState = 327758,
     AdapterPropertiesWGPU = 327759,
     SharedBufferMemoryD3D12SharedMemoryFileMappingHandleDescriptor = 327760,
+    SharedTextureMemoryD3D12ResourceDescriptor = 327761,
+    RequestAdapterOptionsAngleVirtualizationGroup = 327762,
 }

@@ -35,4 +35,5 @@ public enum TextureUsage : ulong
     /// Allows a texture to be an output attachment of a render pass.
     /// </summary>
     RenderAttachment = 16,
+    TransientAttachment = 32,
 }

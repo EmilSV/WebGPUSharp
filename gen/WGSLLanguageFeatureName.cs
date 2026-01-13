@@ -42,6 +42,6 @@ public enum WGSLLanguageFeatureName
     /// Similarly, if pa is a pointer to an array, then pa[i] is a reference to the memory locations for the i’th element of the array pa points to.
     /// </summary>
     PointerCompositeAccess = 4,
-    UniformBufferStandardLayout = 327688,
-    SubgroupId = 327689,
+    UniformBufferStandardLayout = 5,
+    SubgroupId = 6,
 }
