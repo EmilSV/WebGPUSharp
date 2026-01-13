@@ -97,7 +97,21 @@ public sealed class Buffer :
             tcs: null
         );
 
-        _instance.WaitAny(future, timeoutMilliseconds);
+        var waitStatus = _instance.WaitAny(future, timeoutMilliseconds);
+
+        if (exception != null)
+        {
+            throw exception;
+        }
+
+        if (waitStatus == WaitStatus.TimedOut)
+        {
+            throw new TimeoutException("Timeout or error while waiting for buffer map.");
+        }
+        else if (waitStatus != WaitStatus.Success)
+        {
+            throw new WebGPUException("An error occurred while waiting for Buffer.MapSync to complete.");
+        }
     }
 
     /// <returns></returns>

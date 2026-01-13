@@ -232,6 +232,11 @@ public sealed class Adapter :
         );
 
         var status = _instance.WaitAny(future, timeoutNS);
+        if (_exception != null)
+        {
+            throw _exception;
+        }
+
         if (status == WaitStatus.TimedOut)
         {
             throw new TimeoutException("RequestDeviceSync timed out.");
@@ -239,10 +244,6 @@ public sealed class Adapter :
         else if (status == WaitStatus.Error)
         {
             throw new WebGPUException("An error occurred while waiting for RequestDeviceSync to complete.");
-        }
-        else if (_exception != null)
-        {
-            throw _exception;
         }
 
         return _result!;

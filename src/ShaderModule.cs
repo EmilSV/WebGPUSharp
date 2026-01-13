@@ -53,7 +53,15 @@ public sealed class ShaderModule :
         ulong timeoutNS = ulong.MaxValue)
     {
         var future = GetCompilationInfo(CallbackMode.WaitAnyOnly, callback);
-        _instance.WaitAny(future, timeoutNS);
+        var waitStatus = _instance.WaitAny(future, timeoutNS);
+        if (waitStatus == WaitStatus.TimedOut)
+        {
+            throw new TimeoutException("GetCompilationInfoSync timed out waiting for compilation info.");
+        }
+        else if (waitStatus != WaitStatus.Success)
+        {
+            throw new WebGPUException("An error occurred while waiting for GetCompilationInfoSync to complete.");
+        }
     }
 
     /// <inheritdoc cref="GetCompilationInfo(Action{CompilationInfoRequestStatus, CompilationInfo})"/>

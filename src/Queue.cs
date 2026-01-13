@@ -199,7 +199,7 @@ public sealed class Queue :
     /// <inheritdoc cref="QueueHandle.OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
     public unsafe void OnSubmittedWorkSync(ulong timeoutNS = ulong.MaxValue)
     {
-        Exception? _exception = null;
+        Exception? exception = null;
 
         void Callback(QueueWorkDoneStatus status, ReadOnlySpan<byte> message)
         {
@@ -209,7 +209,7 @@ public sealed class Queue :
             }
             else
             {
-                _exception = new WebGPUException(Encoding.UTF8.GetString(message));
+                exception = new WebGPUException(Encoding.UTF8.GetString(message));
             }
         }
 
@@ -224,7 +224,21 @@ public sealed class Queue :
                Userdata2 = null,
            }
         );
-        _instance.WaitAny(future, timeoutNS);
+        var waitStatus = _instance.WaitAny(future, timeoutNS);
+        
+        if (exception != null)
+        {
+            throw exception;
+        }
+
+        if (waitStatus == WaitStatus.TimedOut)
+        {
+            throw new TimeoutException("OnSubmittedWorkSync timed out waiting for work to be done.");
+        }
+        else if (waitStatus != WaitStatus.Success)
+        {
+            throw new WebGPUException("An error occurred while waiting for OnSubmittedWorkSync to complete.");
+        }
     }
 
     /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>

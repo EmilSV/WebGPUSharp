@@ -24,6 +24,70 @@ public sealed class Instance :
     /// Retrieves an Adapter which matches the given <see cref="RequestAdapterOptions" />.
     /// </summary>
     /// <param name="options">The options to use for the adapter</param>
+    /// <param name="timeoutNS">The timeout in nanoseconds to wait for the adapter.</param>
+    /// <returns> An <see cref="Adapter"/>.</returns>
+    public Adapter RequestAdapterSync(in RequestAdapterOptions options, ulong timeoutNS = ulong.MaxValue)
+    {
+        unsafe
+        {
+            Exception? exception = null;
+            Adapter? result = null;
+
+            void Callback(
+                RequestAdapterStatus status, Adapter adapter,
+                ReadOnlySpan<byte> message)
+            {
+                switch (status)
+                {
+                    case RequestAdapterStatus.Success:
+                        result = adapter;
+                        break;
+                    case RequestAdapterStatus.CallbackCancelled:
+                    case RequestAdapterStatus.Unavailable:
+                    case RequestAdapterStatus.Error:
+                    default:
+                        exception = new WebGPUException(Encoding.UTF8.GetString(message));
+                        break;
+                }
+            }
+
+            ToFFI(options, out RequestAdapterOptionsFFI optionFFI);
+            var future = WebGPU_FFI.InstanceRequestAdapter(
+              instance: Handle,
+              options: &optionFFI,
+              callbackInfo: new()
+              {
+                  Mode = CallbackMode.WaitAnyOnly,
+                  Callback = &RequestAdapterCallbackFunctions.DelegateCallback,
+                  Userdata1 = AllocUserData((Action<RequestAdapterStatus, Adapter, ReadOnlySpan<byte>>)Callback),
+                  Userdata2 = AllocUserData(this)
+              }
+           );
+            var waitStatus = WaitAny(future, timeoutNS);
+
+            if (exception != null)
+            {
+                throw exception;
+            }
+
+            if (waitStatus == WaitStatus.TimedOut)
+            {
+                throw new TimeoutException("RequestAdapterSync timed out waiting for adapter.");
+            }
+            else if (waitStatus != WaitStatus.Success)
+            {
+                throw new WebGPUException("An error occurred while waiting for RequestAdapterSync to complete.");
+            }
+
+            return result!;
+        }
+    }
+
+
+    /// <summary>
+    /// Retrieves an Adapter which matches the given <see cref="RequestAdapterOptions" />.
+    /// </summary>
+    /// <param name="options">The options to use for the adapter</param>
     /// <returns> A task that will complete when the adapter is ready.</returns>
     public Task<Adapter> RequestAdapterAsync(in RequestAdapterOptions options)
     {
