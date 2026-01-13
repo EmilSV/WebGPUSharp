@@ -116,7 +116,7 @@ public sealed class Instance :
     /// </summary>
     /// <param name="callback">The callback to call when the adapter is ready</param>
     /// <param name="options">The options to use for the adapter</param>
-    public void RequestAdapterAsync(in RequestAdapterOptions options, Action<RequestAdapterStatus, Adapter, ReadOnlySpan<byte>> callback)
+    public void RequestAdapter(in RequestAdapterOptions options, Action<RequestAdapterStatus, Adapter, ReadOnlySpan<byte>> callback)
     {
         unsafe
         {
