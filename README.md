@@ -80,12 +80,13 @@ var window = SDL_CreateWindow("Hello Triangle", SDL_WINDOWPOS_UNDEFINED, SDL_WIN
 var surface = SDL_GetWGPUSurface(instance, window)!;
 
 // SDL2 do not like async/await as it can switch threads, so we block here
-var adapter = instance.RequestAdapterAsync(new()
+var adapter = instance.RequestAdapterSync(new()
 {
     CompatibleSurface = surface
-}).Result!;
+});
 
-var device = adapter.RequestDeviceAsync().Result!;
+
+var device = adapter.RequestDeviceSync();
 var queue = device.GetQueue()!;
 var surfaceFormat = TextureFormat.BGRA8Unorm;
 
@@ -101,7 +102,7 @@ surface.Configure(new()
 });
 
 
-var pipeline = device.CreateRenderPipeline(new()
+var pipeline = device.CreateRenderPipelineSync(new()
 {
     Layout = null, // Auto-layout
     Vertex = new()
@@ -217,7 +218,7 @@ static unsafe Surface? SDL_GetWGPUSurface(Instance instance, nint window)
         };
         SurfaceDescriptor descriptor_surface = new(ref xlibDescriptor);
         return instance.CreateSurface(descriptor_surface);
-    } 
+    }
     else if (windowWMInfo.subsystem == SDL_SYSWM_TYPE.SDL_SYSWM_COCOA)
     {
         // Sadly macOS is too long to show in this snippet. See:
