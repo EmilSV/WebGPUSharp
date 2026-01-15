@@ -344,7 +344,7 @@ Buffer.DoReadWriteOperation([bufferA, bufferB] /* The buffers to operate on */, 
 ```
 
 ## Managed vs Unmanaged/Unsafe API
-There are two API levels in WebGPUSharp: the unmanaged unsafe API and a managed safe API built on top of the unmanaged one. You can tell them apart as the unmanaged API lives in the `WebGpuSharp.FFI` namespace and uses raw handles for resources, while the managed API lives in the `WebGpuSharp` namespace and uses classes for resources. For example, here is how to create a buffer using the unmanaged API:
+There are two API levels in WebGPUSharp: the unmanaged unsafe API and a managed safe API built on top of the unmanaged one. You can tell them apart as the unmanaged API lives in the `WebGpuSharp.FFI` and `WebGpuSharp.Marshalling` namespace and uses raw handles for resources, while the managed API lives in the `WebGpuSharp` namespace and uses classes for resources. For example, here is how to create a buffer using the unmanaged API:
 
 ```csharp
 using WebGpuSharp.FFI;
@@ -367,7 +367,11 @@ for (int i = 0; i < 256; i++)
 buffer.Unmap();
 
 ```
-You can convert a managed object to an unmanaged handle using the `WebGPUMarshal.GetBorrowHandle` or `WebGPUMarshal.GetOwnedHandle` methods. You can convert an unmanaged handle to a managed object using the `WebGPUMarshal.ToSafeHandle` and `WebGPUMarshal.ToSafeHandleNoRefIncrement` methods. The difference between Borrow and Owned is that an owned handle will increment the reference count of the unmanaged resource, while a borrowed handle will not. An owned handle should be used when you want to keep a reference to the resource, while a borrowed handle should be used when you just need to use the resource temporarily.
+You can convert a managed object to an unmanaged handle using the `WebGPUMarshal.GetHandle` function. You can convert an unmanaged handle to a managed object using the `WebGPUMarshal.ToSafeHandle` methods. 
+
+Note that when you get a handle from a managed object, the managed object still owns the resource, so you should not free the unmanaged handle directly. If you need an unmanaged handle to be able to outlive the managed object it came from, you can use the `AddRef` method on the unmanaged handle to increase its reference count.
+
+Here's an example of converting between managed and unmanaged handles:
 
 ```csharp
 using WebGpuSharp;
@@ -378,8 +382,8 @@ Buffer buffer = device.CreateBuffer(new()
     MappedAtCreation = true
 });
 
-// Convert to unmanaged owned handle
-BufferHandle ownedHandle = WebGPUMarshal.GetOwnedHandle(buffer);
+// Convert to unmanaged handle
+BufferHandle ownedHandle = WebGPUMarshal.GetHandle(buffer);
 // Convert back to managed object
 Buffer managedBuffer = WebGPUMarshal.ToSafeHandle<Buffer, BufferHandle>(ownedHandle);
 ```
