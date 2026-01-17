@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [0.5.1] - 2026-01-17
+### Fixed
+- Fixed `Device.GetLimits()` and `DeviceHandle.GetLimits()` crashing when called.
+
+### Changed
+- Readme.md updated to reflect changes in 0.5.0
+
 ## [0.5.0] - 2026-01-14
 
 ### Overview
