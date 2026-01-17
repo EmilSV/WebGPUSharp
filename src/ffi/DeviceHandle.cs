@@ -558,7 +558,7 @@ public unsafe readonly partial struct DeviceHandle :
     [SkipLocalsInit]
     public Limits GetLimits()
     {
-        Limits supportedLimits;
+        Limits supportedLimits = default;
         WebGPU_FFI.DeviceGetLimits(this, &supportedLimits);
         return supportedLimits;
     }
