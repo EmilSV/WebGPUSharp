@@ -311,7 +311,7 @@ public sealed class Device :
     /// <inheritdoc cref="DeviceHandle.GetLimits()" />
     public Limits GetLimits() => Handle.GetLimits();
     /// <inheritdoc cref="DeviceHandle.GetLimits(ref Limits)" />
-    public void GetLimits(ref Limits supportedLimits) => Handle.GetLimits(ref supportedLimits);
+    public Status GetLimits(ref Limits supportedLimits) => Handle.GetLimits(ref supportedLimits);
 
     /// <inheritdoc cref="DeviceHandle.GetQueue()" />
     public Queue GetQueue()

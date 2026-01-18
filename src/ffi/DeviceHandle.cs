@@ -563,11 +563,11 @@ public unsafe readonly partial struct DeviceHandle :
         return supportedLimits;
     }
     /// <inheritdoc cref="GetLimits(Limits*)"/>
-    public void GetLimits(ref Limits limits)
+    public Status GetLimits(ref Limits limits)
     {
         fixed (Limits* limitsPtr = &limits)
         {
-            WebGPU_FFI.DeviceGetLimits(this, limitsPtr);
+            return WebGPU_FFI.DeviceGetLimits(this, limitsPtr);
         }
     }
 
