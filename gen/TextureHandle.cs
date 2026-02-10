@@ -140,6 +140,8 @@ public unsafe partial struct TextureHandle : IEquatable<TextureHandle>
     /// </summary>
     public uint GetSampleCount() => WebGPU_FFI.TextureGetSampleCount(this);
 
+    public TextureViewDimension GetTextureBindingViewDimension() => WebGPU_FFI.TextureGetTextureBindingViewDimension(this);
+
     /// <summary>
     /// Returns the allowed usages of this Texture.
     /// 

@@ -51,6 +51,8 @@ public sealed class Texture :
     /// <inheritdoc cref="TextureHandle.SetLabel"/>
     public void SetLabel(WGPURefText label) => Handle.SetLabel(label);
 
+    public TextureViewDimension GetTextureBindingViewDimension() => WebGPU_FFI.TextureGetTextureBindingViewDimension(Handle);
+
     static Texture? IFromHandle<Texture, TextureHandle>.FromHandle(
         TextureHandle handle)
     {

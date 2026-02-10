@@ -1897,6 +1897,9 @@ public unsafe static partial class WebGPU_FFI
     /// <param name="texture">The texture</param>
     [DllImport("webgpu_dawn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuTextureGetSampleCount")]
     public static extern uint TextureGetSampleCount(TextureHandle texture);
+	
+    [DllImport("webgpu_dawn",CallingConvention = CallingConvention.Cdecl, EntryPoint = "wgpuTextureGetTextureBindingViewDimension")]
+    public static extern TextureViewDimension TextureGetTextureBindingViewDimension(TextureHandle texture);
     /// <summary>
     /// Returns the allowed usages of this Texture.
     /// 
