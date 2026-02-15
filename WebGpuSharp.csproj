@@ -51,6 +51,10 @@
         <RuntimeIdentifiers>win-x64;win-arm64;osx-x64;osx-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
     </PropertyGroup>
     <ItemGroup>
+        <Compile Remove="tests\**\*.cs" />
+        <EmbeddedResource Remove="tests\**\*" />
+        <None Remove="tests\**\*" />
+
         <!-- Windows x64 native library -->
         <Content Include="runtimes/win-x64/native/webgpu_dawn.dll" Condition="Exists('runtimes/win-x64/native/webgpu_dawn.dll')">
             <PackagePath>runtimes/win-x64/native</PackagePath>

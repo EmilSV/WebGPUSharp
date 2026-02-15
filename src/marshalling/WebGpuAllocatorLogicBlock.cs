@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebGpuSharp.FFI;
@@ -65,7 +66,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
         _disposableHandles = null;
         _data.Heap = new()
         {
-            AllocPtr = (void**)_allocator->Alloc((nuint)sizeof(void*) * 4),
+            AllocPtr = (void**)_allocator->AlignedAlloc((nuint)sizeof(void*) * 4, WebGpuAlignment.GetAlignmentOf<nuint>()),
             Size = 4,
             Count = 0,
         };
@@ -76,7 +77,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
     {
         _data.Heap = new()
         {
-            AllocPtr = (void**)_allocator->Alloc((nuint)sizeof(void*) * 4),
+            AllocPtr = (void**)_allocator->AlignedAlloc((nuint)sizeof(void*) * 4, WebGpuAlignment.GetAlignmentOf<nuint>()),
             Size = 4,
             Count = 0,
         };
@@ -108,19 +109,22 @@ public unsafe struct WebGpuAllocatorLogicBlock
             return (T*)_data.Stack.Memory;
         }
 
-        if ((nuint)_data.Stack.Memory - previousSize == (nuint)previousMemory)
+        var previousSizeInBytes = previousSize * (nuint)sizeof(T);
+
+        if ((nuint)_data.Stack.Memory - previousSizeInBytes == (nuint)previousMemory)
         {
-            var newAllocSize = (nuint)sizeof(T) * newSize;
-            if (newAllocSize <= _data.Stack.RemainingBytes)
+            var newSizeInBytes = (nuint)sizeof(T) * newSize;
+            var differenceInBytes = newSizeInBytes - previousSizeInBytes;
+            if (differenceInBytes <= _data.Stack.RemainingBytes)
             {
-                _data.Stack.Memory = (byte*)((nuint)previousMemory + newSize);
-                _data.Stack.RemainingBytes -= (uint)newAllocSize;
-                return (T*)_data.Stack.Memory;
+                _data.Stack.Memory = (byte*)((nuint)previousMemory + newSizeInBytes);
+                _data.Stack.RemainingBytes -= (uint)differenceInBytes;
+                return previousMemory;
             }
         }
 
         var newMemory = AllocStack<T>(newSize);
-        Unsafe.CopyBlockUnaligned(newMemory, _data.Stack.Memory, (uint)previousSize);
+        Unsafe.CopyBlockUnaligned(newMemory, previousMemory, (uint)previousSize);
         return newMemory;
     }
 
@@ -136,11 +140,15 @@ public unsafe struct WebGpuAllocatorLogicBlock
         if (_data.Heap.Size <= _data.Heap.Count)
         {
             var newSize = _data.Heap.Size * 2;
-            _data.Heap.AllocPtr = (void**)_allocator->Realloc(_data.Heap.AllocPtr, (nuint)(newSize * sizeof(void**)));
+            _data.Heap.AllocPtr = (void**)_allocator->AlignedRealloc(
+                _data.Heap.AllocPtr,
+                (nuint)(newSize * sizeof(void**)),
+                WebGpuAlignment.GetAlignmentOf<nuint>()
+            );
             _data.Heap.Size = (ushort)newSize;
-            _data.Heap.AllocPtr[_data.Heap.Count] = newMemory;
-            _data.Heap.Count++;
         }
+        _data.Heap.AllocPtr[_data.Heap.Count] = newMemory;
+        _data.Heap.Count++;
 
         return (T*)newMemory;
     }
@@ -157,7 +165,7 @@ public unsafe struct WebGpuAllocatorLogicBlock
         {
             if (_data.Heap.AllocPtr[i] == previousMemory)
             {
-                _data.Heap.AllocPtr[i] = _allocator->Realloc(previousMemory, (nuint)sizeof(T) * newSize);
+                _data.Heap.AllocPtr[i] = _allocator->AlignedRealloc(previousMemory, (nuint)sizeof(T) * newSize, WebGpuAlignment.GetAlignmentOf<T>());
                 return (T*)_data.Heap.AllocPtr[i];
             }
         }
@@ -183,6 +191,11 @@ public unsafe struct WebGpuAllocatorLogicBlock
     internal T* Realloc<T>(T* previousMemory, nuint previousSize, nuint newSize)
         where T : unmanaged
     {
+        Debug.Assert(previousMemory != null, "Previous memory cannot be null when reallocating.");
+        Debug.Assert(previousSize > 0, "Previous size must be greater than zero when reallocating.");
+        Debug.Assert(newSize > 0, "New size must be greater than zero when reallocating.");
+        Debug.Assert(newSize >= previousSize, "New size must be greater than or equal to previous size when reallocating.");
+
         if (_isInStackMode)
         {
             return ReallocStack(previousMemory, previousSize, newSize);
@@ -197,7 +210,10 @@ public unsafe struct WebGpuAllocatorLogicBlock
     {
         if (_disposableHandles == null)
         {
-            _disposableHandles = (DisposableHandleArrayItem*)_allocator->Alloc((nuint)sizeof(DisposableHandleArrayItem) * 4);
+            _disposableHandles = (DisposableHandleArrayItem*)_allocator->AlignedAlloc(
+                byteCount: (nuint)sizeof(DisposableHandleArrayItem) * 4,
+                alignment: WebGpuAlignment.GetAlignmentOf<DisposableHandleArrayItem>()
+            );
             _disposableHandles[0].SizeInfo = (4, 1);
         }
 
@@ -205,9 +221,10 @@ public unsafe struct WebGpuAllocatorLogicBlock
         if (_disposableHandles->SizeInfo.size <= index)
         {
             var newSize = _disposableHandles->SizeInfo.size * 2;
-            _disposableHandles = (DisposableHandleArrayItem*)_allocator->Realloc(
+            _disposableHandles = (DisposableHandleArrayItem*)_allocator->AlignedRealloc(
               ptr: _disposableHandles,
-              byteCount: newSize * (nuint)sizeof(DisposableHandleArrayItem)
+              byteCount: newSize * (nuint)sizeof(DisposableHandleArrayItem),
+              alignment: WebGpuAlignment.GetAlignmentOf<DisposableHandleArrayItem>()
             );
             _disposableHandles->SizeInfo.size = newSize;
         }
@@ -222,16 +239,16 @@ public unsafe struct WebGpuAllocatorLogicBlock
             {
                 _disposableHandles[i].DisposableHandle.Dispose();
             }
-            _allocator->Free(_disposableHandles);
+            _allocator->AlignedFree(_disposableHandles);
         }
 
         if (!_isInStackMode)
         {
             for (int i = 0; i < _data.Heap.Count; i++)
             {
-                _allocator->Free(_data.Heap.AllocPtr[i]);
+                _allocator->AlignedFree(_data.Heap.AllocPtr[i]);
             }
-            _allocator->Free(_data.Heap.AllocPtr);
+            _allocator->AlignedFree(_data.Heap.AllocPtr);
         }
     }
 }

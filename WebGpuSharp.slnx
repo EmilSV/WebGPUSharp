@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/WebGpuSharp.Tests/WebGpuSharp.Tests.csproj" />
+  </Folder>
   <Project Path="WebGpuSharp.csproj" />
 </Solution>

@@ -49,7 +49,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe Span<T> ReallocSpan<T>(ref Span<T> previousMemory, int newSize)
+    public unsafe void ReallocSpan<T>(ref Span<T> previousMemory, int newSize)
         where T : unmanaged
     {
         Span<T> newMemorySpan;
@@ -59,7 +59,7 @@ public readonly unsafe ref struct WebGpuAllocatorHandle
             var newPtr = _logicBlock.Realloc(previousPtr, previousSize, (nuint)newSize);
             newMemorySpan = new Span<T>(newPtr, (int)newSize);
         }
-        return newMemorySpan;
+        previousMemory = newMemorySpan;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -240,7 +240,7 @@ public unsafe static partial class WebGPUMarshal
             if (status == OperationStatus.DestinationTooSmall)
             {
                 int charRemaining = text.Length - totalCharsRead;
-                allocSize = charRemaining + charRemaining / 2 + (addNullTerminator ? 1 : 0);
+                allocSize += Math.Max(charRemaining * 2, utf16Length / 4);
                 allocator.ReallocSpan(ref resultSpan, allocSize);
             }
             else
@@ -250,6 +250,10 @@ public unsafe static partial class WebGPUMarshal
         }
         if (addNullTerminator)
         {
+            if (resultSpan.Length == totalBytesWritten)
+            {
+                allocator.ReallocSpan(ref resultSpan, resultSpan.Length + 1);
+            }
             resultSpan[totalBytesWritten] = 0;
             totalBytesWritten++;
         }
