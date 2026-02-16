@@ -1,9 +1,25 @@
 
 # Changelog
 
+## [0.5.2] - 2026-02-16
+### Overview
+- Update Dawn to same version as chrome m145-d9f5a98 and fixed issues where shaders code that need reallocation threw an exception.
+
+### Fixed
+- Fixed an issue where shaders code that need reallocation threw an exception.
+
+### Added
+- Added `Texture.GetTextureBindingViewDimension()`
+- Added `TextureHandle.GetTextureBindingViewDimension()`
+
+### Changed
+- `Device.GetLimits(ref Limits)` returns a status.
+
+
 ## [0.5.1] - 2026-01-17
 ### Fixed
 - Fixed `Device.GetLimits()` and `DeviceHandle.GetLimits()` crashing when called.
+- Fixed `DeviceHandle.GetLimits()` and `DeviceHandle.GetLimits()` crashing when called.
 
 ### Changed
 - Readme.md updated to reflect changes in 0.5.0
