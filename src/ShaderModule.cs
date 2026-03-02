@@ -41,8 +41,9 @@ public sealed class ShaderModule :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
-        var future = GetCompilationInfo(CallbackMode.WaitAnyOnly, callback);
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        var eventHandler = _instance._eventHandler;
+        var future = GetCompilationInfo(eventHandler.GetCpuCallbackMode(), callback);
+        eventHandler.EnqueueCpuFuture(future);
     }
 
     /// <param name="timeoutNS">The timeout in nanoseconds to wait for the compilation info.</param>

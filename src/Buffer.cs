@@ -124,15 +124,16 @@ public sealed class Buffer :
        nuint size,
        Action<MapAsyncStatus, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         var future = Map(
             mode: mode,
             offset: offset,
             size: size,
-            callbackMode: CallbackMode.WaitAnyOnly,
+            callbackMode: eventHandler.GetQueueCallbackMode(),
             callback: callback,
             tcs: null
         );
-        _instance._eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueQueueFuture(future);
     }
 
     /// <inheritdoc cref="Map(MapMode, nuint, nuint, Action{MapAsyncStatus, ReadOnlySpan{byte}})"/>
@@ -156,16 +157,17 @@ public sealed class Buffer :
         nuint offset,
         nuint size)
     {
+        var eventHandler = _instance._eventHandler;
         var tcs = new TaskCompletionSource<MapAsyncStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = Map(
             mode: mode,
             offset: offset,
             size: size,
-            callbackMode: CallbackMode.WaitAnyOnly,
+            callbackMode: eventHandler.GetQueueCallbackMode(),
             callback: null,
             tcs: tcs
         );
-        _instance._eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueQueueFuture(future);
         return tcs.Task;
     }
 

@@ -62,14 +62,14 @@ public sealed class Device :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void CreateComputePipeline(in ComputePipelineDescriptor descriptor, Action<CreatePipelineAsyncStatus, ComputePipeline?, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         var future = CreateComputePipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.WaitAnyOnly,
+            mode: eventHandler.GetCpuCallbackMode(),
             callback: callback,
             tcs: null
         );
-
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
     }
 
     [SkipLocalsInit]
@@ -150,14 +150,15 @@ public sealed class Device :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Task<ComputePipeline> CreateComputePipelineAsync(in ComputePipelineDescriptor descriptor)
     {
+        var eventHandler = _instance._eventHandler;
         var tsc = new TaskCompletionSource<ComputePipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = CreateComputePipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.WaitAnyOnly,
+            mode: eventHandler.GetCpuCallbackMode(),
             callback: null,
             tcs: tsc
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
         return tsc.Task;
     }
 
@@ -246,14 +247,15 @@ public sealed class Device :
         in RenderPipelineDescriptor descriptor,
         Action<CreatePipelineAsyncStatus, RenderPipeline?, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         var future = CreateRenderPipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.WaitAnyOnly,
+            mode: eventHandler.GetCpuCallbackMode(),
             callback: callback,
             tcs: null
         );
 
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
     }
 
     /// <returns>A task that resolve into a RenderPipeline.</returns>
@@ -261,14 +263,15 @@ public sealed class Device :
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Task<RenderPipeline> CreateRenderPipelineAsync(in RenderPipelineDescriptor descriptor)
     {
+        var eventHandler = _instance._eventHandler;
         var tcs = new TaskCompletionSource<RenderPipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = CreateRenderPipelineAsync(
             descriptor: descriptor,
-            mode: CallbackMode.WaitAnyOnly,
+            mode: eventHandler.GetCpuCallbackMode(),
             callback: null,
             tcs: tcs
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
         return tcs.Task;
     }
 
@@ -388,37 +391,39 @@ public sealed class Device :
     /// <param name="callback">The callback called when the error scope is popped</param>
     public unsafe void PopErrorScope(Action<PopErrorScopeStatus, ErrorType, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         var future = WebGPU_FFI.DevicePopErrorScope(
            device: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.WaitAnyOnly,
+               Mode = eventHandler.GetCpuCallbackMode(),
                Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
                Userdata1 = AllocUserData(callback),
                Userdata2 = null
            }
         );
 
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
     }
 
     /// <returns> A Task that resolves to a <see cref="ErrorType"/> and the error message</returns>
     /// <inheritdoc cref="DeviceHandle.PopErrorScope(PopErrorScopeCallbackInfoFFI)"/>
     public unsafe Task<(ErrorType errorType, string message)> PopErrorScopeAsync()
     {
+        var eventHandler = _instance._eventHandler;
         var tsc = new TaskCompletionSource<(ErrorType errorType, string message)>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = WebGPU_FFI.DevicePopErrorScope(
            device: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.WaitAnyOnly,
+               Mode = eventHandler.GetCpuCallbackMode(),
                Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
                Userdata1 = AllocUserData(tsc),
                Userdata2 = null
            }
         );
 
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
         return tsc.Task;
     }
 

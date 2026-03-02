@@ -182,18 +182,19 @@ public sealed class Queue :
     /// <inheritdoc cref="QueueHandle.OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
     public unsafe void OnSubmittedWorkDone(Action<QueueWorkDoneStatus, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         void* callbackUserData = AllocUserData(callback);
         var future = WebGPU_FFI.QueueOnSubmittedWorkDone(
            queue: Handle,
            callbackInfo: new()
            {
-               Mode = CallbackMode.WaitAnyOnly,
+               Mode = eventHandler.GetQueueCallbackMode(),
                Callback = &OnSubmittedWorkDoneFunctions.DelegateCallback,
                Userdata1 = callbackUserData,
                Userdata2 = null,
            }
         );
-        _instance._eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueQueueFuture(future);
     }
 
     /// <inheritdoc cref="QueueHandle.OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
@@ -244,6 +245,7 @@ public sealed class Queue :
     /// <inheritdoc cref="QueueHandleOnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
     public unsafe Task OnSubmittedWorkDoneAsync()
     {
+        var eventHandler = _instance._eventHandler;
         var tsc = new TaskCompletionSource();
         void* tscUserData = AllocUserData(tsc);
         void* instanceUserData = AllocUserData(_instance);
@@ -251,13 +253,13 @@ public sealed class Queue :
             queue: Handle,
             callbackInfo: new()
             {
-                Mode = CallbackMode.WaitAnyOnly,
+                Mode = eventHandler.GetQueueCallbackMode(),
                 Callback = &OnSubmittedWorkDoneFunctions.TaskCallback,
                 Userdata1 = tscUserData,
                 Userdata2 = instanceUserData,
             }
         );
-        _instance._eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueQueueFuture(future);
         return tsc.Task;
     }
 }

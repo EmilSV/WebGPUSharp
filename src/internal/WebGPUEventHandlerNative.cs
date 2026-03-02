@@ -8,7 +8,7 @@ using WebGpuSharp.Marshalling;
 
 namespace WebGPUSharp.Internal;
 
-internal class WebGPUEventHandler : IDisposable
+internal class WebGPUEventHandlerNative : WebGPUEventHandlerBase
 {
     private enum FutureWaitType
     {
@@ -16,17 +16,17 @@ internal class WebGPUEventHandler : IDisposable
         Queue
     }
 
-    private Channel<(FutureWaitType, Future)> _futureChannel = Channel.CreateUnbounded<(FutureWaitType, Future)>();
-    private ChannelWriter<(FutureWaitType, Future)> _futureWriter;
-    private ChannelReader<(FutureWaitType, Future)> _futureReader;
+    private readonly Channel<(FutureWaitType, Future)> _futureChannel = Channel.CreateUnbounded<(FutureWaitType, Future)>();
+    private readonly ChannelWriter<(FutureWaitType, Future)> _futureWriter;
+    private readonly ChannelReader<(FutureWaitType, Future)> _futureReader;
 
-    private List<FutureWaitInfo> _cpuFutures = [];
-    private List<FutureWaitInfo> _queueFutures = [];
+    private readonly List<FutureWaitInfo> _cpuFutures = [];
+    private readonly List<FutureWaitInfo> _queueFutures = [];
 
     private InstanceHandle _instance;
     private readonly int _timedWaitAnyMaxCount;
 
-    public WebGPUEventHandler(InstanceHandle instance, int timedWaitAnyMaxCount)
+    public WebGPUEventHandlerNative(InstanceHandle instance, int timedWaitAnyMaxCount)
     {
         _instance = instance.AddRef();
         _futureWriter = _futureChannel.Writer;
@@ -34,18 +34,21 @@ internal class WebGPUEventHandler : IDisposable
         _timedWaitAnyMaxCount = timedWaitAnyMaxCount;
     }
 
-    public void Start()
+    public override void Start()
     {
         Task.Run(ProcessFutures);
     }
 
-    public void EnqueueCpuFuture(Future future)
+    public override CallbackMode GetCpuCallbackMode() => CallbackMode.WaitAnyOnly;
+    public override CallbackMode GetQueueCallbackMode() => CallbackMode.WaitAnyOnly;
+
+    public override void EnqueueCpuFuture(Future future)
     {
         bool result = _futureWriter.TryWrite((FutureWaitType.Cpu, future));
         Debug.Assert(result, "Failed to write future to CPU future channel");
     }
 
-    public void EnqueueQueueFuture(Future future)
+    public override void EnqueueQueueFuture(Future future)
     {
         bool result = _futureWriter.TryWrite((FutureWaitType.Queue, future));
         Debug.Assert(result, "Failed to write future to Queue future channel");
@@ -112,7 +115,7 @@ internal class WebGPUEventHandler : IDisposable
         futures.RemoveAll(static f => f.Completed);
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         _futureWriter.Complete();
         _instance.Release();

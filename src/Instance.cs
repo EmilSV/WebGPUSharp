@@ -13,9 +13,9 @@ namespace WebGpuSharp;
 public sealed class Instance :
     WebGPUManagedHandleBase<InstanceHandle>
 {
-    internal readonly WebGPUEventHandler _eventHandler;
+    internal readonly WebGPUEventHandlerBase _eventHandler;
 
-    internal Instance(InstanceHandle handle, WebGPUEventHandler eventHandler) : base(handle)
+    internal Instance(InstanceHandle handle, WebGPUEventHandlerBase eventHandler) : base(handle)
     {
         _eventHandler = eventHandler;
     }
@@ -100,7 +100,7 @@ public sealed class Instance :
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = CallbackMode.WaitAnyOnly,
+                  Mode = _eventHandler.GetCpuCallbackMode(),
                   Callback = &RequestAdapterCallbackFunctions.TaskCallback,
                   Userdata1 = AllocUserData(taskCompletionSource),
                   Userdata2 = AllocUserData(this)
@@ -126,7 +126,7 @@ public sealed class Instance :
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = CallbackMode.WaitAnyOnly,
+                  Mode = _eventHandler.GetCpuCallbackMode(),
                   Callback = &RequestAdapterCallbackFunctions.DelegateCallback,
                   Userdata1 = AllocUserData(callback),
                   Userdata2 = AllocUserData(this)

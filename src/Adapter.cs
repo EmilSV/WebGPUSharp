@@ -156,13 +156,14 @@ public sealed class Adapter :
     /// <inheritdoc cref="RequestDeviceAsync(in DeviceDescriptor)"/>
     public Task<Device> RequestDeviceAsync()
     {
+        var eventHandler = _instance._eventHandler;
         var tcs = new TaskCompletionSource<Device>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = RequestDevice(
-            CallbackMode.WaitAnyOnly,
+            eventHandler.GetCpuCallbackMode(),
             callback: null,
             tcs: tcs
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
         return tcs.Task;
     }
 
@@ -171,26 +172,28 @@ public sealed class Adapter :
     /// <inheritdoc cref="AdapterHandle.RequestDevice(DeviceDescriptorFFI*, RequestDeviceCallbackInfoFFI)"/>
     public Task<Device> RequestDeviceAsync(in DeviceDescriptor descriptor)
     {
+        var eventHandler = _instance._eventHandler;
         var tcs = new TaskCompletionSource<Device>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = RequestDevice(
             in descriptor,
-            CallbackMode.WaitAnyOnly,
+            eventHandler.GetCpuCallbackMode(),
             callback: null,
             tcs: tcs
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
         return tcs.Task;
     }
 
     /// <inheritdoc cref="RequestDevice(in DeviceDescriptor, Action{RequestDeviceStatus, Device?, ReadOnlySpan{byte}})"/>
     public void RequestDevice(Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         var future = RequestDevice(
-            CallbackMode.WaitAnyOnly,
+            eventHandler.GetCpuCallbackMode(),
             callback: callback,
             tcs: null
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
     }
 
     /// <param name="callback">The callback to call when the device is ready</param>
@@ -198,13 +201,14 @@ public sealed class Adapter :
     /// <inheritdoc cref="AdapterHandle.RequestDevice(DeviceDescriptorFFI*)"/>
     public void RequestDevice(in DeviceDescriptor descriptor, Action<RequestDeviceStatus, Device?, ReadOnlySpan<byte>> callback)
     {
+        var eventHandler = _instance._eventHandler;
         var future = RequestDevice(
             in descriptor,
-            CallbackMode.WaitAnyOnly,
+            eventHandler.GetCpuCallbackMode(),
             callback: callback,
             tcs: null
         );
-        _instance._eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueCpuFuture(future);
     }
 
     /// <inheritdoc cref="AdapterHandle.RequestDevice(in DeviceDescriptor, Action{Device?})"/>
