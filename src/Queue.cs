@@ -188,18 +188,23 @@ public sealed class Queue :
            queue: Handle,
            callbackInfo: new()
            {
-               Mode = eventHandler.GetQueueCallbackMode(),
+               Mode = eventHandler.GetCallbackMode(WebGpuAsyncApi.QueueOnSubmittedWorkDone),
                Callback = &OnSubmittedWorkDoneFunctions.DelegateCallback,
                Userdata1 = callbackUserData,
                Userdata2 = null,
            }
         );
-        eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.QueueOnSubmittedWorkDone, future);
     }
 
     /// <inheritdoc cref="QueueHandle.OnSubmittedWorkDone(QueueWorkDoneCallbackInfoFFI)"/>
     public unsafe void OnSubmittedWorkSync(ulong timeoutNS = ulong.MaxValue)
     {
+        if (!_instance.IsSyncApiSupported(WebGpuAsyncApi.QueueOnSubmittedWorkDone))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for OnSubmittedWorkDone");
+        }
+
         Exception? exception = null;
 
         void Callback(QueueWorkDoneStatus status, ReadOnlySpan<byte> message)
@@ -226,7 +231,7 @@ public sealed class Queue :
            }
         );
         var waitStatus = _instance.WaitAny(future, timeoutNS);
-        
+
         if (exception != null)
         {
             throw exception;
@@ -246,20 +251,20 @@ public sealed class Queue :
     public unsafe Task OnSubmittedWorkDoneAsync()
     {
         var eventHandler = _instance._eventHandler;
-        var tsc = new TaskCompletionSource();
+        var tsc = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         void* tscUserData = AllocUserData(tsc);
         void* instanceUserData = AllocUserData(_instance);
         var future = WebGPU_FFI.QueueOnSubmittedWorkDone(
             queue: Handle,
             callbackInfo: new()
             {
-                Mode = eventHandler.GetQueueCallbackMode(),
+                Mode = eventHandler.GetCallbackMode(WebGpuAsyncApi.QueueOnSubmittedWorkDone),
                 Callback = &OnSubmittedWorkDoneFunctions.TaskCallback,
                 Userdata1 = tscUserData,
                 Userdata2 = instanceUserData,
             }
         );
-        eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.QueueOnSubmittedWorkDone, future);
         return tsc.Task;
     }
 }

@@ -159,11 +159,11 @@ public sealed class Adapter :
         var eventHandler = _instance._eventHandler;
         var tcs = new TaskCompletionSource<Device>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = RequestDevice(
-            eventHandler.GetCpuCallbackMode(),
+            eventHandler.GetCallbackMode(WebGpuAsyncApi.AdapterRequestDevice),
             callback: null,
             tcs: tcs
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.AdapterRequestDevice, future);
         return tcs.Task;
     }
 
@@ -176,11 +176,11 @@ public sealed class Adapter :
         var tcs = new TaskCompletionSource<Device>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = RequestDevice(
             in descriptor,
-            eventHandler.GetCpuCallbackMode(),
+            eventHandler.GetCallbackMode(WebGpuAsyncApi.AdapterRequestDevice),
             callback: null,
             tcs: tcs
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.AdapterRequestDevice, future);
         return tcs.Task;
     }
 
@@ -189,11 +189,11 @@ public sealed class Adapter :
     {
         var eventHandler = _instance._eventHandler;
         var future = RequestDevice(
-            eventHandler.GetCpuCallbackMode(),
+            eventHandler.GetCallbackMode(WebGpuAsyncApi.AdapterRequestDevice),
             callback: callback,
             tcs: null
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.AdapterRequestDevice, future);
     }
 
     /// <param name="callback">The callback to call when the device is ready</param>
@@ -204,16 +204,21 @@ public sealed class Adapter :
         var eventHandler = _instance._eventHandler;
         var future = RequestDevice(
             in descriptor,
-            eventHandler.GetCpuCallbackMode(),
+            eventHandler.GetCallbackMode(WebGpuAsyncApi.AdapterRequestDevice),
             callback: callback,
             tcs: null
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.AdapterRequestDevice, future);
     }
 
     /// <inheritdoc cref="AdapterHandle.RequestDevice(in DeviceDescriptor, Action{Device?})"/>
     public Device RequestDeviceSync(ulong timeoutNS = ulong.MaxValue)
     {
+        if (!_instance.IsSyncApiSupported(WebGpuAsyncApi.AdapterRequestDevice))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for RequestDevice");
+        }
+
         Device? _result = null;
         Exception? _exception = null;
 
@@ -256,6 +261,11 @@ public sealed class Adapter :
     /// <inheritdoc cref="AdapterHandle.RequestDevice(DeviceDescriptorFFI*)"/>
     public Device RequestDeviceSync(in DeviceDescriptor descriptor, ulong timeoutNS = ulong.MaxValue)
     {
+        if (!_instance.IsSyncApiSupported(WebGpuAsyncApi.AdapterRequestDevice))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for RequestDevice");
+        }
+
         Device? _result = null;
         Exception? _exception = null;
 

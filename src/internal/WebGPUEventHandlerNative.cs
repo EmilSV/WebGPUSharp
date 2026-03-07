@@ -39,16 +39,13 @@ internal class WebGPUEventHandlerNative : WebGPUEventHandlerBase
         Task.Run(ProcessFutures);
     }
 
-    public override CallbackMode GetCpuCallbackMode() => CallbackMode.WaitAnyOnly;
-    public override CallbackMode GetQueueCallbackMode() => CallbackMode.WaitAnyOnly;
-
-    public override void EnqueueCpuFuture(Future future)
+    private void EnqueueCpuFuture(Future future)
     {
         bool result = _futureWriter.TryWrite((FutureWaitType.Cpu, future));
         Debug.Assert(result, "Failed to write future to CPU future channel");
     }
 
-    public override void EnqueueQueueFuture(Future future)
+    private void EnqueueQueueFuture(Future future)
     {
         bool result = _futureWriter.TryWrite((FutureWaitType.Queue, future));
         Debug.Assert(result, "Failed to write future to Queue future channel");
@@ -121,4 +118,25 @@ internal class WebGPUEventHandlerNative : WebGPUEventHandlerBase
         _instance.Release();
         _instance = default;
     }
+
+    public override CallbackMode GetCallbackMode(WebGpuAsyncApi api)
+    {
+        return CallbackMode.WaitAnyOnly;
+    }
+
+    public override void EnqueueFuture(WebGpuAsyncApi api, Future future)
+    {
+        switch (api)
+        {
+            case WebGpuAsyncApi.BufferMap:
+            case WebGpuAsyncApi.QueueOnSubmittedWorkDone:
+                EnqueueQueueFuture(future);
+                break;
+            default:
+                EnqueueCpuFuture(future);
+                break;
+        }
+    }
+
+    public override bool IsSyncApiSupported(WebGpuAsyncApi api) => true;
 }

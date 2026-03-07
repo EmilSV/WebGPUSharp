@@ -42,8 +42,8 @@ public sealed class ShaderModule :
     public void GetCompilationInfo(Action<CompilationInfoRequestStatus, CompilationInfo> callback)
     {
         var eventHandler = _instance._eventHandler;
-        var future = GetCompilationInfo(eventHandler.GetCpuCallbackMode(), callback);
-        eventHandler.EnqueueCpuFuture(future);
+        var future = GetCompilationInfo(eventHandler.GetCallbackMode(WebGpuAsyncApi.ShaderModuleGetCompilationInfo), callback);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.ShaderModuleGetCompilationInfo, future);
     }
 
     /// <param name="timeoutNS">The timeout in nanoseconds to wait for the compilation info.</param>
@@ -53,6 +53,11 @@ public sealed class ShaderModule :
         Action<CompilationInfoRequestStatus, CompilationInfo> callback,
         ulong timeoutNS = ulong.MaxValue)
     {
+        if (!_instance.IsSyncApiSupported(WebGpuAsyncApi.ShaderModuleGetCompilationInfo))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for GetCompilationInfo");
+        }
+
         var future = GetCompilationInfo(CallbackMode.WaitAnyOnly, callback);
         var waitStatus = _instance.WaitAny(future, timeoutNS);
         if (waitStatus == WaitStatus.TimedOut)

@@ -28,6 +28,11 @@ public sealed class Instance :
     /// <returns> An <see cref="Adapter"/>.</returns>
     public Adapter RequestAdapterSync(in RequestAdapterOptions options, ulong timeoutNS = ulong.MaxValue)
     {
+        if (!_eventHandler.IsSyncApiSupported(WebGpuAsyncApi.InstanceRequestAdapter))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for RequestAdapter");
+        }
+
         unsafe
         {
             Exception? exception = null;
@@ -100,13 +105,13 @@ public sealed class Instance :
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = _eventHandler.GetCpuCallbackMode(),
+                  Mode = _eventHandler.GetCallbackMode(WebGpuAsyncApi.InstanceRequestAdapter),
                   Callback = &RequestAdapterCallbackFunctions.TaskCallback,
                   Userdata1 = AllocUserData(taskCompletionSource),
                   Userdata2 = AllocUserData(this)
               }
            );
-            _eventHandler.EnqueueCpuFuture(future);
+            _eventHandler.EnqueueFuture(WebGpuAsyncApi.InstanceRequestAdapter, future);
             return taskCompletionSource.Task;
         }
     }
@@ -126,13 +131,13 @@ public sealed class Instance :
               options: &optionFFI,
               callbackInfo: new()
               {
-                  Mode = _eventHandler.GetCpuCallbackMode(),
+                  Mode = _eventHandler.GetCallbackMode(WebGpuAsyncApi.InstanceRequestAdapter),
                   Callback = &RequestAdapterCallbackFunctions.DelegateCallback,
                   Userdata1 = AllocUserData(callback),
                   Userdata2 = AllocUserData(this)
               }
            );
-            _eventHandler.EnqueueCpuFuture(future);
+            _eventHandler.EnqueueFuture(WebGpuAsyncApi.InstanceRequestAdapter, future);
         }
     }
 
@@ -142,8 +147,14 @@ public sealed class Instance :
         return Handle.CreateSurface(descriptor).ToSafeHandle();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsSyncApiSupported(WebGpuAsyncApi api)
+    {
+        return _eventHandler.IsSyncApiSupported(api);
+    }
 
-    public WaitStatus WaitAny(Span<FutureWaitInfo> futures, ulong timeoutNS)
+
+    internal WaitStatus WaitAny(Span<FutureWaitInfo> futures, ulong timeoutNS)
     {
         unsafe
         {
@@ -154,7 +165,7 @@ public sealed class Instance :
         }
     }
 
-    public WaitStatus WaitAny(Future future, ulong timeoutNS)
+    internal WaitStatus WaitAny(Future future, ulong timeoutNS)
     {
         unsafe
         {

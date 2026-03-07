@@ -65,11 +65,11 @@ public sealed class Device :
         var eventHandler = _instance._eventHandler;
         var future = CreateComputePipelineAsync(
             descriptor: descriptor,
-            mode: eventHandler.GetCpuCallbackMode(),
+            mode: eventHandler.GetCallbackMode(WebGpuAsyncApi.DeviceCreateComputePipeline),
             callback: callback,
             tcs: null
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.DeviceCreateComputePipeline, future);
     }
 
     [SkipLocalsInit]
@@ -94,7 +94,7 @@ public sealed class Device :
 
         var labelUtf8Span = ToUtf8Span(descriptor.Label, allocator, addNullTerminator: false);
         var entryPointUtf8Span = ToUtf8Span(descriptor.Compute.EntryPoint, allocator, addNullTerminator: false);
-        var tsc = new TaskCompletionSource<ComputePipeline>();
+        var tsc = new TaskCompletionSource<ComputePipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         fixed (byte* labelPtr = labelUtf8Span)
         fixed (byte* entryPointPtr = entryPointUtf8Span)
@@ -154,11 +154,11 @@ public sealed class Device :
         var tsc = new TaskCompletionSource<ComputePipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = CreateComputePipelineAsync(
             descriptor: descriptor,
-            mode: eventHandler.GetCpuCallbackMode(),
+            mode: eventHandler.GetCallbackMode(WebGpuAsyncApi.DeviceCreateComputePipeline),
             callback: null,
             tcs: tsc
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.DeviceCreateComputePipeline, future);
         return tsc.Task;
     }
 
@@ -250,12 +250,12 @@ public sealed class Device :
         var eventHandler = _instance._eventHandler;
         var future = CreateRenderPipelineAsync(
             descriptor: descriptor,
-            mode: eventHandler.GetCpuCallbackMode(),
+            mode: eventHandler.GetCallbackMode(WebGpuAsyncApi.DeviceCreateRenderPipeline),
             callback: callback,
             tcs: null
         );
 
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.DeviceCreateRenderPipeline, future);
     }
 
     /// <returns>A task that resolve into a RenderPipeline.</returns>
@@ -267,11 +267,11 @@ public sealed class Device :
         var tcs = new TaskCompletionSource<RenderPipeline>(TaskCreationOptions.RunContinuationsAsynchronously);
         var future = CreateRenderPipelineAsync(
             descriptor: descriptor,
-            mode: eventHandler.GetCpuCallbackMode(),
+            mode: eventHandler.GetCallbackMode(WebGpuAsyncApi.DeviceCreateRenderPipeline),
             callback: null,
             tcs: tcs
         );
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.DeviceCreateRenderPipeline, future);
         return tcs.Task;
     }
 
@@ -344,6 +344,11 @@ public sealed class Device :
     /// <param name="timeoutNS">The maximum time to wait for the error scope to be popped, in nanoseconds. Default is ulong.MaxValue (no timeout).</param>
     public unsafe (ErrorType errorType, string message) PopErrorScopeSync(ulong timeoutNS = ulong.MaxValue)
     {
+        if (!_instance.IsSyncApiSupported(WebGpuAsyncApi.DevicePopErrorScope))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for PopErrorScope");
+        }
+
         string resultMessage = string.Empty;
         ErrorType resultErrorType = ErrorType.NoError;
         Exception? exception = null;
@@ -396,14 +401,14 @@ public sealed class Device :
            device: Handle,
            callbackInfo: new()
            {
-               Mode = eventHandler.GetCpuCallbackMode(),
+               Mode = eventHandler.GetCallbackMode(WebGpuAsyncApi.DevicePopErrorScope),
                Callback = &PopErrorScopeCallbackFunctions.DelegateCallback,
                Userdata1 = AllocUserData(callback),
                Userdata2 = null
            }
         );
 
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.DevicePopErrorScope, future);
     }
 
     /// <returns> A Task that resolves to a <see cref="ErrorType"/> and the error message</returns>
@@ -416,14 +421,14 @@ public sealed class Device :
            device: Handle,
            callbackInfo: new()
            {
-               Mode = eventHandler.GetCpuCallbackMode(),
+               Mode = eventHandler.GetCallbackMode(WebGpuAsyncApi.DevicePopErrorScope),
                Callback = &PopErrorScopeCallbackFunctions.TaskCallback,
                Userdata1 = AllocUserData(tsc),
                Userdata2 = null
            }
         );
 
-        eventHandler.EnqueueCpuFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.DevicePopErrorScope, future);
         return tsc.Task;
     }
 

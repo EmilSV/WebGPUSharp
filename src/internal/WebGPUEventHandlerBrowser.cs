@@ -8,25 +8,24 @@ internal class WebGPUEventHandlerBrowser : WebGPUEventHandlerBase
 
     }
 
-    public override void EnqueueCpuFuture(Future future)
+    public override void EnqueueFuture(WebGpuAsyncApi api, Future future)
     {
 
     }
 
-    public override void EnqueueQueueFuture(Future future)
-    {
 
-    }
-
-    public override CallbackMode GetCpuCallbackMode()
+    public override CallbackMode GetCallbackMode(WebGpuAsyncApi api)
     {
         return CallbackMode.AllowSpontaneous;
     }
 
-    public override CallbackMode GetQueueCallbackMode()
+
+    public override bool IsSyncApiSupported(WebGpuAsyncApi api) => api switch
     {
-        return CallbackMode.AllowSpontaneous;
-    }
+        WebGpuAsyncApi.DeviceCreateRenderPipeline => true,
+        WebGpuAsyncApi.DeviceCreateComputePipeline => true,
+        _ => false,
+    };
 
     public override void Start()
     {

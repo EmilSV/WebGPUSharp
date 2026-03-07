@@ -6,11 +6,11 @@ abstract class WebGPUEventHandlerBase : IDisposable
 {
     public abstract void Start();
 
-    public abstract CallbackMode GetCpuCallbackMode();
-    public abstract CallbackMode GetQueueCallbackMode();
+    public abstract CallbackMode GetCallbackMode(WebGpuAsyncApi api);
 
-    public abstract void EnqueueCpuFuture(Future future);
-    public abstract void EnqueueQueueFuture(Future future);
+    public abstract void EnqueueFuture(WebGpuAsyncApi api, Future future);
+
+    public abstract bool IsSyncApiSupported(WebGpuAsyncApi api);
 
     public abstract void Dispose();
 }

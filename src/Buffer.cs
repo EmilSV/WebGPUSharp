@@ -79,6 +79,11 @@ public sealed class Buffer :
        nuint? size = null,
        ulong timeoutMilliseconds = ulong.MaxValue)
     {
+        if (!_instance.IsSyncApiSupported(WebGpuAsyncApi.BufferMap))
+        {
+            throw new WebGPUUnsupportedApiException("Synchronous API is not supported for Buffer.Map");
+        }
+
         Exception? exception = null;
         void Callback(MapAsyncStatus status, ReadOnlySpan<byte> message)
         {
@@ -129,11 +134,11 @@ public sealed class Buffer :
             mode: mode,
             offset: offset,
             size: size,
-            callbackMode: eventHandler.GetQueueCallbackMode(),
+            callbackMode: eventHandler.GetCallbackMode(WebGpuAsyncApi.BufferMap),
             callback: callback,
             tcs: null
         );
-        eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.BufferMap, future);
     }
 
     /// <inheritdoc cref="Map(MapMode, nuint, nuint, Action{MapAsyncStatus, ReadOnlySpan{byte}})"/>
@@ -163,11 +168,11 @@ public sealed class Buffer :
             mode: mode,
             offset: offset,
             size: size,
-            callbackMode: eventHandler.GetQueueCallbackMode(),
+            callbackMode: eventHandler.GetCallbackMode(WebGpuAsyncApi.BufferMap),
             callback: null,
             tcs: tcs
         );
-        eventHandler.EnqueueQueueFuture(future);
+        eventHandler.EnqueueFuture(WebGpuAsyncApi.BufferMap, future);
         return tcs.Task;
     }
 
