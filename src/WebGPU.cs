@@ -15,15 +15,25 @@ public static unsafe partial class WebGPU
             throw new NotSupportedException("The WebGPU implementation does not support the TimedWaitAny instance feature, which is required by WebGPUSharp.");
         }
 
-        var requiredFeature = InstanceFeatureName.TimedWaitAny;
-        InstanceDescriptorFFI ffiDescriptor = new()
-        {
-            RequiredFeatureCount = 1,
-            RequiredFeatures = &requiredFeature,
-            RequiredLimits = null
-        };
+        InstanceHandle handle;
 
-        InstanceHandle handle = WebGPU_FFI.CreateInstance(&ffiDescriptor);
+        var requiredFeature = InstanceFeatureName.TimedWaitAny;
+
+        if (OperatingSystem.IsBrowser())
+        {
+            handle = WebGPU_FFI.CreateInstance(null);
+        }
+        else
+        {
+            InstanceDescriptorFFI ffiDescriptor = new()
+            {
+                RequiredFeatureCount = 1,
+                RequiredFeatures = &requiredFeature,
+                RequiredLimits = null
+            };
+            handle = WebGPU_FFI.CreateInstance(&ffiDescriptor);
+        }
+
         if (handle == InstanceHandle.Null)
         {
             return null;
@@ -54,28 +64,36 @@ public static unsafe partial class WebGPU
             throw new NotSupportedException("The WebGPU implementation does not support the TimedWaitAny instance feature, which is required by WebGPUSharp.");
         }
 
-        bool hasWaitingFeature = false;
-        foreach (var feature in descriptor.RequiredFeatures)
+        ReadOnlySpan<InstanceFeatureName> requiredFeatures;
+        if (OperatingSystem.IsBrowser())
         {
-            if (feature == InstanceFeatureName.TimedWaitAny)
-            {
-                hasWaitingFeature = true;
-                break;
-            }
+            requiredFeatures = descriptor.RequiredFeatures;
         }
-
-        Span<InstanceFeatureName> featuresWithWait = hasWaitingFeature
-            ? []
-            : stackalloc InstanceFeatureName[descriptor.RequiredFeatures.Length + 1];
-        ReadOnlySpan<InstanceFeatureName> requiredFeatures = descriptor.RequiredFeatures;
-
-        if (!hasWaitingFeature)
+        else
         {
-            descriptor.RequiredFeatures.CopyTo(featuresWithWait);
-            featuresWithWait[^1] = InstanceFeatureName.TimedWaitAny;
+            bool hasWaitingFeature = false;
+            foreach (var feature in descriptor.RequiredFeatures)
+            {
+                if (feature == InstanceFeatureName.TimedWaitAny)
+                {
+                    hasWaitingFeature = true;
+                    break;
+                }
+            }
+
+            Span<InstanceFeatureName> featuresWithWait = hasWaitingFeature
+                ? []
+                : stackalloc InstanceFeatureName[descriptor.RequiredFeatures.Length + 1];
+            requiredFeatures = descriptor.RequiredFeatures;
+
+            if (!hasWaitingFeature)
+            {
+                descriptor.RequiredFeatures.CopyTo(featuresWithWait);
+                featuresWithWait[^1] = InstanceFeatureName.TimedWaitAny;
 #pragma warning disable CS9080 // Use of variable in this context may expose referenced variables outside of their declaration scope
-            requiredFeatures = featuresWithWait;
+                requiredFeatures = featuresWithWait;
 #pragma warning restore CS9080 // Use of variable in this context may expose referenced variables outside of their declaration scope
+            }
         }
 
         fixed (InstanceLimits* requiredLimitsPtr = &Nullable.GetValueRefOrDefaultRef(in descriptor.RequiredLimits))
