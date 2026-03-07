@@ -1,5 +1,3 @@
-#pragma warning disable CS0162 // Unreachable code detected  
-
 using System.Buffers;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
