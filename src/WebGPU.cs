@@ -10,7 +10,7 @@ public static unsafe partial class WebGPU
     [SkipLocalsInit]
     public static Instance? CreateInstance()
     {
-        if (!WebGPU_FFI.HasInstanceFeature(InstanceFeatureName.TimedWaitAny))
+        if (!OperatingSystem.IsBrowser() && !WebGPU_FFI.HasInstanceFeature(InstanceFeatureName.TimedWaitAny))
         {
             throw new NotSupportedException("The WebGPU implementation does not support the TimedWaitAny instance feature, which is required by WebGPUSharp.");
         }
@@ -49,7 +49,7 @@ public static unsafe partial class WebGPU
     [SkipLocalsInit]
     public static Instance? CreateInstance(in InstanceDescriptor descriptor)
     {
-        if (!WebGPU_FFI.HasInstanceFeature(InstanceFeatureName.TimedWaitAny))
+        if (!OperatingSystem.IsBrowser() && !WebGPU_FFI.HasInstanceFeature(InstanceFeatureName.TimedWaitAny))
         {
             throw new NotSupportedException("The WebGPU implementation does not support the TimedWaitAny instance feature, which is required by WebGPUSharp.");
         }
