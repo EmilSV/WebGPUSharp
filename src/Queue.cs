@@ -84,6 +84,13 @@ public sealed class Queue :
         Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, data);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteBuffer<T>(Buffer buffer, ulong bufferOffset, in T data, Range dataReadOnlyRange)
+         where T : unmanaged
+    {
+        Handle.WriteBuffer(WebGPUMarshal.GetHandle(buffer), bufferOffset, data, dataReadOnlyRange);
+    }
+
     /// <inheritdoc cref="QueueHandle.WriteBuffer{T}(BufferHandle, ulong, in T)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBuffer<T>(Buffer buffer, in T data)

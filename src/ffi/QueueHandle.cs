@@ -146,6 +146,21 @@ public readonly unsafe partial struct QueueHandle :
         }
     }
 
+    public readonly void WriteBuffer<T>(BufferHandle buffer, ulong bufferOffset, in T data, Range dataReadOnlyRange)
+        where T : unmanaged
+    {
+        Span<byte> dataBytes = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref Unsafe.AsRef(in data), 1))[dataReadOnlyRange];
+        fixed (byte* dataPtr = dataBytes)
+        {
+            WebGPU_FFI.QueueWriteBuffer(
+                this,
+                buffer,
+                bufferOffset,
+                dataPtr,
+                (nuint)dataBytes.Length
+            );
+        }
+    }
 
     /// <inheritdoc cref ="WriteTexture(TexelCopyTextureInfoFFI*, void*, nuint, TexelCopyBufferLayout*, Extent3D*)"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
