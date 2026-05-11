@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
@@ -122,7 +123,25 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         );
     }
 
+    public void SetImmediates<T>(uint offset, ReadOnlySpan<T> data)
+        where T : unmanaged
+    {
+        SetImmediates(offset, MemoryMarshal.AsBytes(data));
+    }
 
+
+    public void SetImmediates(uint offset, ReadOnlySpan<byte> data)
+    {
+        fixed (byte* dataPtr = data)
+        {
+            WebGPU_FFI.ComputePassEncoderSetImmediates(
+                computePassEncoder: this,
+                offset: offset,
+                data: dataPtr,
+                size: (nuint)data.Length
+            );
+        }
+    }
 
     /// <inheritdoc cref="SetLabel(StringViewFFI)"/>
     public void SetLabel(WGPURefText label)

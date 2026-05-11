@@ -155,6 +155,20 @@ public readonly struct RenderPassEncoder : IEquatable<RenderPassEncoder>,
         _originalHandle.SetBlendConstant(color);
     }
 
+    public void SetImmediates<T>(uint offset, ReadOnlySpan<T> data)
+        where T : unmanaged
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetImmediates(offset, data);
+    }
+
+
+    public void SetImmediates(uint offset, ReadOnlySpan<byte> data)
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetImmediates(offset, data);
+    }
+
     /// <inheritdoc cref="RenderPassEncoderHandle.SetIndexBuffer(Buffer, IndexFormat, ulong, ulong)"/>
     public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)
     {

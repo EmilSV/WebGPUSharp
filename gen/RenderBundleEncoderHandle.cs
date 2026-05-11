@@ -180,6 +180,8 @@ public unsafe partial struct RenderBundleEncoderHandle : IEquatable<RenderBundle
     /// <param name="groupIndex">The index to set the bind group at.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
+    public void SetImmediates(uint offset, void* data, nuint size) => WebGPU_FFI.RenderBundleEncoderSetImmediates(this, offset, data, size);
+
     /// <summary>
     /// Sets the active index buffer.
     /// 

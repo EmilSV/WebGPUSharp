@@ -4,6 +4,7 @@
         "comparand",
         "Convs",
         "GPUFFI",
+        "Immediates",
         "mipmap",
         "Multisample",
         "SPIRV",

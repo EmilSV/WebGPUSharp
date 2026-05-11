@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using WebGpuSharp.Marshalling;
 using static WebGpuSharp.Marshalling.WebGPUMarshal;
 
@@ -137,6 +138,20 @@ public unsafe readonly partial struct RenderBundleEncoderHandle :
         {
             WebGPU_FFI.RenderBundleEncoderSetBindGroup(this, groupIndex, GetHandle(group), (nuint)dynamicOffset.Length, dynamicOffsetPtr);
         }
+    }
+
+    public void SetImmediates(uint offset, ReadOnlySpan<byte> data)
+    {
+        fixed (byte* dataPtr = data)
+        {
+            WebGPU_FFI.RenderBundleEncoderSetImmediates(this, offset, dataPtr, (nuint)data.Length);
+        }
+    }
+
+    public void SetImmediates<T>(uint offset, ReadOnlySpan<T> data)
+        where T : unmanaged
+    {
+        SetImmediates(offset, MemoryMarshal.AsBytes(data));
     }
 
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>

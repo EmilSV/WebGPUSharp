@@ -44,6 +44,8 @@ public enum WGSLLanguageFeatureName
     PointerCompositeAccess = 4,
     UniformBufferStandardLayout = 5,
     SubgroupId = 6,
-    SubgroupUniformity = 327692,
-    TextureAndSamplerLet = 327693,
+    TextureAndSamplerLet = 7,
+    SubgroupUniformity = 8,
+    TextureFormatsTier1 = 9,
+    LinearIndexing = 327694,
 }

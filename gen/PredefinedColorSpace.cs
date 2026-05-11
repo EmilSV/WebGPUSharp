@@ -16,4 +16,6 @@ public enum PredefinedColorSpace
     /// The Display P3 color space.
     /// </summary>
     DisplayP3 = 2,
+    SRGBLinear = 327683,
+    DisplayP3Linear = 327684,
 }

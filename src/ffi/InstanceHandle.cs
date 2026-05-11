@@ -82,7 +82,7 @@ public readonly unsafe partial struct InstanceHandle :
         WebGPU_FFI.InstanceRelease(handle);
     }
 
-    
+
     public void Dispose()
     {
         if (_ptr != UIntPtr.Zero)

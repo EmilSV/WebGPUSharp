@@ -146,6 +146,8 @@ public unsafe partial struct ComputePassEncoderHandle : IEquatable<ComputePassEn
     /// <param name="groupIndex">The index to set the bind group at.</param>
     public void SetBindGroup(uint groupIndex, BindGroupHandle group, nuint dynamicOffsetCount, uint* dynamicOffsets) => WebGPU_FFI.ComputePassEncoderSetBindGroup(this, groupIndex, group, dynamicOffsetCount, dynamicOffsets);
 
+    public void SetImmediates(uint offset, void* data, nuint size) => WebGPU_FFI.ComputePassEncoderSetImmediates(this, offset, data, size);
+
     /// <summary>
     /// Set debug label of this command encoder.
     /// </summary>

@@ -213,6 +213,8 @@ public unsafe partial struct RenderPassEncoderHandle : IEquatable<RenderPassEnco
     /// <param name="color">The color to use when blending.</param>
     public void SetBlendConstant(Color* color) => WebGPU_FFI.RenderPassEncoderSetBlendConstant(this, color);
 
+    public void SetImmediates(uint offset, void* data, nuint size) => WebGPU_FFI.RenderPassEncoderSetImmediates(this, offset, data, size);
+
     /// <summary>
     /// Sets the active index buffer.
     /// 
