@@ -101,6 +101,13 @@ public readonly struct ComputePassEncoder :
         _originalHandle.SetImmediates(offset, data);
     }
 
+    public void SetImmediates<T>(uint offset, in T data)
+        where T : unmanaged
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetImmediates(offset, data);
+    }
+
     /// <inheritdoc cref="ComputePassEncoderHandle.SetLabel(WGPURefText)"/>
     public void SetLabel(WGPURefText label)
     {

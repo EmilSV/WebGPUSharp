@@ -147,7 +147,12 @@ public readonly struct RenderBundleEncoder : IEquatable<RenderBundleEncoder>,
         _originalHandle.SetImmediates(offset, data);
     }
 
-     /// <inheritdoc cref="RenderBundleEncoderHandle.SetImmediates(uint, void*, nuint)"/>
+    public void SetImmediates<T>(uint offset, in T data)
+        where T : unmanaged
+    {
+        _pooledHandle.VerifyToken(_localToken);
+        _originalHandle.SetImmediates(offset, data);
+    }
 
     /// <inheritdoc cref="RenderBundleEncoderHandle.SetIndexBuffer(Buffer, IndexFormat, ulong, ulong)"/>
     public void SetIndexBuffer(Buffer buffer, IndexFormat format, ulong offset, ulong size)

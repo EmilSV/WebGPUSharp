@@ -129,6 +129,12 @@ public unsafe readonly partial struct ComputePassEncoderHandle :
         SetImmediates(offset, MemoryMarshal.AsBytes(data));
     }
 
+    public void SetImmediates<T>(uint offset, in T data)
+        where T : unmanaged
+    {
+        SetImmediates(offset, MemoryMarshal.CreateReadOnlySpan(in data, 1));
+    }
+
 
     public void SetImmediates(uint offset, ReadOnlySpan<byte> data)
     {

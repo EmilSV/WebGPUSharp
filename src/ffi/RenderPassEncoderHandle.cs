@@ -216,6 +216,13 @@ public unsafe readonly partial struct RenderPassEncoderHandle :
         SetImmediates(offset, MemoryMarshal.AsBytes(data));
     }
 
+    public void SetImmediates<T>(uint offset, in T data)
+        where T : unmanaged
+    {
+        SetImmediates(offset, MemoryMarshal.CreateReadOnlySpan(in data, 1));
+    }
+
+
     /// <inheritdoc cref="SetIndexBuffer(BufferHandle, IndexFormat, ulong, ulong)"/>
     public readonly void SetIndexBuffer(
         Buffer buffer, IndexFormat format, ulong offset, ulong size)
