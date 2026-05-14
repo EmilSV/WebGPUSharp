@@ -1,6 +1,20 @@
 
 # Changelog
 
+## [0.5.3] - 2026-05-13
+### Overview
+- Update Dawn to same version as chrome m148 and experimental wasm support
+
+### Added
+- Added `ComputePassEncoder.SetImmediates(...)`, `RenderPassEncoder.SetImmediates(...)`, and `RenderBundleEncoder.SetImmediates(...)` with matching handle overloads.
+- Added `Queue.WriteBuffer<T>(Buffer, ulong, in T, Range)`.
+- Added `CompatibilityModeLimits` and `TextureBindingViewDimension` chain structs.
+- Added `WebGpuAsyncApi` to check for platform-specific async and sync API support.
+- Added `PredefinedColorSpace.SRGBLinear`, `PredefinedColorSpace.DisplayP3Linear`, `WGSLLanguageFeatureName.TextureFormatsTier1`, and `WGSLLanguageFeatureName.LinearIndexing`.
+
+### Changed
+- Updated generated Dawn enum and struct bindings, including `SType` compatibility mode and texture binding view dimension entries.
+
 ## [0.5.2] - 2026-02-16
 ### Overview
 - Update Dawn to same version as chrome m145-d9f5a98 and fixed issues where shaders code that need reallocation threw an exception.
