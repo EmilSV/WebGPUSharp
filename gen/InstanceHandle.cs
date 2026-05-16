@@ -118,8 +118,8 @@ public unsafe partial struct InstanceHandle : IEquatable<InstanceHandle>
     /// <summary>
     /// Retrieves an Adapter which matches the given <see cref="RequestAdapterOptionsFFI" />.
     /// </summary>
-    /// <param name="callbackInfo">The callback to call when the adapter is ready</param>
     /// <param name="options">The options to use for the adapter</param>
+    /// <param name="callbackInfo">The callback to call when the adapter is ready</param>
     public Future RequestAdapter(RequestAdapterOptionsFFI* options, RequestAdapterCallbackInfoFFI callbackInfo) => WebGPU_FFI.InstanceRequestAdapter(this, options, callbackInfo);
 
     /// <summary>

@@ -15,6 +15,9 @@ public unsafe partial struct InstanceLimits
     /// see: <see href="https://webgpu-native.github.io/webgpu-headers/StructChaining.html"/>
     /// </remarks>
     public ChainedStruct* NextInChain;
+    /// <summary>
+    /// The maximum number <see cref="FutureWaitInfo" /> supported in a call to <see cref="InstanceHandle.WaitAny" /> with <code>timeoutNS &gt; 0</code>
+    /// </summary>
     public nuint TimedWaitAnyMaxCount = 0;
 
     public InstanceLimits() { }
