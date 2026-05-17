@@ -29,6 +29,10 @@ public sealed class Adapter :
     /// <inheritdoc cref="AdapterHandle.GetLimits(out Limits)"/>
     public bool GetLimits(out Limits limits) => Handle.GetLimits(out limits);
 
+    /// <inheritdoc cref="AdapterHandle.GetLimits(out Limits, out CompatibilityModeLimits)"/>
+    public bool GetLimits(out Limits limits, out CompatibilityModeLimits compatibilityModeLimits) => 
+        Handle.GetLimits(out limits, out compatibilityModeLimits);
+
     /// <inheritdoc cref="AdapterHandle.GetLimits()"/>
     public Limits? GetLimits() => Handle.GetLimits();
 

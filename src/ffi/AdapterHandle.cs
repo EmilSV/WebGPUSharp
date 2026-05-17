@@ -49,6 +49,35 @@ public unsafe readonly partial struct AdapterHandle :
         }
     }
 
+    /// <returns>If true the call was successful, false otherwise.</returns>
+    /// <inheritdoc cref="GetLimits(Limits*)"/>
+    public readonly bool GetLimits(out Limits limits, out CompatibilityModeLimits compatibilityModeLimits)
+    {
+        unsafe
+        {
+            limits = default;
+            compatibilityModeLimits = new CompatibilityModeLimits()
+            {
+                Chain = new ChainedStruct()
+                {
+                    SType = SType.CompatibilityModeLimits,
+                    Next = null
+                }
+            };
+            fixed (CompatibilityModeLimits* compatibilityModeLimitsPtr = &compatibilityModeLimits)
+            {
+                compatibilityModeLimits.Chain.Next = &compatibilityModeLimitsPtr->Chain;
+                fixed (Limits* limitsPtr = &limits)
+                {
+                    bool result = WebGPU_FFI.AdapterGetLimits(this, limitsPtr) == Status.Success;
+                    limits.NextInChain = null;
+                    return result;
+                }
+
+            }
+        }
+    }
+
 
     /// <returns>The limits or null if it failed</returns>
     /// <inheritdoc cref="GetLimits(Limits*)"/>
