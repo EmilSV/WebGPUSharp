@@ -315,6 +315,10 @@ public sealed class Device :
     public Limits GetLimits() => Handle.GetLimits();
     /// <inheritdoc cref="DeviceHandle.GetLimits(ref Limits)" />
     public Status GetLimits(ref Limits supportedLimits) => Handle.GetLimits(ref supportedLimits);
+    
+    public bool GetLimits(out Limits limits, out CompatibilityModeLimits compatibilityModeLimits) =>
+        Handle.GetLimits(out limits, out compatibilityModeLimits);
+
 
     /// <inheritdoc cref="DeviceHandle.GetQueue()" />
     public Queue GetQueue()

@@ -562,12 +562,41 @@ public unsafe readonly partial struct DeviceHandle :
         WebGPU_FFI.DeviceGetLimits(this, &supportedLimits);
         return supportedLimits;
     }
+
     /// <inheritdoc cref="GetLimits(Limits*)"/>
     public Status GetLimits(ref Limits limits)
     {
         fixed (Limits* limitsPtr = &limits)
         {
             return WebGPU_FFI.DeviceGetLimits(this, limitsPtr);
+        }
+    }
+
+    /// <inheritdoc cref="GetLimits(Limits*)"/>
+    public bool GetLimits(out Limits limits, out CompatibilityModeLimits compatibilityModeLimits)
+    {
+        unsafe
+        {
+            limits = default;
+            compatibilityModeLimits = new CompatibilityModeLimits()
+            {
+                Chain = new ChainedStruct()
+                {
+                    SType = SType.CompatibilityModeLimits,
+                    Next = null
+                }
+            };
+            fixed (CompatibilityModeLimits* compatibilityModeLimitsPtr = &compatibilityModeLimits)
+            {
+                compatibilityModeLimits.Chain.Next = &compatibilityModeLimitsPtr->Chain;
+                fixed (Limits* limitsPtr = &limits)
+                {
+                    bool result = WebGPU_FFI.DeviceGetLimits(this, limitsPtr) == Status.Success;
+                    limits.NextInChain = null;
+                    return result;
+                }
+
+            }
         }
     }
 
