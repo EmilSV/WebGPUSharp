@@ -28,6 +28,7 @@ WebGPUSharp includes native binaries of [Dawn](https://dawn.googlesource.com/daw
 - **Windows**: x64, ARM64
 - **macOS**: x64 (Intel), ARM64 (Apple Silicon)
 - **Linux**: x64, ARM64
+- **Browser**: WebAssembly (WASM) experimental support via [NativeAOT-LLVM](https://github.com/dotnet/runtimelab/tree/feature/NativeAOT-LLVM)
 
 For any other platforms, you will need to build Dawn from source and provide the native binaries yourself. You can use https://github.com/EmilSV/webgpu-dawn-build to help with building dawn for other platforms.
 
