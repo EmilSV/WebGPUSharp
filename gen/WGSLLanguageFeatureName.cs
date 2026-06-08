@@ -47,5 +47,6 @@ public enum WGSLLanguageFeatureName
     TextureAndSamplerLet = 7,
     SubgroupUniformity = 8,
     TextureFormatsTier1 = 9,
-    LinearIndexing = 327694,
+    LinearIndexing = 10,
+    ImmediateAddressSpace = 327689,
 }
