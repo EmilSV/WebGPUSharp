@@ -100,6 +100,5 @@ public enum SType
     SharedTextureMemoryD3D12ResourceDescriptor = 327758,
     RequestAdapterOptionsAngleVirtualizationGroup = 327759,
     PipelineLayoutResourceTable = 327760,
-    AdapterPropertiesExplicitComputeSubgroupSizeConfigs = 327761,
-    AdapterPropertiesDrm = 327762,
+    AdapterPropertiesDrm = 327761,
 }
