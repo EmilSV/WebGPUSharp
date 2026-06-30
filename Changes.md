@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [0.5.5] - 2026-06-09
+### Overview
+- Updated Dawn native binaries to the same version as chrome m150.
+
+### Added
+- Added `FeatureName.SubgroupSizeControl`
+
 ## [0.5.4] - 2026-06-09
 ### Overview
 - Updated Dawn native binaries to the same version as chrome m149.
@@ -13,6 +20,19 @@
 
 ### Changed
 - Updated `WGSLLanguageFeatureName.LinearIndexing` value based on new values from Dawn.
+## [0.5.4] - 2026-06-09
+### Overview
+- Updated Dawn native binaries to the same version as chrome m149.
+
+### Added
+- Added `Adapter.GetLimits(out Limits, out CompatibilityModeLimits)` and `Device.GetLimits(out Limits, out CompatibilityModeLimits)` with matching handle overloads.
+- Added `CompatibilityModeLimits` struct.
+- Added documentation for compatibility mode limits and texture component swizzle bindings.
+- Added `WGSLLanguageFeatureName.ImmediateAddressSpace`.
+
+### Changed
+- Updated `WGSLLanguageFeatureName.LinearIndexing` value based on new values from Dawn.
+
 
 ## [0.5.3] - 2026-05-13
 ### Overview
