@@ -1,7 +1,7 @@
 
 # Changelog
 
-## [0.5.5] - 2026-06-09
+## [0.5.5] - 2026-06-30
 ### Overview
 - Updated Dawn native binaries to the same version as chrome m150.
 
