@@ -48,5 +48,6 @@ public enum WGSLLanguageFeatureName
     SubgroupUniformity = 8,
     TextureFormatsTier1 = 9,
     LinearIndexing = 10,
-    ImmediateAddressSpace = 327689,
+    ImmediateAddressSpace = 11,
+    BufferView = 327689,
 }

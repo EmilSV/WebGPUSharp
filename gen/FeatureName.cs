@@ -182,5 +182,5 @@ public enum FeatureName
     TextureFormatsTier2 = 20,
     PrimitiveIndex = 21,
     TextureComponentSwizzle = 22,
-    SubgroupSizeControl = 327739,
+    SubgroupSizeControl = 23,
 }

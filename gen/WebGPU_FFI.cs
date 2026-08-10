@@ -520,10 +520,10 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     /// <param name="commandEncoder">The command encoder resolve query set from</param>
     /// <param name="destinationOffset">The offset, in bytes, from the start of the buffer to start writing the query values at.</param>
+    /// <param name="destination">The buffer to copy the query values to.</param>
     /// <param name="queryCount">The number of queries to be copied over to the buffer, starting from <paramref name="firstQuery" /></param>
     /// <param name="firstQuery">The index number of the first query value to be copied over to the buffer.</param>
     /// <param name="querySet">The query set.</param>
-    /// <param name="destination">The buffer to copy the query values to.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuCommandEncoderResolveQuerySet", CallingConvention = CallingConvention.Cdecl)]
     public static extern void CommandEncoderResolveQuerySet(CommandEncoderHandle commandEncoder, QuerySetHandle querySet, uint firstQuery, uint queryCount, BufferHandle destination, ulong destinationOffset);
     /// <summary>
@@ -761,8 +761,8 @@ public unsafe static partial class WebGPU_FFI
     /// </summary>
     /// <remarks>Use of this method is preferred whenever possible, as it prevents blocking the queue timeline work on pipeline compilation.</remarks>
     /// <param name="device">The device</param>
-    /// <param name="descriptor">The descriptor to use for the ComputePipeline</param>
     /// <param name="callbackInfo">The callbackInfo to use for the ComputePipeline</param>
+    /// <param name="descriptor">The descriptor to use for the ComputePipeline</param>
     /// <returns>A future resolving when the pipeline is ready</returns>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuDeviceCreateComputePipelineAsync", CallingConvention = CallingConvention.Cdecl)]
     public static extern Future DeviceCreateComputePipelineAsync(DeviceHandle device, ComputePipelineDescriptorFFI* descriptor, CreateComputePipelineAsyncCallbackInfoFFI callbackInfo);
@@ -977,8 +977,8 @@ public unsafe static partial class WebGPU_FFI
     /// Retrieves an Adapter which matches the given <see cref="RequestAdapterOptionsFFI" />.
     /// </summary>
     /// <param name="instance">The instance</param>
-    /// <param name="callbackInfo">The callback to call when the adapter is ready</param>
     /// <param name="options">The options to use for the adapter</param>
+    /// <param name="callbackInfo">The callback to call when the adapter is ready</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuInstanceRequestAdapter", CallingConvention = CallingConvention.Cdecl)]
     public static extern Future InstanceRequestAdapter(InstanceHandle instance, RequestAdapterOptionsFFI* options, RequestAdapterCallbackInfoFFI callbackInfo);
     /// <summary>
@@ -1241,10 +1241,10 @@ public unsafe static partial class WebGPU_FFI
     /// Errors if vertices Range is outside of the range of the vertices range of any set vertex buffer.
     /// </summary>
     /// <param name="renderBundleEncoder">The render bundle encoder</param>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
     /// <param name="firstVertex">The index of the first vertex to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
     /// <param name="vertexCount">The number of vertices to draw.</param>
-    /// <param name="firstInstance">The index of the first instance to draw.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderDraw", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderDraw(RenderBundleEncoderHandle renderBundleEncoder, uint vertexCount, uint instanceCount, uint firstVertex, uint firstInstance);
     /// <summary>
@@ -1256,11 +1256,11 @@ public unsafe static partial class WebGPU_FFI
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
     /// <param name="renderBundleEncoder">The render bundle encoder</param>
-    /// <param name="firstInstance">The index of the first instance to draw.</param>
     /// <param name="baseVertex">The value added to the vertex index before indexing into the vertex buffer.</param>
     /// <param name="firstIndex">The index of the first index to draw.</param>
     /// <param name="instanceCount">The number of instances to draw.</param>
     /// <param name="indexCount">The number of indices to draw.</param>
+    /// <param name="firstInstance">The index of the first instance to draw.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderDrawIndexed", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderDrawIndexed(RenderBundleEncoderHandle renderBundleEncoder, uint indexCount, uint instanceCount, uint firstIndex, int baseVertex, uint firstInstance);
     /// <summary>
@@ -1360,10 +1360,10 @@ public unsafe static partial class WebGPU_FFI
     /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
     /// </summary>
     /// <param name="renderBundleEncoder">The render bundle encoder</param>
-    /// <param name="offset">Offset in bytes into buffer where the vertex data begins.</param>
-    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
     /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
+    /// <param name="offset">Offset in bytes into buffer where the vertex data begins.</param>
+    /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderBundleEncoderSetVertexBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderBundleEncoderSetVertexBuffer(RenderBundleEncoderHandle renderBundleEncoder, uint slot, BufferHandle buffer, ulong offset, ulong size);
     /// <summary>
@@ -1422,8 +1422,8 @@ public unsafe static partial class WebGPU_FFI
     /// Errors if indices Range is outside of the range of the indices range of any set index buffer.
     /// </summary>
     /// <param name="renderPassEncoder">The render pass encoder</param>
-    /// <param name="baseVertex">Added to each index value before indexing into the vertex buffers.</param>
     /// <param name="firstInstance">First instance to draw.</param>
+    /// <param name="baseVertex">Added to each index value before indexing into the vertex buffers.</param>
     /// <param name="firstIndex">Offset into the index buffer, in indices, begin drawing from.</param>
     /// <param name="instanceCount">The number of indices to draw.</param>
     /// <param name="indexCount">The number of indices to draw.</param>
@@ -1528,10 +1528,10 @@ public unsafe static partial class WebGPU_FFI
     /// Subsequent calls to <see cref="DrawIndexed" /> on this RenderPassEncoderHandle will use buffer as the source index buffer.
     /// </summary>
     /// <param name="renderPassEncoder">The render pass encoder</param>
+    /// <param name="buffer">Buffer containing index data to use for subsequent drawing commands.</param>
+    /// <param name="format">Format of the index data contained in buffer.</param>
     /// <param name="size">Size in bytes of the index data in buffer. Defaults to the size of the buffer minus the offset.</param>
     /// <param name="offset">Offset in bytes into buffer where the index data begins. Defaults to 0.</param>
-    /// <param name="format">Format of the index data contained in buffer.</param>
-    /// <param name="buffer">Buffer containing index data to use for subsequent drawing commands.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetIndexBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetIndexBuffer(RenderPassEncoderHandle renderPassEncoder, BufferHandle buffer, IndexFormat format, ulong offset, ulong size);
     /// <summary>
@@ -1578,10 +1578,10 @@ public unsafe static partial class WebGPU_FFI
     /// The slot refers to the index of the matching descriptor in VertexState.Buffers.
     /// </summary>
     /// <param name="renderPassEncoder">The render pass encoder</param>
-    /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     /// <param name="offset">Offset in bytes into buffer where the vertex data begins. Defaults to 0.</param>
     /// <param name="buffer">Buffer containing vertex data to use for subsequent drawing commands.</param>
     /// <param name="slot">The vertex buffer slot to set the vertex buffer for.</param>
+    /// <param name="size">Size in bytes of the vertex data in buffer. Defaults to the size of the buffer minus the offset.</param>
     [DllImport("webgpu_dawn", EntryPoint = "wgpuRenderPassEncoderSetVertexBuffer", CallingConvention = CallingConvention.Cdecl)]
     public static extern void RenderPassEncoderSetVertexBuffer(RenderPassEncoderHandle renderPassEncoder, uint slot, BufferHandle buffer, ulong offset, ulong size);
     /// <summary>

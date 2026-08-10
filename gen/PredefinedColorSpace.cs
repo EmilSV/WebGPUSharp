@@ -18,4 +18,5 @@ public enum PredefinedColorSpace
     DisplayP3 = 2,
     SRGBLinear = 327683,
     DisplayP3Linear = 327684,
+    Rec2020Linear = 327685,
 }
