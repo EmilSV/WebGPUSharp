@@ -50,4 +50,5 @@ public enum WGSLLanguageFeatureName
     LinearIndexing = 10,
     ImmediateAddressSpace = 11,
     BufferView = 327689,
+    SwizzleAssignment = 327690,
 }

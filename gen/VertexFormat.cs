@@ -172,4 +172,5 @@ public enum VertexFormat
     /// Four unsigned 8-bit integers, packed into a 32-bit integer (uint). [0, 255] converted to float [0, 1] vec4&lt;f32&gt; in shaders.
     /// </summary>
     Unorm8x4BGRA = 41,
+    Snorm10_10_10_2 = 42,
 }

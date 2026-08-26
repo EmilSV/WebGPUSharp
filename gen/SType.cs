@@ -96,7 +96,7 @@ public enum SType
     TexelBufferBindingLayout = 327754,
     SharedTextureMemoryMetalEndAccessState = 327755,
     AdapterPropertiesWGPU = 327756,
-    SharedBufferMemoryD3D12SharedMemoryFileMappingHandleDescriptor = 327757,
+    SharedBufferMemoryFromWindowsHandleDescriptor = 327757,
     SharedTextureMemoryD3D12ResourceDescriptor = 327758,
     RequestAdapterOptionsAngleVirtualizationGroup = 327759,
     PipelineLayoutResourceTable = 327760,
