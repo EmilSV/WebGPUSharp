@@ -101,4 +101,7 @@ public enum SType
     RequestAdapterOptionsAngleVirtualizationGroup = 327759,
     PipelineLayoutResourceTable = 327760,
     AdapterPropertiesDrm = 327761,
+    RenderBundleEncoderResourceTable = 327762,
+    DawnShaderSourceSPIRV = 327763,
+    SharedBufferMemoryHostPointerDescriptor = 327764,
 }

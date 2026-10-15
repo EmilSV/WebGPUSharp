@@ -183,4 +183,6 @@ public enum FeatureName
     PrimitiveIndex = 21,
     TextureComponentSwizzle = 22,
     SubgroupSizeControl = 23,
+    AtomicVec2uMinMax = 327739,
+    TextureCompressionUnaligned = 327745,
 }

@@ -49,6 +49,7 @@ public enum WGSLLanguageFeatureName
     TextureFormatsTier1 = 9,
     LinearIndexing = 10,
     ImmediateAddressSpace = 11,
-    BufferView = 327689,
-    SwizzleAssignment = 327690,
+    BufferView = 12,
+    SwizzleAssignment = 13,
+    FragmentDepth = 14,
 }
